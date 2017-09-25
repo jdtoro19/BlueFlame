@@ -31,10 +31,10 @@ void LightComponent::SetLightType(Light_Type lt) {
 	}
 	else if (lt == DIRECTIONAL) {
 		lightType = DIRECTIONAL;
-		direction = glm::vec3(-0.2f, -1.0f, -0.3f);
-		ambient = glm::vec3(0.05f, 0.05f, 0.05f);
-		diffuse = glm::vec3(0.4f, 0.4f, 0.4f);
-		specular = glm::vec3(0.5f, 0.5f, 0.5f);
+		direction = glm::vec3(-0.2f, -0.3f, -0.1f);
+		ambient = glm::vec3(0.6f, 0.6f, 0.6f);
+		diffuse = glm::vec3(0.8f, 0.8f, 0.8f);
+		specular = glm::vec3(0.6f, 0.6f, 0.6f);
 		// NOT USED
 		cutOff = 0.0f;
 		outerCutOff = 0.0f;

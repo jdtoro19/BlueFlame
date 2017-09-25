@@ -32,7 +32,7 @@ TestScene::~TestScene()
 void TestScene::Update(const float deltaTime)
 {
 	//Code to make the model spin
-	//model->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), model->GetWorldRotationAngle() + deltaTime);
+	//model->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), model->GetWorldRotationAngle() + moveSpeed * deltaTime);
 
 	this->deltaTime = deltaTime;
 

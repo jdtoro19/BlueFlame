@@ -2,7 +2,7 @@
 layout (location = 0) in vec3 sPosition;
 layout (location = 1) in vec3 sNormal;
 layout (location = 2) in vec2 sTexCoords;
-layout (location = 3) in vec3 sColour;
+layout (location = 5) in vec3 sColour;
 
 out vec3 Position;
 out vec3 Normal;
@@ -22,5 +22,5 @@ void main()
 
     Colour = sColour;
 	
-	TexCoords = sTexCoords;	
+    TexCoords = sTexCoords;	
 }

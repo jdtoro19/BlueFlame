@@ -44,6 +44,7 @@ in vec3 Colour;
 #define numPointLights 1
 
 uniform sampler2D texture_diffuse1;
+uniform sampler2D texture_specular1;
 
 uniform vec3 viewPos;
 uniform DirLight dirLight;
@@ -65,9 +66,11 @@ void main()
     //for(int i = 0; i < numPointLights; i++)
     //    result += CalcPointLight(pointLights[i], norm, Position, viewDir);    
     // spot light
-    //result += CalcSpotLight(spotLight, norm, Position, viewDir);  
+    //result += CalcSpotLight(spotLight, norm, Position, viewDir);     
 
-    result *= Colour;        
+    //result *= texture(texture_diffuse1, TexCoords);
+
+    result *= Colour;   
 
     finalColour = vec4(result, 1.0);
 } 
@@ -81,9 +84,9 @@ vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)
     vec3 reflectDir = reflect(-lightDir, normal);
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 1.0);//material.shininess);
     // combine results
-    vec3 ambient = light.ambient;// * vec3(texture(material.diffuse, TexCoords));
-    vec3 diffuse = light.diffuse * diff;// * vec3(texture(material.diffuse, TexCoords));
-    vec3 specular = light.specular * spec;// * vec3(texture(material.specular, TexCoords));
+    vec3 ambient = light.ambient ;//* vec3(texture(texture_diffuse1, TexCoords));
+    vec3 diffuse = light.diffuse * diff;// * vec3(texture(texture_diffuse1, TexCoords));
+    vec3 specular = light.specular * spec;// * vec3(texture(texture_specular1, TexCoords));
     return (ambient + diffuse + specular);
 }
 

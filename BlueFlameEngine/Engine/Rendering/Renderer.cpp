@@ -31,6 +31,7 @@ void Renderer::Render(Window* window, Camera* camera, glm::mat4 projection)
 
 	modelShader->setMat4("projection", projection);
 	modelShader->setMat4("view", view);
+	modelShader->setVec3("viewPos", camera->Position);
 
 	lightShader->Use();
 
@@ -50,22 +51,24 @@ void Renderer::Render(Window* window, Camera* camera, glm::mat4 projection)
 
 	shader->setVec3("viewPos", camera->Position); // camera
 
+	/*
 	glm::vec3 pointLightPositions[] = {
 		glm::vec3(0.7f,  0.2f,  2.0f),
 		glm::vec3(2.3f, -3.3f, -4.0f),
 		glm::vec3(-4.0f,  2.0f, -12.0f),
 		glm::vec3(0.0f,  0.0f, -3.0f)
 	};
-	
+	*/
 	if (lightObjectList.size() != NULL) {
 		for (size_t i = 0; i < lightObjectList.size(); ++i) {
 			if (lightObjectList[i]->lightComponent->GetLightType() == LightComponent::Light_Type::DIRECTIONAL) {
 				// directional light
+				shader->Use();
 				shader->setVec3("dirLight.direction", lightObjectList[i]->lightComponent->direction);
 				shader->setVec3("dirLight.ambient", lightObjectList[i]->lightComponent->ambient);
 				shader->setVec3("dirLight.diffuse", lightObjectList[i]->lightComponent->diffuse);
 				shader->setVec3("dirLight.specular", lightObjectList[i]->lightComponent->specular);
-
+				modelShader->Use();
 				modelShader->setVec3("dirLight.direction", lightObjectList[i]->lightComponent->direction);
 				modelShader->setVec3("dirLight.ambient", lightObjectList[i]->lightComponent->ambient);
 				modelShader->setVec3("dirLight.diffuse", lightObjectList[i]->lightComponent->diffuse);
