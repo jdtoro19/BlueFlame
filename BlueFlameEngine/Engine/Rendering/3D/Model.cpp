@@ -16,7 +16,7 @@ Model::~Model()
 {
 }
 
-void Model::Update() {
+void Model::Update(const float deltaTime) {
 
 }
 

@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Core\Timer.cpp" />
     <ClCompile Include="Engine\Graphics\stb_image.cpp" />
     <ClCompile Include="Game\DefaultScene.cpp" />
     <ClCompile Include="Engine\Rendering\3D\Cube.cpp" />
@@ -37,6 +38,7 @@
     <ClCompile Include="Engine\Rendering\3D\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Core\Timer.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelComponent.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelMesh.h" />
     <ClInclude Include="Game\DefaultScene.h" />

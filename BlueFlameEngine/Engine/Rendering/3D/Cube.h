@@ -12,7 +12,7 @@ namespace ENGINE {
 		Cube();
 		~Cube();
 
-		void Update();
+		void Update(const float deltaTime);
 		void Render(Shader* shader);
 
 		RenderComponent* renderComponent;

@@ -10,7 +10,7 @@ DefaultScene::~DefaultScene()
 {
 }
 
-void DefaultScene::Update()
+void DefaultScene::Update(const float deltaTime)
 {
 
 }

@@ -135,7 +135,11 @@ bool GameObject::GetIsModel() {
 	return isModel;
 }
 
-void GameObject::Update()
+void GameObject::Rotate(float angle, glm::vec3 rot) {
+	modelMatrix = glm::rotate(modelMatrix, angle, rot);
+}
+
+void GameObject::Update(const float deltaTime)
 {
 }
 

@@ -15,7 +15,7 @@ namespace ENGINE {
 		Model(std::string path);
 		~Model();
 
-		void Update();
+		void Update(const float deltaTime);
 		void Render(Shader* shader);
 
 		ModelComponent* model;

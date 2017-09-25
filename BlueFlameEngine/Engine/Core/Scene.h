@@ -14,7 +14,7 @@ namespace ENGINE {
 	public:
 		Scene() {};
 		~Scene() {};
-		virtual void Update() {};
+		virtual void Update(const float deltaTime) {};
 		virtual void Render() {};
 		virtual void HandleEvents(SDL_Event events) {};
 		virtual void AddObject(GameObject* c) { objectList.push_back(c); };

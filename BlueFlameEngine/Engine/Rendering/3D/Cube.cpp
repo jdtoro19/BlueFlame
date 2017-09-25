@@ -12,7 +12,7 @@ Cube::~Cube() {
 
 }
 
-void Cube::Update() {
+void Cube::Update(const float deltaTime) {
 
 }
 

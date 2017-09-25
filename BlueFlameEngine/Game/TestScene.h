@@ -17,7 +17,7 @@ namespace GAME {
 		TestScene();
 		~TestScene();
 
-		void Update();
+		void Update(const float deltaTime);
 		void Render();
 		void HandleEvents(SDL_Event events);
 
@@ -28,6 +28,10 @@ namespace GAME {
 		Light* dirLight;
 
 		Model* model;
+
+		float moveSpeed = 1;
+
+		float deltaTime;
 	};
 }
 #endif

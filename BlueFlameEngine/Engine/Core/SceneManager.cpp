@@ -1,4 +1,5 @@
 #include "SceneManager.h"
+#include "Timer.h"
 
 using namespace ENGINE;
 
@@ -28,8 +29,8 @@ bool SceneManager::IsQuit() {
 	return quit;
 }
 
-void SceneManager::Update() {
-	currentScene->Update();
+void SceneManager::Update(const float deltaTime) {
+	currentScene->Update(deltaTime);
 }
 
 void SceneManager::Render() {

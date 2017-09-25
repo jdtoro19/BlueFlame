@@ -13,7 +13,7 @@ namespace GAME {
 		DefaultScene();
 		~DefaultScene();
 
-		void Update();
+		void Update(const float deltaTime);
 		void Render();
 		void HandleEvents(SDL_Event events);
 

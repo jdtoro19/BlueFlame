@@ -23,7 +23,7 @@ namespace ENGINE {
 
 		bool Initialize();
 		void Run();
-		void Update();
+		void Update(const float deltaTime);
 		void Render();
 		void Draw();
 

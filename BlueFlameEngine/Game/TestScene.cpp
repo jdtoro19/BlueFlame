@@ -29,17 +29,22 @@ TestScene::~TestScene()
 {
 }
 
-void TestScene::Update() 
+void TestScene::Update(const float deltaTime)
 {
+	//Code to make the model spin
+	//model->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), model->GetWorldRotationAngle() + deltaTime);
+
+	this->deltaTime = deltaTime;
+
 	if (objectList.size() != NULL) {
 		for (size_t i = 0; i < objectList.size(); ++i) {
-			objectList.at(i)->Update();
+			objectList.at(i)->Update(deltaTime);
 		}
 	}
 
 	if (lightObjectList.size() != NULL) {
 		for (size_t i = 0; i < lightObjectList.size(); ++i) {
-			lightObjectList.at(i)->Update();
+			lightObjectList.at(i)->Update(deltaTime);
 		}
 	}
 }
@@ -56,45 +61,45 @@ void TestScene::HandleEvents(SDL_Event events)
 	// CUBE 1
 	// Movement
 	if (state[SDL_SCANCODE_W]) {
-		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, 0.005f, 0.0f));
+		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, moveSpeed * deltaTime, 0.0f));
 	}
 	if (state[SDL_SCANCODE_S]) {
-		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, -0.005f, 0.0f));
+		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, -moveSpeed * deltaTime, 0.0f));
 	}
 	if (state[SDL_SCANCODE_D]) {
-		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.005f, 0.0f, 0.0f));
+		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(moveSpeed * deltaTime, 0.0f, 0.0f));
 	}
 	if (state[SDL_SCANCODE_A]) {
-		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(-0.005f, 0.0f, 0.0f));
+		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(-moveSpeed * deltaTime, 0.0f, 0.0f));
 	}
 	// Rotation
 	if (state[SDL_SCANCODE_E]) {
-		cube->SetWorldRotation(glm::vec3(0.0f, 0.0f, 1.0f), cube->GetWorldRotationAngle() - 0.005f);
+		cube->SetWorldRotation(glm::vec3(0.0f, 0.0f, 1.0f), cube->GetWorldRotationAngle() - moveSpeed * deltaTime);
 	}
 	if (state[SDL_SCANCODE_Q]) {
-		cube->SetWorldRotation(glm::vec3(0.0f, 0.0f, 1.0f), cube->GetWorldRotationAngle() + 0.005f);
+		cube->SetWorldRotation(glm::vec3(0.0f, 0.0f, 1.0f), cube->GetWorldRotationAngle() + moveSpeed * deltaTime);
 	}
 
 	// Model
 	// Movement
 	if (state[SDL_SCANCODE_I]) {
-		model->SetWorldPosition(model->GetWorldPosition() + glm::vec3(0.0f, 0.0f, -0.005f));
+		model->SetWorldPosition(model->GetWorldPosition() + glm::vec3(0.0f, 0.0f, -moveSpeed * deltaTime));
 	}
 	if (state[SDL_SCANCODE_K]) {
-		model->SetWorldPosition(model->GetWorldPosition() + glm::vec3(0.0f, 0.0f, 0.005f));
+		model->SetWorldPosition(model->GetWorldPosition() + glm::vec3(0.0f, 0.0f, moveSpeed * deltaTime));
 	}
 	if (state[SDL_SCANCODE_L]) {
-		model->SetWorldPosition(model->GetWorldPosition() + glm::vec3(0.005f, 0.0f, 0.0f));
+		model->SetWorldPosition(model->GetWorldPosition() + glm::vec3(moveSpeed * deltaTime, 0.0f, 0.0f));
 	}
 	if (state[SDL_SCANCODE_J]) {
-		model->SetWorldPosition(model->GetWorldPosition() + glm::vec3(-0.005f, 0.0f, 0.0f));
+		model->SetWorldPosition(model->GetWorldPosition() + glm::vec3(-moveSpeed * deltaTime, 0.0f, 0.0f));
 	}
 	// Rotation
 	if (state[SDL_SCANCODE_O]) {
-		model->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), model->GetWorldRotationAngle() - 0.005f);
+		model->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), model->GetWorldRotationAngle() - moveSpeed * deltaTime);
 	}
 	if (state[SDL_SCANCODE_U]) {
-		model->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), model->GetWorldRotationAngle() + 0.005f);
+		model->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), model->GetWorldRotationAngle() + moveSpeed * deltaTime);
 	}
 }
 

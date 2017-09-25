@@ -23,7 +23,7 @@ namespace ENGINE {
 		void NextScene();
 		void PreviousScene();
 
-		void Update();
+		void Update(const float deltaTime);
 		void Render();
 		void HandleEvents();
 		bool IsQuit();

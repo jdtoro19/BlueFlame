@@ -65,8 +65,10 @@ namespace ENGINE {
 		void SetIsModel(bool b);
 		bool GetIsModel();
 
+		void Rotate(float angle, glm::vec3 rot);
+
 		glm::mat4 modelMatrix = glm::mat4(); 
-		virtual void Update();
+		virtual void Update(const float deltaTime);
 		virtual void Render(Shader* shader);
 	};
 

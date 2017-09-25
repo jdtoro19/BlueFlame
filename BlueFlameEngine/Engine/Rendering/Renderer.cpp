@@ -138,7 +138,7 @@ void Renderer::Render(Window* window, Camera* camera, glm::mat4 projection)
 			// final positions
 			if (objectList.at(i)->GetIsModel()) {
 				modelShader->Use();
-				modelShader->setMat4("model", worldModel * localModel);
+				modelShader->setMat4("model", worldModel * objectList.at(i)->modelMatrix * localModel);
 				objectList.at(i)->Render(modelShader);
 			}
 			else {

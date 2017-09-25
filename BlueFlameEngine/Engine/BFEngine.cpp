@@ -1,4 +1,5 @@
 #include "BFEngine.h"
+#include "Core\Timer.h"
 
 using namespace ENGINE;
 
@@ -47,17 +48,24 @@ bool BFEngine::Initialize() {
 void BFEngine::Run() {
 	isRunning = true;
 
+	Timer timer;
+	timer.Start();
+
 	while (isRunning) {
-		Update();
+		timer.UpdateFrameTicks();
+		Update(timer.GetDeltaTime());
 		Render();
 		if (sceneManager->IsQuit()) {
 			isRunning = false;
 		}
+		// Keeep the event loop running at a sane rate
+		SDL_Delay(timer.GetSleepTime(60.0f));
+		//std::cout << "main loop running at: " << (1.0f/timer.GetDeltaTime()) << " frames/sec" << std::endl;
 	}
 }
 
-void BFEngine::Update() {
-	sceneManager->Update();
+void BFEngine::Update(const float deltaTime) {
+	sceneManager->Update(deltaTime);
 	sceneManager->HandleEvents();
 }
 
