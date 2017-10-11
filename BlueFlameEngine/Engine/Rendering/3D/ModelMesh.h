@@ -29,6 +29,8 @@ struct VertexM {
 	glm::vec3 Tangent;
 	// bitangent
 	glm::vec3 Bitangent;
+	// colour
+	glm::vec3 Colour;
 };
 
 struct Texture {
@@ -52,6 +54,9 @@ public:
 		this->vertices = vertices;
 		this->indices = indices;
 		this->textures = textures;
+		for (int i = 0; i < vertices.size(); i++) {
+			this->vertices[i].Colour = glm::vec3(1.0f, 0.0f, 0.0f);
+		}
 
 		// now that we have all the required data, set the vertex buffers and its attribute pointers.
 		setupMesh();
@@ -136,6 +141,9 @@ private:
 		// vertex bitangent
 		glEnableVertexAttribArray(4);
 		glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(VertexM), (void*)offsetof(VertexM, Bitangent));
+		// vertex colour
+		glEnableVertexAttribArray(5);
+		glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(VertexM), (void*)offsetof(VertexM, Colour));
 
 		glBindVertexArray(0);
 	}
