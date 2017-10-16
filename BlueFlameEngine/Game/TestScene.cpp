@@ -16,6 +16,7 @@ TestScene::TestScene()
 	model = new Model("Resources/Models/miku/miku.obj");
 	model->SetWorldPosition(0.0f, 1.0f, 0.0f);
 	model->SetWorldScale(0.02f);
+	//model->SetIsModel(false);
 
 	dirLight = new Light(LightComponent::Light_Type::DIRECTIONAL);
 

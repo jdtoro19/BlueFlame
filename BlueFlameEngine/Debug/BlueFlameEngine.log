@@ -1,29 +1,5 @@
-﻿  Model.cpp
-  TestScene.cpp
-  SceneManager.cpp
-c:\users\juan toro\documents\blueflameengine\blueflame\blueflameengine\engine\core\scenemanager.cpp(50): warning C4244: '=': conversion from 'Sint32' to 'float', possible loss of data
-c:\users\juan toro\documents\blueflameengine\blueflame\blueflameengine\engine\core\scenemanager.cpp(51): warning C4244: '=': conversion from 'Sint32' to 'float', possible loss of data
-c:\users\juan toro\documents\blueflameengine\blueflame\blueflameengine\engine\core\scenemanager.cpp(58): warning C4244: '=': conversion from 'Sint32' to 'float', possible loss of data
-c:\users\juan toro\documents\blueflameengine\blueflame\blueflameengine\engine\core\scenemanager.cpp(59): warning C4244: '=': conversion from 'Sint32' to 'float', possible loss of data
-c:\users\juan toro\documents\blueflameengine\blueflame\blueflameengine\engine\core\scenemanager.cpp(64): warning C4244: 'argument': conversion from 'Sint32' to 'float', possible loss of data
-  InputComponent.cpp
-  Light.cpp
-  LightComponent.cpp
-c:\users\juan toro\documents\blueflameengine\blueflame\blueflameengine\engine\core\lightcomponent.cpp(48): warning C4305: '=': truncation from 'double' to 'float'
-c:\users\juan toro\documents\blueflameengine\blueflame\blueflameengine\engine\core\lightcomponent.cpp(49): warning C4305: '=': truncation from 'double' to 'float'
-  RenderComponent.cpp
-  GameObject.cpp
-  Renderer.cpp
-  Mesh.cpp
-  Window.cpp
-  Shader.cpp
-  BFEngine.cpp
-c:\users\juan toro\documents\blueflameengine\blueflame\blueflameengine\engine\bfengine.cpp(62): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
-  Cube.cpp
-  DefaultScene.cpp
-  stb_image.cpp
-  Timer.cpp
-  Generating Code...
+﻿  TestScene.cpp
+c:\users\juan toro\documents\blueflameengine\blueflame\blueflameengine\engine\rendering\3d\modelmesh.h(57): warning C4018: '<': signed/unsigned mismatch
 glew32.lib(glew32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
 glew32.lib(glew32.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
 glew32s.lib(glew.obj) : warning LNK4006: _glewGetErrorString@4 already defined in glew32.lib(glew32.dll); second definition ignored
