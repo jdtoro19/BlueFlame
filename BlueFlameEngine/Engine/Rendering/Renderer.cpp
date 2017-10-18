@@ -6,7 +6,7 @@ Renderer::Renderer()
 {
 	//Instantitate the Shader class, linking the vertex and fragment shaders together that we linked
 	shader = new Shader("Shaders/default.vs", "Shaders/default.fs");
-	lightShader = new Shader("Shaders/lamp.vs", "Shaders/lamp.fs");
+	//lightShader = new Shader("Shaders/lamp.vs", "Shaders/lamp.fs");
 	modelShader = new Shader("Shaders/model.vs", "Shaders/model.fs");
 }
 
@@ -15,6 +15,7 @@ Renderer::~Renderer()
 {
 	delete shader;
 	shader = nullptr;
+	modelShader = nullptr;
 }
 
 void Renderer::Render(Window* window, Camera* camera, glm::mat4 projection)
@@ -33,10 +34,10 @@ void Renderer::Render(Window* window, Camera* camera, glm::mat4 projection)
 	modelShader->setMat4("view", view);
 	modelShader->setVec3("viewPos", camera->Position);
 
-	lightShader->Use();
+	//lightShader->Use();
 
-	lightShader->setMat4("projection", projection);
-	lightShader->setMat4("view", view);
+	//lightShader->setMat4("projection", projection);
+	//lightShader->setMat4("view", view);
 
 	//Calling this function signals to OpenGL to switch to using this as the shader
 	//for vertex and fragment calculations

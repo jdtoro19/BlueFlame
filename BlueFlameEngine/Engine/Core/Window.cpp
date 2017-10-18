@@ -27,7 +27,7 @@ bool Window::Initialize(std::string windowName_, int width_, int height_) {
 	//SDL_CreateWindow(windowName, windowPosition_x,
 	//windowPosition_y, windowWidth, windowHeight, tpeOfWindow)
 	SDLWindow = SDL_CreateWindow(windowName_.c_str(), SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_GRABBED);
+		SDL_WINDOWPOS_CENTERED, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
 
 	//Check to make sure the window was created properly
 	if (!SDLWindow) {
