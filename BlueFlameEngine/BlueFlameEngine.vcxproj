@@ -39,6 +39,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\Timer.h" />
+    <ClInclude Include="Engine\Input\Input.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelComponent.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelMesh.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />
