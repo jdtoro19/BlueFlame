@@ -19,9 +19,7 @@ namespace ENGINE {
 		SceneManager(Window* w);
 		~SceneManager();
 
-		void SwitchScene(int);
-		void NextScene();
-		void PreviousScene();
+		void SwitchScene(Scene* scene);
 
 		void Update(const float deltaTime);
 		void Render();
@@ -36,7 +34,6 @@ namespace ENGINE {
 		Window* window;
 
 		Scene* currentScene;
-		std::map <int, Scene*> scenes;
 
 		bool quit = false;
 

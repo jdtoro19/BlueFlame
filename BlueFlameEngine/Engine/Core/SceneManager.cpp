@@ -9,16 +9,13 @@ SceneManager::SceneManager(Window* w)
 
 	renderer = new Renderer();
 
-	camera = new Camera(glm::vec3(-1.0f, 1.0f, 3.0f));
+	camera = new Camera();
+
+	SwitchScene(new TestScene());
 
 	SDL_CaptureMouse(SDL_TRUE);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_ShowCursor(SDL_DISABLE);
-
-	currentScene = new TestScene();
-
-	renderer->AddObject(currentScene->GetObjectList());
-	renderer->AddLightObject(currentScene->GetLightObjectList());
 }
 
 SceneManager::~SceneManager()
@@ -85,6 +82,26 @@ void SceneManager::HandleEvents() {
 		std::cout << "ESCAPE key event" << std::endl;
 		quit = true;
 	}
+
+	if (state[SDL_SCANCODE_Z]) {
+		SwitchScene(new DefaultScene());
+	}
+
+	if (state[SDL_SCANCODE_X]) {
+		SwitchScene(new TestScene());
+	}
+
 	currentScene->HandleEvents(events);
 }
 
+void SceneManager::SwitchScene(Scene* scene) {
+	renderer->ClearObjects();
+
+	currentScene = scene;
+
+	if (camera) delete camera;
+	camera = new Camera(currentScene->GetStartPos());
+
+	renderer->AddObject(currentScene->GetObjectList());
+	renderer->AddLightObject(currentScene->GetLightObjectList());
+}

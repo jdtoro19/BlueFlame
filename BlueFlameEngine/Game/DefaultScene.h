@@ -17,7 +17,6 @@ namespace GAME {
 		void Render();
 		void HandleEvents(SDL_Event events);
 
-	private:
 	};
 }
 #endif

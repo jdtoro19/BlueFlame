@@ -4,6 +4,8 @@ using namespace GAME;
 
 TestScene::TestScene()
 {
+	startPos = glm::vec3(-1.0f, 1.0f, 3.0f);
+
 	cube = new Cube();
 	cube->renderComponent->SetColour(0.31f, 0.5f, 1.0f);
 	cube->SetWorldPosition(-3.0f, 0.0f, 0.0f);
