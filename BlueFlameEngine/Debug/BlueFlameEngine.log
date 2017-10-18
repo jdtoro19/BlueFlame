@@ -1,1 +1,20 @@
-﻿  BlueFlameEngine.vcxproj -> C:\GameDev\Year3\Capstone\BlueFlame\Debug\BlueFlameEngine.lib
+﻿  PhysicsComponent.cpp
+c:\gamedev\year3\capstone\blueflame\blueflameengine\engine\rendering\3d\modelmesh.h(57): warning C4018: '<': signed/unsigned mismatch
+glew32.lib(glew32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
+glew32.lib(glew32.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+glew32s.lib(glew.obj) : warning LNK4006: _glewGetErrorString@4 already defined in glew32.lib(glew32.dll); second definition ignored
+glew32s.lib(glew.obj) : warning LNK4006: _glewGetExtension@4 already defined in glew32.lib(glew32.dll); second definition ignored
+glew32s.lib(glew.obj) : warning LNK4006: _glewGetString@4 already defined in glew32.lib(glew32.dll); second definition ignored
+glew32s.lib(glew.obj) : warning LNK4006: _glewInit@0 already defined in glew32.lib(glew32.dll); second definition ignored
+glew32s.lib(glew.obj) : warning LNK4006: _glewIsSupported@4 already defined in glew32.lib(glew32.dll); second definition ignored
+glew32s.lib(glew.obj) : warning LNK4006: _wglewGetExtension@4 already defined in glew32.lib(glew32.dll); second definition ignored
+glew32s.lib(glew.obj) : warning LNK4006: _wglewInit@0 already defined in glew32.lib(glew32.dll); second definition ignored
+glew32s.lib(glew.obj) : warning LNK4006: _wglewIsSupported@4 already defined in glew32.lib(glew32.dll); second definition ignored
+opengl32.lib(OPENGL32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
+opengl32.lib(OPENGL32.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+assimp-vc140-mt.lib(assimp-vc140-mt.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
+assimp-vc140-mt.lib(assimp-vc140-mt.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
+Model.obj : warning LNK4006: "public: enum aiReturn __thiscall aiMaterial::GetTexture(enum aiTextureType,unsigned int,struct aiString *,enum aiTextureMapping *,unsigned int *,float *,enum aiTextureOp *,enum aiTextureMapMode *)const " (?GetTexture@aiMaterial@@QBE?AW4aiReturn@@W4aiTextureType@@IPAUaiString@@PAW4aiTextureMapping@@PAIPAMPAW4aiTextureOp@@PAW4aiTextureMapMode@@@Z) already defined in assimp-vc140-mt.lib(assimp-vc140-mt.dll); second definition ignored
+Model.obj : warning LNK4006: "public: unsigned int __thiscall aiMaterial::GetTextureCount(enum aiTextureType)const " (?GetTextureCount@aiMaterial@@QBEIW4aiTextureType@@@Z) already defined in assimp-vc140-mt.lib(assimp-vc140-mt.dll); second definition ignored
+Model.obj : warning LNK4006: "public: struct aiScene const * __thiscall Assimp::Importer::ReadFile(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,unsigned int)" (?ReadFile@Importer@Assimp@@QAEPBUaiScene@@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@I@Z) already defined in assimp-vc140-mt.lib(assimp-vc140-mt.dll); second definition ignored
+  BlueFlameEngine.vcxproj -> C:\GameDev\Year3\Capstone\BlueFlame\Debug\BlueFlameEngine.lib

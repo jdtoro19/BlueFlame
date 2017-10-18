@@ -5,6 +5,7 @@ using namespace ENGINE;
 RenderComponent::RenderComponent() : mesh(nullptr)
 {
 	colour = glm::vec3(0.5f, 0.5f, 0.5f);
+	renderType = NONE;
 }
 RenderComponent::~RenderComponent()
 {

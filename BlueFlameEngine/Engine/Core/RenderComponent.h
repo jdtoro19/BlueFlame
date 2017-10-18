@@ -23,6 +23,8 @@ namespace ENGINE {
 		void Update();
 		void Render(Shader* shader);
 
+		std::vector<Vertex> getVertexList() { return vertexList; }
+
 	private:
 		Vertex v;
 		std::vector<Vertex> vertexList;
