@@ -19,7 +19,7 @@ Renderer::~Renderer()
 
 void Renderer::Render(Window* window, Camera* camera, glm::mat4 projection)
 {
-	projection = glm::perspective(glm::radians(camera->Zoom), 1280.0f / 720.0f, 0.1f, 100.0f);
+	projection = glm::perspective(glm::radians(camera->Zoom), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 100.0f);
 
 	glClearColor(0.05f, 0.05f, 0.05f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -74,6 +74,7 @@ void Renderer::Render(Window* window, Camera* camera, glm::mat4 projection)
 				modelShader->setVec3("dirLight.diffuse", lightObjectList[i]->lightComponent->diffuse);
 				modelShader->setVec3("dirLight.specular", lightObjectList[i]->lightComponent->specular);
 			}
+			/*
 			else if (lightObjectList[i]->lightComponent->GetLightType() == LightComponent::Light_Type::POINTLIGHT) {
 				// point light 
 				shader->setVec3("pointLights[0].position", lightObjectList[i]->GetWorldPosition());
@@ -84,6 +85,7 @@ void Renderer::Render(Window* window, Camera* camera, glm::mat4 projection)
 				shader->setFloat("pointLights[0].linear", lightObjectList[i]->lightComponent->linear);
 				shader->setFloat("pointLights[0].quadratic", lightObjectList[i]->lightComponent->quadratic);
 			}
+			*/
 		}
 	}	
 	

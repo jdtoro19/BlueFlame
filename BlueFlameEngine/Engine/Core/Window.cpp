@@ -27,7 +27,7 @@ bool Window::Initialize(std::string windowName_, int width_, int height_) {
 	//SDL_CreateWindow(windowName, windowPosition_x,
 	//windowPosition_y, windowWidth, windowHeight, tpeOfWindow)
 	SDLWindow = SDL_CreateWindow(windowName_.c_str(), SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED, width_, height_, SDL_WINDOW_OPENGL);
+		SDL_WINDOWPOS_CENTERED, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_INPUT_GRABBED);
 
 	//Check to make sure the window was created properly
 	if (!SDLWindow) {
@@ -99,8 +99,13 @@ int Window::GetHeight() const {
 }
 
 void Window::SetWindowSize(const int width_, const int height_) {
-	height = width_;
-	width = height_;
+	width = width_;
+	height = height_;
+}
+
+void Window::ToggleFullScreen() {
+	isFullScreen = !isFullScreen;
+	SDL_SetWindowFullscreen(SDLWindow, (isFullScreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_SHOWN));
 }
 
 void Window::GetInstalledOpenGLInfo() {

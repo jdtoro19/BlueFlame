@@ -14,10 +14,6 @@ SceneManager::SceneManager(Window* w)
 	camera = new Camera();
 
 	SwitchScene(new DefaultScene());
-
-	SDL_CaptureMouse(SDL_TRUE);
-	SDL_SetRelativeMouseMode(SDL_TRUE);
-	SDL_ShowCursor(SDL_DISABLE);
 }
 
 SceneManager::~SceneManager()
@@ -62,6 +58,20 @@ void SceneManager::HandleEvents() {
 		if (events.type == SDL_MOUSEWHEEL) {
 			camera->ProcessMouseScroll(events.wheel.y);
 		}
+
+		if (events.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+			OnResize(events.window.data1, events.window.data2);
+		}
+
+		if (events.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
+			SDL_CaptureMouse(SDL_FALSE);
+			SDL_SetRelativeMouseMode(SDL_FALSE);
+		}
+
+		if (events.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
+			SDL_CaptureMouse(SDL_TRUE);
+			SDL_SetRelativeMouseMode(SDL_TRUE);
+		}
 	}
 
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
@@ -80,6 +90,10 @@ void SceneManager::HandleEvents() {
 		camera->ProcessKeyboard(LEFT, 0.005f);
 	}
 
+	if (state[SDL_SCANCODE_V]) {
+		window->ToggleFullScreen();
+	}
+
 	if (state[SDL_SCANCODE_ESCAPE]) {
 		std::cout << "ESCAPE key event" << std::endl;
 		quit = true;
@@ -92,9 +106,14 @@ void SceneManager::SwitchScene(Scene* scene) {
 
 	currentScene = scene;
 
-	if (camera) delete camera;
-	camera = new Camera(currentScene->GetStartPos());
-
 	renderer->AddObject(currentScene->GetObjectList());
 	renderer->AddLightObject(currentScene->GetLightObjectList());
+
+	if (camera) delete camera;
+	camera = new Camera(currentScene->GetStartPos());	
+}
+
+void SceneManager::OnResize(int w, int h) {
+	window->SetWindowSize(w, h);
+	glViewport(0, 0, window->GetWidth(), window->GetHeight());
 }

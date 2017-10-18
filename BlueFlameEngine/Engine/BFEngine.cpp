@@ -59,7 +59,7 @@ void BFEngine::Run() {
 			isRunning = false;
 		}
 		// Keeep the event loop running at a sane rate
-		SDL_Delay(timer.GetSleepTime(60.0f));
+		SDL_Delay(timer.GetSleepTime(144.0f));
 		//std::cout << "main loop running at: " << (1.0f/timer.GetDeltaTime()) << " frames/sec" << std::endl;
 	}
 }

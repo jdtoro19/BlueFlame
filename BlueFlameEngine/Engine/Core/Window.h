@@ -28,6 +28,8 @@ public:
 
 	void SetWindowSize(const int Width_, const int Height_);
 
+	void ToggleFullScreen();
+
 	void GetInstalledOpenGLInfo();
 
 private:
@@ -39,6 +41,8 @@ private:
 	
 	int width;
 	int height;
+
+	bool isFullScreen = false;
 };
 
 #endif
