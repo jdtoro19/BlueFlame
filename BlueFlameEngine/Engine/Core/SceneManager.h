@@ -6,11 +6,6 @@
 #include "Scene.h"
 #include <map>
 
-#include "../../Game/DefaultScene.h"
-#include "../../Game/TestScene.h"
-
-using namespace GAME;
-
 namespace ENGINE {
 
 	class SceneManager

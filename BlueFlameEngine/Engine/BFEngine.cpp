@@ -76,3 +76,7 @@ void BFEngine::Render() {
 void BFEngine::Draw() {
 
 }
+
+SceneManager* BFEngine::GetSceneManager() {
+	return sceneManager;
+}

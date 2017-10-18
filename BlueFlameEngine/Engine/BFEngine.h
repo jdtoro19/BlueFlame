@@ -20,6 +20,8 @@ namespace ENGINE {
 		static BFEngine* GetInstance();
 
 		static void TerminateGame();
+		
+		SceneManager* GetSceneManager();
 
 		bool Initialize();
 		void Run();

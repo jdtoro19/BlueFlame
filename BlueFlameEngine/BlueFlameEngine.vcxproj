@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Core\DefaultScene.cpp" />
     <ClCompile Include="Engine\Core\Timer.cpp" />
     <ClCompile Include="Engine\Graphics\stb_image.cpp" />
     <ClCompile Include="Engine\Rendering\3D\Cube.cpp" />
@@ -33,11 +34,10 @@
     <ClCompile Include="Engine\Core\Light.cpp" />
     <ClCompile Include="Engine\Core\InputComponent.cpp" />
     <ClCompile Include="Engine\Core\SceneManager.cpp" />
-    <ClCompile Include="Game\DefaultScene.cpp" />
-    <ClCompile Include="Game\TestScene.cpp" />
     <ClCompile Include="Engine\Rendering\3D\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Core\DefaultScene.h" />
     <ClInclude Include="Engine\Core\Timer.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelComponent.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelMesh.h" />
@@ -56,8 +56,6 @@
     <ClInclude Include="Engine\Core\Light.h" />
     <ClInclude Include="Engine\Core\InputComponent.h" />
     <ClInclude Include="Engine\Core\SceneManager.h" />
-    <ClInclude Include="Game\DefaultScene.h" />
-    <ClInclude Include="Game\TestScene.h" />
     <ClInclude Include="Engine\Rendering\3D\Model.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

@@ -104,5 +104,10 @@ void TestScene::HandleEvents(SDL_Event events)
 	if (state[SDL_SCANCODE_U]) {
 		model->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), model->GetWorldRotationAngle() + moveSpeed * deltaTime);
 	}
+
+	// Reload Scene
+	if (state[SDL_SCANCODE_Z]) {
+		BFEngine::GetInstance()->GetSceneManager()->SwitchScene(new TestScene());
+	}
 }
 

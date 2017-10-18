@@ -15,7 +15,7 @@ bool Window::Initialize(std::string windowName_, int width_, int height_) {
 
 	//Initialize SDL and check the initialize process
 	//You will use SDL in the steps to come, so make sure it works properly now!
-	if (SDL_Init(SDL_INIT_VIDEO) > 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) > 0) {
 		std::cout << "Failed to init SDL!" << std::endl;
 		return false;
 	}

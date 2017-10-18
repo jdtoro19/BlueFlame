@@ -1,11 +1,13 @@
 #ifndef TESTSCENE_H
 #define TESTSCENE_H
 
-#include "../Engine/Core/Scene.h"
+#include <BlueFlameEngine\Engine\BFEngine.h>
 
-#include "../Engine/Core/Light.h" 
-#include "../Engine/Rendering/3D/Cube.h" 
-#include "../Engine/Rendering/3D/Model.h"
+#include <BlueFlameEngine\Engine\Core\Scene.h>
+
+#include <BlueFlameEngine\Engine\Core\Light.h>
+#include <BlueFlameEngine\Engine\Rendering\3D\Cube.h> 
+#include <BlueFlameEngine\Engine\Rendering\3D\Model.h> 
 
 using namespace ENGINE;
 

@@ -1,11 +1,9 @@
 #ifndef DEFAULTSCENE_H
 #define DEFAULTSCENE_H
 
-#include "../Engine/Core/Scene.h"
+#include "Scene.h"
 
-using namespace ENGINE;
-
-namespace GAME {
+namespace ENGINE {
 
 	class DefaultScene : public Scene
 	{

@@ -1,6 +1,6 @@
 #include "DefaultScene.h"
 
-using namespace GAME;
+using namespace ENGINE;
 
 DefaultScene::DefaultScene()
 {
