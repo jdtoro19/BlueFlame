@@ -38,6 +38,7 @@
     <ClCompile Include="Engine\Rendering\3D\Model.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Controls\InputControls.h" />
     <ClInclude Include="Engine\Core\Timer.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelComponent.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelMesh.h" />
