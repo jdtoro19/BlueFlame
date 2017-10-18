@@ -4,6 +4,7 @@
 #include <memory>
 #include "Core/Window.h"
 #include "Core/SceneManager.h"
+#include "InputHandling\InputHandler.h"
 
 namespace ENGINE {
 
@@ -20,6 +21,8 @@ namespace ENGINE {
 		static BFEngine* GetInstance();
 
 		static void TerminateGame();
+		
+		SceneManager* GetSceneManager();
 
 		bool Initialize();
 		void Run();

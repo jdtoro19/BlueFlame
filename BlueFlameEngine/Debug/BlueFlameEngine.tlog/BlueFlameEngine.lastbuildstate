@@ -1,2 +1,6 @@
 #TargetFrameworkVersion=v4.0:PlatformToolSet=v140:EnableManagedIncrementalBuild=false:VCToolArchitecture=Native32Bit:WindowsTargetPlatformVersion=8.1
-Debug|Win32|C:\Users\Juan Toro\Documents\BlueFlameEngine\BlueFlame\|
+<<<<<<< HEAD
+Debug|Win32|D:\BlueFlame\BlueFlame\|
+=======
+Debug|Win32|C:\Users\Juan Toro\Documents\BlueFlame\|
+>>>>>>> origin/master

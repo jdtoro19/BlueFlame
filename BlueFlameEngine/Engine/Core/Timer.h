@@ -3,7 +3,7 @@
 
 #include <SDL\SDL.h>
 
-namespace GAME {
+namespace ENGINE {
 	class Timer {
 		private:
 			unsigned int prevTicks;

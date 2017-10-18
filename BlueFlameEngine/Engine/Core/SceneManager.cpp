@@ -1,6 +1,8 @@
 #include "SceneManager.h"
 #include "Timer.h"
 
+#include "DefaultScene.h"
+
 using namespace ENGINE;
 
 SceneManager::SceneManager(Window* w)
@@ -11,7 +13,7 @@ SceneManager::SceneManager(Window* w)
 
 	camera = new Camera();
 
-	SwitchScene(new TestScene());
+	SwitchScene(new DefaultScene());
 
 	SDL_CaptureMouse(SDL_TRUE);
 	SDL_SetRelativeMouseMode(SDL_TRUE);
@@ -82,15 +84,6 @@ void SceneManager::HandleEvents() {
 		std::cout << "ESCAPE key event" << std::endl;
 		quit = true;
 	}
-
-	if (state[SDL_SCANCODE_Z]) {
-		SwitchScene(new DefaultScene());
-	}
-
-	if (state[SDL_SCANCODE_X]) {
-		SwitchScene(new TestScene());
-	}
-
 	currentScene->HandleEvents(events);
 }
 

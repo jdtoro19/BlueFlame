@@ -1,2 +1,9 @@
-﻿  TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlameEngine\BlueFlame\Debug\TestGame.exe
-  TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlameEngine\BlueFlame\Debug\TestGame.pdb (Partial PDB)
+<<<<<<< HEAD
+﻿  TestGame.vcxproj -> D:\BlueFlame\BlueFlame\Debug\TestGame.exe
+  TestGame.vcxproj -> D:\BlueFlame\BlueFlame\Debug\TestGame.pdb (Partial PDB)
+=======
+﻿  Main.cpp
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\rendering\3d\modelmesh.h(57): warning C4018: '<': signed/unsigned mismatch
+  TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.exe
+  TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.pdb (Partial PDB)
+>>>>>>> origin/master

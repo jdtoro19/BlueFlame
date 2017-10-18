@@ -1,6 +1,6 @@
 #include "Timer.h"
 
-using namespace GAME;
+using namespace ENGINE;
 
 Timer::Timer():prevTicks(0),currTicks(0) {}
 

@@ -1,6 +1,7 @@
 #include "BFEngine.h"
 #include "Core\Timer.h"
 
+
 using namespace ENGINE;
 
 //Initialize static variables
@@ -42,6 +43,10 @@ bool BFEngine::Initialize() {
 
 	sceneManager = new SceneManager(window);
 
+	//joystick checks
+	InputHandler::GetInstance()->InitControllers();
+	//std::cout << InputHandler::GetInstance()->jCheck() << std::endl;
+
 	return true;
 }
 
@@ -75,4 +80,8 @@ void BFEngine::Render() {
 
 void BFEngine::Draw() {
 
+}
+
+SceneManager* BFEngine::GetSceneManager() {
+	return sceneManager;
 }
