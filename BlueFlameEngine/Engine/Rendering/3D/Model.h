@@ -4,6 +4,7 @@
 #include "../../Core/GameObject.h"
 #include "../../Graphics/Shader.h"
 #include "ModelComponent.h"
+#include "../../Math/CollisionComponent.h"
 #include <iostream>
 
 namespace ENGINE {
@@ -19,6 +20,8 @@ namespace ENGINE {
 		void Render(Shader* shader);
 
 		ModelComponent* model;
+		CollisionComponent* collisionComponent;
+
 	};
 }
 
