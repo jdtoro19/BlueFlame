@@ -50,6 +50,13 @@ void TestScene::Update(const float deltaTime)
 			lightObjectList.at(i)->Update(deltaTime);
 		}
 	}
+
+	if (Physics::isColliding(*cube->collisionComponent, *model->collisionComponent)) {
+		std::cout << "isColliding" << std::endl;
+	}
+	else {
+		std::cout << "not" << std::endl;
+	}
 }
 
 void TestScene::Render() 

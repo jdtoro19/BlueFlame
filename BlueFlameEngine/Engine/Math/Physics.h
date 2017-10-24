@@ -2,14 +2,15 @@
 #define PHYSICS_H
 
 #include "PhysicsComponent.h"
+#include "CollisionComponent.h"
 
 namespace ENGINE {
 	class Physics {
 	private:
-		Physics() {};
-		~Physics() {};
+		Physics();
+		~Physics();
 	public:
-		static bool isColliding(PhysicsComponent obj1, PhysicsComponent obj2);
+		static bool isColliding(CollisionComponent obj1, CollisionComponent obj2);
 		static void Collide(PhysicsComponent obj1, PhysicsComponent obj2);
 	};
 }

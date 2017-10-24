@@ -54,7 +54,7 @@ public:
 		this->vertices = vertices;
 		this->indices = indices;
 		this->textures = textures;
-		for (int i = 0; i < vertices.size(); i++) {
+		for (unsigned int i = 0; i < vertices.size(); i++) {
 			this->vertices[i].Colour = glm::vec3(1.0f, 0.0f, 0.0f);
 		}
 

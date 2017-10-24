@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Math\CollisionComponent.cpp" />
     <ClCompile Include="Engine\Math\Physics.cpp" />
     <ClCompile Include="Engine\Math\PhysicsComponent.cpp" />
     <ClCompile Include="Engine\Core\Timer.cpp" />
@@ -41,6 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Math\Box.h" />
+    <ClInclude Include="Engine\Math\CollisionComponent.h" />
     <ClInclude Include="Engine\Math\Physics.h" />
     <ClInclude Include="Engine\Math\PhysicsComponent.h" />
     <ClInclude Include="Engine\Core\Timer.h" />
