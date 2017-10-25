@@ -10,6 +10,8 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 
+#include "3D\Skybox.h"
+
 namespace ENGINE {
 
 	class Renderer
@@ -22,13 +24,18 @@ namespace ENGINE {
 		void AddObject(std::vector<GameObject*> list);
 		void ClearObjects();
 		void AddLightObject(std::vector<Light*> list);
+		void SetSkybox(Skybox* skybox);
 
 	private:
 		Shader* shader;
 		Shader* lightShader;
 		Shader* modelShader;
+		Shader* skyboxS;
 		std::vector<GameObject*> objectList;
 		std::vector<Light*> lightObjectList;
+
+		unsigned int VAO, VBO, textureID;
+		Skybox* skybox;
 	};
 }
 

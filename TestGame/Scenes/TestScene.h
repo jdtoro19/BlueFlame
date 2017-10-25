@@ -8,6 +8,8 @@
 #include <BlueFlameEngine\Engine\Core\Light.h>
 #include <BlueFlameEngine\Engine\Rendering\3D\Cube.h> 
 #include <BlueFlameEngine\Engine\Rendering\3D\Model.h> 
+#include <BlueFlameEngine\Engine\Rendering\3D\Skybox.h> 
+#include <BlueFlameEngine\Engine\Math\Physics.h>
 
 using namespace ENGINE;
 
@@ -30,6 +32,8 @@ namespace GAME {
 		Light* dirLight;
 
 		Model* model;
+
+		Skybox* skybox;
 
 		float moveSpeed = 1;
 

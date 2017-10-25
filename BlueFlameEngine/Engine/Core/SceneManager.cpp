@@ -117,3 +117,7 @@ void SceneManager::OnResize(int w, int h) {
 	window->SetWindowSize(w, h);
 	glViewport(0, 0, window->GetWidth(), window->GetHeight());
 }
+
+Renderer* SceneManager::GetRenderer() {
+	return renderer;
+}

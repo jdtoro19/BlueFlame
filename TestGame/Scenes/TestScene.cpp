@@ -22,6 +22,18 @@ TestScene::TestScene()
 
 	dirLight = new Light(LightComponent::Light_Type::DIRECTIONAL);
 
+	// SKYBOX
+	skybox = new Skybox();
+	std::vector<char*> faces;
+	faces.push_back("Resources/Textures/Skyboxes/right.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/left.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/top.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/bottom.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/back.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/front.jpg");
+	skybox->LoadTextures(faces);
+	BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->SetSkybox(skybox);
+
 	AddObject(cube);
 	AddObject(cube2);
 	AddObject(model);
@@ -49,6 +61,14 @@ void TestScene::Update(const float deltaTime)
 		for (size_t i = 0; i < lightObjectList.size(); ++i) {
 			lightObjectList.at(i)->Update(deltaTime);
 		}
+	}
+
+	// Test collisions
+	if (Physics::isColliding(*cube->collisionComponent, *model->collisionComponent)) {
+		std::cout << "IS COLLIDING" << std::endl;
+	}
+	else {
+		std::cout << "NOT COLLIDING" << std::endl;
 	}
 }
 

@@ -3,6 +3,7 @@
 
 #include "../../Core/GameObject.h"
 #include "../../Core/RenderComponent.h"
+#include "../../Math/CollisionComponent.h"
 #include "../../Graphics/Shader.h"
 
 namespace ENGINE {
@@ -16,6 +17,7 @@ namespace ENGINE {
 		void Render(Shader* shader);
 
 		RenderComponent* renderComponent;
+		CollisionComponent* collisionComponent;
 	};
 
 }

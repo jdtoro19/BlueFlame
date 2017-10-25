@@ -8,6 +8,7 @@ Renderer::Renderer()
 	shader = new Shader("Shaders/default.vs", "Shaders/default.fs");
 	//lightShader = new Shader("Shaders/lamp.vs", "Shaders/lamp.fs");
 	modelShader = new Shader("Shaders/model.vs", "Shaders/model.fs");
+	skyboxS = new Shader("Shaders/skybox.vs", "Shaders/skybox.fs");
 }
 
 
@@ -26,7 +27,6 @@ void Renderer::Render(Window* window, Camera* camera, glm::mat4 projection)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glm::mat4 view = camera->GetViewMatrix();
-
 	
 	modelShader->Use();
 
@@ -155,6 +155,22 @@ void Renderer::Render(Window* window, Camera* camera, glm::mat4 projection)
 		}
 	}
 
+	// Skybox
+	if (skybox != NULL) {
+		glDepthFunc(GL_LEQUAL);
+		skyboxS->Use();
+		skyboxS->setInt("skybox", 0);
+
+		view = glm::mat4(glm::mat3(camera->GetViewMatrix())); // remove translation from the view matrix
+
+		skyboxS->setMat4("view", view);
+		skyboxS->setMat4("projection", projection);
+
+		skybox->Render();
+
+		glDepthFunc(GL_LESS);
+	}
+
 	//Swap the buffers to show the back buffer that this frame was rendered on
 	SDL_GL_SwapWindow(window->GetWindow());
 }
@@ -170,4 +186,8 @@ void Renderer::ClearObjects() {
 
 void Renderer::AddLightObject(std::vector<Light*> list) {
 	lightObjectList = list;
+}
+
+void Renderer::SetSkybox(Skybox* skybox) {
+	this->skybox = skybox;
 }

@@ -22,6 +22,9 @@
     <ClCompile Include="Engine\Core\DefaultScene.cpp" />
     <ClCompile Include="Engine\Core\Timer.cpp" />
     <ClCompile Include="Engine\Graphics\stb_image.cpp" />
+    <ClCompile Include="Engine\Math\CollisionComponent.cpp" />
+    <ClCompile Include="Engine\Math\Physics.cpp" />
+    <ClCompile Include="Engine\Math\PhysicsComponent.cpp" />
     <ClCompile Include="Engine\Rendering\3D\Cube.cpp" />
     <ClCompile Include="Engine\BFEngine.cpp" />
     <ClCompile Include="Engine\Graphics\Shader.cpp" />
@@ -35,10 +38,15 @@
     <ClCompile Include="Engine\Core\InputComponent.cpp" />
     <ClCompile Include="Engine\Core\SceneManager.cpp" />
     <ClCompile Include="Engine\Rendering\3D\Model.cpp" />
+    <ClCompile Include="Engine\Rendering\3D\Skybox.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\DefaultScene.h" />
     <ClInclude Include="Engine\Core\Timer.h" />
+    <ClInclude Include="Engine\Math\Box.h" />
+    <ClInclude Include="Engine\Math\CollisionComponent.h" />
+    <ClInclude Include="Engine\Math\Physics.h" />
+    <ClInclude Include="Engine\Math\PhysicsComponent.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelComponent.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelMesh.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />
@@ -57,6 +65,7 @@
     <ClInclude Include="Engine\Core\InputComponent.h" />
     <ClInclude Include="Engine\Core\SceneManager.h" />
     <ClInclude Include="Engine\Rendering\3D\Model.h" />
+    <ClInclude Include="Engine\Rendering\3D\Skybox.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2613F258-6C1D-480C-B6D9-EF2C34E50DDA}</ProjectGuid>
@@ -123,7 +132,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2test.lib;glew32.lib;glew32s.lib;opengl32.lib;assimp-vc140-mt.lib;AssimpConverter.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2test.lib;SDL2_image.lib;glew32.lib;glew32s.lib;opengl32.lib;assimp-vc140-mt.lib;AssimpConverter.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

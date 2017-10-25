@@ -17,6 +17,8 @@ namespace ENGINE {
 		void SwitchScene(Scene* scene);
 
 		void OnResize(int w, int h);
+		
+		Renderer* GetRenderer();
 
 		void Update(const float deltaTime);
 		void Render();
