@@ -15,6 +15,12 @@ TestScene::TestScene()
 	cube2->renderComponent->SetColour(1.0f, 0.5f, 0.31f);
 	cube2->SetWorldPosition(-2.0f, 0.0f, 0.0f);
 
+	floor = new Cube();
+	floor->renderComponent->SetColour(0.3f, 0.3f, 0.3f);
+	floor->SetWorldPosition(0.0, -2.0f, 0.0f);
+	floor->SetWorldScale(20.0f, 1.0f, 20.0f);
+	floor->physicsComponent->setAcceleration(glm::vec3(0.0f, 0.0f, 0.0f));
+
 	model = new Model("Resources/Models/miku/miku.obj");
 	model->SetWorldPosition(0.0f, 1.0f, 0.0f);
 	model->SetWorldScale(0.02f);
@@ -24,6 +30,7 @@ TestScene::TestScene()
 
 	AddObject(cube);
 	AddObject(cube2);
+	AddObject(floor);
 	AddObject(model);
 	AddLightObject(dirLight);
 }
@@ -51,11 +58,12 @@ void TestScene::Update(const float deltaTime)
 		}
 	}
 
-	if (Physics::isColliding(*cube->collisionComponent, *model->collisionComponent)) {
-		std::cout << "isColliding" << std::endl;
+	if (Physics::isColliding(*cube->collisionComponent, *floor->collisionComponent)) {
+		Physics::Collide(*cube->physicsComponent, *floor->physicsComponent);
+		std::cout << "Hit the floor" << std::endl;
 	}
 	else {
-		std::cout << "not" << std::endl;
+		std::cout << "In da air" << std::endl;
 	}
 }
 
@@ -71,17 +79,23 @@ void TestScene::HandleEvents(SDL_Event events)
 	// CUBE 1
 	// Movement
 	if (state[SDL_SCANCODE_W]) {
-		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, moveSpeed * deltaTime, 0.0f));
+		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, moveSpeed * deltaTime, 0.0f));
+		cube->physicsComponent->setVelocity(glm::vec3(0.0f, 1.0f, 0.0f));
 	}
 	if (state[SDL_SCANCODE_S]) {
-		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, -moveSpeed * deltaTime, 0.0f));
+		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, -moveSpeed * deltaTime, 0.0f));
+		cube->physicsComponent->setVelocity(glm::vec3(0.0f, -1.0f, 0.0f));
 	}
 	if (state[SDL_SCANCODE_D]) {
-		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(moveSpeed * deltaTime, 0.0f, 0.0f));
+		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(moveSpeed * deltaTime, 0.0f, 0.0f));
+		cube->physicsComponent->setVelocity(glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 	if (state[SDL_SCANCODE_A]) {
-		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(-moveSpeed * deltaTime, 0.0f, 0.0f));
+		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(-moveSpeed * deltaTime, 0.0f, 0.0f));
+		cube->physicsComponent->setVelocity(glm::vec3(-1.0f, 0.0f, 0.0f));
 	}
+
+	
 	// Rotation
 	if (state[SDL_SCANCODE_E]) {
 		cube->SetWorldRotation(glm::vec3(0.0f, 0.0f, 1.0f), cube->GetWorldRotationAngle() - moveSpeed * deltaTime);

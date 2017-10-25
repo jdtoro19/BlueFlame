@@ -25,6 +25,7 @@ namespace GAME {
 	private:
 		Cube* cube;
 		Cube* cube2;
+		Cube* floor;
 
 		Light* dirLight;
 

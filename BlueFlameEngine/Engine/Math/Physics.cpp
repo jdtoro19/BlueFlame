@@ -17,5 +17,10 @@ bool Physics::isColliding(CollisionComponent obj1, CollisionComponent obj2) {
 }
 
 void Physics::Collide(PhysicsComponent obj1, PhysicsComponent obj2) {
-
+	if (obj1.getPhysicsType() == PhysicsComponent::Physics_Type::STATIC || obj2.getPhysicsType() == PhysicsComponent::Physics_Type::STATIC) {
+		obj1.setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
+		obj1.setAcceleration(glm::vec3(0.0f, 0.0f, 0.0f));
+		obj2.setVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
+		obj2.setAcceleration(glm::vec3(0.0f, 0.0f, 0.0f));
+	}
 }
