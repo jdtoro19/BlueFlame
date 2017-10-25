@@ -19,7 +19,15 @@ namespace ENGINE {
 		~PhysicsComponent();
 
 		void setPhysicsType(Physics_Type pt);
-		void Update();
+		PhysicsComponent::Physics_Type getPhysicsType();
+
+		void setVelocity(glm::vec3 vel);
+		void setPosition(glm::vec3 pos);
+		void setAcceleration(glm::vec3 accel);
+
+		glm::vec3 getPosition();
+
+		void Update(float deltaTime, glm::vec3 pos);
 		void Render();
 
 	private:
@@ -27,8 +35,6 @@ namespace ENGINE {
 		glm::vec3 velocity;
 		glm::vec3 acceleration;
 		Physics_Type physicsType;
-
-
 	};
 }
 

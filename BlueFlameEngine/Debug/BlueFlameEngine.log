@@ -1,5 +1,7 @@
-﻿  BFEngine.cpp
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\bfengine.cpp(62): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
+﻿  PhysicsComponent.cpp
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  Physics.cpp
 SDL2_image.lib(SDL2_image.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
 SDL2_image.lib(SDL2_image.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
 glew32.lib(glew32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
@@ -19,4 +21,4 @@ assimp-vc140-mt.lib(assimp-vc140-mt.dll) : warning LNK4221: This object file doe
 Model.obj : warning LNK4006: "public: enum aiReturn __thiscall aiMaterial::GetTexture(enum aiTextureType,unsigned int,struct aiString *,enum aiTextureMapping *,unsigned int *,float *,enum aiTextureOp *,enum aiTextureMapMode *)const " (?GetTexture@aiMaterial@@QBE?AW4aiReturn@@W4aiTextureType@@IPAUaiString@@PAW4aiTextureMapping@@PAIPAMPAW4aiTextureOp@@PAW4aiTextureMapMode@@@Z) already defined in assimp-vc140-mt.lib(assimp-vc140-mt.dll); second definition ignored
 Model.obj : warning LNK4006: "public: unsigned int __thiscall aiMaterial::GetTextureCount(enum aiTextureType)const " (?GetTextureCount@aiMaterial@@QBEIW4aiTextureType@@@Z) already defined in assimp-vc140-mt.lib(assimp-vc140-mt.dll); second definition ignored
 Model.obj : warning LNK4006: "public: struct aiScene const * __thiscall Assimp::Importer::ReadFile(class std::basic_string<char,struct std::char_traits<char>,class std::allocator<char> > const &,unsigned int)" (?ReadFile@Importer@Assimp@@QAEPBUaiScene@@ABV?$basic_string@DU?$char_traits@D@std@@V?$allocator@D@2@@std@@I@Z) already defined in assimp-vc140-mt.lib(assimp-vc140-mt.dll); second definition ignored
-  BlueFlameEngine.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\BlueFlameEngine.lib
+  BlueFlameEngine.vcxproj -> C:\GameDev\Year3\Capstone\BlueFlame\Debug\BlueFlameEngine.lib
