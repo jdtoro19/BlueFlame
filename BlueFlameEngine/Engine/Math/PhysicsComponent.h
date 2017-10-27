@@ -25,6 +25,16 @@ namespace ENGINE {
 		void setPosition(glm::vec3 pos);
 		void setAcceleration(glm::vec3 accel);
 
+		void MoveLeft(float speed);
+		void MoveRight(float speed);
+		void MoveForward(float speed);
+		void MoveBack(float speed);
+
+		void AddVelocity(glm::vec3 vel);
+
+		void Stop();
+		void Start();
+
 		glm::vec3 getPosition();
 
 		void Update(float deltaTime, glm::vec3 pos);
@@ -35,6 +45,8 @@ namespace ENGINE {
 		glm::vec3 velocity;
 		glm::vec3 acceleration;
 		Physics_Type physicsType;
+
+		bool isStopped;
 	};
 }
 

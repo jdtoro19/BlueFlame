@@ -12,12 +12,14 @@ CollisionComponent::~CollisionComponent() {
 	
 }
 
-void CollisionComponent::setCollisionType(Collision_Type ct, std::vector<ModelMesh> meshlist) {
+void CollisionComponent::CreateCollisionVolume(Collision_Type ct, std::vector<ModelMesh> meshlist) {
 	if (ct == SPHERE) {
 		boundingBox = nullptr;
+		collisionType = Collision_Type::SPHERE;
 	}
 	else if (ct == BOX) {
 		boundingBox = new Box();
+		collisionType = Collision_Type::BOX;
 		boundingBox->minX = meshlist[0].vertices[0].Position.x;
 		boundingBox->maxX = meshlist[0].vertices[0].Position.x;
 							
@@ -53,12 +55,14 @@ void CollisionComponent::setCollisionType(Collision_Type ct, std::vector<ModelMe
 	}
 }
 
-void CollisionComponent::setCollisionType(Collision_Type ct, std::vector<Vertex> vertexlist) {
+void CollisionComponent::CreateCollisionVolume(Collision_Type ct, std::vector<Vertex> vertexlist) {
 	if (ct == SPHERE) {
 		boundingBox = nullptr;
+		collisionType = Collision_Type::SPHERE;
 	}
 	else if (ct == BOX) {
 		boundingBox = new Box();
+		collisionType = Collision_Type::BOX;
 		boundingBox->minX = vertexlist[0].position.x;
 		boundingBox->maxX = vertexlist[0].position.x;
 							
@@ -90,6 +94,10 @@ void CollisionComponent::setCollisionType(Collision_Type ct, std::vector<Vertex>
 		boundingBox->setCentreFromPoints();
 		boundingBox->setDimensionsFromPoints();
 	}
+}
+
+CollisionComponent::Collision_Type CollisionComponent::GetCollisionType() {
+	return collisionType;
 }
 
 Box CollisionComponent::getBoundingBox() {

@@ -1,7 +1,6 @@
-﻿  PhysicsComponent.cpp
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  Physics.cpp
+﻿  Physics.cpp
+c:\gamedev\year3\capstone\blueflame\blueflameengine\engine\rendering\3d\modelmesh.h(57): warning C4018: '<': signed/unsigned mismatch
+c:\gamedev\year3\capstone\blueflame\blueflameengine\engine\math\physics.cpp(29): warning C4715: 'ENGINE::Physics::isColliding': not all control paths return a value
 SDL2_image.lib(SDL2_image.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
 SDL2_image.lib(SDL2_image.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
 glew32.lib(glew32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored

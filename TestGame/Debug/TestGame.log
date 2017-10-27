@@ -1,7 +1,2 @@
-﻿  Main.cpp
-c:\gamedev\year3\capstone\blueflame\blueflameengine\engine\rendering\3d\modelmesh.h(57): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  TestScene.cpp
-  TestGame.vcxproj -> C:\GameDev\Year3\Capstone\BlueFlame\Debug\TestGame.exe
+﻿  TestGame.vcxproj -> C:\GameDev\Year3\Capstone\BlueFlame\Debug\TestGame.exe
   TestGame.vcxproj -> C:\GameDev\Year3\Capstone\BlueFlame\Debug\TestGame.pdb (Partial PDB)

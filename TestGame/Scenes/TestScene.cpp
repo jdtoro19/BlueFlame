@@ -10,10 +10,17 @@ TestScene::TestScene()
 	cube->renderComponent->SetColour(0.31f, 0.5f, 1.0f);
 	cube->SetWorldPosition(-3.0f, 0.0f, 0.0f);
 	cube->SetWorldScale(0.5f, 0.5f, 0.5f);
+	cube->physicsComponent->setPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 
 	cube2 = new Cube();	
 	cube2->renderComponent->SetColour(1.0f, 0.5f, 0.31f);
 	cube2->SetWorldPosition(-2.0f, 0.0f, 0.0f);
+
+	floor = new Cube();
+	floor->renderComponent->SetColour(0.3f, 0.3f, 0.3f);
+	floor->SetWorldPosition(0.0f, -1.0f, 0.0f);
+	floor->SetWorldScale(20.0f, 1.0f, 20.0f);
+	floor->physicsComponent->setPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 
 	model = new Model("Resources/Models/miku/miku.obj");
 	model->SetWorldPosition(0.0f, 1.0f, 0.0f);
@@ -36,6 +43,7 @@ TestScene::TestScene()
 
 	AddObject(cube);
 	AddObject(cube2);
+	AddObject(floor);
 	AddObject(model);
 	AddLightObject(dirLight);
 }
@@ -64,11 +72,13 @@ void TestScene::Update(const float deltaTime)
 	}
 
 	// Test collisions
-	if (Physics::isColliding(*cube->collisionComponent, *model->collisionComponent)) {
+	if (Physics::isColliding(cube->collisionComponent, floor->collisionComponent)) {
 		std::cout << "IS COLLIDING" << std::endl;
+		Physics::Collide(cube->physicsComponent, floor->physicsComponent);
 	}
 	else {
 		std::cout << "NOT COLLIDING" << std::endl;
+
 	}
 }
 
@@ -83,11 +93,15 @@ void TestScene::HandleEvents(SDL_Event events)
 
 	// CUBE 1
 	// Movement
+	if (state[SDL_SCANCODE_SPACE]) {
+		cube->Jump(glm::vec3(0.0f, 2.0f, 0.0f));
+	}
 	if (state[SDL_SCANCODE_W]) {
-		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, moveSpeed * deltaTime, 0.0f));
+		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, 0.0f, -moveSpeed * deltaTime));
+		cube->physicsComponent->AddVelocity(glm::vec3(0.0f, 0.0f, -1.0f));
 	}
 	if (state[SDL_SCANCODE_S]) {
-		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, -moveSpeed * deltaTime, 0.0f));
+		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, 0.0f, moveSpeed * deltaTime));
 	}
 	if (state[SDL_SCANCODE_D]) {
 		cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(moveSpeed * deltaTime, 0.0f, 0.0f));

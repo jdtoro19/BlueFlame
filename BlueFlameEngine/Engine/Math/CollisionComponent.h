@@ -22,9 +22,9 @@ namespace ENGINE {
 		CollisionComponent();
 		~CollisionComponent();
 
-		void setCollisionType(Collision_Type ct, std::vector<Vertex> vertexlist);
-		void setCollisionType(Collision_Type ct, std::vector<ModelMesh> meshlist);
-		
+		void CreateCollisionVolume(Collision_Type ct, std::vector<Vertex> vertexlist);
+		void CreateCollisionVolume(Collision_Type ct, std::vector<ModelMesh> meshlist);
+		Collision_Type GetCollisionType();
 		Box getBoundingBox();
 
 		void setPadding(glm::vec3 _padding);
@@ -32,7 +32,7 @@ namespace ENGINE {
 		void Render();
 
 	private:
-		Collision_Type *collisionType;
+		Collision_Type collisionType;
 		Box *boundingBox;
 		glm::vec3 padding;
 	};

@@ -10,8 +10,8 @@ namespace ENGINE {
 		Physics();
 		~Physics();
 	public:
-		static bool isColliding(CollisionComponent obj1, CollisionComponent obj2);
-		static void Collide(PhysicsComponent obj1, PhysicsComponent obj2);
+		static bool isColliding(CollisionComponent *obj1, CollisionComponent *obj2);
+		static void Collide(PhysicsComponent *obj1, PhysicsComponent *obj2);
 	};
 }
 
