@@ -1,38 +1,30 @@
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\vc140.pdb
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\vc140.idb
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\componentmanager.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\cube.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\bfengine.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\shader.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\main.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\window.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\mesh.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\triangle.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\renderer.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\gameobject.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\rendercomponent.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\blueflameengine.pdb
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\blueflameengine.idb
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\mesh1.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\lightcomponent.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\light.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\inputcomponent.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\scenemanager.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\testscene.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\defaultscene.obj
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\debug\blueflameengine.lib
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\debug\blueflameengine.ilk
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\debug\blueflameengine.exe
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\debug\lnk{261daafd-8c7e-4fc7-8405-044523b507cf}.tmp
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\debug\blueflameengine.pdb
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\blueflameengine.tlog\blueflameengine.write.1u.tlog
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\blueflameengine.tlog\cl.command.1.tlog
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\blueflameengine.tlog\cl.read.1.tlog
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\blueflameengine.tlog\cl.write.1.tlog
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\blueflameengine.tlog\lib-link.read.1.tlog
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\blueflameengine.tlog\lib-link.write.1.tlog
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\blueflameengine.tlog\lib.command.1.tlog
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\blueflameengine.tlog\link.17944.delete.1.tlog
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\blueflameengine.tlog\link.command.1.tlog
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\blueflameengine.tlog\link.read.1.tlog
-c:\users\juan toro\documents\visual studio 2015\projects\blueflameengine\blueflameengine\debug\blueflameengine.tlog\link.write.1.tlog
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.pdb
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.idb
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\defaultscene.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\timer.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\stb_image.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\collisioncomponent.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\physics.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\physicscomponent.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\cube.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\bfengine.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\shader.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\window.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\mesh.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\renderer.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\gameobject.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\rendercomponent.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\lightcomponent.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\light.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\inputcomponent.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\scenemanager.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\model.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\skybox.obj
+c:\gamedev\year3\capstone\blueflame\debug\blueflameengine.lib
+c:\gamedev\year3\capstone\blueflame\debug\blueflameengine.pdb
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.tlog\cl.command.1.tlog
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.tlog\cl.read.1.tlog
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.tlog\cl.write.1.tlog
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.tlog\lib-link.read.1.tlog
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.tlog\lib-link.write.1.tlog
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.tlog\lib.command.1.tlog

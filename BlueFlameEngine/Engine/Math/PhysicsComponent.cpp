@@ -34,27 +34,15 @@ void PhysicsComponent::setAcceleration(glm::vec3 accel) {
 	acceleration = accel;
 }
 
-void PhysicsComponent::MoveLeft(float speed) {
-
-}
-
-void PhysicsComponent::MoveRight(float speed) {
-
-}
-
-void PhysicsComponent::MoveForward(float speed) {
-
-}
-
-void PhysicsComponent::MoveBack(float speed) {
-
-}
-
-void PhysicsComponent::AddVelocity(glm::vec3 vel) {
+void PhysicsComponent::SetVelocity(glm::vec3 vel) {
 	velocity = vel;
 }
 
-void PhysicsComponent::Stop() {
+void PhysicsComponent::SetMass(float _mass) {
+	mass = _mass;
+}
+
+void PhysicsComponent::Stop(glm::vec3 otherPos) {
 	isStopped = true;
 }
 
@@ -66,8 +54,15 @@ glm::vec3 PhysicsComponent::getPosition() {
 	return position;
 }
 
-void PhysicsComponent::Update(float deltaTime, glm::vec3 pos) {
-	position = pos;
+glm::vec3 PhysicsComponent::GetVelocity() {
+	return velocity;
+}
+
+float PhysicsComponent::GetMass() {
+	return mass;
+}
+
+void PhysicsComponent::Update(float deltaTime) {
 	if (physicsType == DYNAMIC) {
 		if (isStopped == false) {
 			velocity += acceleration * deltaTime;
