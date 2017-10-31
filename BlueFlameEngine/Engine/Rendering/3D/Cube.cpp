@@ -16,13 +16,11 @@ Cube::~Cube() {
 }
 
 void Cube::Jump(glm::vec3 vel) {
-	physicsComponent->Start();
-	physicsComponent->setVelocity(glm::vec3(vel));
+	physicsComponent->SetVelocity(glm::vec3(vel));
 }
 
 void Cube::AddVelocity(glm::vec3 vel) {
-	physicsComponent->Start();
-	physicsComponent->setVelocity(glm::vec3(vel));
+	physicsComponent->SetVelocity(glm::vec3(vel));
 }
 
 void Cube::Update(const float deltaTime) {

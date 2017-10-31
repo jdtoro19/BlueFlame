@@ -7,47 +7,124 @@ using namespace ENGINE;
 PhysicsComponent::PhysicsComponent() {
 	acceleration = glm::vec3(0.0f, -5.0f, 0.0f);
 	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	isStopped = false;
+	setPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
+	SetElasticity(PhysicsComponent::Elastic_Type::NORMAL_ELASTIC);
+	SetMaterialType(PhysicsComponent::Material_Type::NORMAL_MATERIAL);
 }
 
 PhysicsComponent::~PhysicsComponent() {
 
 }
 
-void PhysicsComponent::setPhysicsType(Physics_Type pt) {
-	physicsType = pt;
+void PhysicsComponent::Update(float deltaTime) {
+	if (physicsType == DYNAMIC) {
+		velocity += acceleration * deltaTime;
+		position += velocity * deltaTime + 1.0f / 2.0f * acceleration * deltaTime * deltaTime;
+	}
 }
 
-PhysicsComponent::Physics_Type PhysicsComponent::getPhysicsType() {
+void PhysicsComponent::Render() {
+
+}
+
+void PhysicsComponent::setPhysicsType(Physics_Type pt) {
+	physicsType = pt;
+
+	if (pt == PhysicsComponent::Physics_Type::STATIC) {
+		SetMass(0.0f);
+	}
+}
+
+void PhysicsComponent::SetElasticity(Elastic_Type et) {
+	if (et == PhysicsComponent::Elastic_Type::PERFECT_ELASTIC) {
+		restitution = 1.0f;
+	}
+	else if (et == PhysicsComponent::Elastic_Type::VERY_ELASTIC) {
+		restitution = 0.83f;
+	}
+	else if (et == PhysicsComponent::Elastic_Type::ELASTIC) {
+		restitution = 0.67f;
+	}
+	else if (et == PhysicsComponent::Elastic_Type::NORMAL_ELASTIC) {
+		restitution = 0.5f;
+	}
+	else if (et == PhysicsComponent::Elastic_Type::NON_ELASTIC) {
+		restitution = 0.33f;
+	}
+	else if (et == PhysicsComponent::Elastic_Type::VERY_NON_ELASTIC) {
+		restitution = 0.17f;
+	}
+	else if (et == PhysicsComponent::Elastic_Type::PERFECT_NON_ELASTIC) {
+		restitution = 0.0f;
+	}
+}
+
+void PhysicsComponent::SetMaterialType(Material_Type mt) {
+	if (mt == PhysicsComponent::Material_Type::PERFECT_SMOOTH) {
+		SetStaticFriction(0.0f);
+		SetKineticFriction(0.0f);
+	}
+	else if (mt == PhysicsComponent::Material_Type::VERY_SMOOTH) {
+		SetStaticFriction(0.075f);
+		SetKineticFriction(0.002f);
+	}
+	else if (mt == PhysicsComponent::Material_Type::SMOOTH) {
+		SetStaticFriction(0.2f);
+		SetKineticFriction(0.13f);
+	}
+	else if (mt == PhysicsComponent::Material_Type::NORMAL_MATERIAL) {
+		SetStaticFriction(0.33f);
+		SetKineticFriction(0.27f);
+	}
+	else if (mt == PhysicsComponent::Material_Type::ROUGH) {
+		SetStaticFriction(0.45f);
+		SetKineticFriction(0.39f);
+	}
+	else if (mt == PhysicsComponent::Material_Type::VERY_ROUGH) {
+		SetStaticFriction(0.58f);
+		SetKineticFriction(0.50f);
+	}
+	else if (mt == PhysicsComponent::Material_Type::PERFECT_ROUGH) {
+		SetStaticFriction(0.71f);
+		SetKineticFriction(0.71f);
+	}
+}
+
+PhysicsComponent::Physics_Type PhysicsComponent::GetPhysicsType() {
 	return physicsType;
 }
 
-void PhysicsComponent::setVelocity(glm::vec3 vel) {
-	velocity = vel;
-}
-
-void PhysicsComponent::setPosition(glm::vec3 pos) {
+void PhysicsComponent::SetPosition(glm::vec3 pos) {
 	position = pos;
-}
-
-void PhysicsComponent::setAcceleration(glm::vec3 accel) {
-	acceleration = accel;
 }
 
 void PhysicsComponent::SetVelocity(glm::vec3 vel) {
 	velocity = vel;
 }
 
+void PhysicsComponent::SetAcceleration(glm::vec3 accel) {
+	acceleration = accel;
+}
+
 void PhysicsComponent::SetMass(float _mass) {
 	mass = _mass;
+
+	if (_mass == 0)
+		invMass = 0;
+	else
+		invMass = 1 / _mass;
 }
 
-void PhysicsComponent::Stop(glm::vec3 otherPos) {
-	isStopped = true;
+void PhysicsComponent::SetRestitution(float _e) {
+	restitution = _e;
 }
 
-void PhysicsComponent::Start() {
-	isStopped = false;
+void PhysicsComponent::SetStaticFriction(float _u) {
+	staticFriction = _u;
+}
+
+void PhysicsComponent::SetKineticFriction(float _u) {
+	kineticFriction = _u;
 }
 
 glm::vec3 PhysicsComponent::getPosition() {
@@ -58,23 +135,26 @@ glm::vec3 PhysicsComponent::GetVelocity() {
 	return velocity;
 }
 
+glm::vec3 PhysicsComponent::GetAcceleration() {
+	return acceleration;
+}
+
 float PhysicsComponent::GetMass() {
 	return mass;
 }
 
-void PhysicsComponent::Update(float deltaTime) {
-	if (physicsType == DYNAMIC) {
-		if (isStopped == false) {
-			velocity += acceleration * deltaTime;
-			position += velocity * deltaTime + 1.0f / 2.0f * acceleration * deltaTime * deltaTime;
-		}
-		else if (isStopped == true) {
-			velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-			std::cout << "STOPPED" << std::endl;
-		}
-	}
+float PhysicsComponent::GetInverseMass() {
+	return invMass;
 }
 
-void PhysicsComponent::Render() {
+float PhysicsComponent::GetRestitution() {
+	return restitution;
+}
 
+float PhysicsComponent::GetStaticFriction() {
+	return staticFriction;
+}
+
+float PhysicsComponent::GetKineticFriction() {
+	return kineticFriction;
 }

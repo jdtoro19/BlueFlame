@@ -13,11 +13,13 @@ namespace ENGINE {
 		Physics();
 		~Physics();
 	public:
+
+		// Function returns true if both collision components are colliding
 		static bool isColliding(CollisionComponent *obj1, CollisionComponent *obj2);
-		static void Collide(PhysicsComponent *pc1, CollisionComponent *cc1, PhysicsComponent *pc2, CollisionComponent *cc2, float e);
+
+		// Function collides both objects and changes velocity, position, and acceleration depending on collision 
+		static void Collide(PhysicsComponent *pc1, CollisionComponent *cc1, PhysicsComponent *pc2, CollisionComponent *cc2);
 	};
-
-
 }
 
 #endif

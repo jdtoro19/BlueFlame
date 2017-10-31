@@ -29,6 +29,7 @@ namespace GAME {
 		Cube* cube;
 		Cube* cube2;
 		Cube* floor;
+		Cube* wall;
 
 		Light* dirLight;
 
