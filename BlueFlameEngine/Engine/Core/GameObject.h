@@ -1,9 +1,10 @@
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
+#include "../Graphics/Shader.h"
+#include "ResourceManager.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
-#include "../Graphics/Shader.h"
 
 namespace ENGINE {
 
@@ -22,7 +23,7 @@ namespace ENGINE {
 		glm::vec3 worldScale;
 		float worldRotationAngle;
 
-		bool isModel = false;
+		ResourceHandle<Shader> shader;
 
 	public:
 		GameObject();
@@ -62,12 +63,13 @@ namespace ENGINE {
 		// angle
 		virtual float GetWorldRotationAngle() const;
 
-		void SetIsModel(bool b);
-		bool GetIsModel();
+		ResourceHandle<Shader> GetShader();
+		void SetShader(ResourceHandle<Shader> shader);
 
 		void Rotate(float angle, glm::vec3 rot);
 
 		glm::mat4 modelMatrix = glm::mat4(); 
+
 		virtual void Update(const float deltaTime);
 		virtual void Render(Shader* shader);
 	};

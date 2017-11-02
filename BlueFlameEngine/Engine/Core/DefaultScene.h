@@ -11,8 +11,10 @@ namespace ENGINE {
 		DefaultScene();
 		~DefaultScene();
 
+		void Initialize();
 		void Update(const float deltaTime);
 		void Render();
+		void Draw();
 		void HandleEvents(SDL_Event events);
 
 	};

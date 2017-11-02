@@ -127,12 +127,12 @@ float GameObject::GetWorldRotationAngle() const
 	return worldRotationAngle;
 }
 
-void GameObject::SetIsModel(bool b)
-{
-	isModel = b;
+ResourceHandle<Shader> GameObject::GetShader() {
+	return shader;
 }
-bool GameObject::GetIsModel() {
-	return isModel;
+
+void GameObject::SetShader(ResourceHandle<Shader> shader) {
+	this->shader = shader;
 }
 
 void GameObject::Rotate(float angle, glm::vec3 rot) {

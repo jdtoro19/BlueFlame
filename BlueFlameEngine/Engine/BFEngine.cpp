@@ -1,5 +1,4 @@
 #include "BFEngine.h"
-#include "Core\Timer.h"
 
 using namespace ENGINE;
 
@@ -8,20 +7,23 @@ std::unique_ptr<BFEngine> BFEngine::BFEngineInstance(nullptr);
 Window* BFEngine::window(nullptr);
 
 //Initialize member variables
-BFEngine::BFEngine() : isRunning(false) {
+BFEngine::BFEngine() : isRunning(false), sceneManager(nullptr) {
 
 }
 
 BFEngine::~BFEngine() {
+
+	delete sceneManager;
+	sceneManager = nullptr;
+
 	TerminateGame();
 }
 
 void BFEngine::TerminateGame() {
-
 	exit(0);
 
 	window->Shutdown();
-	window = nullptr;
+	window = nullptr;	
 
 	SDL_Quit();
 }
@@ -39,8 +41,9 @@ bool BFEngine::Initialize() {
 	window = new Window();
 	//Iniitalize the window with the window name and size
 	window->Initialize("Blue Flame Engine", 1280, 720);
-
-	sceneManager = new SceneManager(window);
+	InputHandler::GetInstance()->InitControllers();
+	sceneManager = new SceneManager();
+	sceneManager->Initialize(window);
 
 	return true;
 }
@@ -53,13 +56,17 @@ void BFEngine::Run() {
 
 	while (isRunning) {
 		timer.UpdateFrameTicks();
+
 		Update(timer.GetDeltaTime());
 		Render();
+		Draw();
+
 		if (sceneManager->IsQuit()) {
 			isRunning = false;
 		}
+
 		// Keeep the event loop running at a sane rate
-		SDL_Delay(timer.GetSleepTime(144.0f));
+		//SDL_Delay(timer.GetSleepTime(144));
 		//std::cout << "main loop running at: " << (1.0f/timer.GetDeltaTime()) << " frames/sec" << std::endl;
 	}
 }
@@ -74,7 +81,7 @@ void BFEngine::Render() {
 }
 
 void BFEngine::Draw() {
-
+	sceneManager->Draw();
 }
 
 SceneManager* BFEngine::GetSceneManager() {

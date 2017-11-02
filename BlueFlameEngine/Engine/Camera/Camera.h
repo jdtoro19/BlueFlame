@@ -42,6 +42,13 @@ namespace ENGINE {
 		float MouseSensitivity;
 		float Zoom;
 
+		float lastX = 1080.0f / 2.0f;
+		float lastY = 720.0f / 2.0f;
+		bool firstMouse = true;
+
+		float height = 720.0f;
+		float width = 640.0f;
+
 		// Constructor with vectors
 		Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVTY), Zoom(ZOOM)
 		{
@@ -82,8 +89,21 @@ namespace ENGINE {
 		}
 
 		// Processes input received from a mouse input system. Expects the offset value in both the x and y direction.
-		void ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch = true)
+		void ProcessMouseMovement(float eventX, float eventY, bool constrainPitch = true)
 		{
+			if (firstMouse)
+			{
+				lastX = eventX;
+				lastY = eventY;
+				firstMouse = false;
+			}
+
+			float xoffset = eventX - lastX;
+			float yoffset = lastY - eventY;
+
+			lastX = eventX;
+			lastY = eventY;
+
 			xoffset *= MouseSensitivity;
 			yoffset *= MouseSensitivity;
 

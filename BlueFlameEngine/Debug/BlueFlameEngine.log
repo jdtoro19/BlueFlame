@@ -1,5 +1,28 @@
-﻿  BFEngine.cpp
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\bfengine.cpp(62): warning C4244: 'argument': conversion from 'float' to 'const unsigned int', possible loss of data
+﻿  Skybox.cpp
+  Model.cpp
+  SceneManager.cpp
+  InputComponent.cpp
+  Light.cpp
+  LightComponent.cpp
+  RenderComponent.cpp
+  GameObject.cpp
+  Renderer.cpp
+  Mesh.cpp
+  Window.cpp
+  Shader.cpp
+  BFEngine.cpp
+  Cube.cpp
+  PhysicsComponent.cpp
+  Physics.cpp
+  CollisionComponent.cpp
+  InputHandler.cpp
+  stb_image.cpp
+  LogManager.cpp
+  Generating Code...
+  Compiling...
+  Timer.cpp
+  DefaultScene.cpp
+  Generating Code...
 SDL2_image.lib(SDL2_image.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
 SDL2_image.lib(SDL2_image.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
 glew32.lib(glew32.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored

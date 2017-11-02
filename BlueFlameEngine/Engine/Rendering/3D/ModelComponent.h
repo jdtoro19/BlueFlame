@@ -1,3 +1,4 @@
+#pragma once
 #ifndef MODELOMPONENET_H
 #define MODELCOMPOENET_H
 
@@ -32,6 +33,32 @@ public:
 	string directory;
 	bool gammaCorrection;
 
+	vector<aiNode*> ai_nodes;
+	vector<aiNodeAnim*> ai_nodes_anim;
+
+	void recursiveNodeProcess(aiNode* node)
+	{
+		ai_nodes.push_back(node);
+
+		for (unsigned int i = 0; i < node->mNumChildren; i++)
+			recursiveNodeProcess(node->mChildren[i]);
+	}
+	void AnimNodeProcess()
+	{
+		/*
+		if (m_scene->mNumAnimations == 0)
+			return;
+
+		for (int i = 0; i < m_scene->mAnimations[0]->mNumChannels; i++)
+			ai_nodes_anim.push_back(m_scene->mAnimations[0]->mChannels[i]);
+
+		//We only get data from the first mAnimation because 
+		//Assimp crushes all of the animation data into one
+		//large sequence of data known as mAnimation.
+		//Assimp does not support multiple mAnimations, surprisingly.
+		*/
+	}
+	
 	/*  Functions   */
 	// constructor, expects a filepath to a 3D model.
 	ModelComponent(string const &path, bool gamma = false) : gammaCorrection(gamma)
@@ -42,18 +69,27 @@ public:
 	// draws the model, and thus all its meshes
 	void Render(Shader* shader)
 	{
-		for (unsigned int i = 0; i < meshes.size(); i++)
-			meshes[i].Render(shader);
+		if (canRender) {
+			for (unsigned int i = 0; i < meshes.size(); i++) {
+				meshes[i].Render(shader);
+			}
+		}
+	}
+
+	void CanRender(bool b) {
+		canRender = b;
 	}
 
 private:
+	bool canRender = true;
+
 	/*  Functions   */
 	// loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
 	void loadModel(string const &path)
 	{
 		// read file via ASSIMP
 		Assimp::Importer importer;
-		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
+		const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals);
 		// check for errors
 		if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) // if is Not Zero
 		{
@@ -161,6 +197,67 @@ private:
 		// 4. height maps
 		std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_AMBIENT, "texture_height");
 		textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+
+		int WEIGHTS_PER_VERTEX = 4;
+		//DEFINING HOW MAY WEIGHTS PER VERTEX,
+		//BUT ALSO HOW MANY INDICES PER VERTEX.
+
+		//FIRST YOU HAVE TO CREATE TWO ARRAYS,
+		//THESE ARE WHERE WE'LL STORE ALL OF THE VERTEX DATA.
+		int boneArraysSize = mesh->mNumVertices*WEIGHTS_PER_VERTEX;
+		//THIS IS DONE BECAUSE EACH VERTEX HAS SPACE FOR 4 WEIGHTS AND 4 INDICES.
+		std::vector<int> boneIDs;
+		boneIDs.resize(boneArraysSize);
+		//HERE SPACE FOR 4 INDICES PER VERTEX IS BEING ALLOCATED
+		std::vector<float> boneWeights;
+		boneWeights.resize(boneArraysSize);
+		//HERE SPACE FOR 4 WEIGHTS PER VERTEX IS BEING ALLOCATED
+
+		for (unsigned int i = 0; i<mesh->mNumBones; i++)
+		{
+			//(above) NOTE THAT mesh IS NOT OF TYPE Mesh,
+			//IT IS A POINTER TO THE CURRENT MESH, OF TYPE aiMesh
+
+			aiBone* aiBone = mesh->mBones[i]; //CREATING A POINTER TO THE CURRENT BONE
+											  //IT'S IMPORTANT TO NOTE THAT i IS JUST THE ID OF THE CURRENT BONE.
+
+			for (unsigned int j = 0; j<aiBone->mNumWeights; j++)
+			{
+				aiVertexWeight weight = aiBone->mWeights[j];
+
+				//THIS WILL TELL US WHERE, IN OUR ARRAY, TO START READING THE VERTEX'S WEIGHTS
+				unsigned int vertexStart = weight.mVertexId * WEIGHTS_PER_VERTEX;
+
+				//HERE WE'LL ACTUALLY FILL THE ARRAYS, WITH BOTH INDICES AND WEIGHTS.
+				for (int k = 0; k<WEIGHTS_PER_VERTEX; k++)
+				{
+					if (boneWeights.at(vertexStart + k) == 0)
+					{
+						//(above) IF THE CURRENT BONE WEIGHT IS EQUAL TO 0,
+						//THEN IT HASN'T BEEN FILLED YET WITH AN ACTUAL WEIGHT.
+						boneWeights.at(vertexStart + k) = weight.mWeight;
+						boneIDs.at(vertexStart + k) = i; //REMEMBER THAT i IS JUST THE ID OF THE CURRENT BONE.
+
+														 //NOTE THAT data IS JUST AN ARRAY OF TYPE Vertex, WHERE I STORE ALL OF THE VERTEX INFO.
+														 //EACH Vertex CLASS HAS SPACE FOR A POSITION, A UV, A NORMAL, AND 4 INDICES, AND 4 WEIGHTS.
+														 //EACH Mesh IS THEN CREATED WITH THIS THIS ARRAY OF Vertex (THIS ARRAY BEING data).
+
+						vertices.at(weight.mVertexId).id[k] = i;
+						//SETTING THE ID
+						//AT k, OF
+						//THE VERTEX AT THIS WEIGHT'S ID,
+						//TO THE CURRENT BONE ID.
+
+						vertices.at(weight.mVertexId).weight[k] = weight.mWeight;
+						//SETTING THE WEIGHT
+						//AT k, OF
+						//THE VERTEX AT THIS WEIGHT'S ID,
+						//TO THIS WEIGHT'S WEIGHT.
+						break;
+					}
+				}
+			}
+		}
 
 		// return a mesh object created from the extracted mesh data
 		return ModelMesh(vertices, indices, textures);

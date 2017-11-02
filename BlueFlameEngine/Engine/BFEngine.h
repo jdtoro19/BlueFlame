@@ -4,6 +4,8 @@
 #include <memory>
 #include "Core/Window.h"
 #include "Core/SceneManager.h"
+#include "Core/Timer.h"
+#include "InputHandling/InputHandler.h"
 
 namespace ENGINE {
 
@@ -16,18 +18,18 @@ namespace ENGINE {
 		BFEngine& operator=(const BFEngine&) = delete;
 		BFEngine& operator=(BFEngine&&) = delete;
 
-		//Instance getter to allow them to get the current version of this class
+		// Get the current version of this class
 		static BFEngine* GetInstance();
-
-		static void TerminateGame();
-		
-		SceneManager* GetSceneManager();
 
 		bool Initialize();
 		void Run();
 		void Update(const float deltaTime);
 		void Render();
 		void Draw();
+
+		static void TerminateGame();
+
+		SceneManager* GetSceneManager();
 
 	private:
 		//Private Constructor and Destructor so no other class can create it

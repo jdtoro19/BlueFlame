@@ -2,29 +2,33 @@
 #ifndef SKYBOX_H
 #define SKYBOX_H
 
+#include "../../Core/GameObject.h"
 #include <glew/GL/glew.h>
+#include <SDL/SDL_image.h>
 #include <vector>
-#include <SDL\SDL_image.h>
 #include <iostream>
 
-class Skybox
-{
-public:
-	Skybox();
-	~Skybox();
+namespace ENGINE {
 
-	unsigned int LoadTextures(std::vector<char*> faces);
+	class Skybox : public GameObject
+	{
+	public:
+		Skybox();
+		~Skybox();
 
-	void Update(const float deltaTime);
-	void Render();
+		// Load the faces of the cubes by giving a vector of file paths
+		void LoadTextures(std::vector<char*> faces);
 
-private:	
-	void LoadMesh();
+		void Update(const float deltaTime);
+		void Render();
 
-	unsigned int VAO, VBO, textureID;
+	private:
+		void LoadMesh();
 
-	std::vector<char*> faces;
-};
+		unsigned int VAO, VBO, textureID;
+		std::vector<char*> faces;
+	};
 
+}
 #endif
 

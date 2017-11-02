@@ -25,12 +25,15 @@ namespace ENGINE {
 
 		std::vector<Vertex> getVertexList() { return vertexList; }
 
+		void CanRender(bool b) { canRender = b; }
+
 	private:
 		Vertex v;
 		std::vector<Vertex> vertexList;
 		glm::vec3 colour;
 		Render_Type renderType;
 		Mesh* mesh;
+		bool canRender = true;
 	};
 }
 #endif

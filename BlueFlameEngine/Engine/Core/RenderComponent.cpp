@@ -120,7 +120,9 @@ void RenderComponent::Update() {
 
 }
 void RenderComponent::Render(Shader* shader) {
-	if (mesh != nullptr) {
-		mesh->Render();
+	if (canRender) {
+		if (mesh != nullptr) {
+			mesh->Render();
+		}
 	}
 }

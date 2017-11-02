@@ -5,6 +5,7 @@
 #include "../../Graphics/Shader.h"
 #include "ModelComponent.h"
 #include "../../Math/CollisionComponent.h"
+#include "../../Math/PhysicsComponent.h"
 #include <iostream>
 
 namespace ENGINE {
@@ -21,6 +22,7 @@ namespace ENGINE {
 
 		ModelComponent* model;
 		CollisionComponent* collisionComponent;
+		PhysicsComponent* physicsComponent;
 	};
 }
 

@@ -7,18 +7,29 @@ Cube::Cube()
 	renderComponent = new RenderComponent();
 	renderComponent->SetRenderType(RenderComponent::Render_Type::CUBE);
 	collisionComponent = new CollisionComponent();
-	collisionComponent->setCollisionType(CollisionComponent::Collision_Type::BOX, renderComponent->getVertexList());
+	collisionComponent->CreateCollisionVolume(CollisionComponent::Collision_Type::BOX, renderComponent->getVertexList());
+	physicsComponent = new PhysicsComponent();
 }
 
 Cube::~Cube() {
 
 }
 
-void Cube::Update(const float deltaTime) {
-	collisionComponent->Update(GetWorldPosition(), GetWorldScale());
+void Cube::Jump(glm::vec3 vel) {
+	physicsComponent->SetVelocity(glm::vec3(vel));
 }
 
-void Cube::Render(Shader* shader) 
+void Cube::AddVelocity(glm::vec3 vel) {
+	physicsComponent->SetVelocity(glm::vec3(vel));
+}
+
+void Cube::Update(const float deltaTime) {
+	collisionComponent->Update(GetWorldPosition(), GetWorldScale());
+	physicsComponent->Update(deltaTime);
+	SetWorldPosition(physicsComponent->getPosition());
+}
+
+void Cube::Render(Shader* shader)
 {
 	renderComponent->Render(shader);
 }

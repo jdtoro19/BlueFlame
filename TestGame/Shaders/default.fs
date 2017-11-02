@@ -1,5 +1,6 @@
 #version 330 core
-out vec4 finalColour;
+layout (location = 0) out vec4 finalColour;
+layout (location = 1) out vec4 BrightColor;
 
 struct DirLight {
     vec3 direction;
@@ -40,15 +41,18 @@ in vec3 Normal;
 in vec3 Position;
 in vec2 TexCoords;
 in vec3 Colour;
+in vec4 we;
+in vec4 id;
 
-#define numPointLights 1
+#define numDirLights 10
+#define numPointLights 10
 
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_specular1;
 
 uniform vec3 viewPos;
-uniform DirLight dirLight;
-uniform PointLight pointLights[numPointLights];
+uniform DirLight dirLight[numDirLights];
+uniform PointLight pointLight[numPointLights];
 uniform SpotLight spotLight;
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir);
@@ -59,19 +63,30 @@ void main()
 {
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - Position);
+	vec3 result;
 
     // directional lighting
-    vec3 result = CalcDirLight(dirLight, norm, viewDir);
-    // point lights
-    //for(int i = 0; i < numPointLights; i++)
-    //    result += CalcPointLight(pointLights[i], norm, Position, viewDir);    
+    for(int i = 0; i < numDirLights; i++)
+        result += CalcDirLight(dirLight[i], norm, viewDir);
+	// point lights
+    for(int i = 0; i < numPointLights; i++)
+        result += CalcPointLight(pointLight[i], norm, Position, viewDir);     
     // spot light
     //result += CalcSpotLight(spotLight, norm, Position, viewDir);     
 
     //result *= texture(texture_diffuse1, TexCoords);
 
-    result *= Colour;   
+    result += Colour;   
+	
+	// check whether result is higher than some threshold, if so, output as bloom threshold color
+    float brightness = dot(result, vec3(0.2126, 0.7152, 0.0722));
+    if(brightness > 1.0)
+        BrightColor = vec4(result, 1.0);
+    else
+        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 
+	//vec4 weightsColor = vec4(we.xyz,1.0);
+	//finalColour = weightsColor;
     finalColour = vec4(result, 1.0);
 } 
 
@@ -105,9 +120,11 @@ vec3 CalcPointLight(PointLight light, vec3 normal, vec3 fragPos, vec3 viewDir)
     vec3 ambient = light.ambient;// * vec3(texture(material.diffuse, TexCoords));
     vec3 diffuse = light.diffuse * diff;// * vec3(texture(material.diffuse, TexCoords));
     vec3 specular = light.specular * spec;// * vec3(texture(material.specular, TexCoords));
-    ambient *= attenuation;
-    diffuse *= attenuation;
-    specular *= attenuation;
+    if(ambient != vec3(0,0,0)) {
+		ambient *= attenuation;
+		diffuse *= attenuation;
+		specular *= attenuation;
+	}
     return (ambient + diffuse + specular);
 }
 

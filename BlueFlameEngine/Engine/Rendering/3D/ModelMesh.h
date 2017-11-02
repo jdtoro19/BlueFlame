@@ -1,3 +1,4 @@
+#pragma once
 #ifndef MODELMESH_H
 #define MODELMESH_H
 
@@ -31,6 +32,9 @@ struct VertexM {
 	glm::vec3 Bitangent;
 	// colour
 	glm::vec3 Colour;
+
+	float weight[4];
+	unsigned int id[4];
 };
 
 struct Texture {
@@ -47,6 +51,9 @@ public:
 	vector<Texture> textures;
 	unsigned int VAO;
 
+	vector<float> vecWeights;
+	vector<GLint> vecIDs;
+
 	/*  Functions  */
 	// constructor
 	ModelMesh(vector<VertexM> vertices, vector<unsigned int> indices, vector<Texture> textures)
@@ -54,8 +61,8 @@ public:
 		this->vertices = vertices;
 		this->indices = indices;
 		this->textures = textures;
-		for (int i = 0; i < vertices.size(); i++) {
-			this->vertices[i].Colour = glm::vec3(1.0f, 0.0f, 0.0f);
+		for (unsigned int i = 0; i < vertices.size(); i++) {
+			this->vertices[i].Colour = glm::vec3(0.1f, 0.1f, 0.1f);
 		}
 
 		// now that we have all the required data, set the vertex buffers and its attribute pointers.
@@ -144,6 +151,12 @@ private:
 		// vertex colour
 		glEnableVertexAttribArray(5);
 		glVertexAttribPointer(5, 3, GL_FLOAT, GL_FALSE, sizeof(VertexM), (void*)offsetof(VertexM, Colour));
+		// vertex colour
+		glEnableVertexAttribArray(6);
+		glVertexAttribPointer(6, 4, GL_FLOAT, GL_FALSE, sizeof(VertexM), (void*)offsetof(VertexM, weight));
+		// vertex colour
+		glEnableVertexAttribArray(7);
+		glVertexAttribPointer(7, 4, GL_FLOAT, GL_FALSE, sizeof(VertexM), (void*)offsetof(VertexM, id));
 
 		glBindVertexArray(0);
 	}

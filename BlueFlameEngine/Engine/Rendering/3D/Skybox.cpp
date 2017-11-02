@@ -1,5 +1,7 @@
 #include "Skybox.h"
 
+using namespace ENGINE;
+
 Skybox::Skybox()
 {
 	LoadMesh();
@@ -76,16 +78,16 @@ void Skybox::LoadMesh() {
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 }
 
-unsigned int Skybox::LoadTextures(std::vector<char*> faces) {
+void Skybox::LoadTextures(std::vector<char*> faces) {
 
 	glGenTextures(1, &textureID);
 	glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
 
-	for (int i = 0; i < faces.size(); i++) {
+	for (unsigned int i = 0; i < faces.size(); i++) {
 		SDL_Surface *textureSurface = IMG_Load(faces[i]);
 		if (textureSurface == nullptr) {
 			std::cout << IMG_GetError() << std::endl;
-			return false;			
+			//return false;			
 		}
 		/// Are we using alpha? Not in jpeg but let's be careful
 		int mode = (textureSurface->format->BytesPerPixel == 4) ? GL_RGBA : GL_RGB;
@@ -102,6 +104,4 @@ unsigned int Skybox::LoadTextures(std::vector<char*> faces) {
 		/// Release the memory
 		SDL_FreeSurface(textureSurface); /// let go of the memory
 	}
-
-	return textureID;
 }

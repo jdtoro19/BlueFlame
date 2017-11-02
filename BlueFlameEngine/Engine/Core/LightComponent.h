@@ -1,3 +1,4 @@
+#pragma once
 #ifndef LIGHTCOMPONENT_H
 #define LIGHTCOMPONENT_H
 
@@ -22,6 +23,11 @@ namespace ENGINE {
 
 		void SetLightType(Light_Type lt);
 		LightComponent::Light_Type GetLightType();
+
+		void SetDirection(glm::vec3 direction);
+		glm::vec3 GetDirection() const;
+
+		void SetColour(glm::vec3 colour);
 
 		glm::vec3 direction;
 

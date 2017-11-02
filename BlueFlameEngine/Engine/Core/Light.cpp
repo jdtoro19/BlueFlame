@@ -5,15 +5,21 @@ using namespace ENGINE;
 Light::Light()
 {
 	lightComponent = new LightComponent();
-	isModel = true;
+	renderComponent = new RenderComponent();
+	
 }
 
 Light::Light(LightComponent::Light_Type lt)
 {
 	lightComponent = new LightComponent(lt);
-	isModel = true;
+	renderComponent = new RenderComponent();
 }
 
 Light::~Light()
 {
+}
+
+void Light::Render(Shader* shader)
+{
+	renderComponent->Render(shader);
 }

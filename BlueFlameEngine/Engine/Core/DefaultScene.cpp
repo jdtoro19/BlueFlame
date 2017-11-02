@@ -10,11 +10,19 @@ DefaultScene::~DefaultScene()
 {
 }
 
+void DefaultScene::Initialize() 
+{
+
+}
 void DefaultScene::Update(const float deltaTime)
 {
 
 }
 void DefaultScene::Render()
+{
+
+}
+void DefaultScene::Draw() 
 {
 
 }

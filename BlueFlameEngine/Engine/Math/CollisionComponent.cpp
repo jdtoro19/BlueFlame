@@ -5,107 +5,123 @@ using namespace ENGINE;
 #include <iostream>
 
 CollisionComponent::CollisionComponent() {
-	padding = glm::vec3(1.0f, 1.0f, 1.0f);
+	boxPadding = glm::vec3(1.0f, 1.0f, 1.0f);
 }
 
 CollisionComponent::~CollisionComponent() {
-	
-}
-
-void CollisionComponent::setCollisionType(Collision_Type ct, std::vector<ModelMesh> meshlist) {
-	if (ct == SPHERE) {
-		boundingBox = nullptr;
-	}
-	else if (ct == BOX) {
-		boundingBox = new Box();
-		boundingBox->minX = meshlist[0].vertices[0].Position.x;
-		boundingBox->maxX = meshlist[0].vertices[0].Position.x;
-							
-		boundingBox->minY = meshlist[0].vertices[0].Position.y;
-		boundingBox->maxY = meshlist[0].vertices[0].Position.y;
-							
-		boundingBox->minZ = meshlist[0].vertices[0].Position.z;
-		boundingBox->maxZ = meshlist[0].vertices[0].Position.z;
-
-		for (unsigned int i = 0; i < meshlist.size(); i++) {
-			for (unsigned int j = 0; j < meshlist[i].vertices.size(); j++) {
-				if (boundingBox->minX > meshlist[i].vertices[j].Position.x)
-					boundingBox->minX = meshlist[i].vertices[j].Position.x;
-										
-				if (boundingBox->maxX < meshlist[i].vertices[j].Position.x)
-					boundingBox->maxX = meshlist[i].vertices[j].Position.x;
-										
-				if (boundingBox->minY > meshlist[i].vertices[j].Position.y)
-					boundingBox->minY = meshlist[i].vertices[j].Position.y;
-										
-				if (boundingBox->maxY < meshlist[i].vertices[j].Position.y)
-					boundingBox->maxY = meshlist[i].vertices[j].Position.y;
-										
-				if (boundingBox->minZ > meshlist[i].vertices[j].Position.z)
-					boundingBox->minZ = meshlist[i].vertices[j].Position.z;
-										
-				if (boundingBox->maxZ < meshlist[i].vertices[j].Position.z)
-					boundingBox->maxZ = meshlist[i].vertices[j].Position.z;
-			}
-		}
-		boundingBox->setCentreFromPoints();
-		boundingBox->setDimensionsFromPoints();
-	}
-}
-
-void CollisionComponent::setCollisionType(Collision_Type ct, std::vector<Vertex> vertexlist) {
-	if (ct == SPHERE) {
-		boundingBox = nullptr;
-	}
-	else if (ct == BOX) {
-		boundingBox = new Box();
-		boundingBox->minX = vertexlist[0].position.x;
-		boundingBox->maxX = vertexlist[0].position.x;
-							
-		boundingBox->minY = vertexlist[0].position.y;
-		boundingBox->maxY = vertexlist[0].position.y;
-							
-		boundingBox->minZ = vertexlist[0].position.z;
-		boundingBox->maxZ = vertexlist[0].position.z;
-
-		for (unsigned int i = 0; i < vertexlist.size(); i++) {
-			if (boundingBox->minX > vertexlist[i].position.x)
-				boundingBox->minX = vertexlist[i].position.x;
-									
-			if (boundingBox->maxX < vertexlist[i].position.x)
-				boundingBox->maxX = vertexlist[i].position.x;
-									
-			if (boundingBox->minY > vertexlist[i].position.y)
-				boundingBox->minY = vertexlist[i].position.y;
-									
-			if (boundingBox->maxY < vertexlist[i].position.y)
-				boundingBox->maxY = vertexlist[i].position.y;
-									
-			if (boundingBox->minZ > vertexlist[i].position.z)
-				boundingBox->minZ = vertexlist[i].position.z;
-									
-			if (boundingBox->maxZ < vertexlist[i].position.z)
-				boundingBox->maxZ = vertexlist[i].position.z;
-		}
-		boundingBox->setCentreFromPoints();
-		boundingBox->setDimensionsFromPoints();
-	}
-}
-
-Box CollisionComponent::getBoundingBox() {
-	return *boundingBox;
-}
-
-void CollisionComponent::setPadding(glm::vec3 _padding) {
-	padding = _padding;
+	boundingBox = nullptr;
+	delete boundingBox;
 }
 
 void CollisionComponent::Update(glm::vec3 pos, glm::vec3 _scale) {
-	boundingBox->setCentre(pos);
-	boundingBox->setScale(glm::vec3(_scale.x * padding.x, _scale.y * padding.y, _scale.z * padding.z));
-	boundingBox->setPointsFromCentre();
+	boundingBox->SetCentre(pos);
+	boundingBox->SetScale(glm::vec3(_scale.x * boxPadding.x, _scale.y * boxPadding.y, _scale.z * boxPadding.z));
+	boundingBox->SetPointsFromCentre();
 }
 
 void CollisionComponent::Render() {
 
+}
+
+void CollisionComponent::CreateCollisionVolume(Collision_Type ct, std::vector<ModelMesh> meshlist) {
+	// ===== SPHERE (WORK IN PROGRESS) ==========
+	if (ct == SPHERE) {
+		boundingBox = nullptr;
+		collisionType = Collision_Type::SPHERE;
+	}
+
+	// Box min and max axis values being set
+	else if (ct == BOX) {
+		boundingBox = new Box();
+		collisionType = Collision_Type::BOX;
+		boundingBox->min.x = meshlist[0].vertices[0].Position.x;
+		boundingBox->max.x = meshlist[0].vertices[0].Position.x;
+							
+		boundingBox->min.y = meshlist[0].vertices[0].Position.y;
+		boundingBox->max.y = meshlist[0].vertices[0].Position.y;
+							
+		boundingBox->min.z = meshlist[0].vertices[0].Position.z;
+		boundingBox->max.z = meshlist[0].vertices[0].Position.z;
+
+		for (unsigned int i = 0; i < meshlist.size(); i++) {
+			for (unsigned int j = 0; j < meshlist[i].vertices.size(); j++) {
+				if (boundingBox->min.x > meshlist[i].vertices[j].Position.x)
+					boundingBox->min.x = meshlist[i].vertices[j].Position.x;
+										
+				if (boundingBox->max.x < meshlist[i].vertices[j].Position.x)
+					boundingBox->max.x = meshlist[i].vertices[j].Position.x;
+										
+				if (boundingBox->min.y > meshlist[i].vertices[j].Position.y)
+					boundingBox->min.y = meshlist[i].vertices[j].Position.y;
+										
+				if (boundingBox->max.y < meshlist[i].vertices[j].Position.y)
+					boundingBox->max.y = meshlist[i].vertices[j].Position.y;
+										
+				if (boundingBox->min.z > meshlist[i].vertices[j].Position.z)
+					boundingBox->min.z = meshlist[i].vertices[j].Position.z;
+										
+				if (boundingBox->max.z < meshlist[i].vertices[j].Position.z)
+					boundingBox->max.z = meshlist[i].vertices[j].Position.z;
+			}
+		}
+		// Box centre and dimensions being set
+		boundingBox->SetCentreFromPoints();
+		boundingBox->SetDimensionsFromPoints();
+	}
+}
+
+void CollisionComponent::CreateCollisionVolume(Collision_Type ct, std::vector<Vertex> vertexlist) {
+	// ===== SPHERE (WORK IN PROGRESS) ==========
+	if (ct == SPHERE) {
+		boundingBox = nullptr;
+		collisionType = Collision_Type::SPHERE;
+	}
+	// Box min and max axis values being set
+	else if (ct == BOX) {
+		boundingBox = new Box();
+		collisionType = Collision_Type::BOX;
+		boundingBox->min.x = vertexlist[0].position.x;
+		boundingBox->max.x = vertexlist[0].position.x;
+							
+		boundingBox->min.y = vertexlist[0].position.y;
+		boundingBox->max.y = vertexlist[0].position.y;
+							
+		boundingBox->min.z = vertexlist[0].position.z;
+		boundingBox->max.z = vertexlist[0].position.z;
+
+		for (unsigned int i = 0; i < vertexlist.size(); i++) {
+			if (boundingBox->min.x > vertexlist[i].position.x)
+				boundingBox->min.x = vertexlist[i].position.x;
+									
+			if (boundingBox->max.x < vertexlist[i].position.x)
+				boundingBox->max.x = vertexlist[i].position.x;
+									
+			if (boundingBox->min.y > vertexlist[i].position.y)
+				boundingBox->min.y = vertexlist[i].position.y;
+									
+			if (boundingBox->max.y < vertexlist[i].position.y)
+				boundingBox->max.y = vertexlist[i].position.y;
+									
+			if (boundingBox->min.z > vertexlist[i].position.z)
+				boundingBox->min.z = vertexlist[i].position.z;
+									
+			if (boundingBox->max.z < vertexlist[i].position.z)
+				boundingBox->max.z = vertexlist[i].position.z;
+		}
+		// Box centre and dimensions being set
+		boundingBox->SetCentreFromPoints();
+		boundingBox->SetDimensionsFromPoints();
+	}
+}
+
+CollisionComponent::Collision_Type CollisionComponent::GetCollisionType() {
+	return collisionType;
+}
+
+Box CollisionComponent::GetBoundingBox() {
+	return *boundingBox;
+}
+
+void CollisionComponent::SetBoxPadding(glm::vec3 _padding) {
+	boxPadding = _padding;
 }
