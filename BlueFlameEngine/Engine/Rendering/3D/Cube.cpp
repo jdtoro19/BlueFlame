@@ -24,9 +24,9 @@ void Cube::AddVelocity(glm::vec3 vel) {
 }
 
 void Cube::Update(const float deltaTime) {
-	collisionComponent->Update(GetWorldPosition(), GetWorldScale());
 	physicsComponent->Update(deltaTime);
-	SetWorldPosition(physicsComponent->getPosition());
+	SetWorldPosition(physicsComponent->GetPosition());
+	collisionComponent->Update(GetWorldPosition(), GetWorldScale());
 }
 
 void Cube::Render(Shader* shader)

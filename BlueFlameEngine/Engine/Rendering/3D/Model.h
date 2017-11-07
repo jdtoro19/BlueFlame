@@ -21,8 +21,8 @@ namespace ENGINE {
 		void Render(Shader* shader);
 
 		ModelComponent* model;
-		CollisionComponent* collisionComponent;
-		PhysicsComponent* physicsComponent;
+		//CollisionComponent* collisionComponent;
+		//PhysicsComponent* physicsComponent;
 	};
 }
 

@@ -63,7 +63,7 @@ namespace ENGINE {
 		void Render();
 
 		// Getters and setters for types used in collision calculation
-		void setPhysicsType(Physics_Type pt);
+		void SetPhysicsType(Physics_Type pt);
 		void SetElasticity(Elastic_Type et);
 		void SetMaterialType(Material_Type mt);
 
@@ -79,7 +79,7 @@ namespace ENGINE {
 		void SetStaticFriction(float _u);
 		void SetKineticFriction(float _u);
 
-		glm::vec3 getPosition();
+		glm::vec3 GetPosition();
 		glm::vec3 GetVelocity();
 		glm::vec3 GetAcceleration();
 
@@ -89,15 +89,23 @@ namespace ENGINE {
 		float GetStaticFriction();
 		float GetKineticFriction();
 
-	private:
+	//private:
 
 		// Values used in movement, and collision calculation
 		glm::vec3 position;
 		glm::vec3 velocity;
 		glm::vec3 acceleration;
+		glm::vec3 force;
 
+		float angularVelocity;
+		float torque;
+		float orientation;
+
+		float inertia;
+		float invInertia;
 		float mass;
 		float invMass;
+
 		float restitution;
 		float staticFriction;
 		float kineticFriction;

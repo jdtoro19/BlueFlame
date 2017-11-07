@@ -25,7 +25,7 @@
     <ClCompile Include="Engine\Graphics\stb_image.cpp" />
     <ClCompile Include="Engine\InputHandling\InputHandler.cpp" />
     <ClCompile Include="Engine\Math\CollisionComponent.cpp" />
-    <ClCompile Include="Engine\Math\Physics.cpp" />
+    <ClCompile Include="Engine\Math\PhysicsEngine.cpp" />
     <ClCompile Include="Engine\Math\PhysicsComponent.cpp" />
     <ClCompile Include="Engine\Rendering\3D\Cube.cpp" />
     <ClCompile Include="Engine\BFEngine.cpp" />
@@ -52,9 +52,10 @@
     <ClInclude Include="Engine\InputHandling\InputHandler.h" />
     <ClInclude Include="Engine\Math\Box.h" />
     <ClInclude Include="Engine\Math\CollisionComponent.h" />
-    <ClInclude Include="Engine\Math\IntersectData.h" />
-    <ClInclude Include="Engine\Math\Physics.h" />
+    <ClInclude Include="Engine\Math\ContactData.h" />
+    <ClInclude Include="Engine\Math\PhysicsEngine.h" />
     <ClInclude Include="Engine\Math\PhysicsComponent.h" />
+    <ClInclude Include="Engine\Math\Sphere.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelComponent.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelMesh.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />
@@ -78,19 +79,19 @@
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2613F258-6C1D-480C-B6D9-EF2C34E50DDA}</ProjectGuid>
     <RootNamespace>BlueFlameEngine</RootNamespace>
-    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <WindowsTargetPlatformVersion>10.0.15063.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v140</PlatformToolset>
+    <PlatformToolset>v141</PlatformToolset>
     <WholeProgramOptimization>true</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>

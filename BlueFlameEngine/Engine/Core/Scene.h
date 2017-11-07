@@ -7,6 +7,7 @@
 #include "GameObject.h"
 #include "Light.h"
 #include "../Camera/Camera.h"
+#include "../Math/PhysicsEngine.h"
 
 namespace ENGINE {
 
@@ -21,6 +22,7 @@ namespace ENGINE {
 		virtual void Draw() = 0;
 		virtual void HandleEvents(SDL_Event events) = 0;
 		virtual void AddObject(GameObject* c) { objectList.push_back(c); };
+		virtual void AddPhysicsObject(GameObject* c) { physicsObjectList.push_back(c); objectList.push_back(c); };
 		virtual void RemoveObject(GameObject* c) {};
 		virtual void AddLightObject(Light* c) { 
 			if (c->lightComponent->GetLightType() == LightComponent::Light_Type::DIRECTIONAL) {
@@ -34,6 +36,7 @@ namespace ENGINE {
 			}
 		};
 		virtual std::vector<GameObject*> GetObjectList() { return objectList; };
+		virtual std::vector<GameObject*> GetPhysicsObjectList() { return physicsObjectList; };
 		virtual std::vector<Light*> GetDirLightList() { return dirLightList; };
 		virtual std::vector<Light*> GetPointLightList() { return pointLightList; };
 		virtual std::vector<Light*> GetSpotLightList() { return spotLightList; };
@@ -41,6 +44,7 @@ namespace ENGINE {
 
 	protected:
 		std::vector<GameObject*> objectList;
+		std::vector<GameObject*> physicsObjectList;
 		std::vector<Light*> dirLightList;
 		std::vector<Light*> pointLightList;
 		std::vector<Light*> spotLightList;
@@ -49,6 +53,7 @@ namespace ENGINE {
 			new Camera(glm::vec3())
 		};
 		
+		PhysicsEngine *physicsEngine;
 	};
 }
 #endif
