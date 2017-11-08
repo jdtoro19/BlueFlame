@@ -10,7 +10,7 @@
 #include <BlueFlameEngine\Engine\Rendering\3D\Model.h> 
 #include <BlueFlameEngine\Engine\Rendering\3D\Skybox.h> 
 #include <BlueFlameEngine\Engine\Graphics\Shader.h> 
-#include <BlueFlameEngine\Engine\Math\Physics.h>
+#include <BlueFlameEngine\Engine\Math\PhysicsEngine.h>
 #include <BlueFlameEngine\Engine\InputHandling\InputHandler.h>
 
 using namespace ENGINE;

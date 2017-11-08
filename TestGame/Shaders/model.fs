@@ -1,6 +1,6 @@
 #version 330 core
 layout (location = 0) out vec4 FragColor;
-layout (location = 1) out vec4 BrightColor;
+//layout (location = 1) out vec4 BrightColor;
 
 struct DirLight {
     vec3 direction;
@@ -10,11 +10,11 @@ struct DirLight {
 };
 
 struct PointLight {
-    vec3 position;
-    
     float constant;
     float linear;
     float quadratic;
+	
+	vec3 position;
 	
     vec3 ambient;
     vec3 diffuse;
@@ -45,7 +45,7 @@ void main()
 {    
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - Position);
-    vec3 result;
+    vec3 result = vec3(0,0,0);
 
     for(int i = 0; i < numDirLights; i++)
         result += CalcDirLight(dirLight[i], norm, viewDir);
@@ -56,11 +56,11 @@ void main()
     //FragColor = vec4(Colour, 1.0);
 	
 	// check whether result is higher than some threshold, if so, output as bloom threshold color
-    float brightness = dot(result, vec3(0.2126, 0.7152, 0.0722));
-    if(brightness > 1.0)
-        BrightColor = vec4(result, 1.0);
-    else
-        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+    //float brightness = dot(result, vec3(0.2126, 0.7152, 0.0722));
+    //if(brightness > 1.0)
+    //    BrightColor = vec4(result, 1.0);
+    //else
+    //    BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 
     FragColor = vec4(result, 1.0);
     
@@ -69,7 +69,7 @@ void main()
 	//FragColor = weightsColor;
 	
 	// Display only textures
-    //FragColor = texture(texture_diffuse1, TexCoords);
+    //FragColor = texture(texture_diffuse1, Te//xCoords);
 }
 
 vec3 CalcDirLight(DirLight light, vec3 normal, vec3 viewDir)

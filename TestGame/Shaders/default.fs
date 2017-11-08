@@ -1,6 +1,6 @@
 #version 330 core
 layout (location = 0) out vec4 finalColour;
-layout (location = 1) out vec4 BrightColor;
+//layout (location = 1) out vec4 BrightColor;
 
 struct DirLight {
     vec3 direction;
@@ -11,11 +11,11 @@ struct DirLight {
 };
 
 struct PointLight {
-    vec3 position;
-    
-    float constant;
+	float constant;
     float linear;
     float quadratic;
+	
+	vec3 position;
 	
     vec3 ambient;
     vec3 diffuse;
@@ -23,14 +23,15 @@ struct PointLight {
 };
 
 struct SpotLight {
-    vec3 position;
-    vec3 direction;
     float cutOff;
     float outerCutOff;
   
     float constant;
     float linear;
     float quadratic;
+  
+	vec3 position;
+    vec3 direction;
   
     vec3 ambient;
     vec3 diffuse;
@@ -63,7 +64,7 @@ void main()
 {
     vec3 norm = normalize(Normal);
     vec3 viewDir = normalize(viewPos - Position);
-	vec3 result;
+	vec3 result = vec3(0,0,0);
 
     // directional lighting
     for(int i = 0; i < numDirLights; i++)
@@ -79,14 +80,15 @@ void main()
     result += Colour;   
 	
 	// check whether result is higher than some threshold, if so, output as bloom threshold color
-    float brightness = dot(result, vec3(0.2126, 0.7152, 0.0722));
-    if(brightness > 1.0)
-        BrightColor = vec4(result, 1.0);
-    else
-        BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
+    //float brightness = dot(result, vec3(0.2126, 0.7152, 0.0722));
+    //if(brightness > 1.0)
+    //    BrightColor = vec4(result, 1.0);
+    //else
+    //    BrightColor = vec4(0.0, 0.0, 0.0, 1.0);
 
 	//vec4 weightsColor = vec4(we.xyz,1.0);
 	//finalColour = weightsColor;
+	
     finalColour = vec4(result, 1.0);
 } 
 

@@ -28,7 +28,7 @@ public:
 
 	void SetWindowSize(const int Width_, const int Height_);
 
-	void ToggleFullScreen();
+	void SetFullScreen(bool setFullscreen);
 
 	void GetInstalledOpenGLInfo();
 

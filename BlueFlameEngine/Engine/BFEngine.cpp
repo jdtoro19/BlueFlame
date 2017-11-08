@@ -45,6 +45,8 @@ bool BFEngine::Initialize() {
 	sceneManager = new SceneManager();
 	sceneManager->Initialize(window);
 
+	setUpPlayers(); //i hope this works
+
 	return true;
 }
 
@@ -60,13 +62,13 @@ void BFEngine::Run() {
 		Update(timer.GetDeltaTime());
 		Render();
 		Draw();
-
+		
 		if (sceneManager->IsQuit()) {
 			isRunning = false;
 		}
 
 		// Keeep the event loop running at a sane rate
-		//SDL_Delay(timer.GetSleepTime(144));
+		SDL_Delay(timer.GetSleepTime(144));
 		//std::cout << "main loop running at: " << (1.0f/timer.GetDeltaTime()) << " frames/sec" << std::endl;
 	}
 }
@@ -86,4 +88,26 @@ void BFEngine::Draw() {
 
 SceneManager* BFEngine::GetSceneManager() {
 	return sceneManager;
+}
+
+void BFEngine::setUpPlayers() {
+	InputHandler::GetInstance()->InitControllers();
+	numPlayers = InputHandler::GetInstance()->jCheck();
+
+	if (numPlayers == 0) {
+		//no controllers attached, bypass this step
+		std::cout << "No controllers to set up " << std::endl;
+	}
+	else {
+		//iterate through the players and set them up
+		for (int i = 0; i < numPlayers; i++) {
+			//for (int i = numPlayers - 1; i > -1; i--) {
+			int temp = SDL_JoystickInstanceID(InputHandler::GetInstance()->joystick[i]); //dumb workaround
+			indexOfPlayer[i] = temp; //translates player X into joystick X
+			cout << "Setting up instance ID " << temp << endl;
+			players[temp] = PlayerController(InputHandler::GetInstance()->joystick[i], temp); //initial constructor
+			std::cout << "Successfully set up player " << i << std::endl;
+		}
+
+	}
 }

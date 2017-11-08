@@ -5,7 +5,9 @@
 #include "../../Core/RenderComponent.h"
 #include "../../Math/CollisionComponent.h"
 #include "../../Math/PhysicsComponent.h"
+#include "../../Math/PhysicsEngine.h"
 #include "../../Graphics/Shader.h"
+#include "Projectile.h"
 
 namespace ENGINE {
 
@@ -17,12 +19,12 @@ namespace ENGINE {
 		void Jump(glm::vec3 vel);
 		void AddVelocity(glm::vec3 vel);
 
+		void Fire();
+
 		void Update(const float deltaTime);
 		void Render(Shader* shader);
 
 		RenderComponent* renderComponent;
-		CollisionComponent* collisionComponent;
-		PhysicsComponent* physicsComponent;
 	};
 
 }

@@ -25,6 +25,7 @@ namespace ENGINE {
 		void SwitchScene(Scene* scene);
 		void OnResize(int w, int h);
 		void EnableSplitscreen(bool setSplitscreen);
+		void EnableFullscreen(bool setFullScreen);
 
 		Renderer* GetRenderer();
 

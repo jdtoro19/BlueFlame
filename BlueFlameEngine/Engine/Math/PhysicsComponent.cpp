@@ -5,9 +5,9 @@
 using namespace ENGINE;
 
 PhysicsComponent::PhysicsComponent() {
-	acceleration = glm::vec3(0.0f, -5.0f, 0.0f);
+	acceleration = glm::vec3(0.0f, 0.0f, 0.0f); 
 	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
-	setPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
+	SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	SetElasticity(PhysicsComponent::Elastic_Type::NORMAL_ELASTIC);
 	SetMaterialType(PhysicsComponent::Material_Type::NORMAL_MATERIAL);
 }
@@ -18,6 +18,9 @@ PhysicsComponent::~PhysicsComponent() {
 
 void PhysicsComponent::Update(float deltaTime) {
 	if (physicsType == DYNAMIC) {
+		if (deltaTime >= 1 / 144.0f)
+			deltaTime = 1/ 144.0f;
+
 		velocity += acceleration * deltaTime;
 		position += velocity * deltaTime + 1.0f / 2.0f * acceleration * deltaTime * deltaTime;
 	}
@@ -27,7 +30,7 @@ void PhysicsComponent::Render() {
 
 }
 
-void PhysicsComponent::setPhysicsType(Physics_Type pt) {
+void PhysicsComponent::SetPhysicsType(Physics_Type pt) {
 	physicsType = pt;
 
 	if (pt == PhysicsComponent::Physics_Type::STATIC) {
@@ -127,7 +130,7 @@ void PhysicsComponent::SetKineticFriction(float _u) {
 	kineticFriction = _u;
 }
 
-glm::vec3 PhysicsComponent::getPosition() {
+glm::vec3 PhysicsComponent::GetPosition() {
 	return position;
 }
 
@@ -157,4 +160,8 @@ float PhysicsComponent::GetStaticFriction() {
 
 float PhysicsComponent::GetKineticFriction() {
 	return kineticFriction;
+}
+
+void PhysicsComponent::SetDestructible(bool b) {
+	destructible = b;
 }

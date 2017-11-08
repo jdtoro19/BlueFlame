@@ -1,6 +1,7 @@
 #include "InputHandler.h"
 #include "SDL/SDL_gamecontroller.h"
 #include <iostream>
+#include <..\..\BlueFlameEngine\Engine\BFEngine.h>
 
 using namespace ENGINE;
 
@@ -75,3 +76,46 @@ bool InputHandler::areJoysticksLive() {
 	}
 }
 
+glm::vec3 InputHandler::playerMotion(int p) {
+	Sint32 x_move = SDL_JoystickGetAxis(BFEngine::GetInstance()->players[p].pStick, 0);
+	Sint32 y_move = SDL_JoystickGetAxis(BFEngine::GetInstance()->players[p].pStick, 1);
+
+	//tareing the joysticks
+
+	//if (x_move + InputHandler::GetInstance()->TareX[0])
+
+	x_move += BFEngine::GetInstance()->players[p].TareX;
+	y_move += BFEngine::GetInstance()->players[p].TareY;
+
+	float modifierX = 0;
+	float modifierY = 0;
+
+	Sint16 jStickMod = 1000;
+
+	if (x_move < 320 && x_move > -320) {
+		modifierX = 0;
+	}
+	else if (x_move >= 320) {
+
+		modifierX = x_move / jStickMod; //right
+	}
+	else if (x_move <= -320) {
+		modifierX = x_move / jStickMod; //left
+	}
+
+	if (y_move < 320 && y_move > -320) {
+		modifierY = 0;
+	}
+
+	else if (y_move >= 320) {
+		modifierY = y_move / jStickMod; //down
+	}
+	else if (y_move <= -320) {
+		modifierY = y_move / jStickMod; //up
+	}
+	//cout << x_move << " " << x_move / jStickMod << " " << y_move << " " << y_move / jStickMod << endl;
+	//std::cout << "ModX: " << modifierX << " ModY: " << modifierY << std::endl;
+
+	glm::vec3 returnDis = glm::vec3(modifierX, modifierY, 0);
+	return returnDis;
+}

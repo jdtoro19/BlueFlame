@@ -134,7 +134,7 @@ namespace ENGINE {
 				Zoom = 75.0f;
 		}
 
-	private:
+	//private:
 		// Calculates the front vector from the Camera's (updated) Eular Angles
 		void updateCameraVectors()
 		{
@@ -147,6 +147,16 @@ namespace ENGINE {
 			// Also re-calculate the Right and Up vector
 			Right = glm::normalize(glm::cross(Front, WorldUp));  // Normalize the vectors, because their length gets closer to 0 the more you look up or down which results in slower movement.
 			Up = glm::normalize(glm::cross(Right, Front));
+		}
+
+		void SetRotationY(float yaw) {
+			Yaw = yaw;
+			updateCameraVectors();
+		}
+
+		void SetRotationX(float pitch) {
+			Pitch = pitch;
+			updateCameraVectors();
 		}
 	};
 }

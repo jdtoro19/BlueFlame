@@ -118,9 +118,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Scenes\DemoScene.cpp" />
     <ClCompile Include="Scenes\TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Scenes\DemoScene.h" />
     <ClInclude Include="Scenes\TestScene.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

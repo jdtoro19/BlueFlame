@@ -6,6 +6,7 @@
 #include <memory>
 #include "SDL/SDL_gamecontroller.h"
 #include <vector>
+#include <glm\glm.hpp>
 
 namespace ENGINE {
 	class InputHandler {
@@ -24,6 +25,8 @@ namespace ENGINE {
 		Sint16 TareY[4];
 		bool areJoysticksLive();
 		bool upDown = false;
+		glm::vec3 playerMotion(int p);
+		
 
 	private:
 		int connectedControllers = 0;

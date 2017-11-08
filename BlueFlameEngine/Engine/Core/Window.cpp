@@ -103,8 +103,8 @@ void Window::SetWindowSize(const int width_, const int height_) {
 	height = height_;
 }
 
-void Window::ToggleFullScreen() {
-	isFullScreen = !isFullScreen;
+void Window::SetFullScreen(bool setFullscreen) {
+	isFullScreen = setFullscreen;
 	SDL_SetWindowFullscreen(SDLWindow, (isFullScreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_SHOWN));
 }
 

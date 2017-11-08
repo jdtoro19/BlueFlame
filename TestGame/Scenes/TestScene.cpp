@@ -95,7 +95,7 @@ void TestScene::Initialize()
 	cube->renderComponent->SetColour(0.0f, 0.0f, 1.0f);
 	cube->physicsComponent->SetPosition(glm::vec3(-1.0f, 0.0f, 0.0f));
 	cube->SetWorldScale(0.5f, 0.5f, 0.5f);
-	cube->physicsComponent->setPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
+	cube->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	cube->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_ELASTIC);
 	cube->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
 	cube->physicsComponent->SetMass(50.0f);
@@ -104,7 +104,7 @@ void TestScene::Initialize()
 	cube2->SetShader(defaultShaderHandle);
 	cube2->renderComponent->SetColour(1.0f, 0.0f, 0.0f);
 	cube2->physicsComponent->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-	cube2->physicsComponent->setPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
+	cube2->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	cube2->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_ELASTIC);
 	cube2->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
 	cube2->physicsComponent->SetMass(50.0f);
@@ -114,7 +114,7 @@ void TestScene::Initialize()
 	floor->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
 	floor->physicsComponent->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
 	floor->SetWorldScale(7.0f, 1.0f, 7.0f);
-	floor->physicsComponent->setPhysicsType(PhysicsComponent::Physics_Type::STATIC);
+	floor->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	floor->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
 	floor->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
 	floor->physicsComponent->SetMass(0.0f);
@@ -124,28 +124,27 @@ void TestScene::Initialize()
 	wall->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
 	wall->physicsComponent->SetPosition(glm::vec3(3.5f, 0.0f, 0.0f));
 	wall->SetWorldScale(1.0f, 2.0f, 7.0f);
-	wall->physicsComponent->setPhysicsType(PhysicsComponent::Physics_Type::STATIC);
+	wall->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	wall->physicsComponent->SetMass(0.0f);
 
 	model = new Model("Resources/Models/miku/miku.obj");
-	//model = new Model("Resources/Models/monster/Monster_1.dae");
 	model->SetShader(modelShaderHandle);
 	model->physicsComponent->SetPosition(glm::vec3(1.0f, 1.0f, 0.0f));
 	model->SetWorldScale(0.02f);
-	//model->SetWorldScale(0.5f);
-	//model->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), 80.0f);
-	model->physicsComponent->setPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
+	///model->SetWorldScale(0.5f);
+    ///model->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), 80.0f);
+	model->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	model->physicsComponent->SetMass(50.0f);
 
 	// Make skybox, load its textures, set properties, and give to the renderer
 	skybox = new Skybox();
 	std::vector<char*> faces;
-	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/right.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/left.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/top.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/bottom.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/back.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/front.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/right.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/left.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/top.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/bottom.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/back.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/front.jpg");
 	skybox->LoadTextures(faces);
 	skybox->SetShader(skyboxShaderHandle);
 	sceneManager->GetRenderer()->SetSkybox(skybox);
@@ -254,55 +253,8 @@ void TestScene::Update(const float deltaTime)
 
 	}
 	else {
-		std::cout << "No joystick events today." << std::endl;
+		//std::cout << "No joystick events today." << std::endl;
 	}
-
-	// Test collisions
-	if (Physics::isColliding(cube->collisionComponent, floor->collisionComponent)) {
-		Physics::Collide(cube->physicsComponent, cube->collisionComponent, floor->physicsComponent, floor->collisionComponent);
-	}
-	else {
-
-	}
-
-	if (Physics::isColliding(cube->collisionComponent, model->collisionComponent)) {
-		Physics::Collide(cube->physicsComponent, cube->collisionComponent, model->physicsComponent, model->collisionComponent);
-	}
-
-	if (Physics::isColliding(cube2->collisionComponent, floor->collisionComponent)) {
-		Physics::Collide(cube2->physicsComponent, cube2->collisionComponent, floor->physicsComponent, floor->collisionComponent);
-	}
-	else {
-
-	}
-
-	if (Physics::isColliding(cube->collisionComponent, cube2->collisionComponent)) {
-		Physics::Collide(cube->physicsComponent, cube->collisionComponent, cube2->physicsComponent, cube2->collisionComponent);
-	}
-	else {
-
-	}
-
-	if (Physics::isColliding(model->collisionComponent, floor->collisionComponent)) {
-		Physics::Collide(model->physicsComponent, model->collisionComponent, floor->physicsComponent, floor->collisionComponent);
-	}
-
-	if (Physics::isColliding(model->collisionComponent, cube2->collisionComponent)) {
-		Physics::Collide(model->physicsComponent, model->collisionComponent, cube2->physicsComponent, cube2->collisionComponent);
-	}
-
-	if (Physics::isColliding(model->collisionComponent, wall->collisionComponent)) {
-		Physics::Collide(model->physicsComponent, model->collisionComponent, wall->physicsComponent, wall->collisionComponent);
-	}
-
-	if (Physics::isColliding(cube->collisionComponent, wall->collisionComponent)) {
-		Physics::Collide(cube->physicsComponent, cube->collisionComponent, wall->physicsComponent, wall->collisionComponent);
-	}
-
-	if (Physics::isColliding(cube2->collisionComponent, wall->collisionComponent)) {
-		Physics::Collide(cube2->physicsComponent, cube2->collisionComponent, wall->physicsComponent, wall->collisionComponent);
-	}
-
 }
 
 void TestScene::Render() 
@@ -490,6 +442,20 @@ void TestScene::HandleEvents(SDL_Event events)
 	if (state[SDL_SCANCODE_Z]) {
 		sceneManager->EnableSplitscreen(false);
 		sceneManager->SwitchScene(new TestScene());
+	}
+
+	// Reload Scene
+	if (state[SDL_SCANCODE_B]) {
+		Cube* c = new Cube();
+		c->SetShader(defaultShaderHandle);
+		c->renderComponent->SetColour(0.0f, 0.0f, 1.0f);
+		c->physicsComponent->SetPosition(glm::vec3(0.0f, 5.0f, 0.0f));
+		c->SetWorldScale(0.5f, 0.5f, 0.5f);
+		c->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
+		c->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_ELASTIC);
+		c->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
+		c->physicsComponent->SetMass(50.0f);
+		AddObject(c);
 	}
 
 	// Camera look

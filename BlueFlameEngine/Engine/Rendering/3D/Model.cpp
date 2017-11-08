@@ -21,8 +21,10 @@ Model::~Model()
 
 void Model::Update(const float deltaTime) {
 	physicsComponent->Update(deltaTime);
+	SetWorldPosition(physicsComponent->GetPosition());
 	collisionComponent->Update(GetWorldPosition(), GetWorldScale());
-	SetWorldPosition(physicsComponent->getPosition());
+	
+	model->Update();
 }
 
 void Model::Render(Shader* shader) {

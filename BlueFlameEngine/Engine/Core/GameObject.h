@@ -3,6 +3,8 @@
 
 #include "../Graphics/Shader.h"
 #include "ResourceManager.h"
+#include "../Math/CollisionComponent.h"
+#include "../Math/PhysicsComponent.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
@@ -69,6 +71,11 @@ namespace ENGINE {
 		void Rotate(float angle, glm::vec3 rot);
 
 		glm::mat4 modelMatrix = glm::mat4(); 
+
+		CollisionComponent* collisionComponent;
+		PhysicsComponent* physicsComponent;
+
+		bool deleted = false;
 
 		virtual void Update(const float deltaTime);
 		virtual void Render(Shader* shader);

@@ -101,16 +101,20 @@ void SceneManager::HandleEvents() {
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
 
 	if (state[SDL_SCANCODE_V]) {
-		window->ToggleFullScreen();
+		window->SetFullScreen(false);
 	}
 
-	if (state[SDL_SCANCODE_M]) {
-		EnableSplitscreen(true);
+	if (state[SDL_SCANCODE_B]) {
+		window->SetFullScreen(true);
 	}
 
 	if (state[SDL_SCANCODE_N]) {
 		EnableSplitscreen(false);
 	}
+
+	if (state[SDL_SCANCODE_M]) {
+		EnableSplitscreen(true);
+	}	
 
 	if (state[SDL_SCANCODE_ESCAPE]) {
 		std::cout << "ESCAPE key event" << std::endl;
@@ -146,6 +150,10 @@ void SceneManager::OnResize(int w, int h) {
 
 void SceneManager::EnableSplitscreen(bool setSplitscreen) {
 	splitscreen = setSplitscreen;
+}
+
+void SceneManager::EnableFullscreen(bool setFullscreen) {
+	window->SetFullScreen(setFullscreen);
 }
 
 Renderer* SceneManager::GetRenderer() {

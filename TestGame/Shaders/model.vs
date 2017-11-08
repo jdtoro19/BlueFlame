@@ -23,6 +23,11 @@ out vec4 id;
 
 void main()
 {
+	mat4 BMatrix = gBones[sIDs[0]] * sWeights[0];
+         BMatrix += gBones[sIDs[1]] * sWeights[1];
+         BMatrix += gBones[sIDs[2]] * sWeights[2];
+         BMatrix += gBones[sIDs[3]] * sWeights[3];
+
     Position = vec3(model * vec4(aPos, 1.0));
     TexCoords = aTexCoords;    
     Colour = sColour;

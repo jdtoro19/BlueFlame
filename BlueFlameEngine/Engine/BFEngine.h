@@ -6,6 +6,7 @@
 #include "Core/SceneManager.h"
 #include "Core/Timer.h"
 #include "InputHandling/InputHandler.h"
+#include "InputHandling/PlayerController.h"
 
 namespace ENGINE {
 
@@ -31,6 +32,12 @@ namespace ENGINE {
 
 		SceneManager* GetSceneManager();
 
+		//going to count from joysticks right now
+		PlayerController players[4];
+		int numPlayers = NULL;
+
+		int indexOfPlayer[4]; //use this to get player 0, player 1, etc. Otherwise you're taking joystick index
+
 	private:
 		//Private Constructor and Destructor so no other class can create it
 		BFEngine();
@@ -38,6 +45,8 @@ namespace ENGINE {
 		
 		static std::unique_ptr<BFEngine> BFEngineInstance;
 		friend std::default_delete<BFEngine>;
+
+		void setUpPlayers();
 
 		bool isRunning;
 
