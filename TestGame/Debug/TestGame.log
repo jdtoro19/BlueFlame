@@ -1,9 +1,6 @@
-﻿  TestScene.cpp
-c:\gamedev\year3\capstone\blueflame\testgame\scenes\testscene.cpp(218): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\gamedev\year3\capstone\blueflame\testgame\scenes\testscene.cpp(222): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\gamedev\year3\capstone\blueflame\testgame\scenes\testscene.cpp(231): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\gamedev\year3\capstone\blueflame\testgame\scenes\testscene.cpp(235): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-  Main.cpp
+﻿  Main.cpp
   Generating Code...
+  Skipping... (no relevant changes detected)
+  TestScene.cpp
   TestGame.vcxproj -> C:\GameDev\Year3\Capstone\BlueFlame\Debug\TestGame.exe
   TestGame.vcxproj -> C:\GameDev\Year3\Capstone\BlueFlame\Debug\TestGame.pdb (Partial PDB)

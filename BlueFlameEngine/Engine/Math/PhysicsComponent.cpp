@@ -5,7 +5,7 @@
 using namespace ENGINE;
 
 PhysicsComponent::PhysicsComponent() {
-	acceleration = glm::vec3(0.0f, -25.0f, 0.0f);
+	acceleration = glm::vec3(0.0f, -5.0f, 0.0f);
 	velocity = glm::vec3(0.0f, 0.0f, 0.0f);
 	SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	SetElasticity(PhysicsComponent::Elastic_Type::NORMAL_ELASTIC);
@@ -21,8 +21,9 @@ void PhysicsComponent::Update(float deltaTime) {
 		if (deltaTime >= 1 / 144.0f)
 			deltaTime = 1/ 144.0f;
 
-		velocity += acceleration * deltaTime;
-		position += velocity * deltaTime + 1.0f / 2.0f * acceleration * deltaTime * deltaTime;
+		velocity += (invMass * force) * deltaTime;
+		position += velocity * deltaTime; //+ 1.0f / 2.0f * acceleration * deltaTime * deltaTime;
+		force = glm::vec3(0.0f, -500.0f, 0.0f);
 	}
 }
 
@@ -107,6 +108,10 @@ void PhysicsComponent::SetVelocity(glm::vec3 vel) {
 
 void PhysicsComponent::SetAcceleration(glm::vec3 accel) {
 	acceleration = accel;
+}
+
+void PhysicsComponent::AddForce(glm::vec3 _force) {
+	force = _force;
 }
 
 void PhysicsComponent::SetMass(float _mass) {

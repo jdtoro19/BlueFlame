@@ -65,6 +65,8 @@ namespace GAME {
 		// other variables
 		float moveSpeed = 2;
 		float deltaTime;
+
+		bool hasJumped = false;
 	};
 }
 #endif

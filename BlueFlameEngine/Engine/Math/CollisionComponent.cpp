@@ -6,6 +6,7 @@ using namespace ENGINE;
 
 CollisionComponent::CollisionComponent() {
 	boxPadding = glm::vec3(1.0f, 1.0f, 1.0f);
+	spherePadding = 1.0f;
 }
 
 CollisionComponent::~CollisionComponent() {
@@ -17,16 +18,10 @@ void CollisionComponent::Update(glm::vec3 pos, glm::vec3 _scale) {
 	if (collisionType == Collision_Type::SPHERE) {
 		boundingSphere->SetCentre(pos);
 		float scale;
-		if (_scale.x <= _scale.y && _scale.x <= _scale.z) {
-			scale = _scale.x;
-		}
-		else if (_scale.y <= _scale.x && _scale.y <= _scale.z) {
-			scale = _scale.y;
-		}
-		else if (_scale.z <= _scale.x && _scale.z <= _scale.y) {
-			scale = _scale.z;
-		}
+		scale = glm::max(_scale.x, _scale.y);
+		scale = glm::max(scale, _scale.z);
 		boundingSphere->SetScale(scale * spherePadding);
+		boundingSphere->SetRadiusFromDiameter();
 		boundingSphere->SetPointsFromCentre();
 	}
 	else if (collisionType == Collision_Type::BOX) {
@@ -80,6 +75,7 @@ void CollisionComponent::CreateCollisionVolume(Collision_Type ct, std::vector<Mo
 		// Sphere centre and radius being set
 		boundingSphere->SetCentreFromPoints();
 		boundingSphere->SetRadiusFromPoints();
+		boundingSphere->SetDiameterFromRadius();
 	}
 
 	// Box min and max axis values being set
@@ -162,6 +158,7 @@ void CollisionComponent::CreateCollisionVolume(Collision_Type ct, std::vector<Ve
 		// Sphere centre and radius being set
 		boundingSphere->SetCentreFromPoints();
 		boundingSphere->SetRadiusFromPoints();
+		boundingSphere->SetDiameterFromRadius();
 	}
 	// Box min and max axis values being set
 	else if (ct == BOX) {

@@ -52,8 +52,6 @@ namespace ENGINE {
 			new Camera(glm::vec3()),
 			new Camera(glm::vec3())
 		};
-		
-		PhysicsEngine *physicsEngine;
 	};
 }
 #endif

@@ -97,7 +97,7 @@ void TestScene::Initialize()
 	cube->SetWorldScale(0.5f, 0.5f, 0.5f);
 	cube->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	cube->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_ELASTIC);
-	cube->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
+	cube->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::NORMAL_MATERIAL);
 	cube->physicsComponent->SetMass(50.0f);
 
 	cube2 = new Cube();
@@ -106,7 +106,7 @@ void TestScene::Initialize()
 	cube2->physicsComponent->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
 	cube2->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	cube2->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_ELASTIC);
-	cube2->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
+	cube2->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::NORMAL_MATERIAL);
 	cube2->physicsComponent->SetMass(50.0f);
 
 	floor = new Cube();
@@ -116,7 +116,7 @@ void TestScene::Initialize()
 	floor->SetWorldScale(7.0f, 1.0f, 7.0f);
 	floor->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	floor->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
-	floor->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
+	floor->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::NORMAL_MATERIAL);
 	floor->physicsComponent->SetMass(0.0f);
 
 	wall = new Cube();
@@ -165,7 +165,7 @@ void TestScene::Initialize()
 	AddLightObject(yellowLight);
 
 	PhysicsEngine::GetInstance()->AddObjectList(physicsObjectList);
-	//physicsEngine = new Physics(physicsObjectList);
+
 }
 
 void TestScene::Update(const float deltaTime)
@@ -183,7 +183,6 @@ void TestScene::Update(const float deltaTime)
 		}
 	}
 
-	//physicsEngine->Update(deltaTime);
 	PhysicsEngine::GetInstance()->Update(deltaTime);
 
 	//check for joystick so we're not wasting time
@@ -262,56 +261,8 @@ void TestScene::Update(const float deltaTime)
 
 	}
 	else {
-		std::cout << "No joystick events today." << std::endl;
+		//std::cout << "No joystick events today." << std::endl;
 	}
-
-
-	// Test collisions
-	/*
-	if (Physics::isColliding(cube->collisionComponent, floor->collisionComponent)) {
-		Physics::Collide(cube->physicsComponent, cube->collisionComponent, floor->physicsComponent, floor->collisionComponent);
-	}
-	else {
-
-	}
-
-	if (Physics::isColliding(cube->collisionComponent, model->collisionComponent)) {
-		Physics::Collide(cube->physicsComponent, cube->collisionComponent, model->physicsComponent, model->collisionComponent);
-	}
-
-	if (Physics::isColliding(cube2->collisionComponent, floor->collisionComponent)) {
-		Physics::Collide(cube2->physicsComponent, cube2->collisionComponent, floor->physicsComponent, floor->collisionComponent);
-	}
-	else {
-
-	}
-
-	if (Physics::isColliding(cube->collisionComponent, cube2->collisionComponent)) {
-		Physics::Collide(cube->physicsComponent, cube->collisionComponent, cube2->physicsComponent, cube2->collisionComponent);
-	}
-	else {
-
-	}
-
-	if (Physics::isColliding(model->collisionComponent, floor->collisionComponent)) {
-		Physics::Collide(model->physicsComponent, model->collisionComponent, floor->physicsComponent, floor->collisionComponent);
-	}
-
-	if (Physics::isColliding(model->collisionComponent, cube2->collisionComponent)) {
-		Physics::Collide(model->physicsComponent, model->collisionComponent, cube2->physicsComponent, cube2->collisionComponent);
-	}
-
-	if (Physics::isColliding(model->collisionComponent, wall->collisionComponent)) {
-		Physics::Collide(model->physicsComponent, model->collisionComponent, wall->physicsComponent, wall->collisionComponent);
-	}
-
-	if (Physics::isColliding(cube->collisionComponent, wall->collisionComponent)) {
-		Physics::Collide(cube->physicsComponent, cube->collisionComponent, wall->physicsComponent, wall->collisionComponent);
-	}
-
-	if (Physics::isColliding(cube2->collisionComponent, wall->collisionComponent)) {
-		Physics::Collide(cube2->physicsComponent, cube2->collisionComponent, wall->physicsComponent, wall->collisionComponent);
-	}*/
 	
 }
 
@@ -434,23 +385,26 @@ void TestScene::HandleEvents(SDL_Event events)
 	// CUBE 1
 	// Movement
 	if (state[SDL_SCANCODE_SPACE]) {
-		cube->Jump(glm::vec3(0.0f, 6.0f, 0.0f));
+		if (!hasJumped) {
+			cube->physicsComponent->AddForce(glm::vec3(0.0f, 50000.0f, 0.0f));
+			hasJumped = true;
+		}
 	}
 	if (state[SDL_SCANCODE_W]) {
 		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, 0.0f, -moveSpeed * deltaTime));
-		cube->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, -5.0f));
+		cube->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, -1.0f));
 	}
 	if (state[SDL_SCANCODE_S]) {
 		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, 0.0f, moveSpeed * deltaTime));
-		cube->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, 5.0f));
+		cube->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, 1.0f));
 	}
 	if (state[SDL_SCANCODE_D]) {
 		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(moveSpeed * deltaTime, 0.0f, 0.0f));
-		cube->physicsComponent->SetVelocity(glm::vec3(5.0f, 0.0f, 0.0f));
+		cube->physicsComponent->SetVelocity(glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 	if (state[SDL_SCANCODE_A]) {
 		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(-moveSpeed * deltaTime, 0.0f, 0.0f));
-		cube->physicsComponent->SetVelocity(glm::vec3(-5.0f, 0.0f, 0.0f));
+		cube->physicsComponent->SetVelocity(glm::vec3(-1.0f, 0.0f, 0.0f));
 	}
 	// Rotation
 	if (state[SDL_SCANCODE_E]) {
@@ -463,16 +417,16 @@ void TestScene::HandleEvents(SDL_Event events)
 	// Light
 	// Movement
 	if (state[SDL_SCANCODE_I]) {
-		blueLight->SetWorldPosition(blueLight->GetWorldPosition() + glm::vec3(0.0f, moveSpeed * deltaTime, 0.0f));
+		cube2->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, -1.0f));
 	}
 	if (state[SDL_SCANCODE_K]) {
-		blueLight->SetWorldPosition(blueLight->GetWorldPosition() + glm::vec3(0.0f, -moveSpeed * deltaTime, 0.0f));
+		cube2->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, 1.0f));
 	}
 	if (state[SDL_SCANCODE_L]) {
-		blueLight->SetWorldPosition(blueLight->GetWorldPosition() + glm::vec3(moveSpeed * deltaTime, 0.0f, 0.0f));
+		cube2->physicsComponent->SetVelocity(glm::vec3(1.0f, 0.0f, 0.0f));
 	}
 	if (state[SDL_SCANCODE_J]) {
-		blueLight->SetWorldPosition(blueLight->GetWorldPosition() + glm::vec3(-moveSpeed * deltaTime, 0.0f, 0.0f));
+		cube2->physicsComponent->SetVelocity(glm::vec3(-1.0f, 0.0f, 0.0f));
 	}
 	// Rotation
 	if (state[SDL_SCANCODE_O]) {

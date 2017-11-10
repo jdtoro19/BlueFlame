@@ -1,32 +1,32 @@
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\blueflameengine.pdb
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\blueflameengine.idb
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\logmanager.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\stb_image.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\inputhandler.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\collisioncomponent.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\physics.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\physicscomponent.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\cube.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\bfengine.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\shader.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\window.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\mesh.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\renderer.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\gameobject.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\rendercomponent.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\lightcomponent.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\light.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\inputcomponent.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\scenemanager.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\model.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\skybox.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\defaultscene.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\timer.obj
-c:\users\juan toro\documents\blueflame\debug\blueflameengine.lib
-c:\users\juan toro\documents\blueflame\debug\blueflameengine.pdb
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\blueflameengine.tlog\cl.command.1.tlog
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\blueflameengine.tlog\cl.read.1.tlog
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\blueflameengine.tlog\cl.write.1.tlog
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\blueflameengine.tlog\lib-link.read.1.tlog
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\blueflameengine.tlog\lib-link.write.1.tlog
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\blueflameengine.tlog\lib.command.1.tlog
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.pdb
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.idb
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\logmanager.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\stb_image.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\inputhandler.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\collisioncomponent.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\physicsengine.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\physicscomponent.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\cube.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\bfengine.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\shader.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\window.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\mesh.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\renderer.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\gameobject.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\rendercomponent.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\lightcomponent.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\light.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\inputcomponent.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\scenemanager.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\model.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\skybox.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\defaultscene.obj
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\timer.obj
+c:\gamedev\year3\capstone\blueflame\debug\blueflameengine.lib
+c:\gamedev\year3\capstone\blueflame\debug\blueflameengine.pdb
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.tlog\cl.command.1.tlog
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.tlog\cl.read.1.tlog
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.tlog\cl.write.1.tlog
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.tlog\lib-link.read.1.tlog
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.tlog\lib-link.write.1.tlog
+c:\gamedev\year3\capstone\blueflame\blueflameengine\debug\blueflameengine.tlog\lib.command.1.tlog

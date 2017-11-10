@@ -73,6 +73,7 @@ namespace ENGINE {
 		void SetPosition(glm::vec3 pos);
 		void SetVelocity(glm::vec3 vel);
 		void SetAcceleration(glm::vec3 accel);
+		void AddForce(glm::vec3 _force);
 
 		void SetMass(float _mass);
 		void SetRestitution(float _e);

@@ -8,6 +8,7 @@
 #include <vector>
 #include "Box.h"
 #include "Sphere.h"
+#include <glm\glm.hpp>
 
 namespace ENGINE {
 
