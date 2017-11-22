@@ -94,7 +94,7 @@ void TestScene::Initialize()
 	cube->SetShader(defaultShaderHandle);
 	cube->renderComponent->SetColour(0.0f, 0.0f, 1.0f);
 	cube->physicsComponent->SetPosition(glm::vec3(-1.0f, 0.0f, 0.0f));
-	cube->SetWorldScale(0.5f, 0.5f, 0.5f);
+	cube->collisionComponent->SetScale(glm::vec3(0.5f, 0.5f, 0.5f));
 	cube->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	cube->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_ELASTIC);
 	cube->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
@@ -113,7 +113,7 @@ void TestScene::Initialize()
 	floor->SetShader(defaultShaderHandle);
 	floor->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
 	floor->physicsComponent->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
-	floor->SetWorldScale(7.0f, 1.0f, 7.0f);
+	floor->collisionComponent->SetScale(glm::vec3(7.0f, 1.0f, 7.0f));
 	floor->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	floor->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
 	floor->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
@@ -123,14 +123,14 @@ void TestScene::Initialize()
 	wall->SetShader(defaultShaderHandle);
 	wall->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
 	wall->physicsComponent->SetPosition(glm::vec3(3.5f, 0.0f, 0.0f));
-	wall->SetWorldScale(1.0f, 2.0f, 7.0f);
+	wall->collisionComponent->SetScale(glm::vec3(1.0f, 2.0f, 7.0f));
 	wall->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	wall->physicsComponent->SetMass(0.0f);
 
 	model = new Model("Resources/Models/miku/miku.obj");
 	model->SetShader(modelShaderHandle);
 	model->physicsComponent->SetPosition(glm::vec3(1.0f, 1.0f, 0.0f));
-	model->SetWorldScale(0.02f);
+	model->collisionComponent->SetScale(glm::vec3(0.02f, 0.02f, 0.02f));
 	///model->SetWorldScale(0.5f);
     ///model->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), 80.0f);
 	model->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
@@ -150,16 +150,18 @@ void TestScene::Initialize()
 	sceneManager->GetRenderer()->SetSkybox(skybox);
 
 	// add objects and lights to their lists
-	AddObject(cube);
-	AddObject(cube2);
-	AddObject(floor);
-	AddObject(model);
-	AddObject(wall);
+	AddPhysicsObject(cube);
+	AddPhysicsObject(cube2);
+	AddPhysicsObject(floor);
+	AddPhysicsObject(model);
+	AddPhysicsObject(wall);
 	AddLightObject(dirLight);
 	AddLightObject(blueLight);
 	AddLightObject(redLight);
 	AddLightObject(greenLight);
 	AddLightObject(yellowLight);
+
+	PhysicsEngine::GetInstance()->AddObjectList(physicsObjectList);
 }
 
 void TestScene::Update(const float deltaTime)
@@ -176,6 +178,8 @@ void TestScene::Update(const float deltaTime)
 			objectList.at(i)->Update(deltaTime);
 		}
 	}
+
+	PhysicsEngine::GetInstance()->Update(deltaTime);
 
 	//check for joystick so we're not wasting time
 	if (InputHandler::GetInstance()->areJoysticksLive()) {

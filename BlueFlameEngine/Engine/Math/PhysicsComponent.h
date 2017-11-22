@@ -2,7 +2,6 @@
 #define PHYSICSCOMPONENT_H
 
 #include "..\Core\Component.h"
-#include "Box.h"
 
 #include <glm\glm.hpp>
 
@@ -12,8 +11,8 @@ namespace ENGINE {
 	public:
 
 		// Physics type defines how physics will be applied to the object.
-		// Dynamic bodies are affected by velocity and acceleration, and have mass.
-		// Static bodies are not affected by velocity and acceleration, and have infinite, or zero mass.
+		// Dynamic bodies are affected by forces, and have mass.
+		// Static bodies are not affected by forces, and have infinite, or zero mass.
 		enum Physics_Type {
 			DYNAMIC,
 			STATIC
@@ -73,6 +72,7 @@ namespace ENGINE {
 		void SetPosition(glm::vec3 pos);
 		void SetVelocity(glm::vec3 vel);
 		void SetAcceleration(glm::vec3 accel);
+		void AddForce(glm::vec3 _force);
 
 		void SetMass(float _mass);
 		void SetRestitution(float _e);

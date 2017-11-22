@@ -13,10 +13,12 @@ Projectile::Projectile(glm::vec3 p, int dir)
 	physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_NON_ELASTIC);
 	physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
 	SetWorldScale(0.25f);
+	collisionComponent->SetScale(glm::vec3(0.25f, 0.25f, 0.25f));
 	physicsComponent->SetPosition(p);
-	physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0, -25.0f * dir));
+	physicsComponent->AddForce(glm::vec3(0.0f, 0.0, -250000.0f * dir));
 	physicsComponent->SetMass(50.0f);
 	physicsComponent->SetDestructible(true);
+	collisionComponent->SetLayer(1);
 	rip = 100;
 }
 
@@ -36,7 +38,8 @@ void Projectile::Update(const float deltaTime) {
 	if (deleted == false && rip > 0) {
 		physicsComponent->Update(deltaTime);
 		SetWorldPosition(physicsComponent->GetPosition());
-		collisionComponent->Update(GetWorldPosition(), GetWorldScale());
+		collisionComponent->Update(GetWorldPosition());
+		SetWorldScale(collisionComponent->GetScale());
 		--rip;
 	}
 	else if (rip == 0){

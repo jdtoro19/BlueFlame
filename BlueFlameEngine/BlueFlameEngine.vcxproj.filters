@@ -167,9 +167,6 @@
     <ClInclude Include="Engine\Graphics\Bone.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Math\Box.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Math\CollisionComponent.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -191,13 +188,13 @@
     <ClInclude Include="Engine\Math\PhysicsEngine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Engine\Math\Sphere.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Engine\Math\ContactData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Engine\Rendering\3D\Projectile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Math\Volumes.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -65,7 +65,7 @@ void DemoScene::Initialize()
 	cube1->physicsComponent->SetPosition(glm::vec3(-2.0f, 0.0f, 3.0f));
 	cube1->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	cube1->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
-	cube1->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
+	cube1->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::NORMAL_MATERIAL);
 	cube1->physicsComponent->SetMass(50.0f);
 
 	// Bind Controller
@@ -80,7 +80,7 @@ void DemoScene::Initialize()
 	cube2->physicsComponent->SetPosition(glm::vec3(2.0f, 0.0f, 3.0f));
 	cube2->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	cube2->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
-	cube2->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
+	cube2->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::NORMAL_MATERIAL);
 	cube2->physicsComponent->SetMass(50.0f);
 
 	if (BFEngine::GetInstance()->numPlayers > 1) {
@@ -94,7 +94,7 @@ void DemoScene::Initialize()
 	cube3->physicsComponent->SetPosition(glm::vec3(2.0f, 0.0f, -3.0f));
 	cube3->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	cube3->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
-	cube3->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
+	cube3->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::NORMAL_MATERIAL);
 	cube3->physicsComponent->SetMass(50.0f);
 
 	if (BFEngine::GetInstance()->numPlayers > 2) {
@@ -109,7 +109,7 @@ void DemoScene::Initialize()
 	cube4->physicsComponent->SetPosition(glm::vec3(-2.0f, 0.0f, -3.0f));
 	cube4->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	cube4->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
-	cube4->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
+	cube4->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::NORMAL_MATERIAL);
 	cube4->physicsComponent->SetMass(50.0f);
 
 	if (BFEngine::GetInstance()->numPlayers > 3) {
@@ -122,40 +122,40 @@ void DemoScene::Initialize()
 	floor->SetShader(defaultShaderHandle);
 	floor->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
 	floor->physicsComponent->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
-	floor->SetWorldScale(11.0f, 1.0f, 11.0f);
+	floor->collisionComponent->SetScale(glm::vec3(11.0f, 1.0f, 11.0f));
 	floor->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	floor->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
-	floor->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
+	floor->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::NORMAL_MATERIAL);
 	floor->physicsComponent->SetMass(0.0f);
 
 	wall = new Cube();
 	wall->SetShader(defaultShaderHandle);
 	wall->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
 	wall->physicsComponent->SetPosition(glm::vec3(5.5f, 0.0f, 0.0f));
-	wall->SetWorldScale(1.0f, 2.0f, 11.0f);
+	wall->collisionComponent->SetScale(glm::vec3(1.0f, 2.0f, 11.0f));
 	wall->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
-	wall->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
-	wall->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
+	wall->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_NON_ELASTIC);
+	wall->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::NORMAL_MATERIAL);
 	wall->physicsComponent->SetMass(0.0f);
 
 	wall1 = new Cube();
 	wall1->SetShader(defaultShaderHandle);
 	wall1->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
 	wall1->physicsComponent->SetPosition(glm::vec3(-5.5f, 0.0f, 0.0f));
-	wall1->SetWorldScale(1.0f, 2.0f, 11.0f);
+	wall1->collisionComponent->SetScale(glm::vec3(1.0f, 2.0f, 11.0f));
 	wall1->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
-	wall1->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
-	wall1->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
+	wall1->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_NON_ELASTIC);
+	wall1->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::NORMAL_MATERIAL);
 	wall1->physicsComponent->SetMass(0.0f);
 
 	middleWall = new Cube();
 	middleWall->SetShader(defaultShaderHandle);
 	middleWall->renderComponent->SetColour(1.0f, 0.0f, 0.0f);
 	middleWall->physicsComponent->SetPosition(glm::vec3(0.0f, -0.50f, 0.0f));
-	middleWall->SetWorldScale(11.0f, 0.1f, 1.0f);
+	middleWall->collisionComponent->SetScale(glm::vec3(11.0f, 0.1f, 1.0f));
 	middleWall->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
-	middleWall->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
-	middleWall->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_ROUGH);
+	middleWall->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_NON_ELASTIC);
+	middleWall->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::NORMAL_MATERIAL);
 	middleWall->physicsComponent->SetMass(0.0f);
 
 	// Make skybox, load its textures, set properties, and give to the renderer
@@ -228,12 +228,12 @@ void DemoScene::Update(const float deltaTime)
 			
 			glm::vec3 temp = BFEngine::GetInstance()->players[i].pObject()->physicsComponent->GetVelocity();
 			
-			BFEngine::GetInstance()->players[i].pObject()->physicsComponent->SetVelocity(temp + glm::vec3(mods.x * moveSpeed * deltaTime, 0.0f, mods.y * moveSpeed * deltaTime));
+			BFEngine::GetInstance()->players[i].pObject()->physicsComponent->AddForce(glm::vec3(mods.x * moveSpeed * deltaTime, 0.0f, mods.y * moveSpeed * deltaTime));
 
 			if (BFEngine::GetInstance()->players[i].shotDelay == 0) {
 				if (SDL_JoystickGetButton(BFEngine::GetInstance()->players[i].pStick, 1) == 1) {
 					Cube* lr = BFEngine::GetInstance()->players[i].pObject(); //line reducer
-					Projectile* p = new Projectile(glm::vec3(lr->GetWorldPosition().x, lr->GetWorldPosition().y, lr->GetWorldPosition().z - BFEngine::GetInstance()->players[i].inverted() * lr->collisionComponent->boundingBox->w * lr->GetWorldScale().z), BFEngine::GetInstance()->players[i].inverted());
+					Projectile* p = new Projectile(glm::vec3(lr->GetWorldPosition().x, lr->GetWorldPosition().y, lr->GetWorldPosition().z - BFEngine::GetInstance()->players[i].inverted() * lr->collisionComponent->GetBoundingBox().r.z * 2.0f * lr->GetWorldScale().z), BFEngine::GetInstance()->players[i].inverted());
 					glm::vec3 tempColor = BFEngine::GetInstance()->players[i].getTeamColor();
 					p->renderComponent->SetColour(tempColor.x, tempColor.y, tempColor.z);
 					p->SetShader(defaultShaderHandle);
@@ -249,7 +249,7 @@ void DemoScene::Update(const float deltaTime)
 				
 			
 
-			//BFEngine::GetInstance()->players[i].tick(); //reduces shot delay
+			BFEngine::GetInstance()->players[i].tick(); //reduces shot delay
 		}
 
 	}
@@ -296,10 +296,10 @@ void DemoScene::HandleEvents(SDL_Event events)
 			/* code goes here */
 			
 
-			//if (BFEngine::GetInstance()->players[events.jbutton.which].shotDelay == 0) {
-			/*	
+			if (BFEngine::GetInstance()->players[events.jbutton.which].shotDelay == 0) {
+				
 			Cube* lr = BFEngine::GetInstance()->players[events.jbutton.which].pObject(); //line reducer
-				Projectile* p = new Projectile(glm::vec3(lr->GetWorldPosition().x, lr->GetWorldPosition().y, lr->GetWorldPosition().z - BFEngine::GetInstance()->players[events.jbutton.which].inverted() * lr->collisionComponent->boundingBox->w * lr->GetWorldScale().z), BFEngine::GetInstance()->players[events.jbutton.which].inverted());
+				Projectile* p = new Projectile(glm::vec3(lr->GetWorldPosition().x, lr->GetWorldPosition().y, lr->GetWorldPosition().z - BFEngine::GetInstance()->players[events.jbutton.which].inverted() * lr->collisionComponent->GetBoundingBox().r.z * 2.0f * lr->GetWorldScale().z), BFEngine::GetInstance()->players[events.jbutton.which].inverted());
 					glm::vec3 tempColor = BFEngine::GetInstance()->players[events.jbutton.which].getTeamColor();
 					p->renderComponent->SetColour(tempColor.x, tempColor.y, tempColor.z);
 					p->SetShader(defaultShaderHandle);
@@ -307,9 +307,9 @@ void DemoScene::HandleEvents(SDL_Event events)
 					PhysicsEngine::GetInstance()->AddObjectList(physicsObjectList);
 
 					std::cout << "Player " << BFEngine::GetInstance()->indexOfPlayer[events.jbutton.which] << " shot." << std::endl;
-					*/
-					//BFEngine::GetInstance()->players[events.jbutton.which].weShot();
-			//}
+					
+					BFEngine::GetInstance()->players[events.jbutton.which].weShot();
+			}
 		}
 		if (events.jbutton.button == 2) //X button
 		{
@@ -388,7 +388,7 @@ void DemoScene::HandleEvents(SDL_Event events)
 	// Movement
 	if (state[SDL_SCANCODE_SPACE]) {
 		if (fire) {
-			Projectile* p = new Projectile(glm::vec3(cube1->GetWorldPosition().x, cube1->GetWorldPosition().y, cube1->GetWorldPosition().z - cube1->collisionComponent->boundingBox->w * cube1->GetWorldScale().z), 1);
+			Projectile* p = new Projectile(glm::vec3(cube1->GetWorldPosition().x, cube1->GetWorldPosition().y, cube1->GetWorldPosition().z - cube1->collisionComponent->GetBoundingBox().r.z * 2.0f * cube1->GetWorldScale().z), 1);
 			p->SetShader(defaultShaderHandle);
 			AddPhysicsObject(p);
 			PhysicsEngine::GetInstance()->AddObjectList(physicsObjectList);
@@ -397,21 +397,39 @@ void DemoScene::HandleEvents(SDL_Event events)
 	}
 	if (state[SDL_SCANCODE_W]) {
 		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, 0.0f, -moveSpeed * deltaTime));
-		cube1->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, -moveSpeed * deltaTime * 200));
+		//cube1->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, -moveSpeed * deltaTime * 200));
+		cube1->physicsComponent->AddForce(glm::vec3(0.0f, 0.0f, -4000.0f));
 	}
 	if (state[SDL_SCANCODE_S]) {
 		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, 0.0f, moveSpeed * deltaTime));
-		cube1->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, moveSpeed * deltaTime * 200));
+		cube1->physicsComponent->AddForce(glm::vec3(0.0f, 0.0f, 4000.0f));
 	}
 	if (state[SDL_SCANCODE_D]) {
 		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(moveSpeed * deltaTime, 0.0f, 0.0f));
-		cube1->physicsComponent->SetVelocity(glm::vec3(moveSpeed * deltaTime * 200, 0.0f, 0.0f));
+		cube1->physicsComponent->AddForce(glm::vec3(4000.0f, 0.0f, 0.0f));
 	}
 	if (state[SDL_SCANCODE_A]) {
 		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(-moveSpeed * deltaTime, 0.0f, 0.0f));
-		cube1->physicsComponent->SetVelocity(glm::vec3(-moveSpeed * deltaTime * 200, 0.0f, 0.0f));
+		cube1->physicsComponent->AddForce(glm::vec3(-4000.0f, 0.0f, 0.0f));
 	}
 
+	if (state[SDL_SCANCODE_I]) {
+		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, 0.0f, -moveSpeed * deltaTime));
+		//cube1->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, -moveSpeed * deltaTime * 200));
+		cube2->physicsComponent->AddForce(glm::vec3(0.0f, 0.0f, -4000.0f));
+	}
+	if (state[SDL_SCANCODE_K]) {
+		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, 0.0f, moveSpeed * deltaTime));
+		cube2->physicsComponent->AddForce(glm::vec3(0.0f, 0.0f, 4000.0f));
+	}
+	if (state[SDL_SCANCODE_L]) {
+		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(moveSpeed * deltaTime, 0.0f, 0.0f));
+		cube2->physicsComponent->AddForce(glm::vec3(4000.0f, 0.0f, 0.0f));
+	}
+	if (state[SDL_SCANCODE_J]) {
+		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(-moveSpeed * deltaTime, 0.0f, 0.0f));
+		cube2->physicsComponent->AddForce(glm::vec3(-4000.0f, 0.0f, 0.0f));
+	}
 	// Reload Scene
 	if (state[SDL_SCANCODE_Z]) {
 		sceneManager->EnableSplitscreen(true);

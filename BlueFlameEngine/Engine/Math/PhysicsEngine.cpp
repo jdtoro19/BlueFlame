@@ -7,10 +7,22 @@ std::unique_ptr<PhysicsEngine> PhysicsEngine::PhysicsEngineInstance(nullptr);
 
 
 PhysicsEngine::PhysicsEngine() {
+
 }
 
 PhysicsEngine::~PhysicsEngine() {
 
+}
+
+void PhysicsEngine::Update(float deltaTime) {
+	int size = contactList.size();
+	for (size_t i = 0; i < size; ++i) {
+		// If Objects Collide, correct penatration and apply impulse
+		if (isColliding(contactList.at(i))) {
+			PenatrationCorrection(contactList.at(i));
+			ApplyImpulse(contactList.at(i));
+		}
+	}
 }
 
 PhysicsEngine* PhysicsEngine::GetInstance() {
@@ -26,67 +38,30 @@ void PhysicsEngine::AddObjectList(std::vector<GameObject*> physicsObjectList) {
 
 void PhysicsEngine::GeneratePairs(std::vector<GameObject*> physicsObjectList) {
 	contactList.clear();
-	for (size_t i = 0; i < physicsObjectList.size(); ++i) {
-		for (size_t j = i + 1; j < physicsObjectList.size(); ++j) {
-			if (physicsObjectList.at(i)->physicsComponent->GetPhysicsType() == PhysicsComponent::Physics_Type::STATIC && 
+	int size = physicsObjectList.size();
+	for (size_t i = 0; i < size; ++i) {
+		for (size_t j = i + 1; j < size; ++j) {
+
+			// Checks that both objects are on the same layer
+			if (physicsObjectList.at(i)->collisionComponent->GetLayer() != physicsObjectList.at(j)->collisionComponent->GetLayer()) {
+				continue;
+			}
+
+			// Checks that both objects are not static
+			if (physicsObjectList.at(i)->physicsComponent->GetPhysicsType() == PhysicsComponent::Physics_Type::STATIC &&
 				physicsObjectList.at(j)->physicsComponent->GetPhysicsType() == PhysicsComponent::Physics_Type::STATIC) {
 				continue;
 			}
+
+			// Checks that you haven't pushed a physics object that doesn't have a physics component
 			if (physicsObjectList.at(i)->physicsComponent == NULL ||
 				physicsObjectList.at(j)->physicsComponent == NULL) {
 				continue;
 			}
+
+			// Once pair passes all tests, push into the list
 			contactList.push_back(ContactData::CreateContactData(physicsObjectList.at(i), physicsObjectList.at(j)));
 		}
-	}
-}
-
-void PhysicsEngine::Update(float deltaTime) {
-	for (size_t i = 0; i < contactList.size(); ++i) {
-		if (isColliding(contactList.at(i))) {
-			PenatrationCorrection(contactList.at(i));
-			ApplyImpulse(contactList.at(i));
-		}
-	}
-}
-
-bool PhysicsEngine::isColliding(CollisionComponent* c1, CollisionComponent* c2) {
-
-	// If statements differentiate which type of colliders want to collide, and does the appropriate collision check
-
-	if (c1->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE &&
-		c2->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE) {
-		//glm::vec3 distance = glm::sqrt((glm::length(c->B->collisionComponent->GetBoundingSphere().centre -
-		//c->A->collisionComponent->GetBoundingSphere().centre)))
-		return false;
-	}
-	else if (c1->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE &&
-		c2->GetCollisionType() == CollisionComponent::Collision_Type::BOX) {
-
-		return false;
-	}
-	else if (c1->GetCollisionType() == CollisionComponent::Collision_Type::BOX &&
-		c2->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE) {
-
-		return false;
-	}
-	else if (c1->GetCollisionType() == CollisionComponent::Collision_Type::BOX &&
-		c2->GetCollisionType() == CollisionComponent::Collision_Type::BOX) {
-
-		if (c1->GetBoundingBox().max.x < c2->GetBoundingBox().min.x
-			|| c1->GetBoundingBox().min.x > c2->GetBoundingBox().max.x) return false;
-
-		if (c1->GetBoundingBox().max.y < c2->GetBoundingBox().min.y
-			|| c1->GetBoundingBox().min.y > c2->GetBoundingBox().max.y) return false;
-
-		if (c1->GetBoundingBox().max.z < c2->GetBoundingBox().min.z
-			|| c1->GetBoundingBox().min.z > c2->GetBoundingBox().max.z) return false;
-
-		return true;
-
-	}
-	else {
-		return false;
 	}
 }
 
@@ -94,33 +69,61 @@ bool PhysicsEngine::isColliding(ContactData *c) {
 
 	// If statements differentiate which type of colliders want to collide, and does the appropriate collision check
 
-	if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE && 
+	if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE &&
 		c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE) {
-		//glm::vec3 distance = glm::sqrt((glm::length(c->B->collisionComponent->GetBoundingSphere().centre -
-			//c->A->collisionComponent->GetBoundingSphere().centre)))
-		return false;
+
+		// Calculates squared distance between centres
+		glm::vec3 d = c->A->collisionComponent->GetBoundingSphere().c + c->B->collisionComponent->GetBoundingSphere().c;
+		float d2 = glm::dot(d, d);
+
+		// If the squared distance is less than the squared sum of radii, spheres intersect
+		float radiusSum = c->A->collisionComponent->GetBoundingSphere().r + c->B->collisionComponent->GetBoundingSphere().r;
+		if (d2 <= radiusSum * radiusSum) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	else if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE &&
 		c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX) {
 
-		return false;
+		// Find point p on AABB closest to the centre of the sphere
+		glm::vec3 p;
+		ClosestPointOnAABB(c->A->collisionComponent->GetBoundingSphere().c, c->B->collisionComponent->GetBoundingBox(), p);
+
+		// If the squared distance from sphere centre to point p is less than the squared sphere radius, box and sphere intersect
+		glm::vec3 v = p - c->A->collisionComponent->GetBoundingSphere().c;
+		if (glm::dot(v, v) <= c->A->collisionComponent->GetBoundingSphere().r * c->A->collisionComponent->GetBoundingSphere().r) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	else if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX &&
 		c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE) {
 
-		return false;
+		// Find point p on AABB closest to the centre of the sphere
+		glm::vec3 p;
+		ClosestPointOnAABB(c->B->collisionComponent->GetBoundingSphere().c, c->A->collisionComponent->GetBoundingBox(), p);
+
+		// If the squared distance from sphere centre to point p is less than the squared sphere radius, box and sphere intersect
+		glm::vec3 v = p - c->B->collisionComponent->GetBoundingSphere().c;
+		if (glm::dot(v, v) <= c->B->collisionComponent->GetBoundingSphere().r * c->B->collisionComponent->GetBoundingSphere().r) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	else if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX &&
 		c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX) {
 
-		if (c->A->collisionComponent->GetBoundingBox().max.x < c->B->collisionComponent->GetBoundingBox().min.x 
-			|| c->A->collisionComponent->GetBoundingBox().min.x > c->B->collisionComponent->GetBoundingBox().max.x) return false;
-
-		if (c->A->collisionComponent->GetBoundingBox().max.y < c->B->collisionComponent->GetBoundingBox().min.y 
-			|| c->A->collisionComponent->GetBoundingBox().min.y > c->B->collisionComponent->GetBoundingBox().max.y) return false;
-
-		if (c->A->collisionComponent->GetBoundingBox().max.z < c->B->collisionComponent->GetBoundingBox().min.z 
-			|| c->A->collisionComponent->GetBoundingBox().min.z > c->B->collisionComponent->GetBoundingBox().max.z) return false;
+		// If no intersection along an axis, boxes are not colliding
+		if (glm::abs(c->A->collisionComponent->GetBoundingBox().c.x - c->B->collisionComponent->GetBoundingBox().c.x) > (c->A->collisionComponent->GetBoundingBox().r.x + c->B->collisionComponent->GetBoundingBox().r.x)) return false;
+		if (glm::abs(c->A->collisionComponent->GetBoundingBox().c.y - c->B->collisionComponent->GetBoundingBox().c.y) > (c->A->collisionComponent->GetBoundingBox().r.y + c->B->collisionComponent->GetBoundingBox().r.y)) return false;
+		if (glm::abs(c->A->collisionComponent->GetBoundingBox().c.z - c->B->collisionComponent->GetBoundingBox().c.z) > (c->A->collisionComponent->GetBoundingBox().r.z + c->B->collisionComponent->GetBoundingBox().r.z)) return false;
 
 		if (c->A->physicsComponent->destructible == true) {
 			c->A->deleted = true;
@@ -130,6 +133,7 @@ bool PhysicsEngine::isColliding(ContactData *c) {
 			c->B->deleted = true;
 		}
 
+		// If intersecting along all axes, boxes are colliding 
 		return true;
 
 	}
@@ -138,104 +142,267 @@ bool PhysicsEngine::isColliding(ContactData *c) {
 	}
 }
 
+
 void PhysicsEngine::PenatrationCorrection(ContactData *c) {
 
-	// Setting the normal to a vector between centre points of both objects
-	c->normal = c->B->physicsComponent->GetPosition() - c->A->physicsComponent->GetPosition();
+	if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE && 
+		c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE) {
 
-	// Half extents of both objects in the x axis
-	float aExtent = (c->A->collisionComponent->GetBoundingBox().max.x - c->A->collisionComponent->GetBoundingBox().min.x) / 2.0f;
-	float bExtent = (c->B->collisionComponent->GetBoundingBox().max.x - c->B->collisionComponent->GetBoundingBox().min.x) / 2.0f;
+		// Creating normal to the vector between centre points of both objects
+		glm::vec3 normal = c->B->physicsComponent->GetPosition() - c->A->physicsComponent->GetPosition();
 
-	// The overlap in the x axis of the objects
-	float x_overlap = aExtent + bExtent - glm::abs(c->normal.x);
+		// Calculates the sum of each spheres radius
+		float r = c->A->collisionComponent->GetBoundingSphere().r + c->B->collisionComponent->GetBoundingSphere().r;
 
-	// If the overlap exists, continue
-	if (x_overlap > 0) {
+		// Calculates the distance (magnitude) of the normal vector
+		float distance = glm::length(normal);
 
-		// Half extents of both objects in the y axis
-		aExtent = (c->A->collisionComponent->GetBoundingBox().max.y - c->A->collisionComponent->GetBoundingBox().min.y) / 2.0f;
-		bExtent = (c->B->collisionComponent->GetBoundingBox().max.y - c->B->collisionComponent->GetBoundingBox().min.y) / 2.0f;
+		// Checks if spheres are directly on top of each other
+		// Pushes back sphere in a consistent manner
+		if (distance == 0.0f) {
+			c->penatration = c->A->collisionComponent->GetBoundingSphere().r;
+			c->normal = glm::vec3(0.0f, 1.0f, 0.0f);
+		}
+		// If spheres are not directly on top of each other
+		// Penatration is equal to the sum of the radii - the distance between them
+		// Normal is then normalized with the already calculated magnitude
+		else {
+			c->penatration = r - distance;
+			c->normal = normal / distance;
+		}
+	}
 
-		// The overlap in the y axis of the objects
-		float y_overlap = aExtent + bExtent - glm::abs(c->normal.y);
+	// ======== SPHERE VS BOX COLLISION ==========
+	// ============ WORK IN PROGRESS ============= 
+	/*
+	else if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE &&
+		c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX) {
+		glm::vec3 n = c->B->physicsComponent->GetPosition() - c->A->physicsComponent->GetPosition();
+
+		glm::vec3 closest = n;
+
+		float xExtent = (c->B->collisionComponent->GetBoundingBox().max.x - c->B->collisionComponent->GetBoundingBox().min.x) / 2.0f;
+		float yExtent = (c->B->collisionComponent->GetBoundingBox().max.y - c->B->collisionComponent->GetBoundingBox().min.y) / 2.0f;
+		float zExtent = (c->B->collisionComponent->GetBoundingBox().max.z - c->B->collisionComponent->GetBoundingBox().min.z) / 2.0f;
+
+		closest.x = glm::clamp(-xExtent, xExtent, closest.x);
+		closest.y = glm::clamp(-yExtent, yExtent, closest.y);
+		closest.z = glm::clamp(-zExtent, zExtent, closest.z);
+
+		bool inside = false;
+
+		if (n == closest) {
+			inside = true;
+
+			if (glm::abs(n.x) < glm::abs(n.y) && glm::abs(n.x) < glm::abs(n.z)) {
+				if (closest.x > 0) {
+					closest.x = -xExtent;
+				}
+				else {
+					closest.x = xExtent;
+				}
+			}
+			else if (glm::abs(n.y) < glm::abs(n.x) && glm::abs(n.y) < glm::abs(n.z)) {
+				if (closest.y > 0) {
+					closest.y = -yExtent;
+				}
+				else {
+					closest.y = yExtent;
+				}
+			}
+			else if (glm::abs(n.z) < glm::abs(n.x) && glm::abs(n.z) < glm::abs(n.y)) {
+				if (closest.z > 0) {
+					closest.z = -zExtent;
+				}
+				else {
+					closest.z = zExtent;
+				}
+			}
+
+			glm::vec3 normal = n - closest;
+			float d = glm::length(normal);
+			float r = c->A->collisionComponent->GetBoundingSphere().radius;
+
+			d = glm::sqrt(d);
+
+			if (inside) {
+				c->normal = -n;
+				c->penatration = r - d;
+			}
+			else {
+				c->normal = n;
+				c->penatration = r - d;
+			}
+		}
+	}
+	// ======== SPHERE VS BOX COLLISION ==========
+	// ============ WORK IN PROGRESS ============= 
+	else if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX &&
+		c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE) {
+		glm::vec3 n = c->B->physicsComponent->GetPosition() - c->A->physicsComponent->GetPosition();
+
+		glm::vec3 closest = n;
+
+		float xExtent = (c->A->collisionComponent->GetBoundingBox().max.x - c->A->collisionComponent->GetBoundingBox().min.x) / 2.0f;
+		float yExtent = (c->A->collisionComponent->GetBoundingBox().max.y - c->A->collisionComponent->GetBoundingBox().min.y) / 2.0f;
+		float zExtent = (c->A->collisionComponent->GetBoundingBox().max.z - c->A->collisionComponent->GetBoundingBox().min.z) / 2.0f;
+
+		closest.x = glm::clamp(-xExtent, xExtent, closest.x);
+		closest.y = glm::clamp(-yExtent, yExtent, closest.y);
+		closest.z = glm::clamp(-zExtent, zExtent, closest.z);
+
+		bool inside = false;
+
+		if (n == closest) {
+			inside = true;
+
+			if (glm::abs(n.x) < glm::abs(n.y) && glm::abs(n.x) < glm::abs(n.z)) {
+				if (closest.x > 0) {
+					closest.x = xExtent;
+				}
+				else {
+					closest.x = -xExtent;
+				}
+			}
+			else if (glm::abs(n.y) < glm::abs(n.x) && glm::abs(n.y) < glm::abs(n.z)) {
+				if (closest.y > 0) {
+					closest.y = yExtent;
+				}
+				else {
+					closest.y = -yExtent;
+				}
+			}
+			else if (glm::abs(n.z) < glm::abs(n.x) && glm::abs(n.z) < glm::abs(n.y)) {
+				if (closest.z > 0) {
+					closest.z = zExtent;
+				}
+				else {
+					closest.z = -zExtent;
+				}
+			}
+
+			glm::vec3 normal = n - closest;
+			float d = glm::length(normal);
+			float r = c->B->collisionComponent->GetBoundingSphere().radius;
+
+			d = glm::sqrt(d);
+
+			if (inside) {
+				c->normal = -n;
+				c->penatration = r - d;
+			}
+			else {
+				c->normal = n;
+				c->penatration = r - d;
+			}
+		}
+	}*/
+	
+	else if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX && 
+		c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX) {
+		// Setting the normal to a vector between centre points of both objects
+		c->normal = c->B->physicsComponent->GetPosition() - c->A->physicsComponent->GetPosition();
+
+		// Half extents of both objects in the x axis
+		//float aExtent = (c->A->collisionComponent->GetBoundingBox().max.x - c->A->collisionComponent->GetBoundingBox().min.x) / 2.0f;
+		//float bExtent = (c->B->collisionComponent->GetBoundingBox().max.x - c->B->collisionComponent->GetBoundingBox().min.x) / 2.0f;
+
+		// The overlap in the x axis of the objects
+		float x_overlap = c->A->collisionComponent->GetBoundingBox().r.x + c->B->collisionComponent->GetBoundingBox().r.x - glm::abs(c->normal.x);
 
 		// If the overlap exists, continue
-		if (y_overlap > 0) {
+		if (x_overlap > 0) {
 
-			// Half extents of both objects in the z axis
-			aExtent = (c->A->collisionComponent->GetBoundingBox().max.z - c->A->collisionComponent->GetBoundingBox().min.z) / 2.0f;
-			bExtent = (c->B->collisionComponent->GetBoundingBox().max.z - c->B->collisionComponent->GetBoundingBox().min.z) / 2.0f;
+			// Half extents of both objects in the y axis
+			//aExtent = (c->A->collisionComponent->GetBoundingBox().max.y - c->A->collisionComponent->GetBoundingBox().min.y) / 2.0f;
+			//bExtent = (c->B->collisionComponent->GetBoundingBox().max.y - c->B->collisionComponent->GetBoundingBox().min.y) / 2.0f;
 
-			// The overlap in the z axis of the objects
-			float z_overlap = aExtent + bExtent - glm::abs(c->normal.z);
+			// The overlap in the y axis of the objects
+			float y_overlap = c->A->collisionComponent->GetBoundingBox().r.y + c->B->collisionComponent->GetBoundingBox().r.y - glm::abs(c->normal.y);
 
 			// If the overlap exists, continue
-			if (z_overlap > 0) {
+			if (y_overlap > 0) {
 
-				// Checking if x axis is the smallest penatration
-				if (x_overlap < y_overlap && x_overlap < z_overlap) {
+				// Half extents of both objects in the z axis
+			//	aExtent = (c->A->collisionComponent->GetBoundingBox().max.z - c->A->collisionComponent->GetBoundingBox().min.z) / 2.0f;
+				//bExtent = (c->B->collisionComponent->GetBoundingBox().max.z - c->B->collisionComponent->GetBoundingBox().min.z) / 2.0f;
 
-					// Point normal towards B, since distance points from A->B
-					if (c->normal.x < 0) {
-						c->normal = glm::vec3(-1.0f, 0.0f, 0.0f);
+				// The overlap in the z axis of the objects
+				float z_overlap = c->A->collisionComponent->GetBoundingBox().r.z + c->B->collisionComponent->GetBoundingBox().r.z - glm::abs(c->normal.z);
+
+				// If the overlap exists, continue
+				if (z_overlap > 0) {
+
+					// Checking if x axis is the smallest penatration
+					if (x_overlap < y_overlap && x_overlap < z_overlap) {
+
+						// Point normal towards B, since distance points from A->B
+						if (c->normal.x < 0) {
+							c->normal = glm::vec3(-1.0f, 0.0f, 0.0f);
+						}
+
+						// Point normal towards A, since distance points from A->B
+						else {
+							c->normal = glm::vec3(1.0f, 0.0f, 0.0f);
+						}
+
+						// Since x axis is the smallest, it will be our penatration distance
+						c->penatration = x_overlap;
+
 					}
 
-					// Point normal towards A, since distance points from A->B
-					else {
-						c->normal = glm::vec3(1.0f, 0.0f, 0.0f);
+					// Checking if y axis is the smallest penatration
+					else if (y_overlap < x_overlap && y_overlap < z_overlap) {
+
+						// Point normal towards B, since distance points from A->B
+						if (c->normal.y < 0) {
+							c->normal = glm::vec3(0.0f, -1.0f, 0.0f);
+						}
+
+						// Point normal towards A, since distance points from A->B
+						else {
+							c->normal = glm::vec3(0.0f, 1.0f, 0.0f);
+						}
+
+						// Since y axis is the smallest, it will be our penatration distance
+						c->penatration = y_overlap;
+
 					}
 
-					// Since x axis is the smallest, it will be our penatration distance
-					c->penatration = x_overlap;
+					// Checking if z axis is the smallest penatration
+					else if (z_overlap < x_overlap && z_overlap < y_overlap) {
 
-				}
+						// Point normal towards B, since distance points from A->B
+						if (c->normal.z < 0) {
+							c->normal = glm::vec3(0.0f, 0.0f, -1.0f);
+						}
 
-				// Checking if y axis is the smallest penatration
-				else if (y_overlap < x_overlap && y_overlap < z_overlap) {
+						// Point normal towards A, since distance points from A->B
+						else {
+							c->normal = glm::vec3(0.0f, 0.0f, 1.0f);
+						}
 
-					// Point normal towards B, since distance points from A->B
-					if (c->normal.y < 0) {
-						c->normal = glm::vec3(0.0f, -1.0f, 0.0f);
+						// Since z axis is the smallest, it will be our penatration distance
+						c->penatration = z_overlap;
+
 					}
-
-					// Point normal towards A, since distance points from A->B
-					else {
-						c->normal = glm::vec3(0.0f, 1.0f, 0.0f);
-					}
-
-					// Since y axis is the smallest, it will be our penatration distance
-					c->penatration = y_overlap;
-
-				}
-
-				// Checking if z axis is the smallest penatration
-				else if (z_overlap < x_overlap && z_overlap < y_overlap) {
-
-					// Point normal towards B, since distance points from A->B
-					if (c->normal.z < 0) {
-						c->normal = glm::vec3(0.0f, 0.0f, -1.0f);
-					}
-
-					// Point normal towards A, since distance points from A->B
-					else {
-						c->normal = glm::vec3(0.0f, 0.0f, 1.0f);
-					}
-
-					// Since z axis is the smallest, it will be our penatration distance
-					c->penatration = z_overlap;
-
 				}
 			}
 		}
 	}
 
+	// Storing inverse masses
+	float invMassA = c->A->physicsComponent->GetInverseMass();
+	float invMassB = c->B->physicsComponent->GetInverseMass();
+
 	// Calculates positional correction based on penatration of both objects and their inverse masses, along the normal
-	glm::vec3 correction = c->penatration / (c->A->physicsComponent->GetInverseMass() + c->B->physicsComponent->GetInverseMass()) * c->normal;
+	const float slop = 0.02f; // Penatration allowed
+	const float percent = 0.8f; // Penatration percentage to be corrected
+	glm::vec3 correction = (glm::max(c->penatration - slop, 0.0f) / (invMassA + invMassB)) * c->normal * percent;
 
 	// Pushes back objects based on correction vector and inverse mass
-	c->A->physicsComponent->SetPosition(c->A->physicsComponent->GetPosition() - c->A->physicsComponent->GetInverseMass() * correction);
-	c->B->physicsComponent->SetPosition(c->B->physicsComponent->GetPosition() + c->B->physicsComponent->GetInverseMass() * correction);
+	c->A->physicsComponent->SetPosition(c->A->physicsComponent->GetPosition() - invMassA * correction);
+	c->B->physicsComponent->SetPosition(c->B->physicsComponent->GetPosition() + invMassB * correction);
 }
 
 void PhysicsEngine::ApplyImpulse(ContactData *c) {
@@ -249,13 +416,6 @@ void PhysicsEngine::ApplyImpulse(ContactData *c) {
 	// Calculates relative velocity between both objects
 	rv = c->B->physicsComponent->GetVelocity() - c->A->physicsComponent->GetVelocity();
 
-	// Checks to see if the two colliding bodies are both Dynamic
-	// If true, recalculate the collision normal to get a more realstic collision
-	// Note: Must be done after correcting penatration
-	//if (c->A->physicsComponent->GetPhysicsType() == PhysicsComponent::Physics_Type::DYNAMIC && c->B->physicsComponent->GetPhysicsType() == PhysicsComponent::Physics_Type::DYNAMIC) {
-		//c->normal = c->B->physicsComponent->GetPosition() - c->A->physicsComponent->GetPosition();
-	//}
-
 	// Projects the relative velocity along the collision normal
 	float velAlongNormal = glm::dot(rv, c->normal);
 
@@ -267,22 +427,26 @@ void PhysicsEngine::ApplyImpulse(ContactData *c) {
 	// Calculates restitution based on the lowest value of restitution of our colliding objects
 	float e = glm::min(c->A->physicsComponent->GetRestitution(), c->B->physicsComponent->GetRestitution());
 
+	// Storing inverse masses
+	float invMassA = c->A->physicsComponent->GetInverseMass();
+	float invMassB = c->B->physicsComponent->GetInverseMass();
+
 	// Calculates impulse scalar
 	float j = -(1 + e) * velAlongNormal;
-	j /= c->A->physicsComponent->GetInverseMass() + c->B->physicsComponent->GetInverseMass();
+	j /= invMassA + invMassB;
 
 	// If both objects haven't penatrated slightly,
 	// the normal hasn't been calculated, and make the impulse zero
-	if (c->penatration != 0.0f) {
+	//if (c->penatration != 0.0f) {
 		impulse = j * c->normal;
-	}
-	else {
-		impulse = glm::vec3(0.0f, 0.0f, 0.0f);
-	}
+	//}
+	//else {
+	//	impulse = glm::vec3(0.0f, 0.0f, 0.0f);
+	//}
 
 	// Changes the velocity of  objects based on  impulse and inverse mass
-	c->A->physicsComponent->SetVelocity(c->A->physicsComponent->GetVelocity() - (c->A->physicsComponent->GetInverseMass() * impulse));
-	c->B->physicsComponent->SetVelocity(c->B->physicsComponent->GetVelocity() + (c->B->physicsComponent->GetInverseMass() * impulse));
+	c->A->physicsComponent->SetVelocity(c->A->physicsComponent->GetVelocity() - (invMassA * impulse));
+	c->B->physicsComponent->SetVelocity(c->B->physicsComponent->GetVelocity() + (invMassB * impulse));
 
 	// Calculates the tangent vector
 	glm::vec3 tangent = rv - (glm::dot(rv, c->normal) * c->normal);
@@ -290,10 +454,10 @@ void PhysicsEngine::ApplyImpulse(ContactData *c) {
 
 	// Calculates the tangent impulse scalar
 	float jt = -glm::dot(rv, tangent);
-	jt /= c->A->physicsComponent->GetInverseMass() + c->B->physicsComponent->GetInverseMass();
+	jt /= invMassA + invMassB;
 
 	// Ignore tiny friction impulses
-	if (jt == 0.0f) {
+	if (jt == 0) {
 		return;
 	}
 
@@ -311,192 +475,29 @@ void PhysicsEngine::ApplyImpulse(ContactData *c) {
 	}
 
 	// Changes the velocity of  objects based on friction impulse and inverse mass
-	c->A->physicsComponent->SetVelocity(c->A->physicsComponent->GetVelocity() - c->A->physicsComponent->GetInverseMass() * frictionImpulse);
-	c->B->physicsComponent->SetVelocity(c->B->physicsComponent->GetVelocity() + c->B->physicsComponent->GetInverseMass() * frictionImpulse);
+	c->A->physicsComponent->SetVelocity(c->A->physicsComponent->GetVelocity() - invMassA * frictionImpulse);
+	c->B->physicsComponent->SetVelocity(c->B->physicsComponent->GetVelocity() + invMassB * frictionImpulse);
 }
 
-void PhysicsEngine::Collide(ContactData *c) {
-
-
-	// Initializing our collision normal and penatration distance
-	// Both will be used when resolving collisions
-	glm::vec3 normal;
-	float penatration = 0.0f;
-
-	// Setting the normal to a vector between centre points of both objects
-	normal = c->B->physicsComponent->GetPosition() - c->A->physicsComponent->GetPosition();
-
-	// Half extents of both objects in the x axis
-	float aExtent = (c->A->collisionComponent->GetBoundingBox().max.x - c->A->collisionComponent->GetBoundingBox().min.x) / 2.0f;
-	float bExtent = (c->B->collisionComponent->GetBoundingBox().max.x - c->B->collisionComponent->GetBoundingBox().min.x) / 2.0f;
-
-	// The overlap in the x axis of the objects
-	float x_overlap = aExtent + bExtent - glm::abs(normal.x);
-
-	// If the overlap exists, continue
-	if (x_overlap > 0) {
-
-		// Half extents of both objects in the y axis
-		aExtent = (c->A->collisionComponent->GetBoundingBox().max.y - c->A->collisionComponent->GetBoundingBox().min.y) / 2.0f;
-		bExtent = (c->B->collisionComponent->GetBoundingBox().max.y - c->B->collisionComponent->GetBoundingBox().min.y) / 2.0f;
-
-		// The overlap in the y axis of the objects
-		float y_overlap = aExtent + bExtent - glm::abs(normal.y);
-
-		// If the overlap exists, continue
-		if (y_overlap > 0) {
-
-			// Half extents of both objects in the z axis
-			aExtent = (c->A->collisionComponent->GetBoundingBox().max.z - c->A->collisionComponent->GetBoundingBox().min.z) / 2.0f;
-			bExtent = (c->B->collisionComponent->GetBoundingBox().max.z - c->B->collisionComponent->GetBoundingBox().min.z) / 2.0f;
-
-			// The overlap in the z axis of the objects
-			float z_overlap = aExtent + bExtent - glm::abs(normal.z);
-
-			// If the overlap exists, continue
-			if (z_overlap > 0) {
-
-				// Checking if x axis is the smallest penatration
-				if (x_overlap < y_overlap && x_overlap < z_overlap) {
-
-					// Point normal towards B, since distance points from A->B
-					if (normal.x < 0) {
-						normal = glm::vec3(-1.0f, 0.0f, 0.0f);
-					}
-
-					// Point normal towards A, since distance points from A->B
-					else {
-						normal = glm::vec3(1.0f, 0.0f, 0.0f);
-					}
-
-					// Since x axis is the smallest, it will be our penatration distance
-					penatration = x_overlap;
-
-				}
-
-				// Checking if y axis is the smallest penatration
-				else if (y_overlap < x_overlap && y_overlap < z_overlap) {
-
-					// Point normal towards B, since distance points from A->B
-					if (normal.y < 0) {
-						normal = glm::vec3(0.0f, -1.0f, 0.0f);
-					}
-
-					// Point normal towards A, since distance points from A->B
-					else {
-						normal = glm::vec3(0.0f, 1.0f, 0.0f);
-					}
-
-					// Since y axis is the smallest, it will be our penatration distance
-					penatration = y_overlap;
-
-				}
-
-				// Checking if z axis is the smallest penatration
-				else if (z_overlap < x_overlap && z_overlap < y_overlap) {
-
-					// Point normal towards B, since distance points from A->B
-					if (normal.z < 0) {
-						normal = glm::vec3(0.0f, 0.0f, -1.0f);
-					}
-
-					// Point normal towards A, since distance points from A->B
-					else {
-						normal = glm::vec3(0.0f, 0.0f, 1.0f);
-					}
-
-					// Since z axis is the smallest, it will be our penatration distance
-					penatration = z_overlap;
-
-				}
-			}
-		}
+void PhysicsEngine::ClosestPointOnAABB(glm::vec3 p, Box b, glm::vec3 & q){
+	// If the point is outside the box, clamp it to the box
+	// Else, keep it as is
+	for (int i = 0; i < 3; i++) {
+		float v = p[i];
+		v = glm::max(v, b.c[i] - b.r[i]);
+		v = glm::min(v, b.c[i] + b.r[i]);
+		q[i] = v;
 	}
+}
 
-	// Impulse Resolution of Collisions
-	// WORKS GOOD 
+float PhysicsEngine::SqDistancePointAABB(glm::vec3 p, Box b) {
+	float sqDist = 0.0f;
 
-	// Initializing our relative velocity and impulse
-	// Both are used when resolving collisions
-	glm::vec3 rv;
-	glm::vec3 impulse;
-
-	// Calculates relative velocity between both objects
-	rv = c->B->physicsComponent->GetVelocity() - c->A->physicsComponent->GetVelocity();
-
-	// Projects the relative velocity along the collision normal
-	float velAlongNormal = glm::dot(rv, normal);
-
-	// Does not resolve if velocities are seperating
-	if (velAlongNormal > 0) {
-		return;
+	// Count any excess distance outside box extents for each axis
+	for (int i = 0; i < 3; i++) {
+		float v = p[i];
+		if (v < b.c[i] - b.r[i]) sqDist += (b.c[i] - b.r[i] - v) * (b.c[i] - b.r[i] - v);
+		if (v > b.c[i] + b.r[i]) sqDist += (v - b.c[i] + b.r[i]) * (v - b.c[i] + b.r[i]);
 	}
-
-	// Calculates restitution based on the lowest value of restitution of our colliding objects
-	float e = glm::min(c->A->physicsComponent->GetRestitution(), c->B->physicsComponent->GetRestitution());
-
-	// Calculates impulse scalar
-	float j = -(1 + e) * velAlongNormal;
-	j /= c->A->physicsComponent->GetInverseMass() + c->B->physicsComponent->GetInverseMass();
-
-	// ========================= WORK IN PROGRESS ===============================
-	// Checks that there is penatration and the normal has been made axis aligned 
-	// Calculates impulse vector along aligned normal
-	if (penatration != 0.0f) {
-		impulse = j * normal;
-	}
-	else {
-		impulse = glm::vec3(0.0f,0.0f,0.0f);
-	}
-	// ==========================================================================
-
-
-	// Calculates positional correction based on penatration of both objects and their inverse masses, along the normal
-	glm::vec3 correction = penatration / (c->A->physicsComponent->GetInverseMass() + c->B->physicsComponent->GetInverseMass()) * normal;
-
-	// Pushes back objects based on correction vector and inverse mass
-	c->A->physicsComponent->SetPosition(c->A->physicsComponent->GetPosition() - c->A->physicsComponent->GetInverseMass() * correction);
-	c->B->physicsComponent->SetPosition(c->B->physicsComponent->GetPosition() + c->B->physicsComponent->GetInverseMass() * correction);
-
-	// 
-	c->A->physicsComponent->SetVelocity(c->A->physicsComponent->GetVelocity() - c->A->physicsComponent->GetInverseMass() * impulse);
-	c->B->physicsComponent->SetVelocity(c->B->physicsComponent->GetVelocity() + c->B->physicsComponent->GetInverseMass() * impulse);
-
-
-	// Friction Application
-	// ============= INTRODUCES BUGS OF FLYING OBJECTS =================
-	// ====================== WORK IN PROGRESS =========================
-
-	
-	//rv = pc2->GetVelocity() - pc1->GetVelocity();
-
-	glm::vec3 tangent = rv - (glm::dot(rv, normal) * normal);
-	glm::normalize(tangent);
-
-	float jt = -glm::dot(rv, tangent);
-	jt  /= c->A->physicsComponent->GetInverseMass() + c->B->physicsComponent->GetInverseMass();
-
-	if (jt == 0.0f) {
-		return;
-	}
-
-	float mu = glm::sqrt(glm::length(c->A->physicsComponent->GetStaticFriction()) + glm::length(c->B->physicsComponent->GetStaticFriction()));
-
-	glm::vec3 frictionImpulse;
-	if (glm::abs(jt) < j * mu) {
-		frictionImpulse = jt * tangent;
-	}
-	else {
-		float mu2 = glm::sqrt(glm::length(c->A->physicsComponent->GetKineticFriction()) + glm::length(c->B->physicsComponent->GetKineticFriction()));
-		frictionImpulse = -j * tangent * mu2;
-	}
-
-	c->A->physicsComponent->SetVelocity(c->A->physicsComponent->GetVelocity() - c->A->physicsComponent->GetInverseMass() * frictionImpulse);
-	c->B->physicsComponent->SetVelocity(c->B->physicsComponent->GetVelocity() + c->B->physicsComponent->GetInverseMass() * frictionImpulse);
-
-	if (c->A->physicsComponent->GetVelocity().x <= 0.05f && c->A->physicsComponent->GetVelocity().y <= 0.05f && c->A->physicsComponent->GetVelocity().z <= 0.05f && 
-		c->A->physicsComponent->GetVelocity().x >= -0.05f && c->A->physicsComponent->GetVelocity().y >= -0.05f && c->A->physicsComponent->GetVelocity().z >= -0.05f) {
-		c->A->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
-	}
-	// ================================================================
+	return sqDist;
 }

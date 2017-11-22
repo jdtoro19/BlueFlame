@@ -10,7 +10,7 @@ Cube::Cube()
 	collisionComponent->CreateCollisionVolume(CollisionComponent::Collision_Type::BOX, renderComponent->getVertexList());
 	physicsComponent = new PhysicsComponent();
 	// GRAVITY
-	physicsComponent->SetAcceleration(glm::vec3(0.0f, -25.0f, 0.0f));
+	//physicsComponent->SetAcceleration(glm::vec3(0.0f, -25.0f, 0.0f));
 }
 
 Cube::~Cube() {
@@ -28,7 +28,8 @@ void Cube::AddVelocity(glm::vec3 vel) {
 void Cube::Update(const float deltaTime) {
 	physicsComponent->Update(deltaTime);
 	SetWorldPosition(physicsComponent->GetPosition());
-	collisionComponent->Update(GetWorldPosition(), GetWorldScale());	
+	SetWorldScale(collisionComponent->GetScale());
+	collisionComponent->Update(GetWorldPosition());	
 }
 
 void Cube::Render(Shader* shader)
