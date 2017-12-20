@@ -44,9 +44,6 @@ namespace GAME {
 		Cube* floor;
 		Cube* wall;
 		Model* model;		
-			
-		// skybox
-		Skybox* skybox;	
 
 		// shaders
 		Shader* defaultShader;

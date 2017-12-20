@@ -143,14 +143,14 @@ namespace ENGINE {
 			bones = in_bones;
 			globalInverseTransform = in_globalInverseTransform;
 
-			for (int i = 0; i < in_bones.size(); i++)
+			for (unsigned int i = 0; i < in_bones.size(); i++)
 				in_bones.at(i).parent_skeleton = this;
 		}
 
 		//This next function is pretty self-explanatory...
 		Bone* FindBone(std::string name)
 		{
-			for (int i = 0; i < bones.size(); i++)
+			for (unsigned int i = 0; i < bones.size(); i++)
 			{
 				if (bones.at(i).name == name)
 					return &bones.at(i);
@@ -182,7 +182,7 @@ namespace ENGINE {
 			//We do this in order to make certain that every index in the shader's array
 			//of matrices is filled, that there are no garbage or left-over matrices from
 			//some other draw call.
-			for (int i = 0; i < 100; i++)
+			for (unsigned int i = 0; i < 100; i++)
 			{
 				//If we are past the number of bones in the actual skeleton, we simply
 				//pass in an identity matrix.

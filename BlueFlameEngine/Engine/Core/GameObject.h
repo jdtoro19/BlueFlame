@@ -29,7 +29,7 @@ namespace ENGINE {
 
 	public:
 		GameObject();
-		~GameObject();
+		virtual ~GameObject();
 
 		// Local getters and setters
 		// position

@@ -14,7 +14,6 @@
 #include <vector>
 
 namespace ENGINE {
-
 	// Renders all game objects and the skybox
 	class Renderer
 	{
@@ -26,17 +25,16 @@ namespace ENGINE {
 		void Initialize(Window* w);
 
 		// Rendering Functions
-		void PreRender(Window* window, Camera* camera, bool splitscreen);
+		void PreRender(Window* window, Camera* camera, bool splitscreen, bool postprocess);
 		void Render(Camera* camera, std::vector<GameObject*> objectList, 
 									std::vector<Light*> dirLightList, 
 									std::vector<Light*> pointLightList, 
 									std::vector<Light*> spotLightList
 		);
-		void PostRender(Window* window);		
+		void PostRender(Window* window, bool splitscreen, bool postprocess);
 
 		// Skybox
-		void SetSkybox(Skybox* skybox);
-		void RenderSkybox(Camera* camera);
+		void RenderSkybox(Skybox* sceneSkybox, Camera* camera);
 
 		// Shader manager
 		ResourceManager<Shader>* GetShaderManager();
@@ -44,14 +42,21 @@ namespace ENGINE {
 		// Used for clean up
 		void OnDestroy();
 
-		void renderQuad();
+		void RenderQuad();
+
+		void UseBloom();
 
 		void SetUpFrameBuffers(Window* window);
 
-	private:
-		// Skybox
-		Skybox* skybox;
+		void EnableAA();
+		void EnableShadows();
+		void EnableBloom(bool set) { useBloom = set; };
 
+		void EnableBlackAndWhite(bool set) { blackAndWhite = set; };
+		void EnableInvertedColours(bool set);
+		void EnableBlur(bool set);
+
+	private:
 		// Projection
 		glm::mat4 projection;
 
@@ -60,6 +65,13 @@ namespace ENGINE {
 
 		Shader* blur;
 		Shader* bloom;
+		Shader* screen;
+
+		bool useBloom = false;
+
+		bool blackAndWhite = false;
+		bool invertedColors = false;
+		bool screenBlur = false;
 
 		unsigned int hdrFBO, colorBuffers[2], rboDepth, pingpongFBO[2], pingpongColorbuffers[2];
 
@@ -67,6 +79,10 @@ namespace ENGINE {
 		unsigned int quadVBO;
 
 		unsigned int attachments[2];
+
+		unsigned int framebuffer, textureColorbuffer, rbo;
+
+		void RenderBlackAndWhite();
 	};
 }
 

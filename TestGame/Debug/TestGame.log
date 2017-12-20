@@ -1,6 +1,3 @@
-﻿  DemoScene.cpp
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\graphics\bone.h(146): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\graphics\bone.h(153): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\graphics\bone.h(189): warning C4018: '>': signed/unsigned mismatch
+﻿  Player.cpp
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.exe
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.pdb (Partial PDB)

@@ -7,15 +7,16 @@ std::unique_ptr<BFEngine> BFEngine::BFEngineInstance(nullptr);
 Window* BFEngine::window(nullptr);
 
 //Initialize member variables
-BFEngine::BFEngine() : isRunning(false), sceneManager(nullptr) {
+BFEngine::BFEngine() : isRunning(false), firstLoad(true), sceneManager(nullptr) {
 
 }
 
 BFEngine::~BFEngine() {
+	cout << "Shutting down..." << endl;
 
 	delete sceneManager;
 	sceneManager = nullptr;
-
+	
 	TerminateGame();
 }
 
@@ -37,16 +38,24 @@ BFEngine* BFEngine::GetInstance() {
 
 bool BFEngine::Initialize() {
 
+	Clock::GetInstance()->init();
+
 	//Create a new window
 	window = new Window();
 	//Iniitalize the window with the window name and size
 	window->Initialize("Blue Flame Engine", 1280, 720);
-	InputHandler::GetInstance()->InitControllers();
+	cout << "Window initialized to " << window->GetWidth() << " by " << window->GetHeight() << endl;
+	
 	sceneManager = new SceneManager();
 	sceneManager->Initialize(window);
+	cout << "Scene Manager Initialized" << endl;
 
-	setUpPlayers(); //i hope this works
+	SetUpPlayers();
 
+	RoundTimer = new Cooldown(60.0); //sixty second timer
+	//RoundTimer->startCD();
+
+	cout << "BFEngine Initialized" << endl;
 	return true;
 }
 
@@ -60,11 +69,30 @@ void BFEngine::Run() {
 		timer.UpdateFrameTicks();
 
 		Update(timer.GetDeltaTime());
+		FixedUpdate();
+		PreRender();
 		Render();
-		Draw();
+
+		if (RoundTimer->checkOffCD() == false) {
+			cout << "Time left in Round: " << RoundTimer->secondsLeft() << endl;
+			//use lower explicit int cast if you want round numbers
+			//cout << "Time left in Round: " << (int)RoundTimer->secondsLeft() << endl;
+		}
+		else {
+			//When the main timer is over
+			//BFEngine::GetInstance()->TerminateGame();
+		}
+
+		PostRender();
 		
 		if (sceneManager->IsQuit()) {
 			isRunning = false;
+		}
+
+		if (firstLoad) {
+			cout << "Displaying window..." << endl;
+			SDL_ShowWindow(window->GetWindow());
+			firstLoad = false;			
 		}
 
 		// Keeep the event loop running at a sane rate
@@ -78,25 +106,33 @@ void BFEngine::Update(const float deltaTime) {
 	sceneManager->HandleEvents();
 }
 
+void BFEngine::FixedUpdate() {
+
+}
+
+void BFEngine::PreRender() {
+	sceneManager->PreRender();
+}
+
 void BFEngine::Render() {
 	sceneManager->Render();
 }
 
-void BFEngine::Draw() {
-	sceneManager->Draw();
+void BFEngine::PostRender() {
+	sceneManager->PostRender();
 }
 
 SceneManager* BFEngine::GetSceneManager() {
 	return sceneManager;
 }
 
-void BFEngine::setUpPlayers() {
+void BFEngine::SetUpPlayers() {
 	InputHandler::GetInstance()->InitControllers();
 	numPlayers = InputHandler::GetInstance()->jCheck();
 
 	if (numPlayers == 0) {
 		//no controllers attached, bypass this step
-		std::cout << "No controllers to set up " << std::endl;
+		cout << "No controllers to set up " << endl;
 	}
 	else {
 		//iterate through the players and set them up
@@ -106,7 +142,7 @@ void BFEngine::setUpPlayers() {
 			indexOfPlayer[i] = temp; //translates player X into joystick X
 			cout << "Setting up instance ID " << temp << endl;
 			players[temp] = PlayerController(InputHandler::GetInstance()->joystick[i], temp); //initial constructor
-			std::cout << "Successfully set up player " << i << std::endl;
+			cout << "Successfully set up player " << i << endl;
 		}
 
 	}

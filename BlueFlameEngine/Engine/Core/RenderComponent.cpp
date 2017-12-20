@@ -24,15 +24,15 @@ void RenderComponent::SetRenderType(Render_Type rt) {
 		v.normal = glm::vec3(0.0f, 0.0f, -1.0f);
 		v.position = glm::vec3(-0.5f, -0.5f, -0.5f);
 		vertexList.push_back(v);
+		v.position = glm::vec3(0.5f, 0.5f, -0.5f);
+		vertexList.push_back(v);
 		v.position = glm::vec3(0.5f, -0.5f, -0.5f);
 		vertexList.push_back(v);
 		v.position = glm::vec3(0.5f, 0.5f, -0.5f);
 		vertexList.push_back(v);
-		v.position = glm::vec3(0.5f, 0.5f, -0.5f);
+		v.position = glm::vec3(-0.5f, -0.5f, -0.5f);
 		vertexList.push_back(v);
 		v.position = glm::vec3(-0.5f, 0.5f, -0.5f);
-		vertexList.push_back(v);
-		v.position = glm::vec3(-0.5f, -0.5f, -0.5f);
 		vertexList.push_back(v);
 		// SIDE 2
 		v.normal = glm::vec3(0.0f, 0.0f, 1.0f);
@@ -66,15 +66,15 @@ void RenderComponent::SetRenderType(Render_Type rt) {
 		v.normal = glm::vec3(1.0f, 0.0f, 0.0f);
 		v.position = glm::vec3(0.5f, 0.5f, 0.5f);
 		vertexList.push_back(v);
+		v.position = glm::vec3(0.5f, -0.5f, -0.5f);
+		vertexList.push_back(v);
 		v.position = glm::vec3(0.5f, 0.5f, -0.5f);
 		vertexList.push_back(v);
 		v.position = glm::vec3(0.5f, -0.5f, -0.5f);
 		vertexList.push_back(v);
-		v.position = glm::vec3(0.5f, -0.5f, -0.5f);
+		v.position = glm::vec3(0.5f, 0.5f, 0.5f);
 		vertexList.push_back(v);
 		v.position = glm::vec3(0.5f, -0.5f, 0.5f);
-		vertexList.push_back(v);
-		v.position = glm::vec3(0.5f, 0.5f, 0.5f);
 		vertexList.push_back(v);
 		// SIDE 5
 		v.normal = glm::vec3(0.0f, -1.0f, 0.0f);
@@ -94,15 +94,15 @@ void RenderComponent::SetRenderType(Render_Type rt) {
 		v.normal = glm::vec3(0.0f, 1.0f, 0.0f);
 		v.position = glm::vec3(-0.5f, 0.5f, -0.5f);
 		vertexList.push_back(v);
+		v.position = glm::vec3(0.5f, 0.5f, 0.5f);
+		vertexList.push_back(v);
 		v.position = glm::vec3(0.5f, 0.5f, -0.5f);
 		vertexList.push_back(v);
 		v.position = glm::vec3(0.5f, 0.5f, 0.5f);
 		vertexList.push_back(v);
-		v.position = glm::vec3(0.5f, 0.5f, 0.5f);
+		v.position = glm::vec3(-0.5f, 0.5f, -0.5f);
 		vertexList.push_back(v);
 		v.position = glm::vec3(-0.5f, 0.5f, 0.5f);
-		vertexList.push_back(v);
-		v.position = glm::vec3(-0.5f, 0.5f, -0.5f);
 		vertexList.push_back(v);
 		
 		mesh = new Mesh(&vertexList);

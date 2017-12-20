@@ -20,7 +20,7 @@ void ModelComponent::AnimNodeProcess()
 	if (scene->mNumAnimations == 0)
 	return;
 
-	for (int i = 0; i < scene->mAnimations[0]->mNumChannels; i++)
+	for (unsigned int i = 0; i < scene->mAnimations[0]->mNumChannels; i++)
 	ai_nodes_anim.push_back(scene->mAnimations[0]->mChannels[i]);
 
 	//We only get data from the first mAnimation because
@@ -53,9 +53,9 @@ void ModelComponent::LoadModel(string const &path)
 	ProcessNode(scene->mRootNode, scene);
 
 	
-	for (int i = 0; i < scene->mNumMeshes; i++)
+	for (unsigned int i = 0; i < scene->mNumMeshes; i++)
 	{
-		for (int j = 0; j < scene->mMeshes[i]->mNumBones; j++)
+		for (unsigned int j = 0; j < scene->mMeshes[i]->mNumBones; j++)
 		{
 			//Here we're just storing the bone information that we loaded
 			//with ASSIMP into the formats our Bone class will recognize.
@@ -84,7 +84,7 @@ void ModelComponent::LoadModel(string const &path)
 
 	//Now we have to fill up the remaining ... remaining data within the
 	//bone object, specifically: the pointers to the bone's parent bone.
-	for (int i = 0; i < bones.size(); i++)
+	for (unsigned int i = 0; i < bones.size(); i++)
 	{
 		//Here we cycle through the existing bones and match them up with
 		//their parents, the code here is pretty self explanatory.
@@ -280,7 +280,7 @@ ModelMesh ModelComponent::ProcessMesh(aiMesh *mesh, const aiScene *scene)
 
 Bone* ModelComponent::FindBone(std::string name)
 {
-	for (int i = 0; i < bones.size(); i++)
+	for (unsigned int i = 0; i < bones.size(); i++)
 	{
 		if (bones.at(i).name == name)
 			return &bones.at(i);
@@ -295,7 +295,7 @@ Bone* ModelComponent::FindBone(std::string name)
 
 aiNode* ModelComponent::FindAiNode(std::string name)
 {
-	for (int i = 0; i < ai_nodes.size(); i++)
+	for (unsigned int i = 0; i < ai_nodes.size(); i++)
 	{
 		if (ai_nodes.at(i)->mName.data == name)
 			return ai_nodes.at(i);
@@ -308,7 +308,7 @@ aiNode* ModelComponent::FindAiNode(std::string name)
 
 aiNodeAnim* ModelComponent::FindAiNodeAnim(std::string name)
 {
-	for (int i = 0; i < ai_nodes_anim.size(); i++)
+	for (unsigned int i = 0; i < ai_nodes_anim.size(); i++)
 	{
 		if (ai_nodes_anim.at(i)->mNodeName.data == name)
 			return ai_nodes_anim.at(i);
@@ -322,7 +322,7 @@ aiNodeAnim* ModelComponent::FindAiNodeAnim(std::string name)
 
 int ModelComponent::FindBoneIDByName(std::string name)
 {
-	for (int i = 0; i < bones.size(); i++)
+	for (unsigned int i = 0; i < bones.size(); i++)
 	{
 		if (bones.at(i).name == name)
 			return i;

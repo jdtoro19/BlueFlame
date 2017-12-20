@@ -29,6 +29,7 @@
     <ClCompile Include="Engine\Math\CollisionComponent.cpp" />
     <ClCompile Include="Engine\Math\PhysicsComponent.cpp" />
     <ClCompile Include="Engine\Math\PhysicsEngine.cpp" />
+    <ClCompile Include="Engine\Rendering\2D\ButtonUI.cpp" />
     <ClCompile Include="Engine\Rendering\3D\Cube.cpp" />
     <ClCompile Include="Engine\BFEngine.cpp" />
     <ClCompile Include="Engine\Graphics\Shader.cpp" />
@@ -45,6 +46,11 @@
     <ClCompile Include="Engine\Rendering\3D\Model.cpp" />
     <ClCompile Include="Engine\Rendering\3D\Skybox.cpp" />
     <ClCompile Include="Engine\Rendering\3D\Projectile.cpp" />
+    <ClCompile Include="Engine\Rendering\UIRenderer.cpp" />
+    <ClCompile Include="Engine\Rendering\2D\TextUI.cpp" />
+    <ClCompile Include="Engine\Rendering\2D\UIObject.cpp" />
+    <ClCompile Include="Engine\Rendering\2D\ImageUI.cpp" />
+    <ClCompile Include="Engine\Timers\MasterClock.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\Core\DefaultScene.h" />
@@ -62,6 +68,7 @@
     <ClInclude Include="Engine\Math\PhysicsComponent.h" />
     <ClInclude Include="Engine\Math\PhysicsEngine.h" />
     <ClInclude Include="Engine\Math\Sphere.h" />
+    <ClInclude Include="Engine\Rendering\2D\ButtonUI.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelComponent.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelMesh.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />
@@ -82,6 +89,12 @@
     <ClInclude Include="Engine\Rendering\3D\Model.h" />
     <ClInclude Include="Engine\Rendering\3D\Skybox.h" />
     <ClInclude Include="Engine\Rendering\3D\Projectile.h" />
+    <ClInclude Include="Engine\Rendering\UIRenderer.h" />
+    <ClInclude Include="Engine\Rendering\2D\TextUI.h" />
+    <ClInclude Include="Engine\Rendering\2D\UIObject.h" />
+    <ClInclude Include="Engine\Rendering\2D\ImageUI.h" />
+    <ClInclude Include="Engine\Timers\Cooldown.h" />
+    <ClInclude Include="Engine\Timers\MasterClock.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{2613F258-6C1D-480C-B6D9-EF2C34E50DDA}</ProjectGuid>
@@ -148,7 +161,7 @@
       <SubSystem>Console</SubSystem>
     </Link>
     <Lib>
-      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2test.lib;SDL2_image.lib;glew32.lib;glew32s.lib;opengl32.lib;assimp-vc140-mt.lib;AssimpConverter.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2test.lib;SDL2_image.lib;glew32.lib;glew32s.lib;opengl32.lib;assimp-vc140-mt.lib;AssimpConverter.lib;freetype271.lib;freetype271MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

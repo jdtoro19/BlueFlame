@@ -34,6 +34,7 @@ void Projectile::AddVelocity(glm::vec3 vel) {
 
 void Projectile::Update(const float deltaTime) {
 	if (deleted == false && rip > 0) {
+		//physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0, -2500.0f * deltaTime));
 		physicsComponent->Update(deltaTime);
 		SetWorldPosition(physicsComponent->GetPosition());
 		collisionComponent->Update(GetWorldPosition(), GetWorldScale());

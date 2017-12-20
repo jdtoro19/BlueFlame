@@ -7,6 +7,8 @@
 #include "Core/Timer.h"
 #include "InputHandling/InputHandler.h"
 #include "InputHandling/PlayerController.h"
+#include "Timers/MasterClock.h"
+#include "Timers/Cooldown.h"
 
 namespace ENGINE {
 
@@ -25,18 +27,20 @@ namespace ENGINE {
 		bool Initialize();
 		void Run();
 		void Update(const float deltaTime);
+		void FixedUpdate();
+		void PreRender();
 		void Render();
-		void Draw();
-
-		static void TerminateGame();
+		void PostRender();
 
 		SceneManager* GetSceneManager();
+
+		static void TerminateGame();		
 
 		//going to count from joysticks right now
 		PlayerController players[4];
 		int numPlayers = NULL;
-
-		int indexOfPlayer[4]; //use this to get player 0, player 1, etc. Otherwise you're taking joystick index
+		//use this to get player 0, player 1, etc. Otherwise you're taking joystick index
+		int indexOfPlayer[4]; 
 
 	private:
 		//Private Constructor and Destructor so no other class can create it
@@ -46,13 +50,16 @@ namespace ENGINE {
 		static std::unique_ptr<BFEngine> BFEngineInstance;
 		friend std::default_delete<BFEngine>;
 
-		void setUpPlayers();
+		void SetUpPlayers();
 
 		bool isRunning;
+		bool firstLoad;
 
 		static Window* window;
 
 		SceneManager* sceneManager;
+
+		Cooldown* RoundTimer;
 	};
 }
 

@@ -12,6 +12,7 @@
 #include <BlueFlameEngine\Engine\Graphics\Shader.h> 
 #include <BlueFlameEngine\Engine\Math\PhysicsEngine.h>
 #include <BlueFlameEngine\Engine\InputHandling\InputHandler.h>
+#include <BlueFlameEngine\Engine\Rendering\2D\TextUI.h>
 
 using namespace ENGINE;
 
@@ -45,9 +46,9 @@ namespace GAME {
 		Cube* wall;
 		Cube* wall1;
 		Cube* middleWall;	
-			
-		// skybox
-		Skybox* skybox;	
+
+		// UI
+		TextUI* text;
 
 		// shaders
 		Shader* defaultShader;

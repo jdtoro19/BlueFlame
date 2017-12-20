@@ -27,7 +27,7 @@ bool Window::Initialize(std::string windowName_, int width_, int height_) {
 	//SDL_CreateWindow(windowName, windowPosition_x,
 	//windowPosition_y, windowWidth, windowHeight, tpeOfWindow)
 	SDLWindow = SDL_CreateWindow(windowName_.c_str(), SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE);
+		SDL_WINDOWPOS_CENTERED, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
 
 	//Check to make sure the window was created properly
 	if (!SDLWindow) {
@@ -53,7 +53,7 @@ bool Window::Initialize(std::string windowName_, int width_, int height_) {
 	}
 
 	//Tells the GPU to test for depth when rendering
-	glEnable(GL_DEPTH_TEST);
+	//glEnable(GL_DEPTH_TEST);
 
 	GetInstalledOpenGLInfo();
 
@@ -84,6 +84,8 @@ void Window::SetAttributes() {
 	//This will help the GPU determine which objects are in front of others (perspective)
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32);
 
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 }
 
 SDL_Window* Window::GetWindow() const {

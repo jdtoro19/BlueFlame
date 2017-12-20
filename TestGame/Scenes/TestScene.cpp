@@ -8,16 +8,16 @@ TestScene::TestScene()
 
 TestScene::~TestScene()
 {
-	cube = nullptr;
-	cube2 = nullptr;
-	floor = nullptr;
-	wall = nullptr;
-	model = nullptr;
 	delete cube;
 	delete cube2;
 	delete floor;
 	delete wall;
 	delete model;
+	cube = nullptr;
+	cube2 = nullptr;
+	floor = nullptr;
+	wall = nullptr;
+	model = nullptr;	
 }
 
 void TestScene::Initialize() 
@@ -131,23 +131,22 @@ void TestScene::Initialize()
 	model->SetShader(modelShaderHandle);
 	model->physicsComponent->SetPosition(glm::vec3(1.0f, 1.0f, 0.0f));
 	model->SetWorldScale(0.02f);
-	///model->SetWorldScale(0.5f);
-    ///model->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), 80.0f);
+	//model->SetWorldScale(0.5f);
+    //model->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), 80.0f);
 	model->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	model->physicsComponent->SetMass(50.0f);
 
 	// Make skybox, load its textures, set properties, and give to the renderer
 	skybox = new Skybox();
 	std::vector<char*> faces;
-	faces.push_back("Resources/Textures/Skyboxes/right.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/left.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/top.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/bottom.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/back.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/front.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/right.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/left.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/top.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/bottom.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/back.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/front.jpg");
 	skybox->LoadTextures(faces);
 	skybox->SetShader(skyboxShaderHandle);
-	sceneManager->GetRenderer()->SetSkybox(skybox);
 
 	// add objects and lights to their lists
 	AddObject(cube);

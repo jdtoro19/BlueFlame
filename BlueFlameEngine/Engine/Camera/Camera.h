@@ -151,11 +151,17 @@ namespace ENGINE {
 
 		void SetRotationY(float yaw) {
 			Yaw = yaw;
+			if (Yaw > 360) {
+				Yaw = 0.0f;
+			}
 			updateCameraVectors();
 		}
 
 		void SetRotationX(float pitch) {
 			Pitch = pitch;
+			if (Pitch > 360) {
+				Pitch = 0.0f;
+			}
 			updateCameraVectors();
 		}
 	};

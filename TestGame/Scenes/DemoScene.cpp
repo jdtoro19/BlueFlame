@@ -18,6 +18,8 @@ void DemoScene::Initialize()
 	// Set screen options
 	sceneManager->EnableSplitscreen(true);
 	sceneManager->EnableFullscreen(true);
+	sceneManager->ShowFPS(true);
+	sceneManager->CaptureMouse(true);
 
 	// Set the options for the first camera
 	cameraList[0]->Position = glm::vec3(0.0f, 6.0f, 10.0f);
@@ -49,17 +51,18 @@ void DemoScene::Initialize()
 	pointLight->SetWorldPosition(0.0f, 5.0f, 0.0f);
 	pointLight->SetWorldScale(0.5f);
 	// Set what type of light and what colour this object emits
-	pointLight->lightComponent->SetColour(glm::vec3(0.0f, 2.0f, 4.0f));
+	pointLight->lightComponent->SetColour(glm::vec3(2.0f, 2.0f, 2.0f));
 	//	
 	
 	// Make directional light
 	dirLight = new Light(LightComponent::Light_Type::DIRECTIONAL);
-	dirLight->lightComponent->SetDirection(glm::vec3(2.0f, -2.0f, -2.0f));
+	dirLight->lightComponent->SetDirection(glm::vec3(1.0f, -1.0f, 1.0f));
 
 	// Objects
 
 	// Player 1
 	cube1 = new Cube();
+	//cube1->SetWorldScale(1.0f, 1.5f, 0.1f);
 	cube1->SetShader(defaultShaderHandle);
 	cube1->renderComponent->SetColour(0.5f, 0.0f, 0.5f);
 	cube1->physicsComponent->SetPosition(glm::vec3(-2.0f, 0.0f, 3.0f));
@@ -75,6 +78,7 @@ void DemoScene::Initialize()
 
 	// Player 2
 	cube2 = new Cube();
+	//cube2->SetWorldScale(1.0f, 1.5f, 0.1f);
 	cube2->SetShader(defaultShaderHandle);
 	cube2->renderComponent->SetColour(0.5f, 0.0f, 0.5f);
 	cube2->physicsComponent->SetPosition(glm::vec3(2.0f, 0.0f, 3.0f));
@@ -89,6 +93,7 @@ void DemoScene::Initialize()
 
 	// Player 3
 	cube3 = new Cube();
+	//cube3->SetWorldScale(1.0f, 1.5f, 0.1f);
 	cube3->SetShader(defaultShaderHandle);
 	cube3->renderComponent->SetColour(0.0f, 0.5f, 0.0f);
 	cube3->physicsComponent->SetPosition(glm::vec3(2.0f, 0.0f, -3.0f));
@@ -104,6 +109,7 @@ void DemoScene::Initialize()
 
 	// Player 4
 	cube4 = new Cube();
+	//cube4->SetWorldScale(1.0f, 1.5f, 0.1f);
 	cube4->SetShader(defaultShaderHandle);
 	cube4->renderComponent->SetColour(0.0f, 0.5f, 0.0f);
 	cube4->physicsComponent->SetPosition(glm::vec3(-2.0f, 0.0f, -3.0f));
@@ -120,7 +126,7 @@ void DemoScene::Initialize()
 	// Arena
 	floor = new Cube();
 	floor->SetShader(defaultShaderHandle);
-	floor->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
+	floor->renderComponent->SetColour(0.1f, 0.1f, 0.1f);
 	floor->physicsComponent->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
 	floor->SetWorldScale(11.0f, 1.0f, 11.0f);
 	floor->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
@@ -130,7 +136,7 @@ void DemoScene::Initialize()
 
 	wall = new Cube();
 	wall->SetShader(defaultShaderHandle);
-	wall->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
+	wall->renderComponent->SetColour(0.1f, 0.1f, 0.1f);
 	wall->physicsComponent->SetPosition(glm::vec3(5.5f, 0.0f, 0.0f));
 	wall->SetWorldScale(1.0f, 2.0f, 11.0f);
 	wall->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
@@ -140,7 +146,7 @@ void DemoScene::Initialize()
 
 	wall1 = new Cube();
 	wall1->SetShader(defaultShaderHandle);
-	wall1->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
+	wall1->renderComponent->SetColour(0.1f, 0.1f, 0.1f);
 	wall1->physicsComponent->SetPosition(glm::vec3(-5.5f, 0.0f, 0.0f));
 	wall1->SetWorldScale(1.0f, 2.0f, 11.0f);
 	wall1->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
@@ -169,7 +175,13 @@ void DemoScene::Initialize()
 	faces.push_back("Resources/Textures/Skyboxes/front.jpg");
 	skybox->LoadTextures(faces);
 	skybox->SetShader(skyboxShaderHandle);
-	sceneManager->GetRenderer()->SetSkybox(skybox);
+
+	// UI
+	text = new TextUI();
+	text->SetText("ALL OUT BRAWLER;");
+	text->SetColour(0.0f, 0.0f, 0.0f);
+	text->SetSize(1.0f);
+	text->SetPosition(sceneManager->GetScreenWidth() / 2 - text->GetLength() / 2, sceneManager->GetScreenHeight() - 100);
 
 	// add objects and lights to their lists
 	AddPhysicsObject(cube1);
@@ -182,6 +194,7 @@ void DemoScene::Initialize()
 	AddPhysicsObject(middleWall);
 	AddLightObject(dirLight);
 	AddLightObject(pointLight);
+	AddUIObject(text);
 
 	PhysicsEngine::GetInstance()->AddObjectList(physicsObjectList);
 }
@@ -231,7 +244,8 @@ void DemoScene::Update(const float deltaTime)
 			BFEngine::GetInstance()->players[i].pObject()->physicsComponent->SetVelocity(temp + glm::vec3(mods.x * moveSpeed * deltaTime, 0.0f, mods.y * moveSpeed * deltaTime));
 
 			if (BFEngine::GetInstance()->players[i].shotDelay == 0) {
-				if (SDL_JoystickGetButton(BFEngine::GetInstance()->players[i].pStick, 1) == 1) {
+				//if (SDL_JoystickGetButton(BFEngine::GetInstance()->players[i].pStick, 1) == 1) {
+				if (SDL_JoystickGetAxis(BFEngine::GetInstance()->players[i].pStick, 5) > 1000) {
 					Cube* lr = BFEngine::GetInstance()->players[i].pObject(); //line reducer
 					Projectile* p = new Projectile(glm::vec3(lr->GetWorldPosition().x, lr->GetWorldPosition().y, lr->GetWorldPosition().z - BFEngine::GetInstance()->players[i].inverted() * lr->collisionComponent->boundingBox->w * lr->GetWorldScale().z), BFEngine::GetInstance()->players[i].inverted());
 					glm::vec3 tempColor = BFEngine::GetInstance()->players[i].getTeamColor();
@@ -242,6 +256,7 @@ void DemoScene::Update(const float deltaTime)
 
 					std::cout << "Player " << i << " shot." << std::endl;
 					BFEngine::GetInstance()->players[i].weShot();
+					//TODO: Animation
 				}
 			}
 					BFEngine::GetInstance()->players[i].tick();
@@ -428,7 +443,8 @@ void DemoScene::Render()
 	// Rendering handled by SceneManager.....for now...
 }
 
+// Used to draw 2d objects or UI elements
 void DemoScene::Draw()
 {
-	// Used to draw 2d objects or UI elements
+	sceneManager->DebugText("Text origin is top left", 25.0f, 25.0f);
 }
