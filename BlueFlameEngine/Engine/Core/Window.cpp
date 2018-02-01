@@ -123,5 +123,3 @@ void Window::GetInstalledOpenGLInfo() {
 	std::cout << "Graphics card name " << renderer << std::endl;
 	std::cout << "GLSL Version " << glslVersion << std::endl;
 }
-
-

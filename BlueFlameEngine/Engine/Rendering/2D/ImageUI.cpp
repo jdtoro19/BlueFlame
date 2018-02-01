@@ -83,7 +83,7 @@ void ImageUI::Draw(glm::mat4 projection) {
 	shader->setFloat("alpha", alpha);
 	shader->setMat4("projection", projection);
 
-	shader->setInt("texture", 0);
+	shader->setInt("texture1", 0);
 	glBindTexture(GL_TEXTURE_2D, textureID);
 
 	glBindVertexArray(VAO);

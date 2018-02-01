@@ -12,6 +12,7 @@
 #include <BlueFlameEngine\Engine\Graphics\Shader.h> 
 #include <BlueFlameEngine\Engine\Math\PhysicsEngine.h>
 #include <BlueFlameEngine\Engine\InputHandling\InputHandler.h>
+#include "DemoScene.h"
 
 using namespace ENGINE;
 
@@ -39,11 +40,11 @@ namespace GAME {
 		Light* dirLight;
 
 		// Objects
-		Cube* cube;
-		Cube* cube2;
+		Model* model;
+		Model* model2;
+		Model* model3;
+		Model* model4;
 		Cube* floor;
-		Cube* wall;
-		Model* model;		
 
 		// shaders
 		Shader* defaultShader;

@@ -62,12 +62,10 @@
     <ClInclude Include="Engine\Graphics\Bone.h" />
     <ClInclude Include="Engine\InputHandling\InputHandler.h" />
     <ClInclude Include="Engine\InputHandling\PlayerController.h" />
-    <ClInclude Include="Engine\Math\Box.h" />
     <ClInclude Include="Engine\Math\CollisionComponent.h" />
     <ClInclude Include="Engine\Math\ContactData.h" />
     <ClInclude Include="Engine\Math\PhysicsComponent.h" />
     <ClInclude Include="Engine\Math\PhysicsEngine.h" />
-    <ClInclude Include="Engine\Math\Sphere.h" />
     <ClInclude Include="Engine\Rendering\2D\ButtonUI.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelComponent.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelMesh.h" />

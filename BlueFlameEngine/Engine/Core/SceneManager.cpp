@@ -29,16 +29,12 @@ void SceneManager::Initialize(Window* w) {
 	renderer->Initialize(window);
 	cout << "Renderer Initialized" << endl;
 
-	if (postprocess) {
-		renderer->SetUpFrameBuffers(window);
-	}
-
 	uiRenderer = new UIRenderer();
 	uiRenderer->Initialize(window);
 	cout << "UI Renderer Initialized" << endl;
 
 	cout << "Default scene added" << endl;
-	SwitchScene(new DefaultScene());	
+	SwitchScene(new DefaultScene());
 }
 
 // Calls the current scene's update 
@@ -49,7 +45,7 @@ void SceneManager::Update(const float deltaTime) {
 
 // The renderer is slit into PreRender, Render, and PostRender
 void SceneManager::PreRender() {
-	renderer->PreRender(window, currentScene->GetCameraList()[0], splitscreen, postprocess);
+	renderer->PreRender(window, currentScene->GetCameraList()[0], splitscreen);
 }
 
 void SceneManager::Render() {
@@ -83,9 +79,13 @@ void SceneManager::Render() {
 }
 
 void SceneManager::PostRender() {
-	Draw();
+	
 	glViewport(0, 0, window->GetWidth(), window->GetHeight());
-	renderer->PostRender(window, splitscreen, postprocess);
+	Draw();
+	renderer->PostRender(window, splitscreen);
+	if (showFPS) {
+		DebugText("FPS: " + std::to_string((int)(1 / deltaTime)), GetScreenWidth() - 125.0f, 35.0f);
+	}
 	SDL_GL_SwapWindow(window->GetWindow());
 }
 
@@ -96,9 +96,6 @@ void SceneManager::Draw() {
 	currentScene->Draw();
 	uiRenderer->Draw(window, currentScene->GetUIObjectList());
 
-	if (showFPS) {
-		DebugText("FPS: " + std::to_string((int)(1 / deltaTime)), GetScreenWidth() - 125.0f, 35.0f);
-	}
 }
 
 // Handles all input and also calls the current scene's HandleEvent
@@ -148,19 +145,29 @@ void SceneManager::HandleEvents() {
 	}	
 
 	if (state[SDL_SCANCODE_1]) {
-		renderer->EnableBlackAndWhite(false);
+		renderer->EnableGreyscale(false);
+		renderer->EnableInvertedColours(false);
+		renderer->EnableKernel(false);
 	}
 
 	if (state[SDL_SCANCODE_2]) {
-		renderer->EnableBlackAndWhite(true);
+		renderer->EnableGreyscale(true);
 	}
 
 	if (state[SDL_SCANCODE_3]) {
-		renderer->EnableBloom(false);
+		renderer->EnableInvertedColours(true);
 	}
 
 	if (state[SDL_SCANCODE_4]) {
+		renderer->EnableKernel(true);
+	}
+
+	if (state[SDL_SCANCODE_5]) {
 		renderer->EnableBloom(true);
+	}
+
+	if (state[SDL_SCANCODE_6]) {
+		renderer->EnableBloom(false);
 	}
 
 	if (state[SDL_SCANCODE_ESCAPE]) {
@@ -240,10 +247,6 @@ void SceneManager::EnableSplitscreen(bool setSplitscreen) {
 
 void SceneManager::EnableFullscreen(bool setFullscreen) {
 	window->SetFullScreen(setFullscreen);
-}
-
-void SceneManager::EnablePostProcess(bool setPostprocess) {
-	postprocess = setPostprocess;
 }
 
 void SceneManager::ShowFPS(bool setShowFPS) {

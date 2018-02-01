@@ -16,19 +16,22 @@ namespace ENGINE {
 		~PhysicsEngine();
 
 	public:
+
+		// Main Update function called every frame use functions on the object list as needed for the game
+		void Update(float deltaTime);
+
 		// Returns the current instance of the physics engine
 		static PhysicsEngine* GetInstance();
 
 		// Function adds all physics objects to the physics engine
 		void AddObjectList(std::vector<GameObject*> physicsObjectList);
 
+		// Function generates the pairs to be collided with each other based on the objectlist given
+		void GeneratePairs(std::vector<GameObject*> physicsObjectList);
+
 		// Function returns true if both collision components are colliding
-		 bool isColliding(ContactData *c);
-
-		 bool isColliding(CollisionComponent* c1, CollisionComponent* c2);
-
-		// Function collides both objects and changes velocity, position, and acceleration depending on collision 
-		 void Collide(ContactData *c);
+		 static bool isColliding(ContactData *c);
+		 static bool isColliding(CollisionComponent *a, CollisionComponent *b);
 
 		 // Function corrects the penatration into other objects when colliding by changing its position
 		 void PenatrationCorrection(ContactData *c);
@@ -36,13 +39,18 @@ namespace ENGINE {
 		 // Function applies impulse to both objects when colliding by changing its velocities
 		 void ApplyImpulse(ContactData *c);
 
-		 void GeneratePairs(std::vector<GameObject*> physicsObjectList);
+		 // Basic Primitive Tests to be used when needed
+		 static void ClosestPointOnAABB(glm::vec3 p, Box b, glm::vec3 &q);
+		 float SqDistancePointAABB(glm::vec3 p, Box b);
 
-		 void Update(float deltaTime);
-	public:
-		static std::unique_ptr<PhysicsEngine> PhysicsEngineInstance;
-		friend std::default_delete<PhysicsEngine>;
-		std::vector<ContactData*> contactList;
+		 // Singleton pointers
+		 static std::unique_ptr<PhysicsEngine> PhysicsEngineInstance;
+		 friend std::default_delete<PhysicsEngine>;
+
+		 // List of objects to collide
+		 std::vector<ContactData*> contactList;
+
+		
 
 	};
 }

@@ -23,10 +23,6 @@ void ModelComponent::AnimNodeProcess()
 	for (unsigned int i = 0; i < scene->mAnimations[0]->mNumChannels; i++)
 	ai_nodes_anim.push_back(scene->mAnimations[0]->mChannels[i]);
 
-	//We only get data from the first mAnimation because
-	//Assimp crushes all of the animation data into one
-	//large sequence of data known as mAnimation.
-	//Assimp does not support multiple mAnimations, surprisingly.
 }
 
 void ModelComponent::LoadModel(string const &path)
@@ -62,7 +58,7 @@ void ModelComponent::LoadModel(string const &path)
 			std::string b_name = scene->mMeshes[i]->mBones[j]->mName.data;
 			glm::mat4 b_mat = glm::transpose(Bone::AiToGLMMat4(scene->mMeshes[i]->mBones[j]->mOffsetMatrix));
 
-			//Just because I like debugging...
+			//Print bone name
 			std::cout << "Bone " << j << " " << b_name << std::endl;
 
 			//Here we create a Bone Object with the information we've

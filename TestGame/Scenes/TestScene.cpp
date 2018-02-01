@@ -8,22 +8,21 @@ TestScene::TestScene()
 
 TestScene::~TestScene()
 {
-	delete cube;
-	delete cube2;
-	delete floor;
-	delete wall;
 	delete model;
-	cube = nullptr;
-	cube2 = nullptr;
-	floor = nullptr;
-	wall = nullptr;
-	model = nullptr;	
+	model = nullptr;
+	delete model2;
+	model2 = nullptr;
+	delete model3;
+	model3 = nullptr;
 }
 
-void TestScene::Initialize() 
+void TestScene::Initialize()
 {
 	// Make reference to the scene manager
 	sceneManager = BFEngine::GetInstance()->GetSceneManager();
+
+	// Scene Options
+	sceneManager->CaptureMouse(true);
 
 	// Set the position of the first camera
 	cameraList[0]->Position = glm::vec3(0.0f, 1.0f, 3.0f);
@@ -37,7 +36,7 @@ void TestScene::Initialize()
 	lightShader = new Shader("Shaders/lamp.vs", "Shaders/lamp.fs");
 
 	// Put shaders into shader manager
-	defaultShaderHandle = sceneManager->GetRenderer()->GetShaderManager()->put(std::string("cube"), defaultShader);
+	defaultShaderHandle = sceneManager->GetRenderer()->GetShaderManager()->put(std::string("cube2"), defaultShader);
 	modelShaderHandle = sceneManager->GetRenderer()->GetShaderManager()->put(std::string("model"), modelShader);
 	skyboxShaderHandle = sceneManager->GetRenderer()->GetShaderManager()->put(std::string("skybox"), skyboxShader);
 	lightShaderHandle = sceneManager->GetRenderer()->GetShaderManager()->put(std::string("light"), lightShader);
@@ -47,22 +46,22 @@ void TestScene::Initialize()
 	// Initialize
 	blueLight = new Light(LightComponent::Light_Type::POINTLIGHT);
 	// Set which shader this object is using
-	blueLight->SetShader(lightShaderHandle);
+	blueLight->SetShader(modelShaderHandle);
 	// Set type and colour of object's mesh
 	blueLight->renderComponent->SetRenderType(RenderComponent::Render_Type::CUBE);
 	blueLight->renderComponent->SetColour(0.0f, 0.0f, 1.0f);
 	// Set position and scale of object
-	blueLight->SetWorldPosition(-2.0f, 2.0f, 0.0f);
-	blueLight->SetWorldScale(0.5f);
+	blueLight->SetWorldPosition(-3.0f, 2.0f, 0.0f);
+	blueLight->SetWorldScale(1.0f);
 	// Set what type of light and what colour this object emits
-	blueLight->lightComponent->SetColour(glm::vec3(0.0f, 0.0f, 1.0f));
+	blueLight->lightComponent->SetColour(glm::vec3(1.0f, 1.0f, 1.0f));
 	//
-	
+
 	redLight = new Light();
 	redLight->SetShader(lightShaderHandle);
 	redLight->renderComponent->SetRenderType(RenderComponent::Render_Type::CUBE);
 	redLight->renderComponent->SetColour(1.0f, 0.0f, 0.0f);
-	redLight->SetWorldPosition(-2.0f, 0.0f, 0.0f);
+	redLight->SetWorldPosition(-3.0f, 0.0f, 0.0f);
 	redLight->SetWorldScale(0.5f);
 	redLight->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
 	redLight->lightComponent->SetColour(glm::vec3(1.0f, 0.0f, 0.0f));
@@ -71,7 +70,7 @@ void TestScene::Initialize()
 	greenLight->SetShader(lightShaderHandle);
 	greenLight->renderComponent->SetRenderType(RenderComponent::Render_Type::CUBE);
 	greenLight->renderComponent->SetColour(0.0f, 1.0f, 0.0f);
-	greenLight->SetWorldPosition(2.0f, 0.0f, 0.0f);
+	greenLight->SetWorldPosition(3.0f, 0.0f, 0.0f);
 	greenLight->SetWorldScale(0.5f);
 	greenLight->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
 	greenLight->lightComponent->SetColour(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -80,80 +79,80 @@ void TestScene::Initialize()
 	yellowLight->SetShader(lightShaderHandle);
 	yellowLight->renderComponent->SetRenderType(RenderComponent::Render_Type::CUBE);
 	yellowLight->renderComponent->SetColour(1.0f, 1.0f, 0.0f);
-	yellowLight->SetWorldPosition(2.0f, 2.0f, 0.0f);
+	yellowLight->SetWorldPosition(3.0f, 2.0f, 0.0f);
 	yellowLight->SetWorldScale(0.5f);
 	yellowLight->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
 	yellowLight->lightComponent->SetColour(glm::vec3(1.0f, 1.0f, 0.0f));
 
 	// Make directional light
 	dirLight = new Light(LightComponent::Light_Type::DIRECTIONAL);
+	//dirLight->lightComponent->SetDirection(glm::vec3(-0.0f, 0.0f, 0.8f));
 	dirLight->lightComponent->SetDirection(glm::vec3(-0.5f, 0.0f, -0.8f));
 
-	// Objects
-	cube = new Cube();
-	cube->SetShader(defaultShaderHandle);
-	cube->renderComponent->SetColour(0.0f, 0.0f, 1.0f);
-	cube->physicsComponent->SetPosition(glm::vec3(-1.0f, 0.0f, 0.0f));
-	cube->SetWorldScale(0.5f, 0.5f, 0.5f);
-	cube->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
-	cube->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_ELASTIC);
-	cube->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
-	cube->physicsComponent->SetMass(50.0f);
-
-	cube2 = new Cube();
-	cube2->SetShader(defaultShaderHandle);
-	cube2->renderComponent->SetColour(1.0f, 0.0f, 0.0f);
-	cube2->physicsComponent->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-	cube2->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
-	cube2->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_ELASTIC);
-	cube2->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
-	cube2->physicsComponent->SetMass(50.0f);
-
+	// Floor
 	floor = new Cube();
 	floor->SetShader(defaultShaderHandle);
 	floor->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
-	floor->physicsComponent->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
-	floor->SetWorldScale(7.0f, 1.0f, 7.0f);
+	floor->physicsComponent->SetPosition(glm::vec3(0.0f, -2.0f, 0.0f));
+	floor->SetWorldScale(12.0f, 1.0f, 12.0f);
 	floor->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	floor->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
 	floor->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
 	floor->physicsComponent->SetMass(0.0f);
-
-	wall = new Cube();
-	wall->SetShader(defaultShaderHandle);
-	wall->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
-	wall->physicsComponent->SetPosition(glm::vec3(3.5f, 0.0f, 0.0f));
-	wall->SetWorldScale(1.0f, 2.0f, 7.0f);
-	wall->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
-	wall->physicsComponent->SetMass(0.0f);
 
 	model = new Model("Resources/Models/miku/miku.obj");
 	model->SetShader(modelShaderHandle);
 	model->physicsComponent->SetPosition(glm::vec3(1.0f, 1.0f, 0.0f));
 	model->SetWorldScale(0.02f);
 	//model->SetWorldScale(0.5f);
-    //model->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), 80.0f);
-	model->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
-	model->physicsComponent->SetMass(50.0f);
+	//model->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), 80.0f);
+	//model->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
+	//model->physicsComponent->SetMass(50.0f);
+
+	model2 = new Model("Resources/Models/nanosuit/nanosuit.obj");
+	model2->SetShader(modelShaderHandle);
+	model2->physicsComponent->SetPosition(glm::vec3(-1.5f, -0.9f, 0.0f));
+	model2->SetWorldScale(0.25f);
+	//model->SetWorldScale(0.5f);
+	//model->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), 80.0f);
+	//model->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
+	//model->physicsComponent->SetMass(50.0f);
+
+	model3 = new Model("Resources/Models/monster/Monster_1.dae");
+	model3->SetShader(modelShaderHandle);
+	model3->physicsComponent->SetPosition(glm::vec3(0.0f, -1.0f, -2.0f));
+	//model3->SetWorldScale(0.02f);
+	model3->SetWorldScale(0.5f);
+	model3->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), 80.0f);
+	//model->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
+	//model->physicsComponent->SetMass(50.0f);
+
+	model4 = new Model("Resources/Models/boblampclean.md5mesh");
+	model4->SetShader(modelShaderHandle);
+	model4->physicsComponent->SetPosition(glm::vec3(0.0f, 0.0f, 2.0f));
+	model4->SetWorldScale(0.02f);
+	model4->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), 80.0f);
+	//model->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
+	//model->physicsComponent->SetMass(50.0f);
 
 	// Make skybox, load its textures, set properties, and give to the renderer
 	skybox = new Skybox();
 	std::vector<char*> faces;
-	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/right.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/left.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/top.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/bottom.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/back.jpg");
-	faces.push_back("Resources/Textures/Skyboxes/ame_nebula/front.jpg");
+	faces.push_back("Resources/Textures/Skyboxes/grimmnight/right.png");
+	faces.push_back("Resources/Textures/Skyboxes/grimmnight/left.png");
+	faces.push_back("Resources/Textures/Skyboxes/grimmnight/top.png");
+	faces.push_back("Resources/Textures/Skyboxes/grimmnight/bottom.png");
+	faces.push_back("Resources/Textures/Skyboxes/grimmnight/back.png");
+	faces.push_back("Resources/Textures/Skyboxes/grimmnight/front.png");
 	skybox->LoadTextures(faces);
 	skybox->SetShader(skyboxShaderHandle);
 
 	// add objects and lights to their lists
-	AddObject(cube);
-	AddObject(cube2);
-	AddObject(floor);
 	AddObject(model);
-	AddObject(wall);
+	AddObject(model2);
+	AddObject(model3);
+	AddObject(model4);
+	AddObject(floor);
 	AddLightObject(dirLight);
 	AddLightObject(blueLight);
 	AddLightObject(redLight);
@@ -227,27 +226,6 @@ void TestScene::Update(const float deltaTime)
 			}
 			//cout << x_move << " " << x_move / jStickMod << " " << y_move << " " << y_move / jStickMod << endl;
 			//std::cout << "ModX: " << modifierX << " ModY: " << modifierY << std::endl;
-
-			if (i == 0) {
-				if (InputHandler::GetInstance()->upDown) {
-					modifierY *= -1; //y axis is inverted in up down thats why we're taking negative values
-					cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(modifierX * moveSpeed * deltaTime, modifierY * moveSpeed * deltaTime, 0.0f));
-				}
-				else {
-					cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(modifierX * moveSpeed * deltaTime, 0.0f, modifierY * moveSpeed * deltaTime));
-				}
-			}
-			else if (i == 1) {
-				if (InputHandler::GetInstance()->upDown) {
-					modifierY *= -1; //y axis is inverted in up down thats why we're taking negative values
-					cube2->SetWorldPosition(cube2->GetWorldPosition() + glm::vec3(modifierX * moveSpeed * deltaTime, modifierY * moveSpeed * deltaTime, 0.0f));
-				}
-				else {
-					cube2->SetWorldPosition(cube2->GetWorldPosition() + glm::vec3(modifierX * moveSpeed * deltaTime, 0.0f, modifierY * moveSpeed * deltaTime));
-				}
-			}
-
-
 		}
 
 	}
@@ -256,12 +234,12 @@ void TestScene::Update(const float deltaTime)
 	}
 }
 
-void TestScene::Render() 
+void TestScene::Render()
 {
 	// Rendering handled by SceneManager.....for now...
 }
 
-void TestScene::Draw() 
+void TestScene::Draw()
 {
 	// Used to draw 2d objects or UI elements
 }
@@ -278,13 +256,11 @@ void TestScene::HandleEvents(SDL_Event events)
 		{
 			/* Up-Down movement code goes here */
 			std::cout << "Left Trigger" << std::endl;
-			cube->physicsComponent->SetVelocity(glm::vec3(-1.0f, 0.0f, 0.0f));
 		}
 		if (events.jaxis.axis == 5) //right trigger
 		{
 			/* Up-Down movement code goes here */
 			std::cout << "Right Trigger" << std::endl;
-			cube->physicsComponent->SetVelocity(glm::vec3(1.0f, 0.0f, 0.0f));
 		}
 
 
@@ -295,7 +271,6 @@ void TestScene::HandleEvents(SDL_Event events)
 		{
 			/* code goes here */
 			std::cout << "A button was probably pressed." << std::endl;
-			cube->Jump(glm::vec3(0.0f, 2.0f, 0.0f));
 		}
 		if (events.jbutton.button == 1) //B button
 		{
@@ -316,13 +291,11 @@ void TestScene::HandleEvents(SDL_Event events)
 		{
 			/* code goes here */
 			std::cout << "Left bumper was probably pressed." << std::endl;
-			cube->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, -1.0f));
 		}
 		if (events.jbutton.button == 5) //right bumper
 		{
 			/* code goes here */
 			std::cout << "right bumper was probably pressed." << std::endl;
-			cube->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, 1.0f));
 		}
 		if (events.jbutton.button == 6) //back button
 		{
@@ -375,30 +348,29 @@ void TestScene::HandleEvents(SDL_Event events)
 	// CUBE 1
 	// Movement
 	if (state[SDL_SCANCODE_SPACE]) {
-		cube->Jump(glm::vec3(0.0f, 2.0f, 0.0f));
 	}
-	if (state[SDL_SCANCODE_W]) {
+	if (state[SDL_SCANCODE_T]) {
 		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, 0.0f, -moveSpeed * deltaTime));
-		cube->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, -1.0f));
+		model->SetWorldPosition(model->GetWorldPosition() + glm::vec3(0.0f, 0.0f, -moveSpeed * deltaTime));
 	}
-	if (state[SDL_SCANCODE_S]) {
+	if (state[SDL_SCANCODE_G]) {
 		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(0.0f, 0.0f, moveSpeed * deltaTime));
-		cube->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, 1.0f));
+		model->SetWorldPosition(model->GetWorldPosition() + glm::vec3(0.0f, 0.0f, moveSpeed * deltaTime));
 	}
-	if (state[SDL_SCANCODE_D]) {
+	if (state[SDL_SCANCODE_H]) {
 		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(moveSpeed * deltaTime, 0.0f, 0.0f));
-		cube->physicsComponent->SetVelocity(glm::vec3(1.0f, 0.0f, 0.0f));
+		model->SetWorldPosition(model->GetWorldPosition() + glm::vec3(moveSpeed * deltaTime, 0.0f, 0.0f));
 	}
-	if (state[SDL_SCANCODE_A]) {
+	if (state[SDL_SCANCODE_F]) {
 		//cube->SetWorldPosition(cube->GetWorldPosition() + glm::vec3(-moveSpeed * deltaTime, 0.0f, 0.0f));
-		cube->physicsComponent->SetVelocity(glm::vec3(-1.0f, 0.0f, 0.0f));
+		model->SetWorldPosition(model->GetWorldPosition() + glm::vec3(-moveSpeed * deltaTime, 0.0f, 0.0f));
 	}
 	// Rotation
 	if (state[SDL_SCANCODE_E]) {
-		cube->SetWorldRotation(glm::vec3(0.0f, 0.0f, 1.0f), cube->GetWorldRotationAngle() - moveSpeed * deltaTime);
+
 	}
 	if (state[SDL_SCANCODE_Q]) {
-		cube->SetWorldRotation(glm::vec3(0.0f, 0.0f, 1.0f), cube->GetWorldRotationAngle() + moveSpeed * deltaTime);
+
 	}
 
 	// Light
@@ -424,16 +396,16 @@ void TestScene::HandleEvents(SDL_Event events)
 	}
 
 	// VIEW/CAMERA
-	if (state[SDL_SCANCODE_T]) {
+	if (state[SDL_SCANCODE_W]) {
 		cameraList[0]->ProcessKeyboard(FORWARD, 0.01f);
 	}
-	if (state[SDL_SCANCODE_G]) {
+	if (state[SDL_SCANCODE_S]) {
 		cameraList[0]->ProcessKeyboard(BACKWARD, 0.01f);
 	}
-	if (state[SDL_SCANCODE_H]) {
+	if (state[SDL_SCANCODE_D]) {
 		cameraList[0]->ProcessKeyboard(RIGHT, 0.01f);
 	}
-	if (state[SDL_SCANCODE_F]) {
+	if (state[SDL_SCANCODE_A]) {
 		cameraList[0]->ProcessKeyboard(LEFT, 0.01f);
 	}
 
@@ -443,18 +415,9 @@ void TestScene::HandleEvents(SDL_Event events)
 		sceneManager->SwitchScene(new TestScene());
 	}
 
-	// Reload Scene
-	if (state[SDL_SCANCODE_B]) {
-		Cube* c = new Cube();
-		c->SetShader(defaultShaderHandle);
-		c->renderComponent->SetColour(0.0f, 0.0f, 1.0f);
-		c->physicsComponent->SetPosition(glm::vec3(0.0f, 5.0f, 0.0f));
-		c->SetWorldScale(0.5f, 0.5f, 0.5f);
-		c->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
-		c->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_ELASTIC);
-		c->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
-		c->physicsComponent->SetMass(50.0f);
-		AddObject(c);
+	// demo scene
+	if (state[SDL_SCANCODE_X]) {
+		sceneManager->SwitchScene(new DemoScene());
 	}
 
 	// Camera look

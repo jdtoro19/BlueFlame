@@ -20,10 +20,9 @@ Model::~Model()
 }
 
 void Model::Update(const float deltaTime) {
-	physicsComponent->Update(deltaTime);
-	SetWorldPosition(physicsComponent->GetPosition());
-	collisionComponent->Update(GetWorldPosition(), GetWorldScale());
-	
+	//physicsComponent->Update(deltaTime);
+	//SetWorldPosition(physicsComponent->GetPosition());
+	//collisionComponent->Update(GetWorldPosition());
 	model->Update();
 }
 

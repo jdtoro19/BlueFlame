@@ -65,7 +65,7 @@ namespace ENGINE {
 			this->indices = indices;
 			this->textures = textures;
 			for (unsigned int i = 0; i < vertices.size(); i++) {
-				this->vertices[i].Colour = glm::vec3(0.1f, 0.1f, 0.1f);
+				this->vertices[i].Colour = glm::vec3(0.0f, 0.0f, 0.0f);
 			}
 
 			// now that we have all the required data, set the vertex buffers and its attribute pointers.
@@ -101,7 +101,9 @@ namespace ENGINE {
 				// and finally bind the texture
 				glBindTexture(GL_TEXTURE_2D, textures[i].id);
 			}
-
+			if (textures.size() == 1) {
+				shader->setInt("texture_specular1", 0);
+			}
 			// draw mesh
 			glBindVertexArray(VAO);
 			glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);

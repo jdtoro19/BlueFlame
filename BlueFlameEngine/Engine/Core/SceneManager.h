@@ -34,7 +34,6 @@ namespace ENGINE {
 		void OnResize(int w, int h);
 		void EnableSplitscreen(bool setSplitscreen);
 		void EnableFullscreen(bool setFullScreen);
-		void EnablePostProcess(bool setPostProcess);
 		void ShowFPS(bool setShowFPS);
 		void CaptureMouse(bool capture);
 		void DebugText(std::string string, GLfloat x, GLfloat y);
@@ -58,7 +57,6 @@ namespace ENGINE {
 		bool quit = false;
 		bool splitscreen = false;
 		bool showFPS = false;
-		bool postprocess = false;
 
 		float deltaTime;
 	};

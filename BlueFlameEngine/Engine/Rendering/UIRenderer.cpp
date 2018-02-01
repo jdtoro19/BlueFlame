@@ -2,21 +2,59 @@
 
 using namespace ENGINE;
 
-UIRenderer::UIRenderer()
+UIRenderer::UIRenderer() : textShader(nullptr)
 {
 }
 
 UIRenderer::~UIRenderer()
 {
+	delete textShader;
+	textShader = nullptr;
 }
 
 void UIRenderer::Initialize(Window* window) {
+
+	// Set UI Screen dimensions
 	width = 1920.0f;
-	height = 1080.0f;
+	height = 1080.0f;	
 
+	// Set up projection matrix (this will never change)
+	projection = glm::ortho(0.0f, width, height, 0.0f);
+
+	// Debug text
+	SetUpDebugText();	
+}
+
+void UIRenderer::Draw(Window* window, std::vector<UIObject*> uiObjectList) {
+	// Disable face culling so text isn't culled
+	glDisable(GL_CULL_FACE);
+	// Enable alpha blending
+	glEnable(GL_BLEND);
+	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// loop through UI objects if list isn't empty
+	if (uiObjectList.size() != NULL) {
+		for (size_t i = 0; i < uiObjectList.size(); ++i) {
+			uiObjectList.at(i)->Draw(projection);
+		}
+	}
+
+	// Disable blending and re enable face culling when rendering is done
+	glDisable(GL_BLEND);
+	glEnable(GL_CULL_FACE);
+}
+
+float UIRenderer::GetWidth() {
+	return width;
+}
+
+float UIRenderer::GetHeight() {
+	return height;
+}
+
+void UIRenderer::SetUpDebugText()
+{
 	textShader = new Shader("Shaders/textshader.vs", "Shaders/textshader.fs");
-
-	projection = glm::ortho(0.0f, 1920.0f, 1080.0f, 0.0f);
 	// FreeType
 	FT_Library ft;
 	// All functions return a value different than 0 whenever an error occurred
@@ -63,7 +101,7 @@ void UIRenderer::Initialize(Window* window) {
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-		// Now store character for later use
+
 		Character character = {
 			texture,
 			glm::ivec2(face->glyph->bitmap.width, face->glyph->bitmap.rows),
@@ -73,10 +111,9 @@ void UIRenderer::Initialize(Window* window) {
 		Characters.insert(std::pair<GLchar, Character>(c, character));
 	}
 	glBindTexture(GL_TEXTURE_2D, 0);
-	// Destroy FreeType once we're finished
+	// Destroy FreeType
 	FT_Done_Face(face);
 	FT_Done_FreeType(ft);
-
 
 	// Configure VAO/VBO for texture quads
 	glGenVertexArrays(1, &VAO);
@@ -91,20 +128,6 @@ void UIRenderer::Initialize(Window* window) {
 
 	textShader->Use();
 	glUniformMatrix4fv(glGetUniformLocation(textShader->GetShaderProgram(), "projection"), 1, GL_FALSE, glm::value_ptr(projection));
-}
-
-void UIRenderer::Draw(Window* window, std::vector<UIObject*> uiObjectList) {
-	glDisable(GL_CULL_FACE);
-	glEnable(GL_BLEND);
-	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-	if (uiObjectList.size() != NULL) {
-		for (size_t i = 0; i < uiObjectList.size(); ++i) {
-			uiObjectList.at(i)->Draw(projection);
-		}
-	}
-	glDisable(GL_BLEND);
-	glEnable(GL_CULL_FACE);
 }
 
 void UIRenderer::DebugText(std::string text, GLfloat x, GLfloat y, GLfloat scale, glm::vec3 color)
@@ -156,12 +179,4 @@ void UIRenderer::DebugText(std::string text, GLfloat x, GLfloat y, GLfloat scale
 	glBindTexture(GL_TEXTURE_2D, 0);
 
 	glDisable(GL_BLEND);
-}
-
-float UIRenderer::GetWidth() {
-	return width;
-}
-
-float UIRenderer::GetHeight() {
-	return height;
 }

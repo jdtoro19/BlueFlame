@@ -25,13 +25,12 @@ namespace ENGINE {
 		void Initialize(Window* w);
 
 		// Rendering Functions
-		void PreRender(Window* window, Camera* camera, bool splitscreen, bool postprocess);
+		void PreRender(Window* window, Camera* camera, bool splitscreen);
 		void Render(Camera* camera, std::vector<GameObject*> objectList, 
 									std::vector<Light*> dirLightList, 
 									std::vector<Light*> pointLightList, 
-									std::vector<Light*> spotLightList
-		);
-		void PostRender(Window* window, bool splitscreen, bool postprocess);
+									std::vector<Light*> spotLightList);
+		void PostRender(Window* window, bool splitscreen);
 
 		// Skybox
 		void RenderSkybox(Skybox* sceneSkybox, Camera* camera);
@@ -39,22 +38,25 @@ namespace ENGINE {
 		// Shader manager
 		ResourceManager<Shader>* GetShaderManager();
 
-		// Used for clean up
-		void OnDestroy();
-
-		void RenderQuad();
-
-		void UseBloom();
-
+		// set up framebuffers
 		void SetUpFrameBuffers(Window* window);
 
-		void EnableAA();
-		void EnableShadows();
-		void EnableBloom(bool set) { useBloom = set; };
+		// Quad (square) to render to screen
+		void SetUpQuad();
+		void RenderQuad();		
 
-		void EnableBlackAndWhite(bool set) { blackAndWhite = set; };
-		void EnableInvertedColours(bool set);
-		void EnableBlur(bool set);
+		// Use frambuffers
+		void PostProcess();
+		void UseBloom();
+
+		// framebuffer options
+		void EnableBloom(bool set) { useBloom = set; };
+		void EnableGreyscale(bool set) { greyscale = set; };
+		void EnableInvertedColours(bool set) { inverted = set; };
+		void EnableKernel(bool set) { kernel = set; };
+
+		// Used for clean up
+		void OnDestroy();
 
 	private:
 		// Projection
@@ -63,26 +65,30 @@ namespace ENGINE {
 		// Shader manager
 		ResourceManager<Shader>* shaderManager;
 
+		// Framebuffer shaders
 		Shader* blur;
 		Shader* bloom;
 		Shader* screen;
 
+		// Framebuffer options
 		bool useBloom = false;
-
-		bool blackAndWhite = false;
-		bool invertedColors = false;
+		bool greyscale = false;
+		bool inverted = false;
+		bool kernel = false;
 		bool screenBlur = false;
 
-		unsigned int hdrFBO, colorBuffers[2], rboDepth, pingpongFBO[2], pingpongColorbuffers[2];
+		// blur amount
+		unsigned int blurAmount = 2;
+		
+		// framebuffer
+		unsigned int framebuffer, colorBuffers[2], rboDepth, attachments[2];
 
-		unsigned int quadVAO = 0;
+		// blur frame buffer
+		unsigned int pingpongFBO[2], pingpongColorbuffers[2];
+
+		// quad (square) 
+		unsigned int quadVAO;
 		unsigned int quadVBO;
-
-		unsigned int attachments[2];
-
-		unsigned int framebuffer, textureColorbuffer, rbo;
-
-		void RenderBlackAndWhite();
 	};
 }
 

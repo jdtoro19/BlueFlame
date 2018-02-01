@@ -128,7 +128,8 @@ void DemoScene::Initialize()
 	floor->SetShader(defaultShaderHandle);
 	floor->renderComponent->SetColour(0.1f, 0.1f, 0.1f);
 	floor->physicsComponent->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
-	floor->SetWorldScale(11.0f, 1.0f, 11.0f);
+	//floor->SetWorldScale(11.0f, 1.0f, 11.0f);
+	floor->collisionComponent->SetScale(glm::vec3(11.0f, 1.0f, 11.0f));
 	floor->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	floor->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
 	floor->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
@@ -138,7 +139,8 @@ void DemoScene::Initialize()
 	wall->SetShader(defaultShaderHandle);
 	wall->renderComponent->SetColour(0.1f, 0.1f, 0.1f);
 	wall->physicsComponent->SetPosition(glm::vec3(5.5f, 0.0f, 0.0f));
-	wall->SetWorldScale(1.0f, 2.0f, 11.0f);
+	//wall->SetWorldScale(1.0f, 2.0f, 11.0f);
+	wall->collisionComponent->SetScale(glm::vec3(1.0f, 2.0f, 11.0f));
 	wall->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	wall->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
 	wall->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
@@ -148,7 +150,8 @@ void DemoScene::Initialize()
 	wall1->SetShader(defaultShaderHandle);
 	wall1->renderComponent->SetColour(0.1f, 0.1f, 0.1f);
 	wall1->physicsComponent->SetPosition(glm::vec3(-5.5f, 0.0f, 0.0f));
-	wall1->SetWorldScale(1.0f, 2.0f, 11.0f);
+	//wall1->SetWorldScale(1.0f, 2.0f, 11.0f);
+	wall1->collisionComponent->SetScale(glm::vec3(1.0f, 2.0f, 11.0f));
 	wall1->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	wall1->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
 	wall1->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
@@ -158,7 +161,8 @@ void DemoScene::Initialize()
 	middleWall->SetShader(defaultShaderHandle);
 	middleWall->renderComponent->SetColour(1.0f, 0.0f, 0.0f);
 	middleWall->physicsComponent->SetPosition(glm::vec3(0.0f, -0.50f, 0.0f));
-	middleWall->SetWorldScale(11.0f, 0.1f, 1.0f);
+	//middleWall->SetWorldScale(11.0f, 0.1f, 1.0f);
+	middleWall->collisionComponent->SetScale(glm::vec3(11.0f, 0.1f, 1.0f));
 	middleWall->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	middleWall->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
 	middleWall->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_ROUGH);
@@ -247,7 +251,7 @@ void DemoScene::Update(const float deltaTime)
 				//if (SDL_JoystickGetButton(BFEngine::GetInstance()->players[i].pStick, 1) == 1) {
 				if (SDL_JoystickGetAxis(BFEngine::GetInstance()->players[i].pStick, 5) > 1000) {
 					Cube* lr = BFEngine::GetInstance()->players[i].pObject(); //line reducer
-					Projectile* p = new Projectile(glm::vec3(lr->GetWorldPosition().x, lr->GetWorldPosition().y, lr->GetWorldPosition().z - BFEngine::GetInstance()->players[i].inverted() * lr->collisionComponent->boundingBox->w * lr->GetWorldScale().z), BFEngine::GetInstance()->players[i].inverted());
+					Projectile* p = new Projectile(glm::vec3(lr->GetWorldPosition().x, lr->GetWorldPosition().y, lr->GetWorldPosition().z - BFEngine::GetInstance()->players[i].inverted() * lr->collisionComponent->GetBoundingBox().r.z * 2.0f * lr->GetWorldScale().z), BFEngine::GetInstance()->players[i].inverted());
 					glm::vec3 tempColor = BFEngine::GetInstance()->players[i].getTeamColor();
 					p->renderComponent->SetColour(tempColor.x, tempColor.y, tempColor.z);
 					p->SetShader(defaultShaderHandle);
@@ -403,7 +407,7 @@ void DemoScene::HandleEvents(SDL_Event events)
 	// Movement
 	if (state[SDL_SCANCODE_SPACE]) {
 		if (fire) {
-			Projectile* p = new Projectile(glm::vec3(cube1->GetWorldPosition().x, cube1->GetWorldPosition().y, cube1->GetWorldPosition().z - cube1->collisionComponent->boundingBox->w * cube1->GetWorldScale().z), 1);
+			Projectile* p = new Projectile(glm::vec3(cube1->GetWorldPosition().x, cube1->GetWorldPosition().y, cube1->GetWorldPosition().z - cube1->collisionComponent->GetBoundingBox().r.z * 2.0f * cube1->GetWorldScale().z), 1);
 			p->SetShader(defaultShaderHandle);
 			AddPhysicsObject(p);
 			PhysicsEngine::GetInstance()->AddObjectList(physicsObjectList);

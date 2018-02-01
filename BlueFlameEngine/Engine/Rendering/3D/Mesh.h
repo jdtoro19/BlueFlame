@@ -4,6 +4,8 @@
 #include <glew\GL\glew.h>
 #include <vector>
 #include <glm\glm.hpp>
+#include <SDL\SDL_image.h>
+#include "../../Graphics/Shader.h"
 
 namespace ENGINE {
 
@@ -15,7 +17,7 @@ namespace ENGINE {
 		glm::vec3 position;
 		glm::vec3 normal;
 		glm::vec3 color; //This will be a range from 0-1 instead of 0-255
-		//glm::vec2 textureCoordinates;
+		glm::vec2 textureCoordinates;
 	};
 
 	class Mesh {
@@ -24,10 +26,15 @@ namespace ENGINE {
 		~Mesh();
 
 		//This will be used to draw the mesh
-		void Render();
+		void Render(Shader* shader);
+
+		void LoadTexture(char* path, int id);
+		void LoadTextures(std::vector<char*> faces);
 
 	private:
 		void GenerateBuffers();
+
+		
 
 		//VAO: Vertex Array Object
 		//The VAO will hold all of our data for the shape's vertices that we define
@@ -36,6 +43,7 @@ namespace ENGINE {
 		//GLuints will be the addresses as to where this data is stored on the GPU
 		GLuint VAO, VBO;
 		std::vector<Vertex> vertexList;
+		unsigned int textureID;
 	};
 }
 

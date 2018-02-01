@@ -6,8 +6,8 @@
 #include "..\Rendering\3D\ModelMesh.h"
 #include <iostream>
 #include <vector>
-#include "Box.h"
-#include "Sphere.h"
+#include "Volumes.h"
+#include <glm\glm.hpp>
 
 namespace ENGINE {
 
@@ -31,9 +31,9 @@ namespace ENGINE {
 		~CollisionComponent();
 
 		// Basic functions needed by every component.
-		// Update is called every frame and requires position, scale to be set every frame when the object moves.
+		// Update is called every frame and requires position, to be set every frame when the object moves.
 		// Also infers max and min value changes with regards to position and scale.
-		void Update(glm::vec3 pos, glm::vec3 _scale);
+		void Update(glm::vec3 pos);
 
 		// Render is called every frame and does nothing for collisions.
 		void Render();
@@ -47,22 +47,34 @@ namespace ENGINE {
 
 		// Getters for values used in collisions.
 		Collision_Type GetCollisionType();
+		int GetLayer();
 		Box GetBoundingBox();
 		Sphere GetBoundingSphere();
+		glm::vec3 GetScale();
 
-		// Sets the padding of the bounding box, to be bigger or smaller than the list of vertices given.
+		// Setter for layer values
+		void SetLayer(int l);
+
+		// Sets the padding to be bigger or smaller than the list of vertices given.
 		void SetBoxPadding(glm::vec3 _padding);
+		void SetSpherePadding(float _padding);
+		void SetScale(glm::vec3 _scale);
 
-	//private:
+	private:
 
 		// Values used in collisions.
 		Collision_Type collisionType;
 		Box *boundingBox;
 		Sphere *boundingSphere;
 
-		// Padding of the bounding volumes.
-		glm::vec3 boxPadding;
-		float spherePadding;
+		// Layer of object; objects on different layers will not collide
+		int layer = 0;
+
+		// Padding and scale of the bounding volumes.
+		glm::vec3 boxPadding = glm::vec3(1.0f, 1.0f, 1.0f);
+		float spherePadding = 1.0f;
+		glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
+
 	};
 }
 

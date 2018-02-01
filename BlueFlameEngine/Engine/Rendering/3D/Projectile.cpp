@@ -16,6 +16,7 @@ Projectile::Projectile(glm::vec3 p, int dir)
 	physicsComponent->SetPosition(p);
 	physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0, -25.0f * dir));
 	physicsComponent->SetMass(50.0f);
+	collisionComponent->SetLayer(1);
 	physicsComponent->SetDestructible(true);
 	rip = 100;
 }
@@ -37,7 +38,7 @@ void Projectile::Update(const float deltaTime) {
 		//physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0, -2500.0f * deltaTime));
 		physicsComponent->Update(deltaTime);
 		SetWorldPosition(physicsComponent->GetPosition());
-		collisionComponent->Update(GetWorldPosition(), GetWorldScale());
+		collisionComponent->Update(GetWorldPosition());
 		--rip;
 	}
 	else if (rip == 0){

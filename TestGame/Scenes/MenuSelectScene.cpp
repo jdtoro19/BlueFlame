@@ -115,7 +115,7 @@ void MenuSelectScene::HandleEvents(SDL_Event events)
 			{
 				if (button->GetSelected()) {
 					sceneManager->ClearSceneList();
-					sceneManager->SwitchScene(new DemoScene());
+					sceneManager->SwitchScene(new TestScene());
 				}
 			}
 		}

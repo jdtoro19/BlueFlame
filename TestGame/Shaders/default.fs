@@ -30,7 +30,7 @@ struct SpotLight {
     float linear;
     float quadratic;
   
-	vec3 position;
+    vec3 position;
     vec3 direction;
   
     vec3 ambient;
