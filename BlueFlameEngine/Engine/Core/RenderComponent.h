@@ -12,7 +12,8 @@ namespace ENGINE {
 	public:
 		enum Render_Type {
 			NONE,
-			CUBE
+			CUBE,
+			QUAD
 		};
 
 		RenderComponent();

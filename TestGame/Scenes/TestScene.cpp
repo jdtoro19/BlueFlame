@@ -16,7 +16,7 @@ TestScene::~TestScene()
 	model3 = nullptr;
 }
 
-void TestScene::Initialize()
+bool TestScene::Initialize()
 {
 	// Make reference to the scene manager
 	sceneManager = BFEngine::GetInstance()->GetSceneManager();
@@ -158,22 +158,14 @@ void TestScene::Initialize()
 	AddLightObject(redLight);
 	AddLightObject(greenLight);
 	AddLightObject(yellowLight);
+
+	return true;
 }
 
 void TestScene::Update(const float deltaTime)
 {
 	//Code to make the model spin
 	//model->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), model->GetWorldRotationAngle() + moveSpeed * deltaTime);
-
-	this->deltaTime = deltaTime;
-
-	// Update objects
-	// lights are included in this object list
-	if (objectList.size() != NULL) {
-		for (size_t i = 0; i < objectList.size(); ++i) {
-			objectList.at(i)->Update(deltaTime);
-		}
-	}
 
 	//check for joystick so we're not wasting time
 	if (InputHandler::GetInstance()->areJoysticksLive()) {
@@ -232,16 +224,6 @@ void TestScene::Update(const float deltaTime)
 	else {
 		//std::cout << "No joystick events today." << std::endl;
 	}
-}
-
-void TestScene::Render()
-{
-	// Rendering handled by SceneManager.....for now...
-}
-
-void TestScene::Draw()
-{
-	// Used to draw 2d objects or UI elements
 }
 
 void TestScene::HandleEvents(SDL_Event events)
@@ -418,6 +400,12 @@ void TestScene::HandleEvents(SDL_Event events)
 	// demo scene
 	if (state[SDL_SCANCODE_X]) {
 		sceneManager->SwitchScene(new DemoScene());
+	}
+
+	// Reload Scene
+	if (state[SDL_SCANCODE_C]) {
+		sceneManager->EnableSplitscreen(false);
+		sceneManager->SwitchScene(new GameTestScene());
 	}
 
 	// Camera look

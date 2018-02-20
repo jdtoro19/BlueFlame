@@ -26,23 +26,34 @@ namespace ENGINE {
 
 		// Rendering Functions
 		void PreRender(Window* window, Camera* camera, bool splitscreen);
-		void Render(Camera* camera, std::vector<GameObject*> objectList, 
+		void Render(Window* window, Camera* camera, std::vector<GameObject*> objectList, 
 									std::vector<Light*> dirLightList, 
 									std::vector<Light*> pointLightList, 
 									std::vector<Light*> spotLightList);
 		void PostRender(Window* window, bool splitscreen);
+		void RenderObjects(glm::mat4 viewMatrix, Camera* camera, std::vector<GameObject*> objectList,
+																 std::vector<Light*> dirLightList,
+																 std::vector<Light*> pointLightList,
+																 std::vector<Light*> spotLightList);	
+		void RenderObjects(Shader* shader, glm::mat4 viewMatrix, Camera* camera, std::vector<GameObject*> objectList,
+			std::vector<Light*> dirLightList,
+			std::vector<Light*> pointLightList,
+			std::vector<Light*> spotLightList);
 
 		// Skybox
 		void RenderSkybox(Skybox* sceneSkybox, Camera* camera);
+
+		// Load Screen
+		void RenderLoadScreen();
 
 		// Shader manager
 		ResourceManager<Shader>* GetShaderManager();
 
 		// set up framebuffers
-		void SetUpFrameBuffers(Window* window);
+		void SetUpFrameBuffers(Window* window, float resolutionScale);
 
 		// Quad (square) to render to screen
-		void SetUpQuad();
+		void SetUpQuad(float resolutionScale);
 		void RenderQuad();		
 
 		// Use frambuffers

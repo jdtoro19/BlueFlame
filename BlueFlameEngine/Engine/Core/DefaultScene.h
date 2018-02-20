@@ -1,7 +1,9 @@
+#pragma once
 #ifndef DEFAULTSCENE_H
 #define DEFAULTSCENE_H
 
 #include "Scene.h"
+#include "../Rendering/2D/TextUI.h"
 
 namespace ENGINE {
 
@@ -11,12 +13,12 @@ namespace ENGINE {
 		DefaultScene();
 		~DefaultScene();
 
-		void Initialize();
+		bool Initialize();
 		void Update(const float deltaTime);
-		void Render();
-		void Draw();
 		void HandleEvents(SDL_Event events);
 
+	private:
+		TextUI* text;
 	};
 }
 #endif

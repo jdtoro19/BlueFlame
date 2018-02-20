@@ -492,11 +492,20 @@ void PhysicsEngine::ApplyImpulse(ContactData *c) {
 	float j = -(1 + e) * velAlongNormal;
 	j /= invMassA + invMassB;
 
-	// If both objects haven't penatrated slightly,
+	if (impulse.x >= 100.0f || impulse.x <= -100.0f) {
+		impulse.x = 0.0f;
+	}
+
+	if (impulse.y >= 100.0f || impulse.y <= -100.0f) {
+		impulse.y = 0.0f;
+	}
+
+	if (impulse.z >= 100.0f || impulse.z <= -100.0f) {
+		impulse.z = 0.0f;
+	}
+	//If both objects haven't penatrated slightly,
 	// the normal hasn't been calculated, and make the impulse zero
-	//if (c->penatration != 0.0f) {
 		impulse = j * c->normal;
-	//}
 	//else {
 	//	impulse = glm::vec3(0.0f, 0.0f, 0.0f);
 	//}

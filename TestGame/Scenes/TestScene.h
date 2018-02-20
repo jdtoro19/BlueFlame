@@ -13,6 +13,7 @@
 #include <BlueFlameEngine\Engine\Math\PhysicsEngine.h>
 #include <BlueFlameEngine\Engine\InputHandling\InputHandler.h>
 #include "DemoScene.h"
+#include "GameTestScene.h"
 
 using namespace ENGINE;
 
@@ -24,13 +25,12 @@ namespace GAME {
 		TestScene();
 		~TestScene();
 
-		// Every scene requires these five methods to be implemented
-		void Initialize();
+		// Every scene requires these three methods to be implemented
+		bool Initialize();
 		void Update(const float deltaTime);
-		void Render();
-		void Draw();
 		void HandleEvents(SDL_Event events);
 
+		SceneManager* sceneManager;
 	private:
 		// Lights
 		Light* blueLight;
@@ -58,12 +58,8 @@ namespace GAME {
 		ResourceHandle<Shader> skyboxShaderHandle;
 		ResourceHandle<Shader> lightShaderHandle;
 
-		// scene manager
-		SceneManager* sceneManager;
-
 		// other variables
 		float moveSpeed = 2;
-		float deltaTime;
 	};
 }
 #endif

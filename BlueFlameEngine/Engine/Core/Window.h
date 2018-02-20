@@ -22,6 +22,7 @@ public:
 	void Shutdown();
 
 	//Getters
+
 	SDL_Window* GetWindow() const;
 	int GetWidth() const;
 	int GetHeight() const;

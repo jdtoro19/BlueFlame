@@ -14,6 +14,7 @@ out vec3 Colour;
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform float Time;
 
 const int MAX_BONES = 100;
 uniform mat4 gBones[MAX_BONES];

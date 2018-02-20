@@ -24,13 +24,12 @@ namespace GAME {
 		DemoScene();
 		~DemoScene();
 
-		// Every scene requires these five methods to be implemented
-		void Initialize();
+		// Every scene requires these three methods to be implemented
+		bool Initialize();
 		void Update(const float deltaTime);
-		void Render();
-		void Draw();
 		void HandleEvents(SDL_Event events);
 
+		SceneManager* sceneManager;
 	private:
 		// Lights
 		Light* pointLight;
@@ -58,12 +57,8 @@ namespace GAME {
 		ResourceHandle<Shader> defaultShaderHandle;
 		ResourceHandle<Shader> skyboxShaderHandle;
 
-		// scene manager
-		SceneManager* sceneManager;
-
 		// other variables
 		float moveSpeed = 2;
-		float deltaTime;
 
 		bool fire = true;
 		float timer = 0.3f;

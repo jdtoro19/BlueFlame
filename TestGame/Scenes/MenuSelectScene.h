@@ -14,6 +14,7 @@
 #include <BlueFlameEngine\Engine\Rendering\2D\ButtonUI.h>
 #include "DemoScene.h"
 #include "TestScene.h"
+#include "GameTestScene.h"
 
 using namespace ENGINE;
 
@@ -25,13 +26,12 @@ namespace GAME {
 		MenuSelectScene();
 		~MenuSelectScene();
 
-		// Every scene requires these five methods to be implemented
-		void Initialize();
+		// Every scene requires these three methods to be implemented
+		bool Initialize();
 		void Update(const float deltaTime);
-		void Render();
-		void Draw();
 		void HandleEvents(SDL_Event events);
 
+		SceneManager* sceneManager;
 	private:
 		// shaders
 		Shader* skyboxShader;
@@ -44,8 +44,6 @@ namespace GAME {
 
 		ButtonUI* button;
 		ButtonUI* buttonExit;
-
-		SceneManager* sceneManager;
 	};
 }
 #endif

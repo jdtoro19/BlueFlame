@@ -28,9 +28,6 @@ void Renderer::Initialize(Window* window) {
 	screen->Use();
 	screen->setInt("screenTexture", 0);	
 
-	SetUpFrameBuffers(window);
-	SetUpQuad();
-
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
 	glEnable(GL_MULTISAMPLE);
@@ -49,80 +46,163 @@ void Renderer::PreRender(Window* window, Camera* camera, bool splitscreen) {
 
 	glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
 
-	glEnable(GL_DEPTH_TEST);	
+	glEnable(GL_DEPTH_TEST);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 }
 
 // Render sets up the shaders then renders objects
-void Renderer::Render(Camera* camera, std::vector<GameObject*> objectList, std::vector<Light*> dirLightList,
-																		   std::vector<Light*> pointLightList,
-																		   std::vector<Light*> spotLightList) 
+void Renderer::Render(Window* window, Camera* camera, std::vector<GameObject*> objectList, std::vector<Light*> dirLightList,
+																						   std::vector<Light*> pointLightList,
+																						   std::vector<Light*> spotLightList) 
 {
 	// update the view matrix based on the camera
 	glm::mat4 view = camera->GetViewMatrix();
 
-	// loop through the object list if it is not empty
+	// Render objects
+	RenderObjects(view, camera, objectList, dirLightList, pointLightList, spotLightList);
+}
+
+// PostRender swaps the frame buffer
+void Renderer::PostRender(Window* window, bool splitscreen)
+{
+	PostProcess();
+}
+
+// Renders objects from the object list
+void Renderer::RenderObjects(glm::mat4 viewMatrix, Camera* camera, std::vector<GameObject*> objectList,	std::vector<Light*> dirLightList,
+																										std::vector<Light*> pointLightList,
+																										std::vector<Light*> spotLightList)
+{
+	// check if the object list is empty
 	if (objectList.size() != NULL) {
-		// get the size of the object list
+
+		// get the size of the object list and loop through
 		unsigned int objectListSize = objectList.size();
 		for (unsigned int i = 0; i < objectListSize; ++i) {
-			// Make sure object as a shader
-			if (shaderManager->get(objectList.at(i)->GetShader()) != NULL) {
+
+			// Make reference to current object
+			GameObject* object = objectList.at(i);
+
+			// Make sure shader exists
+			if (shaderManager->get(object->GetShader()) != NULL) {
+
 				// Get object shader
-				Shader* shader = shaderManager->get(objectList.at(i)->GetShader());
+				Shader* shader = shaderManager->get(object->GetShader());
 				shader->Use();
+
 				// loop through the light object lists
+
 				// directional lights
 				if (dirLightList.size() != NULL) {
 					unsigned int dirLightListSize = dirLightList.size();
 					for (unsigned int j = 0; j < dirLightListSize; ++j) {
-						shader->setVec3("dirLight[" + std::to_string(j) + "].direction", dirLightList[j]->lightComponent->direction);
-						shader->setVec3("dirLight[" + std::to_string(j) + "].ambient", dirLightList[j]->lightComponent->ambient);
-						shader->setVec3("dirLight[" + std::to_string(j) + "].diffuse", dirLightList[j]->lightComponent->diffuse);
-						shader->setVec3("dirLight[" + std::to_string(j) + "].specular", dirLightList[j]->lightComponent->specular);
+						// Reference to directional light
+						Light* dirLight = dirLightList[j];
+						shader->setVec3("dirLight[" + std::to_string(j) + "].direction", dirLight->lightComponent->direction);
+						shader->setVec3("dirLight[" + std::to_string(j) + "].ambient", dirLight->lightComponent->ambient);
+						shader->setVec3("dirLight[" + std::to_string(j) + "].diffuse", dirLight->lightComponent->diffuse);
+						shader->setVec3("dirLight[" + std::to_string(j) + "].specular", dirLight->lightComponent->specular);
 					}
 				}
+
 				// point lights
 				if (pointLightList.size() != NULL) {
 					unsigned int pointLightListSize = pointLightList.size();
 					for (unsigned int j = 0; j < pointLightListSize; ++j) {
-						shader->setVec3("pointLight[" + std::to_string(j) + "].position", pointLightList[j]->GetWorldPosition());
-						shader->setVec3("pointLight[" + std::to_string(j) + "].ambient", pointLightList[j]->lightComponent->ambient);
-						shader->setVec3("pointLight[" + std::to_string(j) + "].diffuse", pointLightList[j]->lightComponent->diffuse);
-						shader->setVec3("pointLight[" + std::to_string(j) + "].specular", pointLightList[j]->lightComponent->specular);
-						shader->setFloat("pointLight[" + std::to_string(j) + "].constant", pointLightList[j]->lightComponent->constant);
-						shader->setFloat("pointLight[" + std::to_string(j) + "].linear", pointLightList[j]->lightComponent->linear);
-						shader->setFloat("pointLight[" + std::to_string(j) + "].quadratic", pointLightList[j]->lightComponent->quadratic);
+						// Reference to point light
+						Light* pointLight = pointLightList[j];
+						shader->setVec3("pointLight[" + std::to_string(j) + "].position", pointLight->GetWorldPosition());
+						shader->setVec3("pointLight[" + std::to_string(j) + "].ambient", pointLight->lightComponent->ambient);
+						shader->setVec3("pointLight[" + std::to_string(j) + "].diffuse", pointLight->lightComponent->diffuse);
+						shader->setVec3("pointLight[" + std::to_string(j) + "].specular", pointLight->lightComponent->specular);
+						shader->setFloat("pointLight[" + std::to_string(j) + "].constant", pointLight->lightComponent->constant);
+						shader->setFloat("pointLight[" + std::to_string(j) + "].linear", pointLight->lightComponent->linear);
+						shader->setFloat("pointLight[" + std::to_string(j) + "].quadratic", pointLight->lightComponent->quadratic);
 					}
 				}
-				// local positions
-				//glm::mat4 localModel = glm::mat4();
-				//localModel = glm::translate(localModel, objectList.at(i)->GetLocalPosition());
-				//localModel = glm::scale(localModel, objectList.at(i)->GetLocalScale());
-				//localModel = glm::rotate(localModel, objectList.at(i)->GetLocalRotationAngle(), objectList.at(i)->GetLocalRotation());
-				// world positions
-				glm::mat4 worldModel = glm::mat4();
-				worldModel = glm::translate(worldModel, objectList.at(i)->GetWorldPosition());
-				worldModel = glm::scale(worldModel, objectList.at(i)->GetWorldScale());
-				worldModel = glm::rotate(worldModel, objectList.at(i)->GetWorldRotationAngle(), objectList.at(i)->GetWorldRotation());
-				// Object shader
-				shader->setMat4("model", worldModel);
+
+				// Set shader options
+				shader->setMat4("model", object->GetWorldModelMatrix() * object->GetLocalModelMatrix());
 				shader->setMat4("projection", projection);
-				shader->setMat4("view", view);
-				shader->setVec3("viewPos", camera->Position);				
+				shader->setMat4("view", viewMatrix);
+				shader->setVec3("viewPos", camera->Position);
+
 				// Render object
-				objectList.at(i)->Render(shader);
+				object->Render(shader);
 			}
 		}
 	}
 }
 
-// PostRender swaps the frame buffer
-void Renderer::PostRender(Window* window, bool splitscreen) 
-{	
-	PostProcess();
+// Renders objects from the object list
+void Renderer::RenderObjects(Shader* shader, glm::mat4 viewMatrix, Camera* camera, std::vector<GameObject*> objectList, 
+	std::vector<Light*> dirLightList,
+	std::vector<Light*> pointLightList,
+	std::vector<Light*> spotLightList)
+{
+	// SHADOW TESTING
+	/*
+	// check if the object list is empty
+	if (objectList.size() != NULL) {
+
+		// get the size of the object list and loop through
+		unsigned int objectListSize = objectList.size();
+		for (unsigned int i = 0; i < objectListSize; ++i) {
+
+			// Make reference to current object
+			GameObject* object = objectList.at(i);
+
+			// Make sure shader exists
+			if (shaderManager->get(object->GetShader()) != NULL) {
+
+				// Get object shader
+				shader->Use();
+
+				// loop through the light object lists
+
+				// directional lights
+				if (dirLightList.size() != NULL) {
+					unsigned int dirLightListSize = dirLightList.size();
+					for (unsigned int j = 0; j < dirLightListSize; ++j) {
+						// Reference to directional light
+						Light* dirLight = dirLightList[j];
+						shader->setVec3("dirLight[" + std::to_string(j) + "].direction", dirLight->lightComponent->direction);
+						shader->setVec3("dirLight[" + std::to_string(j) + "].ambient", dirLight->lightComponent->ambient);
+						shader->setVec3("dirLight[" + std::to_string(j) + "].diffuse", dirLight->lightComponent->diffuse);
+						shader->setVec3("dirLight[" + std::to_string(j) + "].specular", dirLight->lightComponent->specular);
+					}
+				}
+
+				// point lights
+				if (pointLightList.size() != NULL) {
+					unsigned int pointLightListSize = pointLightList.size();
+					for (unsigned int j = 0; j < pointLightListSize; ++j) {
+						// Reference to point light
+						Light* pointLight = pointLightList[j];
+						shader->setVec3("pointLight[" + std::to_string(j) + "].position", pointLight->GetWorldPosition());
+						shader->setVec3("pointLight[" + std::to_string(j) + "].ambient", pointLight->lightComponent->ambient);
+						shader->setVec3("pointLight[" + std::to_string(j) + "].diffuse", pointLight->lightComponent->diffuse);
+						shader->setVec3("pointLight[" + std::to_string(j) + "].specular", pointLight->lightComponent->specular);
+						shader->setFloat("pointLight[" + std::to_string(j) + "].constant", pointLight->lightComponent->constant);
+						shader->setFloat("pointLight[" + std::to_string(j) + "].linear", pointLight->lightComponent->linear);
+						shader->setFloat("pointLight[" + std::to_string(j) + "].quadratic", pointLight->lightComponent->quadratic);
+					}
+				}
+
+				// Set shader options
+				shader->setMat4("model", object->GetWorldModelMatrix() * object->GetLocalModelMatrix());
+				shader->setMat4("projection", projection);
+				shader->setMat4("view", viewMatrix);
+				shader->setVec3("viewPos", camera->Position);
+
+				// Render object
+				object->Render(shader);
+			}
+		}
+	}
+	*/
 }
 
 void Renderer::RenderSkybox(Skybox* sceneSkybox, Camera* camera) {
@@ -145,6 +225,11 @@ void Renderer::RenderSkybox(Skybox* sceneSkybox, Camera* camera) {
 
 		glDepthFunc(GL_LESS);
 	}
+}
+
+// Load Screen
+void Renderer::RenderLoadScreen() {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 // Shader manager
@@ -172,7 +257,7 @@ void Renderer::RenderQuad()
 	glBindVertexArray(0);
 }
 
-void Renderer::SetUpFrameBuffers(Window* window) 
+void Renderer::SetUpFrameBuffers(Window* window, float resolutionScale) 
 {	
 	// set up frame buffers
 
@@ -214,7 +299,7 @@ void Renderer::SetUpFrameBuffers(Window* window)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
 		glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, window->GetWidth(), window->GetHeight(), 0, GL_RGB, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, window->GetWidth() * (1/resolutionScale), window->GetHeight() * (1/resolutionScale), 0, GL_RGB, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -223,7 +308,7 @@ void Renderer::SetUpFrameBuffers(Window* window)
 		// check if framebuffers are complete
 		if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
 			std::cout << "Framebuffer not complete!" << std::endl;
-	}	
+	}
 }
 
 void Renderer::UseBloom() 
@@ -280,17 +365,17 @@ void Renderer::PostProcess()
 	}
 }
 
-void Renderer::SetUpQuad() {
+void Renderer::SetUpQuad(float resolutionScale) {
 	// quad (square) to render on screen
 	float quadVertices[] = { 
 		// positions   // texCoords
-		-1.0f,  1.0f,  0.0f, 1.0f,
+		-1.0f,  1.0f,  0.0f, resolutionScale,
 		-1.0f, -1.0f,  0.0f, 0.0f,
-		1.0f, -1.0f,  1.0f, 0.0f,
+		1.0f, -1.0f,  resolutionScale, 0.0f,
 
-		-1.0f,  1.0f,  0.0f, 1.0f,
-		1.0f, -1.0f,  1.0f, 0.0f,
-		1.0f,  1.0f,  1.0f, 1.0f
+		-1.0f,  1.0f,  0.0f, resolutionScale,
+		1.0f, -1.0f,  resolutionScale, 0.0f,
+		1.0f,  1.0f,  resolutionScale, resolutionScale
 	};
 
 	glGenVertexArrays(1, &quadVAO);

@@ -4,9 +4,6 @@ using namespace ENGINE;
 
 SceneManager::SceneManager() : currentScene(nullptr), window(nullptr), renderer(nullptr), uiRenderer(nullptr)
 {
-	// Capture Mouse
-	//SDL_CaptureMouse(SDL_TRUE);
-	//SDL_SetRelativeMouseMode(SDL_TRUE);
 }
 
 SceneManager::~SceneManager()
@@ -24,9 +21,12 @@ SceneManager::~SceneManager()
 // Starts the window, renderer, and sets a default scene with nothing in it (incase no scene is initially set)
 void SceneManager::Initialize(Window* w) {
 	window = w;
+	//resolutionScale = 0.5f;
 
 	renderer = new Renderer();
 	renderer->Initialize(window);
+	renderer->SetUpFrameBuffers(window, resolutionScale);
+	renderer->SetUpQuad(resolutionScale);
 	cout << "Renderer Initialized" << endl;
 
 	uiRenderer = new UIRenderer();
@@ -35,67 +35,71 @@ void SceneManager::Initialize(Window* w) {
 
 	cout << "Default scene added" << endl;
 	SwitchScene(new DefaultScene());
+	loading = false;
 }
 
 // Calls the current scene's update 
 void SceneManager::Update(const float deltaTime) {
 	this->deltaTime = deltaTime;
-	currentScene->Update(deltaTime);
+	if (!loading) {
+		currentScene->PreUpdate(deltaTime);
+		currentScene->Update(deltaTime);
+		currentScene->LateUpdate(deltaTime);
+	}
+	loading = false;
 }
 
-// The renderer is slit into PreRender, Render, and PostRender
+// The renderer is split into PreRender, Render, and PostRender
 void SceneManager::PreRender() {
 	renderer->PreRender(window, currentScene->GetCameraList()[0], splitscreen);
 }
 
-void SceneManager::Render() {
-
+void SceneManager::Render()
+{
+	// SPLITSCREEN
 	if (splitscreen) {
 		// LEFT SCREEN
-		glViewport(0, 0, window->GetWidth() / 2, window->GetHeight());
-		renderer->Render(currentScene->GetCameraList()[0], currentScene->GetObjectList(), currentScene->GetDirLightList(), 
+		glViewport(0, 0, (window->GetWidth() / 2) * resolutionScale, window->GetHeight() * resolutionScale);
+		renderer->Render(window, currentScene->GetCameraList()[0], currentScene->GetObjectList(), currentScene->GetDirLightList(), 
 																						  currentScene->GetPointLightList(), 
 																						  currentScene->GetSpotLightList());
 		renderer->RenderSkybox(currentScene->GetSkybox(), currentScene->GetCameraList()[0]);
 
 		// RIGHT SCREEN
-		glViewport(window->GetWidth() / 2, 0, window->GetWidth() / 2, window->GetHeight());
-		renderer->Render(currentScene->GetCameraList()[1], currentScene->GetObjectList(), currentScene->GetDirLightList(), 
+		glViewport((window->GetWidth() / 2) * resolutionScale, 0, (window->GetWidth() / 2)* resolutionScale, window->GetHeight() * resolutionScale);
+		renderer->Render(window, currentScene->GetCameraList()[1], currentScene->GetObjectList(), currentScene->GetDirLightList(), 
 																						  currentScene->GetPointLightList(), 
 																						  currentScene->GetSpotLightList());
 		renderer->RenderSkybox(currentScene->GetSkybox(), currentScene->GetCameraList()[1]);
 	}
+
+	// NO SPLITSCREEN
 	else if (!splitscreen) {
-		//glViewport(0, 0, 853, 480);
-		glViewport(0, 0, window->GetWidth(), window->GetHeight());
-		renderer->Render(currentScene->GetCameraList()[0], currentScene->GetObjectList(), currentScene->GetDirLightList(), 
+		glViewport(0, 0, window->GetWidth() * resolutionScale, window->GetHeight() * resolutionScale);
+		renderer->Render(window, currentScene->GetCameraList()[0], currentScene->GetObjectList(), currentScene->GetDirLightList(), 
 																						  currentScene->GetPointLightList(), 
 																						  currentScene->GetSpotLightList());
 		renderer->RenderSkybox(currentScene->GetSkybox(), currentScene->GetCameraList()[0]);
 	}
-
-	// Just in case something in the scene needs to render
-	currentScene->Render();
 }
 
 void SceneManager::PostRender() {
-	
+	// Reset viewport
 	glViewport(0, 0, window->GetWidth(), window->GetHeight());
-	Draw();
+	// Render frame buffers
 	renderer->PostRender(window, splitscreen);
-	if (showFPS) {
-		DebugText("FPS: " + std::to_string((int)(1 / deltaTime)), GetScreenWidth() - 125.0f, 35.0f);
-	}
+	// Draw UI
+	Draw();
+	// Debug text is drawn after so it is not affected by the post process effects
+	DrawDebugFPS();
+	DrawDebugText();
+	// Swap window
 	SDL_GL_SwapWindow(window->GetWindow());
 }
 
 // Used to render and 2d or UI elements
 void SceneManager::Draw() {
-	//glViewport(0, 0, 853, 480);
-	glViewport(0, 0, window->GetWidth(), window->GetHeight());
-	currentScene->Draw();
 	uiRenderer->Draw(window, currentScene->GetUIObjectList());
-
 }
 
 // Handles all input and also calls the current scene's HandleEvent
@@ -110,23 +114,29 @@ void SceneManager::HandleEvents() {
 		// Resize window
 		if (events.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
 			OnResize(events.window.data1, events.window.data2);
-			renderer->SetUpFrameBuffers(window);
+			renderer->SetUpFrameBuffers(window, resolutionScale);
 		}
 
 		// If you leave the window then mouse is no longer captured
 		if (events.window.event == SDL_WINDOWEVENT_FOCUS_LOST) {
-			//SDL_CaptureMouse(SDL_FALSE);
-			//SDL_SetRelativeMouseMode(SDL_FALSE);
+			if (captureMouse) {
+				SDL_CaptureMouse(SDL_FALSE);
+				SDL_SetRelativeMouseMode(SDL_FALSE);
+			}
 		}
 
 		// Capture mouse again when user clicks in the window
 		if (events.window.event == SDL_WINDOWEVENT_FOCUS_GAINED) {
-			//SDL_CaptureMouse(SDL_TRUE);
-			//SDL_SetRelativeMouseMode(SDL_TRUE);
+			if (captureMouse) {
+				SDL_CaptureMouse(SDL_TRUE);
+				SDL_SetRelativeMouseMode(SDL_TRUE);
+			}
 		}
 	}
 
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
+
+	// SCREEN SETTINGS
 
 	if (state[SDL_SCANCODE_V]) {
 		window->SetFullScreen(false);
@@ -189,18 +199,30 @@ void SceneManager::SetIsQuit(bool quit) {
 
 // Used to switch scenes
 void SceneManager::SwitchScene(Scene* scene) {
+	loading = true;
 	// The new scene gets initialized
+	// TODO make this actually delete scene from memory
 	currentScene = nullptr;
 	delete currentScene;
 	currentScene = scene;
-	currentScene->Initialize();
-	cout << "Scene loaded" << endl;
+	if (currentScene->Initialize()) {
+		ClearSceneList();	
+		cout << "Scene loaded" << endl;
+	}
+	else 
+	{
+		cout << "Scene failed to initialize" << endl;
+	}	
 }
 
 void SceneManager::AddScene(Scene* scene) {
-	scene->Initialize();
-	sceneList.push_back(scene);
-	cout << "Scene added" << endl;
+	if (scene->Initialize()) {
+		sceneList.push_back(scene);
+		cout << "Scene added" << endl;
+	}
+	else {
+		cout << "Scene failed to be added" << endl;
+	}
 }
 
 void SceneManager::NextScene() {
@@ -222,6 +244,11 @@ void SceneManager::PreviousScene() {
 void SceneManager::ClearSceneList() {
 	sceneIter = 0;
 	if (sceneList.size() != 0) {
+		for (size_t i = 0; i < sceneList.size(); ++i) {
+			// TODO make this actually delete the scenes from memory
+			sceneList[i] = nullptr;
+			delete sceneList[i];
+		}
 		sceneList.clear();
 	}
 }
@@ -236,7 +263,6 @@ void SceneManager::StartScene() {
 	}
 }
 
-// Resizes window
 void SceneManager::OnResize(int w, int h) {
 	window->SetWindowSize(w, h);
 }
@@ -253,12 +279,15 @@ void SceneManager::ShowFPS(bool setShowFPS) {
 	showFPS = setShowFPS;
 }
 
-void SceneManager::CaptureMouse(bool capture) {
-	if (capture) {
+void SceneManager::CaptureMouse(bool setCaptureMouse) {
+
+	captureMouse = setCaptureMouse;
+
+	if (setCaptureMouse) {
 		SDL_CaptureMouse(SDL_TRUE);
 		SDL_SetRelativeMouseMode(SDL_TRUE);
 	}
-	else if (!capture) {
+	else if (!setCaptureMouse) {
 		SDL_CaptureMouse(SDL_FALSE);
 		SDL_SetRelativeMouseMode(SDL_FALSE);
 	}
@@ -284,6 +313,54 @@ float SceneManager::GetScreenHeight() {
 	return uiRenderer->GetHeight();
 }
 
+void SceneManager::DebugText(std::string string) {
+	debugTextList.push_back(string);
+}
+
+void SceneManager::DebugText(int value) {
+	debugTextList.push_back(std::to_string(value));
+}
+
+void SceneManager::DebugText(double value) {
+	debugTextList.push_back(std::to_string(value));
+}
+
+void SceneManager::DebugText(float value) {
+	debugTextList.push_back(std::to_string(value));
+}
+
+void SceneManager::DebugText(glm::vec3 value) {
+	std::string string;
+	string = "X: " + std::to_string(value.x) + " Y: " + std::to_string(value.y) + " Z: " + std::to_string(value.z);
+	debugTextList.push_back(string);
+}
+
 void SceneManager::DebugText(std::string string, GLfloat x, GLfloat y) {
 	uiRenderer->DebugText(string , x, y, 0.4f, glm::vec3(0.0, 1.0f, 0.0f));
+}
+
+void SceneManager::DrawDebugText() {
+	if (debugTextList.size() != 0) {
+		for (size_t i = 0; i < debugTextList.size(); ++i) {
+			DebugText(debugTextList[i], 10.0f, debugTextOffset);
+			debugTextOffset += 25.0f;
+		}
+		debugTextList.clear();
+		debugTextOffset = 25.0f;
+	}
+}
+
+void SceneManager::DrawDebugFPS() {
+	if (showFPS) {
+		fpsTimer -= deltaTime;
+		if (fpsTimer <= 0) {
+			fps = 1 / deltaTime;
+			fpsTimer = fpsTimerSet;
+		}
+		DebugText("FPS: " + std::to_string((int)fps), GetScreenWidth() - 125.0f, 35.0f);
+	}
+}
+
+Scene* SceneManager::GetCurrentScene() {
+	return currentScene;
 }

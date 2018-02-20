@@ -27,6 +27,7 @@ namespace ENGINE {
 
 		//This will be used to draw the mesh
 		void Render(Shader* shader);
+		void RenderPoints(Shader* shader);
 
 		void LoadTexture(char* path, int id);
 		void LoadTextures(std::vector<char*> faces);

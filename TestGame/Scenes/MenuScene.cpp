@@ -11,7 +11,7 @@ MenuScene::~MenuScene()
 	sceneManager = nullptr;
 }
 
-void MenuScene::Initialize()
+bool MenuScene::Initialize()
 {
 	// Make reference to the scene manager
 	sceneManager = BFEngine::GetInstance()->GetSceneManager();
@@ -67,6 +67,8 @@ void MenuScene::Initialize()
 	AddUIObject(titleText);
 	AddUIObject(startText);
 	AddUIObject(creditText);	
+
+	return true;
 }
 
 void MenuScene::Update(const float deltaTime)
@@ -88,14 +90,4 @@ void MenuScene::HandleEvents(SDL_Event events)
 	{
 		sceneManager->NextScene();
 	}
-}
-
-void MenuScene::Render()
-{
-
-}
-
-void MenuScene::Draw()
-{
-
 }

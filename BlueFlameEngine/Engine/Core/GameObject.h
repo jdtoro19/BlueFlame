@@ -25,6 +25,10 @@ namespace ENGINE {
 		glm::vec3 worldScale;
 		float worldRotationAngle;
 
+		// Model Matrix
+		glm::mat4 localModelMatrix = glm::mat4();
+		glm::mat4 worldModelMatrix = glm::mat4();		
+
 		ResourceHandle<Shader> shader;
 
 	public:
@@ -65,12 +69,16 @@ namespace ENGINE {
 		// angle
 		virtual float GetWorldRotationAngle() const;
 
+		// Update Local Model Matrix
+		virtual void UpdateLocalMatrix();
+		virtual glm::mat4 GetLocalModelMatrix() const;
+
+		// Update World Model Matrix
+		virtual void UpdateWorldMatrix();
+		virtual glm::mat4 GetWorldModelMatrix() const;
+
 		ResourceHandle<Shader> GetShader();
 		void SetShader(ResourceHandle<Shader> shader);
-
-		void Rotate(float angle, glm::vec3 rot);
-
-		glm::mat4 modelMatrix = glm::mat4(); 
 
 		CollisionComponent* collisionComponent;
 		PhysicsComponent* physicsComponent;
@@ -80,6 +88,5 @@ namespace ENGINE {
 		virtual void Update(const float deltaTime);
 		virtual void Render(Shader* shader);
 	};
-
 }
 #endif

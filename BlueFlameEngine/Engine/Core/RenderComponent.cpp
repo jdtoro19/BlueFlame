@@ -149,6 +149,33 @@ void RenderComponent::SetRenderType(Render_Type rt) {
 		
 		mesh = new Mesh(&vertexList);
 	}
+	else if (rt == QUAD) {
+		renderType = QUAD;
+		vertexList.clear();
+		v.color = colour;
+
+		v.normal = glm::vec3(0.0f, 0.0f, 1.0f);
+		v.position = glm::vec3(-0.5f, -0.5f, 0.0f);
+		v.textureCoordinates = glm::vec2(0, 1);
+		vertexList.push_back(v);
+		v.position = glm::vec3(0.5f, -0.5f, 0.0f);
+		v.textureCoordinates = glm::vec2(1, 1);
+		vertexList.push_back(v);
+		v.position = glm::vec3(0.5f, 0.5f, 0.0f);
+		v.textureCoordinates = glm::vec2(1, 0);
+		vertexList.push_back(v);
+		v.position = glm::vec3(0.5f, 0.5f, 0.0f);
+		v.textureCoordinates = glm::vec2(1, 0);
+		vertexList.push_back(v);
+		v.position = glm::vec3(-0.5f, 0.5f, 0.0f);
+		v.textureCoordinates = glm::vec2(0, 0);
+		vertexList.push_back(v);
+		v.position = glm::vec3(-0.5f, -0.5f, 0.0f);
+		v.textureCoordinates = glm::vec2(0, 1);
+		vertexList.push_back(v);
+
+		mesh = new Mesh(&vertexList);
+	}
 	else {
 
 	}

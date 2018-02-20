@@ -8,7 +8,7 @@ Mesh::Mesh(std::vector<Vertex>* vertList_)
 	vertexList = *vertList_;
 
 	GenerateBuffers();
-	LoadTexture("Resources/Textures/lewd.png", 0);
+	LoadTexture("Resources/Textures/default_texture.png", 0);
 }
 
 Mesh::~Mesh() {
@@ -64,6 +64,7 @@ void Mesh::GenerateBuffers() {
 }
 
 void Mesh::Render(Shader* shader) {
+	shader->Use();
 	shader->setInt("texture_diffuse1", 0);
 	shader->setInt("texture_specular1", 0);
 	glBindTexture(GL_TEXTURE_2D, textureID);
@@ -74,6 +75,24 @@ void Mesh::Render(Shader* shader) {
 	//Draw the array stored in the bound VAO
 	//(type of render, start of array, end of array)
 	glDrawArrays(GL_TRIANGLES, 0, vertexList.size());
+
+	//Clear the vertex array for future use
+	glBindVertexArray(0);
+	glBindTexture(GL_TEXTURE_2D, 0);
+}
+
+void Mesh::RenderPoints(Shader* shader) {
+	shader->Use();
+	shader->setInt("texture_diffuse1", 0);
+	shader->setInt("texture_specular1", 0);
+	glBindTexture(GL_TEXTURE_2D, textureID);
+
+	//Bind the VAO that you want to use for drawing
+	glBindVertexArray(VAO);
+
+	//Draw the array stored in the bound VAO
+	//(type of render, start of array, end of array)
+	glDrawArrays(GL_POINTS, 0, vertexList.size());
 
 	//Clear the vertex array for future use
 	glBindVertexArray(0);

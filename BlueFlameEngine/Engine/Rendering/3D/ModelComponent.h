@@ -62,14 +62,16 @@ namespace ENGINE {
 		Skeleton* skeleton;
 		void UpdateSkeleton();
 
+		// loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
+		void LoadModel(string const &path);
+
 	private:
 
 		const aiScene* scene;
 
 		bool canRender = true;
 
-		// loads a model with supported ASSIMP extensions from file and stores the resulting meshes in the meshes vector.
-		void LoadModel(string const &path);
+		
 		
 		void ProcessNode(aiNode *node, const aiScene *scene); // processes a node in a recursive fashion. Processes each individual mesh located at the node and repeats this process on its children nodes (if any).
 

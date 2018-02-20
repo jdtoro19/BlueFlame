@@ -18,7 +18,7 @@ namespace ENGINE {
 		~PlayerController();
 		void setTeam(int team); //0 for red, 1 for blue
 		void playerControls(Cube* thisThing);
-		Cube* pObject();
+		Cube *pObject();
 		int inverted();
 		int instanceID = NULL;
 		//pointer to the joystick reference

@@ -73,6 +73,7 @@ void BFEngine::Run() {
 		PreRender();
 		Render();
 
+		/*
 		if (RoundTimer->checkOffCD() == false) {
 			cout << "Time left in Round: " << RoundTimer->secondsLeft() << endl;
 			//use lower explicit int cast if you want round numbers
@@ -82,6 +83,7 @@ void BFEngine::Run() {
 			//When the main timer is over
 			//BFEngine::GetInstance()->TerminateGame();
 		}
+		*/
 
 		PostRender();
 		
@@ -95,9 +97,7 @@ void BFEngine::Run() {
 			firstLoad = false;			
 		}
 
-		// Keeep the event loop running at a sane rate
 		SDL_Delay(timer.GetSleepTime(144));
-		//std::cout << "main loop running at: " << (1.0f/timer.GetDeltaTime()) << " frames/sec" << std::endl;
 	}
 }
 

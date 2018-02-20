@@ -1,6 +1,6 @@
 #include "Window.h"
 
-
+#include <SDL\SDL_mixer.h>
 
 Window::Window() : SDLWindow(nullptr) {
 
@@ -15,7 +15,7 @@ bool Window::Initialize(std::string windowName_, int width_, int height_) {
 
 	//Initialize SDL and check the initialize process
 	//You will use SDL in the steps to come, so make sure it works properly now!
-	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) > 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_AUDIO) > 0) {
 		std::cout << "Failed to init SDL!" << std::endl;
 		return false;
 	}
@@ -28,6 +28,8 @@ bool Window::Initialize(std::string windowName_, int width_, int height_) {
 	//windowPosition_y, windowWidth, windowHeight, tpeOfWindow)
 	SDLWindow = SDL_CreateWindow(windowName_.c_str(), SDL_WINDOWPOS_CENTERED,
 		SDL_WINDOWPOS_CENTERED, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
+
+	SDL_GL_SetSwapInterval(1);
 
 	//Check to make sure the window was created properly
 	if (!SDLWindow) {
@@ -57,14 +59,25 @@ bool Window::Initialize(std::string windowName_, int width_, int height_) {
 
 	GetInstalledOpenGLInfo();
 
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1) 
+	{
+		std::cout << "Audio was not initialized" << std::endl;
+	}
+	else 
+	{
+		std::cout << "Audio initialized" << std::endl;
+	}
+
 	return true;
 }
 
 void Window::Shutdown() {
 	//Clean up the window
+	Mix_CloseAudio();
+	Mix_Quit();
 	SDL_GL_DeleteContext(SDLGLContext);
 	SDL_DestroyWindow(SDLWindow);
-	SDLWindow = nullptr;
+	SDLWindow = nullptr;	
 }
 
 void Window::SetAttributes() {

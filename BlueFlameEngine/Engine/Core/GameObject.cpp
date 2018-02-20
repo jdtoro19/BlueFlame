@@ -22,10 +22,12 @@ GameObject::~GameObject()
 void GameObject::SetLocalPosition(const float &x, const float &y, const float &z)
 {
 	localPosition = glm::vec3(x, y, z);
+	UpdateLocalMatrix();
 }
 void GameObject::SetLocalPosition(const glm::vec3 &p)
 {
 	localPosition = p;
+	UpdateLocalMatrix();
 }
 glm::vec3 GameObject::GetLocalPosition() const
 {
@@ -37,11 +39,19 @@ void GameObject::SetLocalRotation(const float &x, const float &y, const float &z
 {
 	localRotation = glm::vec3(x, y, z);
 	localRotationAngle = a;
+	if (localRotationAngle >= 360 || localRotationAngle <= -360) {
+		localRotationAngle = 0;
+	}
+	UpdateLocalMatrix();
 }
 void GameObject::SetLocalRotation(const glm::vec3 &r, const float &a)
 {
 	localRotation = r;
 	localRotationAngle = a;
+	if (localRotationAngle >= 360 || localRotationAngle <= -360) {
+		localRotationAngle = 0;
+	}
+	UpdateLocalMatrix();
 }
 glm::vec3 GameObject::GetLocalRotation() const
 {
@@ -52,14 +62,17 @@ glm::vec3 GameObject::GetLocalRotation() const
 void GameObject::SetLocalScale(const float &x, const float &y, const float &z)
 {
 	localScale = glm::vec3(x, y, z);
+	UpdateLocalMatrix();
 }
 void GameObject::SetLocalScale(const glm::vec3 &s)
 {
 	localScale = s;
+	UpdateLocalMatrix();
 }
 void GameObject::SetLocalScale(const float &s)
 {
 	localScale = glm::vec3(s, s, s);
+	UpdateLocalMatrix();
 }
 glm::vec3 GameObject::GetLocalScale() const
 {
@@ -76,10 +89,12 @@ float GameObject::GetLocalRotationAngle() const
 void GameObject::SetWorldPosition(const float &x, const float &y, const float &z)
 {
 	worldPosition = glm::vec3(x, y, z);
+	UpdateWorldMatrix();
 }
 void GameObject::SetWorldPosition(const glm::vec3 &p)
 {
 	worldPosition = p;
+	UpdateWorldMatrix();
 }
 glm::vec3 GameObject::GetWorldPosition() const
 {
@@ -91,11 +106,19 @@ void GameObject::SetWorldRotation(const float &x, const float &y, const float &z
 {
 	worldRotation = glm::vec3(x, y, z);
 	worldRotationAngle = a;
+	if (worldRotationAngle >= 360 || worldRotationAngle <= -360) {
+		worldRotationAngle = 0;
+	}
+	UpdateWorldMatrix();
 }
 void GameObject::SetWorldRotation(const glm::vec3 &r, const float &a)
 {
 	worldRotation = r;
 	worldRotationAngle = a;
+	if (worldRotationAngle >= 360 || worldRotationAngle <= -360) {
+		worldRotationAngle = 0;
+	}
+	UpdateWorldMatrix();
 }
 glm::vec3 GameObject::GetWorldRotation() const
 {
@@ -106,14 +129,17 @@ glm::vec3 GameObject::GetWorldRotation() const
 void GameObject::SetWorldScale(const float &x, const float &y, const float &z)
 {
 	worldScale = glm::vec3(x, y, z);
+	UpdateWorldMatrix();
 }
 void GameObject::SetWorldScale(const glm::vec3 &s)
 {
 	worldScale = s;
+	UpdateWorldMatrix();
 }
 void GameObject::SetWorldScale(const float &s)
 {
 	worldScale = glm::vec3(s, s, s);
+	UpdateWorldMatrix();
 
 }
 glm::vec3 GameObject::GetWorldScale() const
@@ -127,16 +153,34 @@ float GameObject::GetWorldRotationAngle() const
 	return worldRotationAngle;
 }
 
+void GameObject::UpdateLocalMatrix() {
+	localModelMatrix = glm::mat4();
+	localModelMatrix = glm::translate(localModelMatrix, localPosition);
+	localModelMatrix = glm::rotate(localModelMatrix, localRotationAngle, localRotation);
+	localModelMatrix = glm::scale(localModelMatrix, localScale);	
+}
+
+glm::mat4 GameObject::GetLocalModelMatrix() const {
+	return localModelMatrix;
+}
+
+void GameObject::UpdateWorldMatrix() {
+	worldModelMatrix = glm::mat4();
+	worldModelMatrix = glm::translate(worldModelMatrix, worldPosition);
+	worldModelMatrix = glm::rotate(worldModelMatrix, worldRotationAngle, worldRotation);
+	worldModelMatrix = glm::scale(worldModelMatrix, worldScale);	
+}
+
+glm::mat4 GameObject::GetWorldModelMatrix() const {
+	return worldModelMatrix;
+}
+
 ResourceHandle<Shader> GameObject::GetShader() {
 	return shader;
 }
 
 void GameObject::SetShader(ResourceHandle<Shader> shader) {
 	this->shader = shader;
-}
-
-void GameObject::Rotate(float angle, glm::vec3 rot) {
-	modelMatrix = glm::rotate(modelMatrix, angle, rot);
 }
 
 void GameObject::Update(const float deltaTime)

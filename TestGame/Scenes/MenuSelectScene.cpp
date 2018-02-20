@@ -11,7 +11,7 @@ MenuSelectScene::~MenuSelectScene()
 	sceneManager = nullptr;
 }
 
-void MenuSelectScene::Initialize()
+bool MenuSelectScene::Initialize()
 {
 	// Make reference to the scene manager
 	sceneManager = BFEngine::GetInstance()->GetSceneManager();
@@ -72,6 +72,8 @@ void MenuSelectScene::Initialize()
 	AddUIObject(titleText);
 	AddUIObject(button);
 	AddUIObject(buttonExit);
+
+	return true;
 }
 
 void MenuSelectScene::Update(const float deltaTime)
@@ -114,8 +116,7 @@ void MenuSelectScene::HandleEvents(SDL_Event events)
 			if (events.button.button == SDL_BUTTON_LEFT)
 			{
 				if (button->GetSelected()) {
-					sceneManager->ClearSceneList();
-					sceneManager->SwitchScene(new TestScene());
+					sceneManager->SwitchScene(new GameTestScene());
 				}
 			}
 		}
@@ -159,14 +160,4 @@ void MenuSelectScene::HandleEvents(SDL_Event events)
 	if (state[SDL_SCANCODE_Z]) {
 		sceneManager->PreviousScene();
 	}
-}
-
-void MenuSelectScene::Render()
-{
-
-}
-
-void MenuSelectScene::Draw()
-{
-
 }

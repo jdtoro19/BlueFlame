@@ -10,21 +10,20 @@ DefaultScene::~DefaultScene()
 {
 }
 
-void DefaultScene::Initialize() 
+bool DefaultScene::Initialize() 
 {
+	text = new TextUI;
+	text->SetText("No Scenes Loaded");
+	text->SetColour(1.0f, 1.0f, 1.0f);
+	text->SetPosition(1920 / 2 - text->GetLength() / 2, 1080 / 2);
 
+	AddUIObject(text);
+
+	return true;
 }
 void DefaultScene::Update(const float deltaTime)
 {
-
-}
-void DefaultScene::Render()
-{
-
-}
-void DefaultScene::Draw() 
-{
-
+	
 }
 void DefaultScene::HandleEvents(SDL_Event events)
 {

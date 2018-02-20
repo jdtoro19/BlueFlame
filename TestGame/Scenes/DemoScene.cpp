@@ -10,7 +10,7 @@ DemoScene::~DemoScene()
 {
 }
 
-void DemoScene::Initialize()
+bool DemoScene::Initialize()
 {
 	// Make reference to the scene manager
 	sceneManager = BFEngine::GetInstance()->GetSceneManager();
@@ -201,32 +201,21 @@ void DemoScene::Initialize()
 	AddUIObject(text);
 
 	PhysicsEngine::GetInstance()->AddObjectList(physicsObjectList);
+
+	return true;
 }
 
 void DemoScene::Update(const float deltaTime)
 {	
-	this->deltaTime = deltaTime;
-
 	// Timer for firing (Keyboard controls only)
 	timer -= deltaTime;
 	if (timer < 0) {
 		timer = 0.3f;
 		fire = true;
 	}
-
-	// Update objects
-	// lights are included in this object list
-	if (objectList.size() != NULL) {
-		for (size_t i = 0; i < objectList.size(); ++i) {
-			if (objectList.at(i)->deleted) {
-				RemoveObject(objectList.at(i));
-				PhysicsEngine::GetInstance()->AddObjectList(physicsObjectList);
-			}
-			else {
-				objectList.at(i)->Update(deltaTime);
-			}			
-		}
-	}
+	PhysicsEngine::GetInstance()->AddObjectList(physicsObjectList);
+	
+	sceneManager->DebugText("Text origin is top left", 25.0f, 25.0f);
 
 	PhysicsEngine::GetInstance()->Update(deltaTime);
 
@@ -440,15 +429,4 @@ void DemoScene::HandleEvents(SDL_Event events)
 
 	// ENABLE OR DISABLE FULLSCREEN WITH V AND B
 	// ENABLE OR DISABLE SPLITSCREEN WITH N AND M
-}
-
-void DemoScene::Render()
-{
-	// Rendering handled by SceneManager.....for now...
-}
-
-// Used to draw 2d objects or UI elements
-void DemoScene::Draw()
-{
-	sceneManager->DebugText("Text origin is top left", 25.0f, 25.0f);
 }
