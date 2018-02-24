@@ -40,7 +40,7 @@ namespace ENGINE {
 		 void ApplyImpulse(ContactData *c);
 
 		 // Basic Primitive Tests to be used when needed
-		 static void ClosestPointOnAABB(glm::vec3 p, Box b, glm::vec3 &q);
+		 static void ClosestPointOnAABB(glm::vec3 p, glm::vec3 c, glm::vec3 r, glm::vec3 &q);
 		 float SqDistancePointAABB(glm::vec3 p, Box b);
 
 		 // Singleton pointers

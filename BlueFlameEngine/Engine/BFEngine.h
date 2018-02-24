@@ -1,3 +1,4 @@
+#pragma once
 #ifndef BFEngine_H
 #define BFEngine_H
 
@@ -8,58 +9,71 @@
 #include "InputHandling/InputHandler.h"
 #include "InputHandling/PlayerController.h"
 #include "Timers/MasterClock.h"
-#include "Timers/Cooldown.h"
 
 namespace ENGINE {
 
-	//SINGLETON CLASS
-	class BFEngine {
+	// SINGLETON CLASS
+	class BFEngine 
+	{
 	public:
-		//Delete default constructors
+		// Delete default constructors
 		BFEngine(const BFEngine&) = delete;
 		BFEngine(BFEngine&&) = delete;
 		BFEngine& operator=(const BFEngine&) = delete;
 		BFEngine& operator=(BFEngine&&) = delete;
 
-		// Get the current version of this class
-		static BFEngine* GetInstance();
-
 		bool Initialize();
 		void Run();
-		void Update(const float deltaTime);
 		void FixedUpdate();
+		void Update(const float deltaTime);		
 		void PreRender();
 		void Render();
 		void PostRender();
 
+		// Get the current version of this class
+		static BFEngine* GetInstance();		
+
+		// Get the scene manager
 		SceneManager* GetSceneManager();
 
-		static void TerminateGame();		
+		// Window option setters
+		void SetWindowName(std::string name);
+		void SetWindowDimensions(int width, int height);
 
-		//going to count from joysticks right now
+		// Create player controllers
 		PlayerController players[4];
 		int numPlayers = NULL;
-		//use this to get player 0, player 1, etc. Otherwise you're taking joystick index
+		// Used to get player number
 		int indexOfPlayer[4]; 
 
+		// Clean up
+		static void TerminateGame();
+
 	private:
-		//Private Constructor and Destructor so no other class can create it
+		// Private Constructor and Destructor so no other class can create it
 		BFEngine();
 		~BFEngine();
 		
 		static std::unique_ptr<BFEngine> BFEngineInstance;
 		friend std::default_delete<BFEngine>;
 
-		void SetUpPlayers();
+		// Set up controllers for players
+		void SetUpControllers();
 
+		// Running check
 		bool isRunning;
 		bool firstLoad;
 
+		// Window
 		static Window* window;
 
+		// Scene Manager
 		SceneManager* sceneManager;
 
-		Cooldown* RoundTimer;
+		// Window options
+		std::string windowName;
+		int width;
+		int height;
 	};
 }
 

@@ -17,6 +17,7 @@ Light::Light(LightComponent::Light_Type lt)
 
 Light::~Light()
 {
+
 }
 
 void Light::Render(Shader* shader)

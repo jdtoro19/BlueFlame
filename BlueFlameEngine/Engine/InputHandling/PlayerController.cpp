@@ -22,7 +22,7 @@ PlayerController::~PlayerController() {
 
 }
 
-void PlayerController::playerControls(Cube* thisThing) {
+void PlayerController::playerControls(GameObject* thisThing) {
 	PlayerObject = thisThing;
 }
 
@@ -38,7 +38,7 @@ void PlayerController::setTeam(int team){
 	}
 }
 
-Cube* PlayerController::pObject() {
+GameObject* PlayerController::pObject() {
 	return PlayerObject;
 }
 

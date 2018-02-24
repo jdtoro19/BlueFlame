@@ -20,10 +20,11 @@ c:\users\juan toro\documents\blueflame\blueflameengine\debug\textui.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\uiobject.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\imageui.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\masterclock.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\audiofile.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\music.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\soundeffect.obj
+c:\users\juan toro\documents\blueflame\blueflameengine\debug\soundeffectselector.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\defaultscene.obj
+c:\users\juan toro\documents\blueflame\blueflameengine\debug\parser.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\timer.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\logmanager.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\bone.obj
@@ -36,8 +37,12 @@ c:\users\juan toro\documents\blueflame\blueflameengine\debug\physicscomponent.ob
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\physicsengine.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\randomizer.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\buttonui.obj
+c:\users\juan toro\documents\blueflame\blueflameengine\debug\sliderui.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\cube.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\bfengine.obj
+c:\users\juan toro\documents\blueflame\blueflameengine\debug\audiofile.obj
+c:\users\juan toro\documents\blueflame\blueflameengine\debug\dialogue.obj
+c:\users\juan toro\documents\blueflame\blueflameengine\debug\camera.obj
 c:\users\juan toro\documents\blueflame\debug\blueflameengine.lib
 c:\users\juan toro\documents\blueflame\debug\blueflameengine.pdb
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\blueflameengine.tlog\cl.command.1.tlog

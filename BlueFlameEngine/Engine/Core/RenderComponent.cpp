@@ -2,16 +2,16 @@
 
 using namespace ENGINE;
 
-RenderComponent::RenderComponent() : mesh(nullptr)
+RenderComponent::RenderComponent() : mesh(nullptr), canRender(true), renderType(NONE), colour (glm::vec3(0.5f, 0.5f, 0.5f))
 {
-	colour = glm::vec3(0.5f, 0.5f, 0.5f);
-	renderType = NONE;
+
 }
 RenderComponent::~RenderComponent()
 {
 
 }
-void RenderComponent::SetRenderType(Render_Type rt) {
+void RenderComponent::SetRenderType(Render_Type rt) 
+{
 	if (rt == NONE) {
 		renderType = NONE;
 		vertexList.clear();
@@ -185,7 +185,8 @@ void RenderComponent::SetColour(float r, float g, float b)
 	colour = glm::vec3(r, g, b);
 	SetRenderType(renderType);
 }
-void RenderComponent::Update() {
+void RenderComponent::Update() 
+{
 
 }
 void RenderComponent::Render(Shader* shader) {

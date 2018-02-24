@@ -21,8 +21,9 @@ bool MenuScene::Initialize()
 	cameraList[0]->Zoom = 105.0f;
 
 	// Set screen options
-	sceneManager->EnableFullscreen(true);
+	sceneManager->EnableFullscreen(false);
 	sceneManager->ShowFPS(true);
+	sceneManager->GetRenderer()->EnableBloom(true);
 
 	// Load shaders
 	skyboxShader = new Shader("Shaders/skybox.vs", "Shaders/skybox.fs");
@@ -80,14 +81,15 @@ void MenuScene::Update(const float deltaTime)
 
 void MenuScene::HandleEvents(SDL_Event events)
 {
-	const Uint8 *state = SDL_GetKeyboardState(NULL);
-
-	if (state[SDL_SCANCODE_SPACE]) {
-		sceneManager->NextScene();
-	}
-
 	if (events.jbutton.button == 7) //start button
 	{
+		sceneManager->NextScene();
+	}
+}
+
+void MenuScene::HandleStates(const Uint8 *state)
+{
+	if (state[SDL_SCANCODE_SPACE]) {
 		sceneManager->NextScene();
 	}
 }

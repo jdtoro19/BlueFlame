@@ -1,3 +1,4 @@
+#pragma once
 #ifndef LIGHT_H
 #define LIGHT_H
 
@@ -19,5 +20,7 @@ namespace ENGINE {
 		LightComponent* lightComponent;
 		RenderComponent* renderComponent;
 	};
+
 }
+
 #endif

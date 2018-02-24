@@ -20,9 +20,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Engine\Audio\AudioFile.cpp" />
+    <ClCompile Include="Engine\Audio\Dialogue.cpp" />
     <ClCompile Include="Engine\Audio\Music.cpp" />
     <ClCompile Include="Engine\Audio\SoundEffect.cpp" />
+    <ClCompile Include="Engine\Audio\SoundEffectSelector.cpp" />
+    <ClCompile Include="Engine\Camera\Camera.cpp" />
     <ClCompile Include="Engine\Core\DefaultScene.cpp" />
+    <ClCompile Include="Engine\Core\Parser.cpp" />
     <ClCompile Include="Engine\Core\Timer.cpp" />
     <ClCompile Include="Engine\Debuging\LogManager.cpp" />
     <ClCompile Include="Engine\Graphics\Bone.cpp" />
@@ -35,6 +39,7 @@
     <ClCompile Include="Engine\Math\PhysicsEngine.cpp" />
     <ClCompile Include="Engine\Math\Randomizer.cpp" />
     <ClCompile Include="Engine\Rendering\2D\ButtonUI.cpp" />
+    <ClCompile Include="Engine\Rendering\2D\SliderUI.cpp" />
     <ClCompile Include="Engine\Rendering\3D\Cube.cpp" />
     <ClCompile Include="Engine\BFEngine.cpp" />
     <ClCompile Include="Engine\Graphics\Shader.cpp" />
@@ -47,7 +52,6 @@
     <ClCompile Include="Engine\Core\RenderComponent.cpp" />
     <ClCompile Include="Engine\Core\LightComponent.cpp" />
     <ClCompile Include="Engine\Core\Light.cpp" />
-    <ClCompile Include="Engine\Core\InputComponent.cpp" />
     <ClCompile Include="Engine\Core\SceneManager.cpp" />
     <ClCompile Include="Engine\Rendering\3D\Model.cpp" />
     <ClCompile Include="Engine\Rendering\3D\Skybox.cpp" />
@@ -59,11 +63,16 @@
     <ClCompile Include="Engine\Timers\MasterClock.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Engine\Audio\Announcer.h" />
     <ClInclude Include="Engine\Audio\AudioFile.h" />
+    <ClInclude Include="Engine\Audio\Dialogue.h" />
     <ClInclude Include="Engine\Audio\Music.h" />
+    <ClInclude Include="Engine\Audio\PlayerDialogue.h" />
     <ClInclude Include="Engine\Audio\SoundEffect.h" />
+    <ClInclude Include="Engine\Audio\SoundEffectSelector.h" />
     <ClInclude Include="Engine\Core\DefaultScene.h" />
     <ClInclude Include="Engine\Core\Hashtable.h" />
+    <ClInclude Include="Engine\Core\Parser.h" />
     <ClInclude Include="Engine\Core\ResourceManager.h" />
     <ClInclude Include="Engine\Core\Timer.h" />
     <ClInclude Include="Engine\Debuging\LogManager.h" />
@@ -79,6 +88,7 @@
     <ClInclude Include="Engine\Math\Randomizer.h" />
     <ClInclude Include="Engine\Math\Volumes.h" />
     <ClInclude Include="Engine\Rendering\2D\ButtonUI.h" />
+    <ClInclude Include="Engine\Rendering\2D\SliderUI.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelComponent.h" />
     <ClInclude Include="Engine\Rendering\3D\ModelMesh.h" />
     <ClInclude Include="Engine\Camera\Camera.h" />
@@ -94,7 +104,6 @@
     <ClInclude Include="Engine\Core\RenderComponent.h" />
     <ClInclude Include="Engine\Core\LightComponent.h" />
     <ClInclude Include="Engine\Core\Light.h" />
-    <ClInclude Include="Engine\Core\InputComponent.h" />
     <ClInclude Include="Engine\Core\SceneManager.h" />
     <ClInclude Include="Engine\Rendering\3D\Model.h" />
     <ClInclude Include="Engine\Rendering\3D\Skybox.h" />

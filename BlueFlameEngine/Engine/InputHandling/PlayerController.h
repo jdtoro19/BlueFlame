@@ -17,8 +17,8 @@ namespace ENGINE {
 		PlayerController(SDL_Joystick* ref, int index);
 		~PlayerController();
 		void setTeam(int team); //0 for red, 1 for blue
-		void playerControls(Cube* thisThing);
-		Cube *pObject();
+		void playerControls(GameObject* thisThing);
+		GameObject *pObject();
 		int inverted();
 		int instanceID = NULL;
 		//pointer to the joystick reference
@@ -52,7 +52,7 @@ namespace ENGINE {
 		Team pTeam;		
 
 		//holds the object that we want to use
-		Cube* PlayerObject = NULL;
+		GameObject* PlayerObject = NULL;
 
 		//what number the player is, 0-3 (1-4)
 		int PIndex = NULL;

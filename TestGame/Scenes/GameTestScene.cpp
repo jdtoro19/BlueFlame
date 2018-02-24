@@ -19,7 +19,6 @@ bool GameTestScene::Initialize()
 	// Scene Options
 	sceneManager->CaptureMouse(true);
 	sceneManager->EnableFullscreen(false);
-	sceneManager->GetRenderer()->EnableBloom(true);
 
 	// Set the position of the first camera
 	cameraList[0]->Position = glm::vec3(0.0f, 1.0f, 3.0f);
@@ -55,7 +54,7 @@ bool GameTestScene::Initialize()
 	dirLight->lightComponent->ambient = glm::vec3(0.2f, 0.2f, 0.2f);
 
 	// Player
-	player = new Player();
+	player = new WindPlayer();
 	player->SetShader(defaultShaderHandle);
 
 	// Floor
@@ -63,8 +62,7 @@ bool GameTestScene::Initialize()
 	floor->SetShader(defaultShaderHandle);
 	floor->renderComponent->SetColour(0.1f, 0.1f, 0.1f);
 	floor->physicsComponent->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
-	//floor->SetWorldScale(11.0f, 1.0f, 11.0f);
-	floor->collisionComponent->SetScale(glm::vec3(5.0f, 1.0f, 5.0f));
+	floor->SetWorldScale(11.0f, 1.0f, 11.0f);
 	floor->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	floor->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
 	floor->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
@@ -89,7 +87,6 @@ bool GameTestScene::Initialize()
 	AddLightObject(dirLight);
 	AddObject(particle);
 
-
 	bgm = new Music();
 	if (!bgm->Load("Resources/Audio/bgm.mp3")) {
 		std::cout << "BGM could not load" << std::endl;
@@ -113,8 +110,14 @@ void GameTestScene::Update(const float deltaTime)
 	sceneManager->DebugText("7 to release mouse");
 	sceneManager->DebugText("8 to capture mouse");
 	sceneManager->DebugText(player->GetWorldPosition());
-	sceneManager->DebugText("STUN: " + std::to_string(player->stunTimer));
+	sceneManager->DebugText("STUN: " + std::to_string(player->GetStunTimer()));
 	sceneManager->DebugText("Press space for sound effect");
+	sceneManager->DebugText(player->GetPlayerState());
+
+	PhysicsEngine::GetInstance()->AddObjectList(objectList);
+	PhysicsEngine::GetInstance()->Update(deltaTime);
+
+	player->SetTarget(pointLight->GetWorldPosition());
 
 	// Timer for firing (Keyboard controls only)
 	timer -= deltaTime;
@@ -184,10 +187,6 @@ void GameTestScene::Update(const float deltaTime)
 
 void GameTestScene::HandleEvents(SDL_Event events)
 {
-	player->HandleEvents(events);
-
-	const Uint8 *state = SDL_GetKeyboardState(NULL);
-
 	//joystick
 	switch (events.type)
 	{
@@ -287,18 +286,38 @@ void GameTestScene::HandleEvents(SDL_Event events)
 
 	// PLAYER
 	// Movement
-	if (state[SDL_SCANCODE_SPACE]) {
-		if (player->playerState != Player::PLAYERSTATES::BLOCK && player->playerState != Player::PLAYERSTATES::STUN) {
+	if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
+	{
+		//Select surfaces based on key press
+		switch (events.key.keysym.sym)
+		{
+		case SDLK_LEFT:
+			player->LightAttack();
 			if (fire) {
-				Projectile* p = new Projectile(glm::vec3(player->GetWorldPosition()), 1);
-				p->SetShader(defaultShaderHandle);
-				AddObject(p);
 				fire = false;
 				timer = 0.3f;
 				sEffect->Play();
-			}			
+			}
+			break;
 		}
 	}
+
+	// Camera look
+	if (events.type == SDL_MOUSEMOTION) {
+		cameraList[0]->ProcessMouseMovement((float)events.motion.x, (float)events.motion.y);
+	}
+
+	if (events.type == SDL_MOUSEWHEEL) {
+		cameraList[0]->ProcessMouseScroll((float)events.wheel.y);
+	}
+
+	player->HandleEvents(events);
+}
+
+void GameTestScene::HandleStates(const Uint8 *state)
+{
+	player->HandleStates(state);
+
 	if (state[SDL_SCANCODE_T]) {
 		player->Movement(Player::PLAYERMOVEMENT::FORWARD, deltaTime);
 	}
@@ -368,14 +387,5 @@ void GameTestScene::HandleEvents(SDL_Event events)
 
 	if (state[SDL_SCANCODE_8]) {
 		sceneManager->CaptureMouse(true);
-	}
-
-	// Camera look
-	if (events.type == SDL_MOUSEMOTION) {
-		cameraList[0]->ProcessMouseMovement((float)events.motion.x, (float)events.motion.y);
-	}
-
-	if (events.type == SDL_MOUSEWHEEL) {
-		cameraList[0]->ProcessMouseScroll((float)events.wheel.y);
 	}
 }

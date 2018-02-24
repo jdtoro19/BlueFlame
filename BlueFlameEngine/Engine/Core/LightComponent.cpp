@@ -16,7 +16,8 @@ LightComponent::~LightComponent()
 {
 }
 
-void LightComponent::SetLightType(Light_Type lt) {
+void LightComponent::SetLightType(Light_Type lt) 
+{
 	if (lt == NONE) {
 		lightType = NONE;
 		direction = glm::vec3(0.0f, 0.0f, 0.0f);

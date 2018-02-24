@@ -1,6 +1,6 @@
 #include "Music.h"
 
-using namespace GAME;
+using namespace ENGINE;
 
 Music::Music() :mixMusic(nullptr) {}
 
@@ -19,7 +19,7 @@ bool Music::Load(const std::string& fileName) {
 	}
 	else {
 		//Debug::Log(EMessageType::INFO, "Loaded the music file", __FILE__, __LINE__);
-		printf("Loaded the music File\n");
+		printf("Loaded the music File");
 	}
 	return true;
 }

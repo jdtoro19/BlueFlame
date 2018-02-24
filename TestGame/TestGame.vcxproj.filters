@@ -19,6 +19,9 @@
     <Filter Include="Source Files\Player">
       <UniqueIdentifier>{f8ed527c-8d00-445c-99a3-ae2f6469809e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Game">
+      <UniqueIdentifier>{32a1e2b7-8e11-4e3a-81fe-173f2a41c1fd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Main.cpp">
@@ -45,6 +48,12 @@
     <ClCompile Include="Player\PlayerBase.cpp">
       <Filter>Source Files\Player</Filter>
     </ClCompile>
+    <ClCompile Include="Game\ProjectileManager.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\WindPlayer.cpp">
+      <Filter>Source Files\Player</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scenes\TestScene.h">
@@ -66,6 +75,12 @@
       <Filter>Source Files\Scenes</Filter>
     </ClInclude>
     <ClInclude Include="Player\PlayerBase.h">
+      <Filter>Source Files\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\ProjectileManager.h">
+      <Filter>Source Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\WindPlayer.h">
       <Filter>Source Files\Player</Filter>
     </ClInclude>
   </ItemGroup>

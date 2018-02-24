@@ -127,6 +127,28 @@ namespace ENGINE {
 			return highResolutionSupported;
 		}
 
+		/**
+		* This generates a random number between 0 and 9 by pulling the last digit of the current ticks.
+		* @returns a random number between 0 and 9.
+		*/
+		static inline int generateRandomNumber()
+		{
+			return getCurrentTicks().QuadPart % 10;
+		}
+
+		/**
+		* Generates a random number between 0 and the provided upper bounds.
+		* @returns a random number between 0 and upper bounds.
+		*/
+		static inline int boundedRandomNumber(const int bounds)
+		{
+			int rand = generateRandomNumber();
+			while (rand > bounds) {
+				rand -= bounds;
+			}
+			return bounds;
+		}
+
 		static double getCTimeInHours();
 
 		static double getGameRuntime();

@@ -29,3 +29,8 @@ void DefaultScene::HandleEvents(SDL_Event events)
 {
 
 }
+
+void DefaultScene::HandleStates(const Uint8 *state) 
+{
+
+}

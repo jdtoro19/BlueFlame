@@ -26,10 +26,10 @@ InputHandler* InputHandler::GetInstance() {
 void InputHandler::InitControllers() {
 	InputHandler::connectedControllers = SDL_NumJoysticks();
 	if (InputHandler::connectedControllers == 0) {
-		std::cout << "No joysticks were found." << std::endl;
+		std::cout << "No controllers detected" << std::endl;
 	}
 	else {
-		std::cout << "we got one!" << std::endl;
+		std::cout << "Controller detected" << std::endl;
 		for (int i = 0; i < InputHandler::connectedControllers; i++) {
 			InputHandler::joystick[i] = SDL_JoystickOpen(i);
 

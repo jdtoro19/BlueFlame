@@ -9,7 +9,7 @@
 /// Geez,  I'm tired - go look it up - SSF
 struct _Mix_Music;
 
-namespace GAME {
+namespace ENGINE {
 	class Music : public AudioFile {
 	public:
 		Music();

@@ -1,3 +1,4 @@
+#pragma once
 #ifndef SCENE_H
 #define SCENE_H
 
@@ -12,6 +13,7 @@
 
 namespace ENGINE {
 
+	// Base Scene Class
 	class Scene
 	{
 	public:
@@ -23,6 +25,7 @@ namespace ENGINE {
 		virtual bool Initialize() = 0;
 		virtual void Update(const float deltaTime) = 0;
 		virtual void HandleEvents(SDL_Event events) = 0;
+		virtual void HandleStates(const Uint8 *state) = 0;
 		//
 		// NOT REQUIRED FUNCTIONS
 		virtual void PreUpdate(const float deltaTime) 
@@ -37,6 +40,12 @@ namespace ENGINE {
 					else {
 						objectList.at(i)->Update(deltaTime);
 					}
+				}
+			}
+
+			if (uiObjectList.size() != NULL) {
+				for (size_t i = 0; i < uiObjectList.size(); ++i) {
+					uiObjectList.at(i)->Update(deltaTime);
 				}
 			}
 		};

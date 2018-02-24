@@ -2,7 +2,7 @@
 #include <sstream>
 #include "SoundEffect.h"
 
-using namespace GAME;
+using namespace ENGINE;
 
 SoundEffect::SoundEffect() {
 }
@@ -23,7 +23,7 @@ bool SoundEffect::Load(const std::string& fileName) {
 	}
 	else {
 		//Debug::Log(EMessageType::INFO, "Loaded the sound effect", __FILE__, __LINE__);
-		printf("Sound effect loaded successfully\n");
+		printf("Sound effect loaded successfully");
 	}
 	return true;
 }
@@ -33,16 +33,14 @@ void SoundEffect::Play(const int loopCount) const {
 }
 
 void SoundEffect::Play() {
-	//if (Mix_Playing(1) == false) {
-		if (Mix_PlayChannel(-1, mixChunk, 0) == -1) {
-			//Debug::Log(EMessageType::ERROR, std::string(Mix_GetError()), __FILE__, __LINE__);
-			//printf(Mix_GetError());
-		}
-	//}
+	if (Mix_PlayChannel(-1, mixChunk, 0) == -1) {
+		//Debug::Log(EMessageType::ERROR, std::string(Mix_GetError()), __FILE__, __LINE__);
+		printf(Mix_GetError());
+	}
 }
 
 void SoundEffect::SetVolume(const int musicVolume) const {
-	Mix_VolumeChunk(mixChunk, musicVolume);
+	Mix_VolumeMusic(musicVolume);
 }
 
 void SoundEffect::Destroy() {

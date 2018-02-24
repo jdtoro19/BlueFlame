@@ -1,5 +1,4 @@
 #pragma once
-
 #ifndef HASHTABLE_H
 #define HASHTABLE_H
 
@@ -7,8 +6,7 @@
 #include <string>
 #include <iostream>
 
-// uncomment this to enable debugging
-//#define HTABLE_DEBUG 1
+// Class by R. N. Robson for use with the resource manager
 
 template <class KeyType, class T>
 class Hashtable;

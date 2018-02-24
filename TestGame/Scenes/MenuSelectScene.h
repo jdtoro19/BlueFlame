@@ -12,6 +12,7 @@
 #include <BlueFlameEngine\Engine\Rendering\2D\TextUI.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\ImageUI.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\ButtonUI.h>
+#include <BlueFlameEngine\Engine\Rendering\2D\SliderUI.h>
 #include "DemoScene.h"
 #include "TestScene.h"
 #include "GameTestScene.h"
@@ -30,6 +31,7 @@ namespace GAME {
 		bool Initialize();
 		void Update(const float deltaTime);
 		void HandleEvents(SDL_Event events);
+		void HandleStates(const Uint8 *state);
 
 		SceneManager* sceneManager;
 	private:
@@ -42,8 +44,12 @@ namespace GAME {
 		// UI
 		TextUI* titleText;
 
-		ButtonUI* button;
+		ButtonUI* buttonTest;
+		ButtonUI* buttonLighting;
+		ButtonUI* buttonDemo;
 		ButtonUI* buttonExit;
+
+		SliderUI* sliderTEST;
 	};
 }
 #endif

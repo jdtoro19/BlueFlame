@@ -1,77 +1,73 @@
 #include "Window.h"
 
-#include <SDL\SDL_mixer.h>
+using namespace ENGINE;
 
-Window::Window() : SDLWindow(nullptr) {
+Window::Window() : SDLWindow(nullptr) 
+{
 
 }
 
-
-Window::~Window(){
+Window::~Window()
+{
 	Shutdown();
 }
 
-bool Window::Initialize(std::string windowName_, int width_, int height_) {
-
-	//Initialize SDL and check the initialize process
-	//You will use SDL in the steps to come, so make sure it works properly now!
+bool Window::Initialize(std::string windowName, int initWidth, int initHeight) 
+{
+	// Initialize SDL
 	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_JOYSTICK | SDL_INIT_AUDIO) > 0) {
 		std::cout << "Failed to init SDL!" << std::endl;
 		return false;
 	}
-	//Store the temporary width/height variables in the private members variables
-	width = width_;
-	height = height_;
+	std::cout << "SDL Initialized" << std::endl;
 
-	//Use the SDL_OpenGL library function SDL_CreateWindow
-	//SDL_CreateWindow(windowName, windowPosition_x,
-	//windowPosition_y, windowWidth, windowHeight, tpeOfWindow)
-	SDLWindow = SDL_CreateWindow(windowName_.c_str(), SDL_WINDOWPOS_CENTERED,
-		SDL_WINDOWPOS_CENTERED, width_, height_, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
+	width = initWidth;
+	height = initHeight;
 
+	// Create Window
+	SDLWindow = SDL_CreateWindow(windowName.c_str(), SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, initWidth, initHeight, SDL_WINDOW_OPENGL | SDL_WINDOW_HIDDEN);
+
+	// V-Sync
 	SDL_GL_SetSwapInterval(1);
 
-	//Check to make sure the window was created properly
+	// Check to make sure the window was created properly
 	if (!SDLWindow) {
 		std::cout << "Unable to create Window" << std::endl;
 		Shutdown();
 		return false;
 	}
 
-	//Create an SDL/GL context
-	//Pass in the window you created above to bind it to the context
+	// Create an SDL/GL context=
 	SDLGLContext = SDL_GL_CreateContext(SDLWindow);
 
-	//Set the Attributes that will be used within the window
+	// Set the Attributes that will be used within the window
 	SetAttributes();
 
 	//Initialize glew and get the error message from the initialize function
 	GLenum err = glewInit();
 	if (err != GLEW_OK) {
-		//Problem: glewInit failed, something is seriously wrong.
 		std::cout << "glewInit failed, aborting." << std::endl;
 		std::cout << "Error: " << glewGetErrorString(err) << std::endl;
 		return false;
 	}
+	std::cout << "GLEW Initialized" << std::endl;
 
-	//Tells the GPU to test for depth when rendering
-	//glEnable(GL_DEPTH_TEST);
-
+	// Print OpenGl Information
 	GetInstalledOpenGLInfo();
 
+	// Initialize Audio
 	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1) 
 	{
 		std::cout << "Audio was not initialized" << std::endl;
+		return false;
 	}
-	else 
-	{
-		std::cout << "Audio initialized" << std::endl;
-	}
+	std::cout << "Audio initialized" << std::endl;
 
 	return true;
 }
 
-void Window::Shutdown() {
+void Window::Shutdown() 
+{
 	//Clean up the window
 	Mix_CloseAudio();
 	Mix_Quit();
@@ -80,8 +76,8 @@ void Window::Shutdown() {
 	SDLWindow = nullptr;	
 }
 
-void Window::SetAttributes() {
-
+void Window::SetAttributes() 
+{
 	//Ignore any depricated functions
 	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
 
@@ -96,8 +92,8 @@ void Window::SetAttributes() {
 	//This sets up the depth buffer
 	//This will help the GPU determine which objects are in front of others (perspective)
 	SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 32);
-
-	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
+	// This is used for anti-aliasing
+	//SDL_GL_SetAttribute(SDL_GL_MULTISAMPLEBUFFERS, 1);
 	SDL_GL_SetAttribute(SDL_GL_MULTISAMPLESAMPLES, 4);
 }
 
@@ -113,17 +109,20 @@ int Window::GetHeight() const {
 	return height;
 }
 
-void Window::SetWindowSize(const int width_, const int height_) {
-	width = width_;
-	height = height_;
+void Window::SetWindowSize(const int setWidth, const int setHeight) 
+{
+	width = setWidth;
+	height = setHeight;
 }
 
-void Window::SetFullScreen(bool setFullscreen) {
+void Window::SetFullScreen(bool setFullscreen) 
+{
 	isFullScreen = setFullscreen;
 	SDL_SetWindowFullscreen(SDLWindow, (isFullScreen ? SDL_WINDOW_FULLSCREEN_DESKTOP : SDL_WINDOW_SHOWN));
 }
 
-void Window::GetInstalledOpenGLInfo() {
+void Window::GetInstalledOpenGLInfo() 
+{
 	// You can to get some info regarding versions and manufacturer
 	const GLubyte *version = glGetString(GL_VERSION);
 	// You can also get the version as ints	

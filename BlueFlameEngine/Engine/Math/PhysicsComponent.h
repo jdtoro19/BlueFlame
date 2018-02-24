@@ -112,6 +112,8 @@ namespace ENGINE {
 		float staticFriction;
 		float kineticFriction;
 
+		bool hasGravity = true;
+
 		bool destructible = false;
 
 		Physics_Type physicsType;

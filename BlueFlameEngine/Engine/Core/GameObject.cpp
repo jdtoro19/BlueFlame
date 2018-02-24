@@ -2,7 +2,7 @@
 
 using namespace ENGINE;
 
-GameObject::GameObject() : 
+GameObject::GameObject() :
 	localPosition(glm::vec3(0.0f, 0.0f, 0.0f)),
 	worldPosition(glm::vec3(0.0f, 0.0f, 0.0f)),
 	localRotation(glm::vec3(1.0f, 1.0f, 1.0f)),
@@ -89,11 +89,33 @@ float GameObject::GetLocalRotationAngle() const
 void GameObject::SetWorldPosition(const float &x, const float &y, const float &z)
 {
 	worldPosition = glm::vec3(x, y, z);
+	if (collisionComponent != nullptr) {
+		if (collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX) {
+			collisionComponent->GetBoundingBox().c = glm::vec3(x, y, z);
+		}
+		else if (collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE) {
+			collisionComponent->GetBoundingSphere().c = glm::vec3(x, y, z);
+		}
+	}
+	if (physicsComponent != nullptr) {
+		physicsComponent->SetPosition(glm::vec3(x, y, z));
+	}
 	UpdateWorldMatrix();
 }
 void GameObject::SetWorldPosition(const glm::vec3 &p)
 {
 	worldPosition = p;
+	if (collisionComponent != nullptr) {
+		if (collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX) {
+			collisionComponent->GetBoundingBox().c = p;
+		}
+		else if (collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE) {
+			collisionComponent->GetBoundingSphere().c = p;
+		}
+	}
+	if (physicsComponent != nullptr) {
+		physicsComponent->SetPosition(p);
+	}
 	UpdateWorldMatrix();
 }
 glm::vec3 GameObject::GetWorldPosition() const
@@ -129,18 +151,26 @@ glm::vec3 GameObject::GetWorldRotation() const
 void GameObject::SetWorldScale(const float &x, const float &y, const float &z)
 {
 	worldScale = glm::vec3(x, y, z);
+	if (collisionComponent != nullptr) {
+		collisionComponent->SetScale(glm::vec3(x, y, z));
+	}
 	UpdateWorldMatrix();
 }
 void GameObject::SetWorldScale(const glm::vec3 &s)
 {
 	worldScale = s;
+	if (collisionComponent != nullptr) {
+		collisionComponent->SetScale(s);
+	}
 	UpdateWorldMatrix();
 }
 void GameObject::SetWorldScale(const float &s)
 {
 	worldScale = glm::vec3(s, s, s);
+	if (collisionComponent != nullptr) {
+		collisionComponent->SetScale(glm::vec3(s, s, s));
+	}
 	UpdateWorldMatrix();
-
 }
 glm::vec3 GameObject::GetWorldScale() const
 {

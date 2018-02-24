@@ -18,11 +18,16 @@ PhysicsComponent::~PhysicsComponent() {
 
 void PhysicsComponent::Update(float deltaTime) {
 	if (physicsType == DYNAMIC) {
-		if (deltaTime >= 1 / 144.0f)
-			deltaTime = 1/ 144.0f;
-		force += glm::vec3(0.0f, -400.0f, 0.0f);
+		if (deltaTime >= 1 / 144.0f) {
+			deltaTime = 1 / 144.0f;
+		}
+
+		if (hasGravity) {
+			force += glm::vec3(0.0f, -2000.0f, 0.0f);
+		}
+
 		velocity += (invMass * force) * deltaTime;
-		position += velocity * deltaTime; //+ (1.0f/2.0f * invMass * force * deltaTime * deltaTime);
+		position += velocity * deltaTime;
 		force = glm::vec3(0.0f, 0.0f, 0.0f);
 	}
 }
@@ -111,7 +116,7 @@ void PhysicsComponent::SetAcceleration(glm::vec3 accel) {
 }
 
 void PhysicsComponent::AddForce(glm::vec3 _force) {
-	force +=_force;
+	force +=_force * 1000.0f;
 }
 
 void PhysicsComponent::SetMass(float _mass) {

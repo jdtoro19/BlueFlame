@@ -210,8 +210,24 @@ Box CollisionComponent::GetBoundingBox() {
 	return *boundingBox;
 }
 
+glm::vec3 CollisionComponent::GetBoundingBoxCentre() {
+	return boundingBox->c;
+}
+
+glm::vec3 CollisionComponent::GetBoundingBoxRadii() {
+	return boundingBox->r * scale;
+}
+
 Sphere CollisionComponent::GetBoundingSphere() {
 	return *boundingSphere;
+}
+
+glm::vec3 CollisionComponent::GetBoundingSphereCentre() {
+	return boundingSphere->c;
+}
+
+float CollisionComponent::GetBoundingSphereRadius() {
+	return boundingSphere->r * scale.x;
 }
 
 glm::vec3 CollisionComponent::GetScale() {
@@ -234,10 +250,4 @@ void CollisionComponent::SetSpherePadding(float _padding) {
 
 void CollisionComponent::SetScale(glm::vec3 _scale) {
 	scale = _scale;
-	if (boundingSphere == nullptr) {
-		boundingBox->SetExtentsFromScale(_scale * boxPadding);
-	}
-	else if (boundingBox == nullptr) {
-		boundingSphere->SetRadiusFromScale(_scale * spherePadding);
-	}
 }

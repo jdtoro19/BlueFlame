@@ -17,15 +17,15 @@ bool MenuSelectScene::Initialize()
 	sceneManager = BFEngine::GetInstance()->GetSceneManager();
 	
 	// If you plan to use the scenemanagers scene vector you dont need to set these values all the time
-	/*
 	// Set camera options
 	cameraList[0]->Yaw = 0.0f;
 	cameraList[0]->Zoom = 105.0f;
 
 	// Set screen options
-	sceneManager->EnableFullscreen(true);
+	sceneManager->EnableSplitscreen(false);
+	sceneManager->EnableFullscreen(false);
 	sceneManager->ShowFPS(true);
-	*/
+	
 	// Load shaders
 	skyboxShader = new Shader("Shaders/skybox.vs", "Shaders/skybox.fs");
 
@@ -53,25 +53,50 @@ bool MenuSelectScene::Initialize()
 	titleText->SetSpacing(9.0f);
 	titleText->SetPosition(50, -100);
 
-	button = new ButtonUI("Resources/Textures/DefaultButton.png");
-	button->SetPosition(-(button->GetWidth() / 2) - 150, (button->GetHeight() / 2) + 650);
-	button->SetHeight(100);
-	button->SetPadding(-10, 0);
-	button->GetText()->SetText("PLAY");
-	button->SetTextPadding(75, 35);
-	button->GetImage()->SetAlpha(0.5f);
+	buttonTest = new ButtonUI("Resources/Textures/DefaultButton.png");
+	buttonTest->SetPosition(-(buttonTest->GetWidth() / 2) - 150, (buttonTest->GetHeight() / 2) + 600);
+	buttonTest->SetHeight(100);
+	buttonTest->SetPadding(-10, 0);
+	buttonTest->GetText()->SetText("TEST");
+	buttonTest->SetTextPadding(75, 35);
+	buttonTest->GetImage()->SetAlpha(0.5f);
+
+	buttonLighting = new ButtonUI("Resources/Textures/DefaultButton.png");
+	buttonLighting->SetPosition(800, buttonTest->GetPosition().y);
+	buttonLighting->SetHeight(100);
+	buttonLighting->SetPadding(-10, 0);
+	buttonLighting->GetText()->SetText("LIGHTING");
+	buttonLighting->GetText()->SetSize(0.8f);
+	buttonLighting->SetTextPadding(20, 25);
+	buttonLighting->GetImage()->SetAlpha(0.5f);
+
+	buttonDemo = new ButtonUI("Resources/Textures/DefaultButton.png");
+	buttonDemo->SetPosition(1250, buttonTest->GetPosition().y);
+	buttonDemo->SetHeight(100);
+	buttonDemo->SetPadding(-10, 0);
+	buttonDemo->GetText()->SetText("DEMO");
+	buttonDemo->SetTextPadding(60, 35);
+	buttonDemo->GetImage()->SetAlpha(0.5f);
 
 	buttonExit = new ButtonUI("Resources/Textures/lewd.png");
-	buttonExit->SetPosition(-(button->GetWidth() / 2) - 150, (button->GetHeight() / 2) + button->GetPosition().y + 100);
+	buttonExit->SetPosition(-(buttonTest->GetWidth() / 2) - 150, (buttonTest->GetHeight() / 2) + buttonTest->GetPosition().y + 100);
 	buttonExit->SetHeight(100);
 	buttonExit->GetText()->SetText("EXIT");
 	buttonExit->GetText()->SetColour(0.0f, 0.0f, 0.0f);
 	buttonExit->SetTextPadding(75, 35);
 	buttonExit->GetImage()->SetAlpha(0.5f);
 
+	sliderTEST = new SliderUI("Resources/Textures/Green.jpg", "Resources/Textures/blackFILL.png");
+	sliderTEST->SetPosition(350, 1000);
+	sliderTEST->SetHeight(100);
+	sliderTEST->SetValue(0.9f);
+
 	AddUIObject(titleText);
-	AddUIObject(button);
+	AddUIObject(buttonTest);
+	AddUIObject(buttonDemo);
+	AddUIObject(buttonLighting);
 	AddUIObject(buttonExit);
+	AddUIObject(sliderTEST);
 
 	return true;
 }
@@ -80,10 +105,10 @@ void MenuSelectScene::Update(const float deltaTime)
 {
 	cameraList[0]->SetRotationY(cameraList[0]->Yaw += deltaTime * 5);	
 
-	float lastPosition = button->GetPosition().x;
-	button->SetPosition(lastPosition += deltaTime * 3000, button->GetPosition().y);
-	if (button->GetPosition().x > (button->GetWidth() / 2) + 150) {
-		button->SetPosition((button->GetWidth() / 2) + 150, button->GetPosition().y);
+	float lastPosition = buttonTest->GetPosition().x;
+	buttonTest->SetPosition(lastPosition += deltaTime * 3000, buttonTest->GetPosition().y);
+	if (buttonTest->GetPosition().x > (buttonTest->GetWidth() / 2) + 150) {
+		buttonTest->SetPosition((buttonTest->GetWidth() / 2) + 150, buttonTest->GetPosition().y);
 	}
 
 	float lastPosition2 = buttonExit->GetPosition().x;
@@ -97,25 +122,32 @@ void MenuSelectScene::Update(const float deltaTime)
 	if (titleText->GetPosition().y > 100) {
 		titleText->SetPosition(50, 100);
 	}
+
+	//float lastPosition4 = sliderTEST->GetPosition().x;
+	//sliderTEST->SetPosition(lastPosition4 += deltaTime * 3000, sliderTEST->GetPosition().y);
+	//if (sliderTEST->GetPosition().x > (sliderTEST->GetWidth() / 2) + 150) {
+		//sliderTEST->SetPosition((sliderTEST->GetWidth() / 2) + 150, sliderTEST->GetPosition().y);
+	//}
+	//sliderTEST->Update(deltaTime);
 }
 
 void MenuSelectScene::HandleEvents(SDL_Event events)
 {
-	if (button->OnHover(events, sceneManager))
+	if (buttonTest->OnHover(events, sceneManager))
 	{
-		button->SetSelected(true);
-		button->GetImage()->SetScale(1.2f);
-		button->GetImage()->SetAlpha(1.0f);
+		buttonTest->SetSelected(true);
+		buttonTest->GetImage()->SetScale(1.2f);
+		buttonTest->GetImage()->SetAlpha(1.0f);
 		if (events.type == SDL_MOUSEBUTTONDOWN) {
 			if (events.button.button == SDL_BUTTON_LEFT)
 			{
-				button->GetImage()->SetScale(1.1f);
+				buttonTest->GetImage()->SetScale(1.1f);
 			}
 		}
 		if (events.type == SDL_MOUSEBUTTONUP) {
 			if (events.button.button == SDL_BUTTON_LEFT)
 			{
-				if (button->GetSelected()) {
+				if (buttonTest->GetSelected()) {
 					sceneManager->SwitchScene(new GameTestScene());
 				}
 			}
@@ -123,9 +155,63 @@ void MenuSelectScene::HandleEvents(SDL_Event events)
 	}
 	else
 	{
-		button->SetSelected(false);
-		button->GetImage()->SetScale(1);
-		button->GetImage()->SetAlpha(0.5f);
+		buttonTest->SetSelected(false);
+		buttonTest->GetImage()->SetScale(1);
+		buttonTest->GetImage()->SetAlpha(0.5f);
+	}
+
+	if (buttonLighting->OnHover(events, sceneManager))
+	{
+		buttonLighting->SetSelected(true);
+		buttonLighting->GetImage()->SetScale(1.2f);
+		buttonLighting->GetImage()->SetAlpha(1.0f);
+		if (events.type == SDL_MOUSEBUTTONDOWN) {
+			if (events.button.button == SDL_BUTTON_LEFT)
+			{
+				buttonLighting->GetImage()->SetScale(1.1f);
+			}
+		}
+		if (events.type == SDL_MOUSEBUTTONUP) {
+			if (events.button.button == SDL_BUTTON_LEFT)
+			{
+				if (buttonLighting->GetSelected()) {
+					sceneManager->SwitchScene(new TestScene());
+				}
+			}
+		}
+	}
+	else
+	{
+		buttonLighting->SetSelected(false);
+		buttonLighting->GetImage()->SetScale(1);
+		buttonLighting->GetImage()->SetAlpha(0.5f);
+	}
+
+	if (buttonDemo->OnHover(events, sceneManager))
+	{
+		buttonDemo->SetSelected(true);
+		buttonDemo->GetImage()->SetScale(1.2f);
+		buttonDemo->GetImage()->SetAlpha(1.0f);
+		if (events.type == SDL_MOUSEBUTTONDOWN) {
+			if (events.button.button == SDL_BUTTON_LEFT)
+			{
+				buttonDemo->GetImage()->SetScale(1.1f);
+			}
+		}
+		if (events.type == SDL_MOUSEBUTTONUP) {
+			if (events.button.button == SDL_BUTTON_LEFT)
+			{
+				if (buttonDemo->GetSelected()) {
+					sceneManager->SwitchScene(new DemoScene());
+				}
+			}
+		}
+	}
+	else
+	{
+		buttonDemo->SetSelected(false);
+		buttonDemo->GetImage()->SetScale(1);
+		buttonDemo->GetImage()->SetAlpha(0.5f);
 	}
 
 	if (buttonExit->OnHover(events, sceneManager))
@@ -154,9 +240,10 @@ void MenuSelectScene::HandleEvents(SDL_Event events)
 		buttonExit->GetImage()->SetScale(1);
 		buttonExit->GetImage()->SetAlpha(0.5f);
 	}
+}
 
-	const Uint8 *state = SDL_GetKeyboardState(NULL);
-
+void MenuSelectScene::HandleStates(const Uint8 *state)
+{
 	if (state[SDL_SCANCODE_Z]) {
 		sceneManager->PreviousScene();
 	}

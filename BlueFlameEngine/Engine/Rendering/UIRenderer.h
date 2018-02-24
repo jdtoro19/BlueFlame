@@ -18,6 +18,7 @@
 
 namespace ENGINE {
 
+	// Renders all UI objects, seperate from 3D objects
 	class UIRenderer
 	{
 	private:

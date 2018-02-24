@@ -4,7 +4,7 @@
 
 #include <SDL\SDL_mixer.h>
 
-using namespace GAME;
+using namespace ENGINE;
 
 AudioFile::AudioFile() {
 

@@ -9,7 +9,7 @@
 //totally different from audiofile.h
 //included for effect
 
-namespace GAME {
+namespace ENGINE {
 
 	class SoundEffect : AudioFile {
 	public:

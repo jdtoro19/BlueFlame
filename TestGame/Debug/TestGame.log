@@ -1,7 +1,3 @@
-﻿  GameTestScene.cpp
-c:\users\juan toro\documents\blueflame\testgame\scenes\gametestscene.cpp(155): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\juan toro\documents\blueflame\testgame\scenes\gametestscene.cpp(159): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\juan toro\documents\blueflame\testgame\scenes\gametestscene.cpp(168): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
-c:\users\juan toro\documents\blueflame\testgame\scenes\gametestscene.cpp(172): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+﻿  DemoScene.cpp
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.exe
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.pdb (Partial PDB)

@@ -16,6 +16,7 @@
 #include <BlueFlameEngine\Engine\Audio\Music.h>
 #include <BlueFlameEngine\Engine\Audio\SoundEffect.h>
 #include "..\Player\Player.h"
+#include "../Player/WindPlayer.h"
 #include "DemoScene.h"
 #include "TestScene.h"
 
@@ -33,6 +34,7 @@ namespace GAME {
 		bool Initialize();
 		void Update(const float deltaTime);
 		void HandleEvents(SDL_Event events);
+		void HandleStates(const Uint8 *state);
 
 		SceneManager* sceneManager;
 
@@ -45,7 +47,7 @@ namespace GAME {
 		Light* dirLight;
 
 		// Player
-		Player* player;
+		WindPlayer* player;
 		Cube* floor;
 
 		// shaders

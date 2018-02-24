@@ -21,7 +21,6 @@ SceneManager::~SceneManager()
 // Starts the window, renderer, and sets a default scene with nothing in it (incase no scene is initially set)
 void SceneManager::Initialize(Window* w) {
 	window = w;
-	//resolutionScale = 0.5f;
 
 	renderer = new Renderer();
 	renderer->Initialize(window);
@@ -103,7 +102,8 @@ void SceneManager::Draw() {
 }
 
 // Handles all input and also calls the current scene's HandleEvent
-void SceneManager::HandleEvents() {
+void SceneManager::HandleEvents() 
+{
 	while (SDL_PollEvent(&events))
 	{
 		// If X window button is pressed then quit
@@ -132,9 +132,13 @@ void SceneManager::HandleEvents() {
 				SDL_SetRelativeMouseMode(SDL_TRUE);
 			}
 		}
+
+		currentScene->HandleEvents(events);
 	}
 
 	const Uint8 *state = SDL_GetKeyboardState(NULL);
+
+	currentScene->HandleStates(state);
 
 	// SCREEN SETTINGS
 
@@ -183,8 +187,6 @@ void SceneManager::HandleEvents() {
 	if (state[SDL_SCANCODE_ESCAPE]) {
 		quit = true;
 	}
-
-	currentScene->HandleEvents(events);
 }
 
 // Flag indicating the user wants to quit

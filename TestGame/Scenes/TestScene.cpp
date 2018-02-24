@@ -14,6 +14,10 @@ TestScene::~TestScene()
 	model2 = nullptr;
 	delete model3;
 	model3 = nullptr;
+	delete model4;
+	model4 = nullptr;
+	delete floor;
+	floor = nullptr;
 }
 
 bool TestScene::Initialize()
@@ -228,8 +232,6 @@ void TestScene::Update(const float deltaTime)
 
 void TestScene::HandleEvents(SDL_Event events)
 {
-	const Uint8 *state = SDL_GetKeyboardState(NULL);
-
 	//joystick
 	switch (events.type)
 	{
@@ -327,6 +329,18 @@ void TestScene::HandleEvents(SDL_Event events)
 		break;
 	}
 
+	// Camera look
+	if (events.type == SDL_MOUSEMOTION) {
+		cameraList[0]->ProcessMouseMovement((float)events.motion.x, (float)events.motion.y);
+	}
+
+	if (events.type == SDL_MOUSEWHEEL) {
+		cameraList[0]->ProcessMouseScroll((float)events.wheel.y);
+	}
+}
+
+void TestScene::HandleStates(const Uint8 *state) 
+{
 	// CUBE 1
 	// Movement
 	if (state[SDL_SCANCODE_SPACE]) {
@@ -406,14 +420,5 @@ void TestScene::HandleEvents(SDL_Event events)
 	if (state[SDL_SCANCODE_C]) {
 		sceneManager->EnableSplitscreen(false);
 		sceneManager->SwitchScene(new GameTestScene());
-	}
-
-	// Camera look
-	if (events.type == SDL_MOUSEMOTION) {
-		cameraList[0]->ProcessMouseMovement((float)events.motion.x, (float)events.motion.y);
-	}
-
-	if (events.type == SDL_MOUSEWHEEL) {
-		cameraList[0]->ProcessMouseScroll((float)events.wheel.y);
 	}
 }

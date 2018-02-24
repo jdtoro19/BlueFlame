@@ -13,6 +13,9 @@
 #include <BlueFlameEngine\Engine\Math\PhysicsEngine.h>
 #include <BlueFlameEngine\Engine\InputHandling\InputHandler.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\TextUI.h>
+#include "../Game/ProjectileManager.h"
+#include "../Player/Player.h"
+#include "../Player/WindPlayer.h"
 
 using namespace ENGINE;
 
@@ -24,22 +27,23 @@ namespace GAME {
 		DemoScene();
 		~DemoScene();
 
-		// Every scene requires these three methods to be implemented
+		// Every scene requires these five methods to be implemented
 		bool Initialize();
 		void Update(const float deltaTime);
+		void FixedUpdate(const float deltaTime);
 		void HandleEvents(SDL_Event events);
+		void HandleStates(const Uint8 *state);
 
-		SceneManager* sceneManager;
 	private:
 		// Lights
 		Light* pointLight;
 		Light* dirLight;
 
 		// Objects
-		Cube* cube1;  //P1
-		Cube* cube2;  //P2
-		Cube* cube3;  //P3
-		Cube* cube4;  //P4
+		Player* player1;  //P1
+		Player* player2;  //P2
+		Player* player3;  //P3
+		Player* player4;  //P4
 
 		Cube* floor;
 		Cube* wall;
@@ -57,8 +61,15 @@ namespace GAME {
 		ResourceHandle<Shader> defaultShaderHandle;
 		ResourceHandle<Shader> skyboxShaderHandle;
 
+		// scene manager
+		SceneManager* sceneManager;
+
+		// Projectile Manager
+		ProjectileManager* projectileManager;
+
 		// other variables
 		float moveSpeed = 2;
+		float deltaTime;
 
 		bool fire = true;
 		float timer = 0.3f;

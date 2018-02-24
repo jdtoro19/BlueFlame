@@ -1,3 +1,4 @@
+#pragma once
 #ifndef GAMEOBJECT_H
 #define GAMEOBJECT_H
 
@@ -29,6 +30,7 @@ namespace ENGINE {
 		glm::mat4 localModelMatrix = glm::mat4();
 		glm::mat4 worldModelMatrix = glm::mat4();		
 
+		// Object Shader
 		ResourceHandle<Shader> shader;
 
 	public:
@@ -77,14 +79,18 @@ namespace ENGINE {
 		virtual void UpdateWorldMatrix();
 		virtual glm::mat4 GetWorldModelMatrix() const;
 
+		// Shader getter and setter
 		ResourceHandle<Shader> GetShader();
 		void SetShader(ResourceHandle<Shader> shader);
 
+		// Physics
 		CollisionComponent* collisionComponent;
 		PhysicsComponent* physicsComponent;
 
+		// Flag for deletion
 		bool deleted = false;
 
+		// Loop functions
 		virtual void Update(const float deltaTime);
 		virtual void Render(Shader* shader);
 	};

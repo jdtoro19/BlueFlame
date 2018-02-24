@@ -48,8 +48,13 @@ namespace ENGINE {
 		// Getters for values used in collisions.
 		Collision_Type GetCollisionType();
 		int GetLayer();
+
 		Box GetBoundingBox();
+		glm::vec3 GetBoundingBoxCentre();
+		glm::vec3 GetBoundingBoxRadii();
 		Sphere GetBoundingSphere();
+		glm::vec3 GetBoundingSphereCentre();
+		float GetBoundingSphereRadius();
 		glm::vec3 GetScale();
 
 		// Setter for layer values

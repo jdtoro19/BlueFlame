@@ -117,9 +117,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\ProjectileManager.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="Player\PlayerBase.cpp" />
+    <ClCompile Include="Player\WindPlayer.cpp" />
     <ClCompile Include="Scenes\DemoScene.cpp" />
     <ClCompile Include="Scenes\GameTestScene.cpp" />
     <ClCompile Include="Scenes\MenuScene.cpp" />
@@ -127,8 +129,10 @@
     <ClCompile Include="Scenes\TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\ProjectileManager.h" />
     <ClInclude Include="Player\Player.h" />
     <ClInclude Include="Player\PlayerBase.h" />
+    <ClInclude Include="Player\WindPlayer.h" />
     <ClInclude Include="Scenes\DemoScene.h" />
     <ClInclude Include="Scenes\GameTestScene.h" />
     <ClInclude Include="Scenes\MenuScene.h" />
