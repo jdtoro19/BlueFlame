@@ -18,7 +18,7 @@ Projectile* WindPlayer::LightAttack()
 		lightComboTimer = 0.3f;
 		lightComboPosition++;
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), glm::vec3(0.0f, 0.0f, 500.0f), 1);
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), glm::vec3(0.0f, 0.0f, 500.0f), targetAngle, 1);
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 25.0f, 25.0f));
 		p->SetStunTime(0.3f);
@@ -33,7 +33,7 @@ Projectile* WindPlayer::LightAttack()
 		lightComboTimer = 0.3f;
 		lightComboPosition++;
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), glm::vec3(300.0f, 0.0f, 600.0f), 1);
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), glm::vec3(300.0f, 0.0f, 600.0f), targetAngle, 1);
 		p->SetActingForce(glm::vec3(-50.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 100.0f, 25.0f));
 		p->SetStunTime(0.3f);
@@ -48,7 +48,7 @@ Projectile* WindPlayer::LightAttack()
 		lightComboTimer = 0.3f;
 		lightComboPosition++;
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), glm::vec3(-300.0f, 500.0f, 600.0f), 1);
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), glm::vec3(-300.0f, 500.0f, 600.0f), targetAngle, 1);
 		p->SetActingForce(glm::vec3(50.0f, -70.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, -500.0f, 500.0f));
 		p->SetStunTime(0.5f);

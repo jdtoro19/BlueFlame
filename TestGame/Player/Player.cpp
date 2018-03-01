@@ -44,7 +44,9 @@ Player::Player()
 	pShader = BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager()->put(std::string("projectile"), projectileShader);
 
 	// Set target to zero by default
-	targetedPlayer = glm::vec3(0.0f, 0.0f, 0.0f);
+	dir = -1;
+	targetedPlayer = glm::vec3(worldPosition);
+	targetedPlayer.z += dir;
 
 	SetStats();
 }
@@ -56,7 +58,7 @@ Player::~Player()
 void Player::Update(const float deltaTime)
 {
 	// Target Direction
-	targetDirection = targetedPlayer - worldPosition;
+	targetAngle = -glm::atan((targetedPlayer.x - worldPosition.x) / (targetedPlayer.z - worldPosition.z));
 
 	// Update stun timer
 	if (playerState == STUN) {

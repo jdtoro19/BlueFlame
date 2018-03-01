@@ -9,6 +9,7 @@
 #include <BlueFlameEngine\Engine\BFEngine.h>
 #include <BlueFlameEngine\Engine\Core\ResourceManager.h>
 #include "PlayerBase.h"
+#include <glm\gtx\vector_angle.hpp>
 
 using namespace ENGINE;
 
@@ -112,7 +113,10 @@ namespace GAME {
 		// Player Target
 		glm::vec3 targetedPlayer;
 		glm::vec3 targetColour;
-		glm::vec3 targetDirection;
+	public:
+		float targetAngle;
+		int dir;
+	protected:
 
 		// Player Stats
 		int health = 0;

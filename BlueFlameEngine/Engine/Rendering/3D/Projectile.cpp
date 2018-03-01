@@ -2,7 +2,7 @@
 
 using namespace ENGINE;
 
-Projectile::Projectile(glm::vec3 p, glm::vec3 _force, int _dir)
+Projectile::Projectile(glm::vec3 p, glm::vec3 _force, float _angle, int _dir)
 {
 	worldPosition = p;
 	renderComponent = new RenderComponent();
@@ -15,23 +15,24 @@ Projectile::Projectile(glm::vec3 p, glm::vec3 _force, int _dir)
 	SetWorldScale(0.5f);
 	physicsComponent->SetPosition(p);
 	dir = _dir;
+	angle = _angle;
 	physicsComponent->SetMass(50.0f);
 	collisionComponent->SetLayer(1);
 	physicsComponent->SetDestructible(true);
 	physicsComponent->hasGravity = false;
 	rip = 200;
-
 	actingForce = glm::vec3(0.0f, -4.0f, 0.0f);
 	knockbackForce = glm::vec3(0.0f, 50.0f, 25.0f);
 	stunTime = 1.0f;
 	damage = 1;
 	canFlipX = false;
 	canFlipY = false;
-	flipTimeX = 0.0f;
-	flipTimeY = 0.0f;
 	flipIntervalX = 0.5f;
 	flipIntervalY = 0.75f;
-	physicsComponent->AddForce(glm::vec3(_force.x, _force.y, _force.z * -dir));
+	flipTimeX = flipIntervalX / 2.0f;
+	flipTimeY = flipIntervalY / 2.0f;
+	glm::vec3 force = glm::rotateY(_force, angle);
+	physicsComponent->AddForce(glm::vec3(force.x, force.y, force.z * -dir));
 }
 
 Projectile::~Projectile() {
@@ -39,11 +40,13 @@ Projectile::~Projectile() {
 }
 
 void Projectile::SetActingForce(glm::vec3 _force) {
-	actingForce = _force;
+	actingForce = glm::rotateY(_force, angle);
+	actingForce.z *= -dir;
 }
 
 void Projectile::SetKnockbackForce(glm::vec3 _force) {
-	knockbackForce = _force;
+	knockbackForce = glm::rotateY(_force, angle);
+	knockbackForce.z *= -dir;
 }
 
 void Projectile::SetStunTime(float time) {
@@ -55,7 +58,7 @@ void Projectile::SetDamage(int d) {
 }
 
 glm::vec3 Projectile::GetForce() {
-	return glm::vec3(knockbackForce.x, knockbackForce.y, knockbackForce.z * -dir);
+	return knockbackForce;
 }
 
 float Projectile::GetStunTime() {
@@ -87,7 +90,7 @@ void Projectile::Update(const float deltaTime) {
 		}
 
 
-		physicsComponent->AddForce(glm::vec3(actingForce.x, actingForce.y, actingForce.z * -dir));
+		physicsComponent->AddForce(actingForce);
 
 		physicsComponent->Update(deltaTime);
 		SetWorldPosition(physicsComponent->GetPosition());

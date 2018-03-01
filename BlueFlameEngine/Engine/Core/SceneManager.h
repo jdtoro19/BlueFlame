@@ -136,6 +136,8 @@ namespace ENGINE {
 		float deltaTime;
 		// Resolution Scale
 		float resolutionScale = 1.0f;
+		// FPS time step;
+		float fpsTimeStep = 0.0f;
 	};
 }
 #endif

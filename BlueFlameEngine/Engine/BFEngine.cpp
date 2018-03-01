@@ -71,17 +71,36 @@ void BFEngine::Run()
 	isRunning = true;
 
 	// Set up timer
-	Timer timer;
-	timer.Start();
+	Timer::GetInstance().Start();
 
-	while (isRunning) 
+	double t = 0.0;
+	double dt = 1 / 50.0f;
+	
+	double currentTime = Timer::GetInstance().GetSeconds();
+	double accumulator = 0.0;
+
+	while (isRunning)
 	{
 		// Update timer
-		timer.UpdateFrameTicks();
+		Timer::GetInstance().Update();
+
+		double newTime = Timer::GetInstance().GetSeconds();
+		double frameTime = newTime - currentTime;
+		if (frameTime > 0.25f)
+			frameTime = 0.25f;
+		currentTime = newTime;
+
+		accumulator += frameTime;
+
+		/*while (accumulator >= dt) {
+			FixedUpdate();
+			accumulator -= dt;
+			t += dt;
+		}*/
 
 		// Call game loop functions
-		FixedUpdate();
-		Update(timer.GetDeltaTime());		
+		
+		Update(Timer::GetInstance().GetDeltaTime());
 		PreRender();
 		Render();
 		PostRender();
@@ -99,13 +118,12 @@ void BFEngine::Run()
 		}
 
 		// Clamp frame rate
-		SDL_Delay(timer.GetSleepTime(144));
+		//SDL_Delay(1.0f/144.0f);
 	}
 }
 
 void BFEngine::FixedUpdate() 
 {
-
 }
 
 void BFEngine::Update(const float deltaTime) 

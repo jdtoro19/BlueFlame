@@ -1,5 +1,7 @@
 #include "DemoScene.h"
 
+#include <glm\gtx\rotate_vector.hpp>
+
 using namespace GAME;
 
 DemoScene::DemoScene()
@@ -205,7 +207,7 @@ void DemoScene::Update(const float deltaTime)
 
 	// Set player targets
 	// Just player one for to test
-	player1->SetTarget(player4->GetWorldPosition());
+	player1->SetTarget(player3->GetWorldPosition());
 
 	// Timer for firing (Keyboard controls only)
 	timer -= deltaTime;
@@ -248,7 +250,7 @@ void DemoScene::Update(const float deltaTime)
 				//if (SDL_JoystickGetButton(BFEngine::GetInstance()->players[i].pStick, 1) == 1) {
 				if (SDL_JoystickGetAxis(BFEngine::GetInstance()->players[i].pStick, 5) > 1000) {
 					GameObject* lr = BFEngine::GetInstance()->players[i].pObject(); //line reducer
-					Projectile* p = new Projectile(glm::vec3(lr->GetWorldPosition().x, lr->GetWorldPosition().y, lr->GetWorldPosition().z - BFEngine::GetInstance()->players[i].inverted() * lr->collisionComponent->GetBoundingBox().r.z * 2.0f * lr->GetWorldScale().z), glm::vec3(0.0f, 0.0f, 100000.0f), BFEngine::GetInstance()->players[i].inverted());
+					Projectile* p = new Projectile(glm::vec3(lr->GetWorldPosition().x, lr->GetWorldPosition().y, lr->GetWorldPosition().z - BFEngine::GetInstance()->players[i].inverted() * lr->collisionComponent->GetBoundingBox().r.z * 2.0f * lr->GetWorldScale().z), glm::vec3(0.0f, 0.0f, 100.0f), 0.0f, BFEngine::GetInstance()->players[i].inverted());
 					glm::vec3 tempColor = BFEngine::GetInstance()->players[i].getTeamColor();
 					p->renderComponent->SetColour(tempColor.x, tempColor.y, tempColor.z);
 					p->SetShader(defaultShaderHandle);
@@ -425,9 +427,11 @@ void DemoScene::HandleStates(const Uint8 *state)
 	//
 	if (state[SDL_SCANCODE_SPACE]) {
 		if (fire) {
-			Projectile* p = new Projectile(glm::vec3(player1->GetWorldPosition().x, player1->GetWorldPosition().y, player1->GetWorldPosition().z - player1->collisionComponent->GetBoundingBox().r.z * 2.0f * player1->GetWorldScale().z), glm::vec3(0.0f, 200.0f, 50.0f), 1);
-			p->SetActingForce(glm::vec3(0.0f, -4.0f, 0.0f));
-			p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 25.0f));
+			Projectile* p = new Projectile(glm::vec3(player1->GetWorldPosition().x, player1->GetWorldPosition().y, player1->GetWorldPosition().z - player1->collisionComponent->GetBoundingBox().r.z * 2.0f * player1->GetWorldScale().z), glm::vec3(0.0f, 0.0f, 50.0f), player1->targetAngle, 1);
+			p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
+			//p->canFlipX = true;
+			//p->flipIntervalX = 0.5f;
+			p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 250.0f));
 			p->SetWorldScale(0.5f);
 			p->SetShader(defaultShaderHandle);
 			AddObject(p);
@@ -439,7 +443,7 @@ void DemoScene::HandleStates(const Uint8 *state)
 
 	if (state[SDL_SCANCODE_R]) {
 		if (fire) {
-			Projectile* p = new Projectile(glm::vec3(player1->GetWorldPosition().x, player1->GetWorldPosition().y + 6.0f, player1->GetWorldPosition().z - player1->collisionComponent->GetBoundingBox().r.z * 2.0f * player1->GetWorldScale().z - 5.0f), glm::vec3(0.0f, -2.0f, 0.0f), 1);
+			Projectile* p = new Projectile(glm::vec3(player1->GetWorldPosition().x, player1->GetWorldPosition().y + 6.0f, player1->GetWorldPosition().z - player1->collisionComponent->GetBoundingBox().r.z * 2.0f * player1->GetWorldScale().z - 5.0f), glm::vec3(0.0f, -2.0f, 0.0f), player1->targetAngle, 1);
 			p->SetShader(defaultShaderHandle);
 			p->SetWorldScale(0.25f, 1.0f, 0.25f);
 			AddObject(p);
@@ -451,8 +455,8 @@ void DemoScene::HandleStates(const Uint8 *state)
 
 	if (state[SDL_SCANCODE_T]) {
 		if (fire) {
-			Projectile* p = new Projectile(glm::vec3(player1->GetWorldPosition().x, player1->GetWorldPosition().y, player1->GetWorldPosition().z - player1->collisionComponent->GetBoundingBox().r.z * 2.0f * player1->GetWorldScale().z), glm::vec3(200.0f, 200.0f, 50.0f), 1);
-			p->SetActingForce(glm::vec3(-4.0f, -4.0f, 0.0f));
+			Projectile* p = new Projectile(glm::vec3(player1->GetWorldPosition().x, player1->GetWorldPosition().y, player1->GetWorldPosition().z - player1->collisionComponent->GetBoundingBox().r.z * 2.0f * player1->GetWorldScale().z), glm::vec3(100.0f, 200.0f, 50.0f), player1->targetAngle, 1);
+			p->SetActingForce(glm::vec3(-2.0f, -4.0f, 0.0f));
 			p->SetKnockbackForce(glm::vec3(-20.0f, 100.0f, 25.0f));
 			p->SetWorldRotation(0.0f, 0.0f, 1.0f, 25.0f);
 			p->SetWorldScale(1.0f, 0.2f, 0.75f);

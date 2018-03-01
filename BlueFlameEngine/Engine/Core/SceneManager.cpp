@@ -356,9 +356,15 @@ void SceneManager::DrawDebugFPS() {
 	if (showFPS) {
 		fpsTimer -= deltaTime;
 		if (fpsTimer <= 0) {
-			fps = 1 / deltaTime;
+			//fps = 1 / deltaTime;
 			fpsTimer = fpsTimerSet;
 		}
+
+		if (fpsTimeStep >= 0.5f) {
+			fpsTimeStep = 0.0f;
+			fps = 1 / deltaTime;
+		}
+		fpsTimeStep += deltaTime;
 		DebugText("FPS: " + std::to_string((int)fps), GetScreenWidth() - 125.0f, 35.0f);
 	}
 }

@@ -7,15 +7,12 @@
 #include "../../Math/PhysicsComponent.h"
 #include "../../Math/PhysicsEngine.h"
 #include "../../Graphics/Shader.h"
+#include <glm/gtx/vector_angle.hpp>
 
 namespace ENGINE {
 
 	class Projectile : public GameObject {
 	private:
-
-		// Direction where the player is facing
-		// Affects all other forces and their direction
-		int dir;
 
 		// Force acting on the projectile during motion
 		glm::vec3 actingForce;
@@ -23,14 +20,22 @@ namespace ENGINE {
 		// Force given to player when projectile makes contact
 		glm::vec3 knockbackForce;
 
+		// Angle to the target
+		float angle;
+
+		// Direction the player is facing
+		int dir;
+
+		// Stun time given to player when projectile makes contact
 		float stunTime;
 
+		// Damage given to player when projectile makes contact
 		int damage;
 
 	public:
 
-		// Default Constructor requires the start position, launch force, and direction
-		Projectile(glm::vec3 p, glm::vec3 _force, int _dir);
+		// Default Constructor requires the start position, launch force, target angle, and direction
+		Projectile(glm::vec3 p, glm::vec3 _force, float _angle, int _dir);
 		~Projectile();
 
 		// Sets the acting force on the projectile during motion
@@ -39,8 +44,10 @@ namespace ENGINE {
 		// Sets the knockback force applied to the player when hit
 		void SetKnockbackForce(glm::vec3 _force);
 
+		// Sets the stun time applied to the player when hit
 		void SetStunTime(float time);
 
+		// Sets the damage applied to the player when hit
 		void SetDamage(int d);
 
 		// Gets the knockback force applied to the player when hit

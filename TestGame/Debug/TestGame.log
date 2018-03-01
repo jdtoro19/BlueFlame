@@ -1,3 +1,26 @@
-﻿  DemoScene.cpp
-  TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.exe
-  TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.pdb (Partial PDB)
+﻿  ProjectileManager.cpp
+  Generating Code...
+  Compiling...
+  TestScene.cpp
+c:\gamedev\year3\capstone\blueflame\testgame\scenes\testscene.cpp(203): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\gamedev\year3\capstone\blueflame\testgame\scenes\testscene.cpp(207): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\gamedev\year3\capstone\blueflame\testgame\scenes\testscene.cpp(216): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\gamedev\year3\capstone\blueflame\testgame\scenes\testscene.cpp(220): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  MenuSelectScene.cpp
+c:\gamedev\year3\capstone\blueflame\testgame\scenes\menuselectscene.cpp(57): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+c:\gamedev\year3\capstone\blueflame\testgame\scenes\menuselectscene.cpp(82): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+c:\gamedev\year3\capstone\blueflame\testgame\scenes\menuselectscene.cpp(111): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+c:\gamedev\year3\capstone\blueflame\testgame\scenes\menuselectscene.cpp(117): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+  MenuScene.cpp
+  GameTestScene.cpp
+c:\gamedev\year3\capstone\blueflame\testgame\scenes\gametestscene.cpp(158): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\gamedev\year3\capstone\blueflame\testgame\scenes\gametestscene.cpp(162): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\gamedev\year3\capstone\blueflame\testgame\scenes\gametestscene.cpp(171): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\gamedev\year3\capstone\blueflame\testgame\scenes\gametestscene.cpp(175): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  DemoScene.cpp
+  WindPlayer.cpp
+  PlayerBase.cpp
+  Player.cpp
+  Main.cpp
+  Generating Code...
+  TestGame.vcxproj -> C:\GameDev\Year3\Capstone\BlueFlame\Debug\TestGame.exe
