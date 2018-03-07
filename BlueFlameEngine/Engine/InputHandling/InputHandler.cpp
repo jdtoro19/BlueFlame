@@ -34,8 +34,8 @@ void InputHandler::InitControllers() {
 			InputHandler::joystick[i] = SDL_JoystickOpen(i);
 
 			//tareing the joystick
-			InputHandler::TareX[i] = SDL_JoystickGetAxis(InputHandler::GetInstance()->joystick[i], 0) * -1;
-			InputHandler::TareY[i] = SDL_JoystickGetAxis(InputHandler::GetInstance()->joystick[i], 1) * -1;
+			InputHandler::TareX[i] = SDL_JoystickGetAxis(InputHandler::GetInstance()->joystick[i], 4) * -1;
+			InputHandler::TareY[i] = SDL_JoystickGetAxis(InputHandler::GetInstance()->joystick[i], 5) * -1;
 
 			InputHandler::controller[i] = SDL_GameControllerOpen(i);
 			if (InputHandler::controller[i]) {
@@ -90,7 +90,7 @@ glm::vec3 InputHandler::playerMotion(int p) {
 	float modifierX = 0;
 	float modifierY = 0;
 
-	Sint16 jStickMod = 1000;
+	Sint16 jStickMod = 10000;
 
 	if (x_move < 320 && x_move > -320) {
 		modifierX = 0;

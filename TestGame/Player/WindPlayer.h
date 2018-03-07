@@ -15,14 +15,19 @@ namespace GAME {
 		~WindPlayer();
 
 		// Attack Functions
-		Projectile* LightAttack();
-		Projectile* MediumAttack();
-		Projectile* HeavyAttack();
-		Projectile* SpecialAttack();
+		std::vector<Projectile*> LightAttack();
+		std::vector<Projectile*> MediumAttack();
+		std::vector<Projectile*> HeavyAttack();
+		std::vector<Projectile*> SpecialAttack();
 
 		void InheritedUpdate(const float deltaTime);
 		void InheritedHandleEvents(SDL_Event events);
 		void InheritedHandleStates(const Uint8 *state);
+
+		void SetStats();
+
+	public:
+		bool airAttack = false;
 	};
 
 }

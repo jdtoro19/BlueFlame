@@ -1,4 +1,5 @@
 #pragma once
+#pragma once
 #ifndef PARSER_H
 #define PARSER_H
 
@@ -13,7 +14,7 @@ namespace ENGINE {
 		~Parser();
 		void LoadFileIntoParser(std::string filepath, bool debug);
 		void PrintFile();
-		void ParseBlock(char delimiter, char comment);
+		std::vector<std::string> ParseBlock(char delimiter, char comment);
 		inline bool isEmpty() { return parsedFile.empty(); };
 	protected:
 	private:

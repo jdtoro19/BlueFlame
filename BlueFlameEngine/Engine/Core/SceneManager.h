@@ -38,7 +38,7 @@ namespace ENGINE {
 		// Check the quit bool
 		bool IsQuit();
 		// Set the quit bool
-		void SetIsQuit(bool quit);
+		void SetIsQuit(bool setQuit);
 		//
 
 		// SCENE MANAGEMENT
@@ -132,6 +132,7 @@ namespace ENGINE {
 		float fps = 0;
 		float fpsTimer = 0;
 		float fpsTimerSet = 0.1f;
+		float fpsTimeStep = 0;
 		// Deltatime
 		float deltaTime;
 		// Resolution Scale

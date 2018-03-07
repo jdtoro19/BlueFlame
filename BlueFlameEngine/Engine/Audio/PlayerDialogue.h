@@ -4,13 +4,16 @@
 
 #include <string>
 #include "Dialogue.h"
+#include "../Core/Parser.h"
+#include "../Timers/Cooldown.h"
 
 namespace ENGINE {
 
 	class PlayerDialogue : Dialogue {
 	public:
 		PlayerDialogue();
-		virtual ~PlayerDialogue();
+		PlayerDialogue(double seconds);
+		~PlayerDialogue();
 
 		//enum dialogueStates {}; //defined by the inheriting classes
 		enum DIALOGUESTATE {
@@ -27,19 +30,19 @@ namespace ENGINE {
 			Interaction
 		};
 
-		inline void setDialogueState(DIALOGUESTATE d) { currentState = d; }
-		inline void playRandomFromCurrentState() { dialogueOptions.at(currentState)->PlayRandom(); };
-		inline void playRandomFromOtherState(DIALOGUESTATE d) { dialogueOptions.at(d)->PlayRandom(); };
-		inline void sometimesPlayRandomFromCurrentState(int percentage) { 
-			if (Clock::GetInstance()->generateRandomNumber() > percentage) { 
-				playRandomFromCurrentState();
-			} 
-		}
+		void setDialogueState(DIALOGUESTATE d);
+		void playRandomFromCurrentState(bool overrideCD);
+		void playRandomFromOtherState(DIALOGUESTATE d, bool overrideCD);
+		void sometimesPlayRandomFromCurrentState(int percentage, bool overrideCD);
+
+		//now we're getting serious
+		void LoadPlayerDialogue(std::string filename);
 
 	protected:
 	private:
 		DIALOGUESTATE currentState = CharSelect;
-
+		Parser p = Parser();
+		bool hasCooldown = false;
 
 	};
 }

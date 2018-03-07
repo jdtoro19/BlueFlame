@@ -90,6 +90,9 @@ namespace ENGINE {
 		// Flag for deletion
 		bool deleted = false;
 
+		// To be rendered
+		bool canRender = true;
+
 		// Loop functions
 		virtual void Update(const float deltaTime);
 		virtual void Render(Shader* shader);

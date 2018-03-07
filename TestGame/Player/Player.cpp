@@ -43,8 +43,11 @@ Player::Player()
 	projectileShader = new Shader("Shaders/model.vs", "Shaders/model.fs");
 	pShader = BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager()->put(std::string("projectile"), projectileShader);
 
-	// Set target to zero by default
-	targetedPlayer = glm::vec3(0.0f, 0.0f, 0.0f);
+	// Set direction to team 1 orientation by default
+	dir = -1;
+
+	// Set player to target another enemy by default
+	isTargeting = true;
 
 	SetStats();
 }
@@ -56,7 +59,15 @@ Player::~Player()
 void Player::Update(const float deltaTime)
 {
 	// Target Direction
-	targetDirection = targetedPlayer - worldPosition;
+	if (isTargeting) {
+		targetedPlayer = enemyTeam.at(currentTarget)->worldPosition;
+		targetAngle = -glm::atan((targetedPlayer.x - worldPosition.x) / (targetedPlayer.z - worldPosition.z));
+	}
+	else if (!isTargeting) {
+		targetedPlayer = glm::vec3(worldPosition);
+		targetedPlayer.z += dir;
+		targetAngle = -glm::atan((targetedPlayer.x - worldPosition.x) / (targetedPlayer.z - worldPosition.z));
+	}
 
 	// Update stun timer
 	if (playerState == STUN) {
@@ -104,7 +115,10 @@ void Player::Update(const float deltaTime)
 	physicsComponent->Update(deltaTime);
 	collisionComponent->Update(GetWorldPosition());
 	SetWorldPosition(physicsComponent->GetPosition());
-	physicsComponent->SetVelocity(glm::vec3(0.0f, physicsComponent->GetVelocity().y, 0.0f));
+	SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), -targetAngle);
+	if (playerState == NORMAL) {
+		physicsComponent->SetVelocity(glm::vec3(0.0f, physicsComponent->GetVelocity().y, 0.0f));
+	}
 
 	// Update player model
 	UpdateModel(deltaTime);
@@ -145,26 +159,32 @@ void Player::HandleStates(const Uint8 *state)
 
 void Player::Movement(PLAYERMOVEMENT movement, const float deltaTime) 
 {
-	if (playerState == NORMAL) {
+	if (playerState == NORMAL || moveWhileShooting) {
+
+		float moveMod = 1;
+
+		if (worldPosition.y > 0.1f) {
+			moveMod = 0.2f;
+		}
 		if (movement == FORWARD) {
 			//SetWorldPosition(GetWorldPosition() + glm::vec3(0.0f, 0.0f, -moveSpeed * deltaTime));
-			physicsComponent->SetVelocity(glm::vec3(physicsComponent->GetVelocity().x, physicsComponent->GetVelocity().y, -moveSpeed * deltaTime * 500));
+			physicsComponent->SetVelocity(glm::vec3(physicsComponent->GetVelocity().x, physicsComponent->GetVelocity().y, (-moveSpeed * moveMod) * deltaTime * 500 * dir));
 			base->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), -0.2f);
 		}
 		if (movement == BACKWARD) {
 			//SetWorldPosition(GetWorldPosition() + glm::vec3(0.0f, 0.0f, moveSpeed * deltaTime));
-			physicsComponent->SetVelocity(glm::vec3(physicsComponent->GetVelocity().x, physicsComponent->GetVelocity().y, moveSpeed * deltaTime * 500));
+			physicsComponent->SetVelocity(glm::vec3(physicsComponent->GetVelocity().x, physicsComponent->GetVelocity().y, (moveSpeed * moveMod) * deltaTime * 500 * dir));
 			base->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), 0.2f);
 		}
 		if (movement == RIGHT) {
 			//SetWorldPosition(GetWorldPosition() + glm::vec3(moveSpeed * deltaTime, 0.0f, 0.0f));
-			physicsComponent->SetVelocity(glm::vec3(moveSpeed * deltaTime * 500, physicsComponent->GetVelocity().y, physicsComponent->GetVelocity().z));
+			physicsComponent->SetVelocity(glm::vec3((moveSpeed * moveMod) * deltaTime * 500 * dir, physicsComponent->GetVelocity().y, physicsComponent->GetVelocity().z));
 			base->SetLocalRotation(glm::vec3(0.0f, 0.0f, 1.0f), -0.2f);
 		}
 		if (movement == LEFT) {
 			//SetWorldPosition(GetWorldPosition() + glm::vec3(-moveSpeed * deltaTime, 0.0f, 0.0f));
-			physicsComponent->SetVelocity(glm::vec3(-moveSpeed * deltaTime * 500, physicsComponent->GetVelocity().y, physicsComponent->GetVelocity().z));
-			base->SetLocalRotation(glm::vec3(0.0f, 0.0f, 1.0f), 0.2f);
+			physicsComponent->SetVelocity(glm::vec3((-moveSpeed * moveMod) * deltaTime * 500 * dir, physicsComponent->GetVelocity().y, physicsComponent->GetVelocity().z));
+			base->SetLocalRotation(glm::vec3(0.0f, 0.0f, 1.0f), 0.2f);			
 		}
 	}
 }
@@ -222,6 +242,11 @@ void Player::SetStats() {
 	moveSpeed = 1.0f;
 }
 
+void Player::SetEnemyTeam(Player* player1, Player* player2) {
+	enemyTeam = { player1, player2 };
+	SetTarget(player1->GetWorldPosition());
+}
+
 void Player::SetTarget(glm::vec3 targetPlayer) {
 	targetedPlayer = targetPlayer;
 }
@@ -229,6 +254,16 @@ void Player::SetTarget(glm::vec3 targetPlayer) {
 void Player::SetTargetColour(glm::vec3 colour) {
 	targetColour = colour;
 	marker->renderComponent->SetColour(targetColour.x, targetColour.y, targetColour.z);
+}
+
+void Player::SetPlayerTeam(PLAYERTEAM pT) {
+	playerTeam = pT;
+	if (playerTeam == PLAYERTEAM::TEAM1) {
+		dir = 1;
+	}
+	else if (playerTeam == PLAYERTEAM::TEAM2) {
+		dir = -1;
+	}
 }
 
 void Player::Hit(Projectile* projectile) {
@@ -263,6 +298,30 @@ void Player::ComboReset() {
 	heavyComboPosition = 0;
 	specialComboTimer = 0;
 	specialComboPosition = 0;
+}
+
+void Player::Jump() {
+	if (worldPosition.y < 0.1f && playerState == NORMAL) {
+		physicsComponent->SetVelocity(glm::vec3(0.0f, 30.0f, 0.0f));
+	}
+}
+
+void Player::SwitchTarget() {
+	if (currentTarget == 0) {
+		currentTarget = 1;
+	}
+	else if (currentTarget == 1) {
+		currentTarget = 0;
+	}
+}
+
+void Player::EnableTarget() {
+	if (isTargeting) {
+		isTargeting = false;
+	}
+	else if (!isTargeting) {
+		isTargeting = true;
+	}
 }
 
 void Player::Render(Shader* shader)

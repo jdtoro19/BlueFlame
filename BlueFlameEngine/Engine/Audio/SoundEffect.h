@@ -11,7 +11,7 @@
 
 namespace ENGINE {
 
-	class SoundEffect : AudioFile {
+	class SoundEffect : public AudioFile {
 	public:
 		SoundEffect();
 
@@ -32,8 +32,7 @@ namespace ENGINE {
 		void Pause() const;
 		void Resume() const;
 		void TogglePause() const;*/
-		Mix_Chunk* mixChunk = NULL;
-		int zero;
+		Mix_Chunk* mixChunk = nullptr;
 
 	protected:
 	private:

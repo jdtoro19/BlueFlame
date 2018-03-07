@@ -13,7 +13,6 @@ SoundEffect::~SoundEffect() {
 
 bool SoundEffect::Load(const std::string& fileName) {
 	Destroy();
-	zero = 5;
 	mixChunk = Mix_LoadWAV(fileName.c_str());
 
 	if (!mixChunk) {

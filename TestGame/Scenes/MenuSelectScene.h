@@ -16,6 +16,7 @@
 #include "DemoScene.h"
 #include "TestScene.h"
 #include "GameTestScene.h"
+#include "TvTGameScene.h"
 
 using namespace ENGINE;
 
@@ -36,9 +37,11 @@ namespace GAME {
 		SceneManager* sceneManager;
 	private:
 		// shaders
+		Shader* defaultShader;
 		Shader* skyboxShader;
 
 		// shader handles / reference to shader in the renderers shader manager
+		ResourceHandle<Shader> defaultShaderHandle;
 		ResourceHandle<Shader> skyboxShaderHandle;
 
 		// UI
@@ -50,6 +53,12 @@ namespace GAME {
 		ButtonUI* buttonExit;
 
 		SliderUI* sliderTEST;
+
+		Model* kyouko;
+
+		// Lights
+		Light* pointLight;
+		Light* dirLight;
 	};
 }
 #endif

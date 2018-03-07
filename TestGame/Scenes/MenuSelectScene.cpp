@@ -19,7 +19,7 @@ bool MenuSelectScene::Initialize()
 	// If you plan to use the scenemanagers scene vector you dont need to set these values all the time
 	// Set camera options
 	cameraList[0]->Yaw = 0.0f;
-	cameraList[0]->Zoom = 105.0f;
+	cameraList[0]->Zoom = 45.0f;
 
 	// Set screen options
 	sceneManager->EnableSplitscreen(false);
@@ -27,9 +27,11 @@ bool MenuSelectScene::Initialize()
 	sceneManager->ShowFPS(true);
 	
 	// Load shaders
+	defaultShader = new Shader("Shaders/model.vs", "Shaders/model.fs");
 	skyboxShader = new Shader("Shaders/skybox.vs", "Shaders/skybox.fs");
 
 	// Put shaders into shader manager
+	defaultShaderHandle = sceneManager->GetRenderer()->GetShaderManager()->put(std::string("default"), defaultShader);
 	skyboxShaderHandle = sceneManager->GetRenderer()->GetShaderManager()->put(std::string("skybox"), skyboxShader);
 
 	// Make skybox, load its textures, set properties, and give to the renderer
@@ -91,19 +93,53 @@ bool MenuSelectScene::Initialize()
 	sliderTEST->SetHeight(100);
 	sliderTEST->SetValue(0.9f);
 
+	kyouko = new Model("Resources/Models/Robot_Base_Greybox/Robot_Var_002_Gurran.obj");
+	//kyouko = new Model("Resources/Models/Robot_Base_Greybox/Robot_Base_0001.obj");
+	kyouko->SetShader(defaultShaderHandle);
+	kyouko->physicsComponent->SetPosition(glm::vec3(1.0f, -1.0f, -2.5f));
+	kyouko->SetWorldScale(0.008f);
+	kyouko->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
+	kyouko->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
+	kyouko->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
+	kyouko->physicsComponent->SetMass(0.0f);
+
+	// Lights
+	//
+	// Make point light
+	pointLight = new Light();
+	pointLight->SetShader(defaultShaderHandle);
+	pointLight->renderComponent->SetRenderType(RenderComponent::Render_Type::CUBE);
+	pointLight->renderComponent->SetColour(1.0f, 1.0f, 1.0f);
+	pointLight->renderComponent->CanRender(false);
+	pointLight->SetWorldPosition(2.0f, 0.0f, -2.5f);
+	pointLight->SetWorldScale(0.5f);
+	pointLight->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
+	pointLight->lightComponent->SetColour(glm::vec3(1.0f, 1.0f, 1.0f));
+	//
+
+	// Make directional light
+	dirLight = new Light(LightComponent::Light_Type::DIRECTIONAL);
+	dirLight->lightComponent->SetDirection(glm::vec3(1.0f, -1.0f, 1.0f));
+	dirLight->lightComponent->SetColour(glm::vec3(0.3f, 0.3f, 0.3f));
+	//
+
 	AddUIObject(titleText);
 	AddUIObject(buttonTest);
 	AddUIObject(buttonDemo);
 	AddUIObject(buttonLighting);
 	AddUIObject(buttonExit);
 	AddUIObject(sliderTEST);
+	AddObject(kyouko);
+	AddLightObject(dirLight);
+	AddLightObject(pointLight);
 
 	return true;
 }
 
 void MenuSelectScene::Update(const float deltaTime)
 {
-	cameraList[0]->SetRotationY(cameraList[0]->Yaw += deltaTime * 5);	
+	//cameraList[0]->SetRotationY(cameraList[0]->Yaw -= deltaTime * 5);	
+	kyouko->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), kyouko->GetWorldRotationAngle() + 2.0f * deltaTime);
 
 	float lastPosition = buttonTest->GetPosition().x;
 	buttonTest->SetPosition(lastPosition += deltaTime * 3000, buttonTest->GetPosition().y);
@@ -246,5 +282,9 @@ void MenuSelectScene::HandleStates(const Uint8 *state)
 {
 	if (state[SDL_SCANCODE_Z]) {
 		sceneManager->PreviousScene();
+	}
+
+	if (state[SDL_SCANCODE_P]) {
+		sceneManager->SwitchScene(new TvTGameScene());
 	}
 }

@@ -85,52 +85,56 @@ void Renderer::RenderObjects(glm::mat4 viewMatrix, Camera* camera, std::vector<G
 			// Make reference to current object
 			GameObject* object = objectList.at(i);
 
-			// Make sure shader exists
-			if (shaderManager->get(object->GetShader()) != NULL) {
+			// Chack if can render
+			if (object->canRender == true) {
 
-				// Get object shader
-				Shader* shader = shaderManager->get(object->GetShader());
-				shader->Use();
+				// Make sure shader exists
+				if (shaderManager->get(object->GetShader()) != NULL) {
 
-				// loop through the light object lists
+					// Get object shader
+					Shader* shader = shaderManager->get(object->GetShader());
+					shader->Use();
 
-				// directional lights
-				if (dirLightList.size() != NULL) {
-					unsigned int dirLightListSize = dirLightList.size();
-					for (unsigned int j = 0; j < dirLightListSize; ++j) {
-						// Reference to directional light
-						Light* dirLight = dirLightList[j];
-						shader->setVec3("dirLight[" + std::to_string(j) + "].direction", dirLight->lightComponent->direction);
-						shader->setVec3("dirLight[" + std::to_string(j) + "].ambient", dirLight->lightComponent->ambient);
-						shader->setVec3("dirLight[" + std::to_string(j) + "].diffuse", dirLight->lightComponent->diffuse);
-						shader->setVec3("dirLight[" + std::to_string(j) + "].specular", dirLight->lightComponent->specular);
+					// loop through the light object lists
+
+					// directional lights
+					if (dirLightList.size() != NULL) {
+						unsigned int dirLightListSize = dirLightList.size();
+						for (unsigned int j = 0; j < dirLightListSize; ++j) {
+							// Reference to directional light
+							Light* dirLight = dirLightList[j];
+							shader->setVec3("dirLight[" + std::to_string(j) + "].direction", dirLight->lightComponent->direction);
+							shader->setVec3("dirLight[" + std::to_string(j) + "].ambient", dirLight->lightComponent->ambient);
+							shader->setVec3("dirLight[" + std::to_string(j) + "].diffuse", dirLight->lightComponent->diffuse);
+							shader->setVec3("dirLight[" + std::to_string(j) + "].specular", dirLight->lightComponent->specular);
+						}
 					}
-				}
 
-				// point lights
-				if (pointLightList.size() != NULL) {
-					unsigned int pointLightListSize = pointLightList.size();
-					for (unsigned int j = 0; j < pointLightListSize; ++j) {
-						// Reference to point light
-						Light* pointLight = pointLightList[j];
-						shader->setVec3("pointLight[" + std::to_string(j) + "].position", pointLight->GetWorldPosition());
-						shader->setVec3("pointLight[" + std::to_string(j) + "].ambient", pointLight->lightComponent->ambient);
-						shader->setVec3("pointLight[" + std::to_string(j) + "].diffuse", pointLight->lightComponent->diffuse);
-						shader->setVec3("pointLight[" + std::to_string(j) + "].specular", pointLight->lightComponent->specular);
-						shader->setFloat("pointLight[" + std::to_string(j) + "].constant", pointLight->lightComponent->constant);
-						shader->setFloat("pointLight[" + std::to_string(j) + "].linear", pointLight->lightComponent->linear);
-						shader->setFloat("pointLight[" + std::to_string(j) + "].quadratic", pointLight->lightComponent->quadratic);
+					// point lights
+					if (pointLightList.size() != NULL) {
+						unsigned int pointLightListSize = pointLightList.size();
+						for (unsigned int j = 0; j < pointLightListSize; ++j) {
+							// Reference to point light
+							Light* pointLight = pointLightList[j];
+							shader->setVec3("pointLight[" + std::to_string(j) + "].position", pointLight->GetWorldPosition());
+							shader->setVec3("pointLight[" + std::to_string(j) + "].ambient", pointLight->lightComponent->ambient);
+							shader->setVec3("pointLight[" + std::to_string(j) + "].diffuse", pointLight->lightComponent->diffuse);
+							shader->setVec3("pointLight[" + std::to_string(j) + "].specular", pointLight->lightComponent->specular);
+							shader->setFloat("pointLight[" + std::to_string(j) + "].constant", pointLight->lightComponent->constant);
+							shader->setFloat("pointLight[" + std::to_string(j) + "].linear", pointLight->lightComponent->linear);
+							shader->setFloat("pointLight[" + std::to_string(j) + "].quadratic", pointLight->lightComponent->quadratic);
+						}
 					}
+
+					// Set shader options
+					shader->setMat4("model", object->GetWorldModelMatrix() * object->GetLocalModelMatrix());
+					shader->setMat4("projection", projection);
+					shader->setMat4("view", viewMatrix);
+					shader->setVec3("viewPos", camera->Position);
+
+					// Render object
+					object->Render(shader);
 				}
-
-				// Set shader options
-				shader->setMat4("model", object->GetWorldModelMatrix() * object->GetLocalModelMatrix());
-				shader->setMat4("projection", projection);
-				shader->setMat4("view", viewMatrix);
-				shader->setVec3("viewPos", camera->Position);
-
-				// Render object
-				object->Render(shader);
 			}
 		}
 	}

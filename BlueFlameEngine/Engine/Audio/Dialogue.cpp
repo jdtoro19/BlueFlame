@@ -10,21 +10,23 @@ Dialogue::~Dialogue() {
 
 }
 
-bool const Dialogue::Load(const std::vector<std::string> fileNames) const {
+bool const Dialogue::Load(const std::vector<std::string> fileNames) {
 	
-	SoundEffectSelector* SE = new SoundEffectSelector();
+	SoundEffectSelector *SES = new SoundEffectSelector();
 
 	bool totalsuccess = true;
 	bool tempsuccess;
 
 	for each (std::string file in fileNames) {
-		if ((tempsuccess = SE->LoadNewSoundEffect(file)) == false) {
+		if ((tempsuccess = SES->LoadNewSoundEffect(file)) == false) {
 			totalsuccess = false;
 		}	
 	}
+
+	dialogueOptions.push_back(SES);
+
 	return totalsuccess;
 	
-	return true;
 }
 
 void Dialogue::SetVolume(int volume) {

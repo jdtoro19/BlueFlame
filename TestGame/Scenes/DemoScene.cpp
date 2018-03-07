@@ -86,7 +86,7 @@ bool DemoScene::Initialize()
 	}
 
 	// Player 3
-	player3 = new Player();
+	player3 = new WindPlayer();
 	player3->SetShader(defaultShaderHandle);
 	player3->SetWorldPosition(glm::vec3(2.0f, 0.0f, -3.0f));
 	player3->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER3);
@@ -98,7 +98,7 @@ bool DemoScene::Initialize()
 	}
 
 	// Player 4
-	player4 = new Player();
+	player4 = new WindPlayer();
 	player4->SetShader(defaultShaderHandle);
 	player4->SetWorldPosition(glm::vec3(-2.0f, 0.0f, -3.0f));
 	player4->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER4);
@@ -108,6 +108,12 @@ bool DemoScene::Initialize()
 		BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[3]].playerControls(player4);
 		BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[3]].setTeam(1);
 	}
+
+	// Enemy Target set up
+	player1->SetEnemyTeam(player3, player4);
+	player2->SetEnemyTeam(player4, player3);
+	player3->SetEnemyTeam(player1, player2);
+	player4->SetEnemyTeam(player2, player1);
 
 	// Arena
 	floor = new Cube();
@@ -191,6 +197,13 @@ bool DemoScene::Initialize()
 	projectileManager->AddPlayer(player3);
 	projectileManager->AddPlayer(player4);
 
+	playerList.push_back(player1);
+	playerList.push_back(player2);
+	playerList.push_back(player3);
+	playerList.push_back(player4);
+
+	moveSpeed = 200.0f;
+
 	return true;
 }
 
@@ -203,10 +216,6 @@ void DemoScene::Update(const float deltaTime)
 
 	this->deltaTime = deltaTime;
 
-	// Set player targets
-	// Just player one for to test
-	player1->SetTarget(player4->GetWorldPosition());
-
 	// Timer for firing (Keyboard controls only)
 	timer -= deltaTime;
 	if (timer < 0) {
@@ -217,6 +226,10 @@ void DemoScene::Update(const float deltaTime)
 	// Update object list for physics
 	PhysicsEngine::GetInstance()->AddObjectList(objectList);
 
+	// Update physics and projectile manager
+	PhysicsEngine::GetInstance()->Update(deltaTime);
+	projectileManager->Update(deltaTime);
+
 	// Update projectiles in projectile manager
 	if (projectileManager->GetProjectileList().size() != NULL) {
 		for (size_t i = 0; i < projectileManager->GetProjectileList().size(); ++i) {
@@ -225,10 +238,6 @@ void DemoScene::Update(const float deltaTime)
 			}
 		}
 	}
-
-	// Update physics and projectile manager
-	PhysicsEngine::GetInstance()->Update(deltaTime);
-	projectileManager->Update(deltaTime);
 
 	// Update Controller
 	if (InputHandler::GetInstance()->areJoysticksLive()) {
@@ -241,12 +250,26 @@ void DemoScene::Update(const float deltaTime)
 
 			glm::vec3 temp = BFEngine::GetInstance()->players[i].pObject()->physicsComponent->GetVelocity();
 
-			BFEngine::GetInstance()->players[i].pObject()->physicsComponent->SetVelocity(temp + glm::vec3(mods.x * moveSpeed * deltaTime, 0.0f, mods.y * moveSpeed * deltaTime));
+			//BFEngine::GetInstance()->players[i].pObject()->physicsComponent->SetVelocity(temp + glm::vec3(mods.x * moveSpeed * deltaTime, 0.0f, mods.y * moveSpeed * deltaTime));
+
+			if (InputHandler::GetInstance()->playerMotion(i).x > 0.01f) {
+				playerList.at(i)->Movement(Player::PLAYERMOVEMENT::RIGHT, deltaTime);
+			}
+			if (InputHandler::GetInstance()->playerMotion(i).x < -0.01f) {
+				playerList.at(i)->Movement(Player::PLAYERMOVEMENT::LEFT, deltaTime);
+			}
+			if (InputHandler::GetInstance()->playerMotion(i).y > 0.01f) {
+				playerList.at(i)->Movement(Player::PLAYERMOVEMENT::BACKWARD, deltaTime);
+			}
+			if (InputHandler::GetInstance()->playerMotion(i).y < -0.01f) {
+				playerList.at(i)->Movement(Player::PLAYERMOVEMENT::FORWARD, deltaTime);
+			}
 
 			// Player fire
 			if (BFEngine::GetInstance()->players[i].shotDelay == 0) {
 				//if (SDL_JoystickGetButton(BFEngine::GetInstance()->players[i].pStick, 1) == 1) {
 				if (SDL_JoystickGetAxis(BFEngine::GetInstance()->players[i].pStick, 5) > 1000) {
+					/*
 					GameObject* lr = BFEngine::GetInstance()->players[i].pObject(); //line reducer
 					Projectile* p = new Projectile(glm::vec3(lr->GetWorldPosition().x, lr->GetWorldPosition().y, lr->GetWorldPosition().z - BFEngine::GetInstance()->players[i].inverted() * lr->collisionComponent->GetBoundingBox().r.z * 2.0f * lr->GetWorldScale().z), glm::vec3(0.0f, 0.0f, 100000.0f), BFEngine::GetInstance()->players[i].inverted());
 					glm::vec3 tempColor = BFEngine::GetInstance()->players[i].getTeamColor();
@@ -257,6 +280,7 @@ void DemoScene::Update(const float deltaTime)
 					projectileManager->AddProjectile(p);
 					std::cout << "Player " << i << " shot." << std::endl;
 					BFEngine::GetInstance()->players[i].weShot();
+					*/
 				}
 			}
 			BFEngine::GetInstance()->players[i].tick();
@@ -278,109 +302,118 @@ void DemoScene::HandleEvents(SDL_Event events)
 		if (events.jaxis.axis == 2) //left trigger
 		{
 			/* Up-Down movement code goes here */
-			std::cout << "Left Trigger" << std::endl;
+			//std::cout << "Left Trigger" << std::endl;
 			//cube->physicsComponent->SetVelocity(glm::vec3(-1.0f, 0.0f, 0.0f));
 		}
-		if (events.jaxis.axis == 5) //right trigger
+		if (events.jaxis.axis == SDL_CONTROLLER_AXIS_TRIGGERRIGHT) //right trigger
 		{
 			/* Up-Down movement code goes here */
-			std::cout << "Right Trigger" << std::endl;
+			//std::cout << "Right Trigger" << std::endl;
 			//cube->physicsComponent->SetVelocity(glm::vec3(1.0f, 0.0f, 0.0f));
+			playerList.at(events.jbutton.which)->Jump();
 		}
-
-
 		break;
 
 	case SDL_JOYBUTTONDOWN:  /* Handle Joystick Button Presses */
 		if (events.jbutton.button == 0) //A button
 		{
 			/* code goes here */
-			std::cout << "A button was probably pressed by " << events.jbutton.which << std::endl;
-			//+-BFEngine::GetInstance()->players[events.jbutton.which].pObject()->Jump(glm::vec3(0.0f, 2.0f, 0.0f));
-			std::cout << "but it thinks its using joystick " << BFEngine::GetInstance()->players[events.jbutton.which].instanceID << endl;
+			//std::cout << "A button was probably pressed by " << events.jbutton.which << std::endl;
+			std::vector<Projectile*> p = playerList.at(events.jbutton.which)->SpecialAttack();
+			// Add it to the projectile manager if the returned projectile is not null
+			if (p.size() > 0) {
+				for each (Projectile* subP in p) {
+					projectileManager->AddProjectile(subP);
+				}
+			}
 		}
 		if (events.jbutton.button == 1) //B button
 		{
 			/* code goes here */
-
-
-			//if (BFEngine::GetInstance()->players[events.jbutton.which].shotDelay == 0) {
-			/*
-			Cube* lr = BFEngine::GetInstance()->players[events.jbutton.which].pObject(); //line reducer
-			Projectile* p = new Projectile(glm::vec3(lr->GetWorldPosition().x, lr->GetWorldPosition().y, lr->GetWorldPosition().z - BFEngine::GetInstance()->players[events.jbutton.which].inverted() * lr->collisionComponent->boundingBox->w * lr->GetWorldScale().z), BFEngine::GetInstance()->players[events.jbutton.which].inverted());
-			glm::vec3 tempColor = BFEngine::GetInstance()->players[events.jbutton.which].getTeamColor();
-			p->renderComponent->SetColour(tempColor.x, tempColor.y, tempColor.z);
-			p->SetShader(defaultShaderHandle);
-			AddObject(p);
-			PhysicsEngine::GetInstance()->AddObjectList(objectList);
-
-			std::cout << "Player " << BFEngine::GetInstance()->indexOfPlayer[events.jbutton.which] << " shot." << std::endl;
-			*/
-			//BFEngine::GetInstance()->players[events.jbutton.which].weShot();
-			//}
+			std::vector<Projectile*> p = playerList.at(events.jbutton.which)->HeavyAttack();
+			// Add it to the projectile manager if the returned projectile is not null
+			if (p.size() > 0) {
+				for each (Projectile* subP in p) {
+					projectileManager->AddProjectile(subP);
+				}
+			}
 		}
 		if (events.jbutton.button == 2) //X button
 		{
 			/* code goes here */
-			std::cout << "X button was probably pressed." << std::endl;
+			//std::cout << "X button was probably pressed." << std::endl;
+			std::vector<Projectile*> p = playerList.at(events.jbutton.which)->LightAttack();
+			// Add it to the projectile manager if the returned projectile is not null
+			if (p.size() > 0) {
+				for each (Projectile* subP in p) {
+					projectileManager->AddProjectile(subP);
+				}
+			}
 		}
 		if (events.jbutton.button == 3) //Y button
 		{
 			/* code goes here */
-			std::cout << "Y button was probably pressed." << std::endl;
+			//std::cout << "Y button was probably pressed." << std::endl;
+			std::vector<Projectile*> p = playerList.at(events.jbutton.which)->MediumAttack();
+			// Add it to the projectile manager if the returned projectile is not null
+			if (p.size() > 0) {
+				for each (Projectile* subP in p) {
+					projectileManager->AddProjectile(subP);
+				}
+			}
 		}
 		if (events.jbutton.button == 4) //left bumper
 		{
 			/* code goes here */
-			std::cout << "Left bumper was probably pressed." << std::endl;
+			//std::cout << "Left bumper was probably pressed." << std::endl;
 			//cube->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, -1.0f));
 		}
 		if (events.jbutton.button == 5) //right bumper
 		{
 			/* code goes here */
-			std::cout << "right bumper was probably pressed." << std::endl;
+			//std::cout << "right bumper was probably pressed." << std::endl;
 			//cube->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, 1.0f));
 		}
 		if (events.jbutton.button == 6) //back button
 		{
 			/* code goes here */
-			std::cout << "back button was probably pressed." << std::endl;
-			BFEngine::GetInstance()->TerminateGame();
+			//std::cout << "back button was probably pressed." << std::endl;
+			sceneManager->SetIsQuit(true);
 		}
 		if (events.jbutton.button == 7) //start button
 		{
 			/* code goes here */
-			std::cout << "start was probably pressed." << std::endl;
+			//std::cout << "start was probably pressed." << std::endl;
 			sceneManager->EnableSplitscreen(true);
-			sceneManager->EnableFullscreen(true);
+			sceneManager->EnableFullscreen(false);
 			sceneManager->SwitchScene(new DemoScene());
 		}
 		if (events.jbutton.button == 8) //left joystick
 		{
 			/* code goes here */
-			std::cout << "left joystick was probably pressed." << std::endl;
+			//std::cout << "left joystick was probably pressed." << std::endl;
 		}
 		if (events.jbutton.button == 9) //right joystick
 		{
 			/* code goes here */
-			std::cout << "right joystick was probably pressed." << std::endl;
+			//std::cout << "right joystick was probably pressed." << std::endl;
 		}
 		if (events.jbutton.button == 10) //xbox key
 		{
 			/* code goes here */
-			std::cout << "xbox key was probably pressed." << std::endl;
+			//std::cout << "xbox key was probably pressed." << std::endl;
 			//xbox key closes the game
 			//BFEngine::GetInstance()->TerminateGame();
 		}
 		if (events.jbutton.button == 11) //left trigger
 		{
 			/* code goes here */
-			std::cout << "left trigger was probably pressed." << std::endl;
+			//std::cout << "left trigger was probably pressed." << std::endl;
 		}
 		if (events.jbutton.button == 12) //right trigger
 		{
 			/* code goes here */
-			std::cout << "right trigger was probably pressed." << std::endl;
+			//std::cout << "right trigger was probably pressed." << std::endl;			
 		}
 		break;
 
@@ -401,18 +434,67 @@ void DemoScene::HandleEvents(SDL_Event events)
 		case SDLK_LEFT:
 			// Create projectile
 			// LightAttack returns a projectile
-			Projectile* p = player1->LightAttack();
+			std::vector<Projectile*> p = player1->LightAttack();
 			// Add it to the projectile manager if the returned projectile is not null
-			if (p != NULL) {
-				projectileManager->AddProjectile(p);
+			if (p.size() > 0) {
+				for each (Projectile* subP in p) {
+					projectileManager->AddProjectile(subP);
+				}
 			}
 			break;
+		}
+	}
+	if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
+	{
+		if (events.key.keysym.sym == SDLK_UP) {
+			player1->Jump();
+		}
+
+		if (events.key.keysym.sym == SDLK_DOWN) {
+			std::vector<Projectile*> p = player1->MediumAttack();
+			// Add it to the projectile manager if the returned projectile is not null
+			if (p.size() > 0) {
+				for each (Projectile* subP in p) {
+					projectileManager->AddProjectile(subP);
+				}
+			}
+		}
+
+		if (events.key.keysym.sym == SDLK_RIGHT) {
+			std::vector<Projectile*> p = player1->HeavyAttack();
+			// Add it to the projectile manager if the returned projectile is not null
+			if (p.size() > 0) {
+				for each (Projectile* subP in p) {
+					projectileManager->AddProjectile(subP);
+				}
+			}
+		}
+
+		if (events.key.keysym.sym == SDLK_RCTRL) {
+			std::vector<Projectile*> p = player1->SpecialAttack();
+			// Add it to the projectile manager if the returned projectile is not null
+			if (p.size() > 0) {
+				for each (Projectile* subP in p) {
+					projectileManager->AddProjectile(subP);
+				}
+			}
+		}
+
+		if (events.key.keysym.sym == SDLK_o) {
+			player1->SwitchTarget();
+		}
+
+		if (events.key.keysym.sym == SDLK_i) {
+			player1->EnableTarget();
 		}
 	}
 
 	// Call player handle events
 	// only player 1 for now to test
 	player1->HandleEvents(events);
+	player2->HandleEvents(events);
+	player3->HandleEvents(events);
+	player4->HandleEvents(events);
 }
 
 void DemoScene::HandleStates(const Uint8 *state)
@@ -420,12 +502,15 @@ void DemoScene::HandleStates(const Uint8 *state)
 	// Call player handle states
 	// Only player 1 for now to test
 	player1->HandleStates(state);
+	player2->HandleStates(state);
+	player3->HandleStates(state);
+	player4->HandleStates(state);
 
 	// TEST PROJECTILES
 	//
 	if (state[SDL_SCANCODE_SPACE]) {
 		if (fire) {
-			Projectile* p = new Projectile(glm::vec3(player1->GetWorldPosition().x, player1->GetWorldPosition().y, player1->GetWorldPosition().z - player1->collisionComponent->GetBoundingBox().r.z * 2.0f * player1->GetWorldScale().z), glm::vec3(0.0f, 200.0f, 50.0f), 1);
+			Projectile* p = new Projectile(glm::vec3(player1->GetWorldPosition().x, player1->GetWorldPosition().y, player1->GetWorldPosition().z - player1->collisionComponent->GetBoundingBox().r.z * 2.0f * player1->GetWorldScale().z), glm::vec3(0.0f, 200.0f, 50.0f), player1->targetAngle, player1->dir);
 			p->SetActingForce(glm::vec3(0.0f, -4.0f, 0.0f));
 			p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 25.0f));
 			p->SetWorldScale(0.5f);
@@ -439,7 +524,7 @@ void DemoScene::HandleStates(const Uint8 *state)
 
 	if (state[SDL_SCANCODE_R]) {
 		if (fire) {
-			Projectile* p = new Projectile(glm::vec3(player1->GetWorldPosition().x, player1->GetWorldPosition().y + 6.0f, player1->GetWorldPosition().z - player1->collisionComponent->GetBoundingBox().r.z * 2.0f * player1->GetWorldScale().z - 5.0f), glm::vec3(0.0f, -2.0f, 0.0f), 1);
+			Projectile* p = new Projectile(glm::vec3(player1->GetWorldPosition().x, player1->GetWorldPosition().y + 6.0f, player1->GetWorldPosition().z - player1->collisionComponent->GetBoundingBox().r.z * 2.0f * player1->GetWorldScale().z - 5.0f), glm::vec3(0.0f, -2.0f, 0.0f), player1->targetAngle, player1->dir);
 			p->SetShader(defaultShaderHandle);
 			p->SetWorldScale(0.25f, 1.0f, 0.25f);
 			AddObject(p);
@@ -451,7 +536,7 @@ void DemoScene::HandleStates(const Uint8 *state)
 
 	if (state[SDL_SCANCODE_T]) {
 		if (fire) {
-			Projectile* p = new Projectile(glm::vec3(player1->GetWorldPosition().x, player1->GetWorldPosition().y, player1->GetWorldPosition().z - player1->collisionComponent->GetBoundingBox().r.z * 2.0f * player1->GetWorldScale().z), glm::vec3(200.0f, 200.0f, 50.0f), 1);
+			Projectile* p = new Projectile(glm::vec3(player1->GetWorldPosition().x, player1->GetWorldPosition().y, player1->GetWorldPosition().z - player1->collisionComponent->GetBoundingBox().r.z * 2.0f * player1->GetWorldScale().z), glm::vec3(200.0f, 200.0f, 50.0f), player1->targetAngle, player1->dir);
 			p->SetActingForce(glm::vec3(-4.0f, -4.0f, 0.0f));
 			p->SetKnockbackForce(glm::vec3(-20.0f, 100.0f, 25.0f));
 			p->SetWorldRotation(0.0f, 0.0f, 1.0f, 25.0f);

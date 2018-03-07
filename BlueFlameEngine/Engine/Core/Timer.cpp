@@ -1,35 +1,45 @@
 #include "Timer.h"
 
-using namespace ENGINE;
+Timer* Timer::theInstance = nullptr;
 
-Timer::Timer():prevTicks(0),currTicks(0) {}
+Timer::Timer() {
 
-Timer::~Timer() {}
+}
 
-void Timer::UpdateFrameTicks() {
-	prevTicks = currTicks;
-	currTicks = SDL_GetTicks();
+Timer::~Timer() {
+
+}
+
+Timer& Timer::GetInstance() {
+	if (theInstance == nullptr) {
+		theInstance = new Timer();
+	}
+	return *theInstance;
+}
+
+double Timer::GetSeconds() {
+	frequency = GetTicksPerSecond();
+	currtime = GetTicks();
+	double seconds = currtime.QuadPart / frequency.QuadPart;
+
+	return seconds;
 }
 
 void Timer::Start() {
-	prevTicks = SDL_GetTicks();
-	currTicks = SDL_GetTicks();
+	frequency = GetTicksPerSecond();
+	prevTime = GetTicks();
+	currtime = GetTicks();
 }
 
-float Timer::GetDeltaTime() const {
-	return (currTicks - prevTicks) / 1000.0f;
+void Timer::Update() {
+	prevTime = currtime;
+	currtime = GetTicks();
 }
 
-unsigned int Timer::GetSleepTime(const unsigned int fps) const {
-	unsigned int milliSecsPerFrame = 1000 / fps;
-	if (milliSecsPerFrame == 0) {
-		return 0;
-	}
-
-	unsigned int sleepTime = milliSecsPerFrame - (SDL_GetTicks() - currTicks);
-	if (sleepTime > milliSecsPerFrame) {
-		return milliSecsPerFrame;
-	}
-
-	return sleepTime;
+double Timer::GetDeltaTime() {
+	LARGE_INTEGER deltaTime;
+	deltaTime.QuadPart = currtime.QuadPart - prevTime.QuadPart;
+	deltaTime.QuadPart *= 1000;
+	deltaTime.QuadPart /= frequency.QuadPart;
+	return deltaTime.QuadPart * 0.001;
 }

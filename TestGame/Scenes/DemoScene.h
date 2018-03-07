@@ -16,6 +16,10 @@
 #include "../Game/ProjectileManager.h"
 #include "../Player/Player.h"
 #include "../Player/WindPlayer.h"
+#include "../Player/IcePlayer.h"
+#include "../Player/FirePlayer.h"
+#include "../Player/EarthPlayer.h"
+#include "../Player/LightningPlayer.h"
 
 using namespace ENGINE;
 
@@ -70,6 +74,8 @@ namespace GAME {
 		// other variables
 		float moveSpeed = 2;
 		float deltaTime;
+
+		vector<Player*> playerList;
 
 		bool fire = true;
 		float timer = 0.3f;

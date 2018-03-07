@@ -25,6 +25,18 @@ bool SoundEffectSelector::LoadNewSoundEffect(const std::string fileName) {
 	return result;
 }
 
+void SoundEffectSelector::LoadEffectsFromFile(const std::string filenames) {
+	Parser p = Parser();
+	p.LoadFileIntoParser(filenames, false);
+
+	while (!p.isEmpty()) {
+		std::vector<std::string> fileNames = p.ParseBlock('=', '+');
+		for each (std::string file in fileNames) {
+			LoadNewSoundEffect(file);
+		}
+	}
+}
+
 void SoundEffectSelector::PlayRandom() {
 	int rand = Clock::GetInstance()->boundedRandomNumber(SE.size() - 1);
 	SE.at(rand)->Play();

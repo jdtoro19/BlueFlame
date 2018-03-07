@@ -10,7 +10,8 @@ GameObject::GameObject() :
 	localScale(glm::vec3(1.0f, 1.0f, 1.0f)),
 	worldScale(glm::vec3(1.0f, 1.0f, 1.0f)),
 	localRotationAngle(0.0f),
-	worldRotationAngle(0.0f)
+	worldRotationAngle(0.0f),
+	canRender(true)
 {
 }
 

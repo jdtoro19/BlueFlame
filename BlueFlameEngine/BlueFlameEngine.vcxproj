@@ -19,9 +19,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Engine\Audio\Announcer.cpp" />
     <ClCompile Include="Engine\Audio\AudioFile.cpp" />
     <ClCompile Include="Engine\Audio\Dialogue.cpp" />
     <ClCompile Include="Engine\Audio\Music.cpp" />
+    <ClCompile Include="Engine\Audio\PlayerDialogue.cpp" />
     <ClCompile Include="Engine\Audio\SoundEffect.cpp" />
     <ClCompile Include="Engine\Audio\SoundEffectSelector.cpp" />
     <ClCompile Include="Engine\Camera\Camera.cpp" />
@@ -29,6 +31,7 @@
     <ClCompile Include="Engine\Core\Parser.cpp" />
     <ClCompile Include="Engine\Core\Timer.cpp" />
     <ClCompile Include="Engine\Debuging\LogManager.cpp" />
+    <ClCompile Include="Engine\Debuging\Settings.cpp" />
     <ClCompile Include="Engine\Graphics\Bone.cpp" />
     <ClCompile Include="Engine\Graphics\ParticleSystem.cpp" />
     <ClCompile Include="Engine\Graphics\stb_image.cpp" />
@@ -60,6 +63,7 @@
     <ClCompile Include="Engine\Rendering\2D\TextUI.cpp" />
     <ClCompile Include="Engine\Rendering\2D\UIObject.cpp" />
     <ClCompile Include="Engine\Rendering\2D\ImageUI.cpp" />
+    <ClCompile Include="Engine\Timers\Cooldown.cpp" />
     <ClCompile Include="Engine\Timers\MasterClock.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -76,6 +80,7 @@
     <ClInclude Include="Engine\Core\ResourceManager.h" />
     <ClInclude Include="Engine\Core\Timer.h" />
     <ClInclude Include="Engine\Debuging\LogManager.h" />
+    <ClInclude Include="Engine\Debuging\Settings.h" />
     <ClInclude Include="Engine\Graphics\Animation.h" />
     <ClInclude Include="Engine\Graphics\Bone.h" />
     <ClInclude Include="Engine\Graphics\ParticleSystem.h" />
@@ -128,10 +133,10 @@
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>StaticLibrary</ConfigurationType>
     <UseDebugLibraries>false</UseDebugLibraries>
     <PlatformToolset>v140</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
     <CharacterSet>MultiByte</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -169,6 +174,10 @@
     <IncludePath>$(SolutionDir)Dependencies\Includes;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)Dependencies\Libraries;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>$(SolutionDir)Dependencies\Includes;$(IncludePath)</IncludePath>
+    <LibraryPath>$(SolutionDir)Dependencies\Libraries;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -201,7 +210,11 @@
     <Link>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2test.lib;SDL2_image.lib;SDL2_mixer.lib;glew32.lib;glew32s.lib;opengl32.lib;assimp-vc140-mt.lib;AssimpConverter.lib;freetype271.lib;freetype271MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <Lib>
+      <AdditionalDependencies>SDL2.lib;SDL2main.lib;SDL2test.lib;SDL2_image.lib;SDL2_mixer.lib;glew32.lib;glew32s.lib;opengl32.lib;assimp-vc140-mt.lib;AssimpConverter.lib;freetype271.lib;freetype271MT.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Lib>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>

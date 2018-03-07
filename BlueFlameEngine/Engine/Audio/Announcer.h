@@ -4,13 +4,15 @@
 
 #include <string>
 #include "Dialogue.h"
+#include "../Core/Parser.h"
 
 namespace ENGINE {
 
-	class Announcer : Dialogue {
+	class Announcer : public Dialogue {
 	public:
 		Announcer();
-		virtual ~Announcer();
+		Announcer(double averageSecondsBetweenLines);
+		~Announcer();
 
 		//enum dialogueStates {}; //defined by the inheriting classes
 		enum DIALOGUESTATE {
@@ -22,20 +24,20 @@ namespace ENGINE {
 			WinScreen
 		};
 
-		inline void setDialogueState(DIALOGUESTATE d) { currentState = d; }
-		inline void playRandomFromCurrentState() { dialogueOptions.at(currentState)->PlayRandom(); };
-		inline void playRandomFromOtherState(DIALOGUESTATE d) { dialogueOptions.at(d)->PlayRandom(); };
-		inline void sometimesPlayRandomFromCurrentState(int percentage) {
-			if (Clock::GetInstance()->generateRandomNumber() > percentage) {
-				playRandomFromCurrentState();
-			}
-		}
+		void setDialogueState(DIALOGUESTATE d);
+		void playRandomFromCurrentState(bool overrideCD);
+		void playRandomFromOtherState(DIALOGUESTATE d, bool overrideCD);
+		void sometimesPlayRandomFromCurrentState(int percentage, bool overrideCD);
+
+		//now we're getting serious
+		void LoadAnnouncerSet(std::string filename);
+		void LoadDefaultAnnouncer();
 
 	protected:
 	private:
 		DIALOGUESTATE currentState = TitleScreen;
-
-		
+		Parser p = Parser();
+		bool hasCooldown = false;
 	};
 }
 

@@ -50,6 +50,11 @@ void PhysicsEngine::GeneratePairs(std::vector<GameObject*> physicsObjectList) {
 				continue;
 			}
 
+			// Check if object has an active physics component
+			if (physicsObjectList.at(i)->collisionComponent == nullptr || physicsObjectList.at(j)->collisionComponent == nullptr) {
+				continue;
+			}
+
 			// Checks that both objects are on the same layer
 			if (physicsObjectList.at(i)->collisionComponent->GetLayer() != physicsObjectList.at(j)->collisionComponent->GetLayer()) {
 				continue;

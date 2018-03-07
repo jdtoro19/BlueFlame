@@ -48,10 +48,10 @@ void Parser::PrintFile() {
 	else {
 		std::cout << "ERROR: PARSER EMPTY" << std::endl;
 	}
-	
+
 }
 
-void Parser::ParseBlock(char delimiter, char comment) {
+std::vector<std::string> Parser::ParseBlock(char delimiter, char comment) {
 	std::vector<std::string> parsedBlock;
 	int blockChunk = 0;
 	for each (std::string s in parsedFile) {
@@ -65,7 +65,7 @@ void Parser::ParseBlock(char delimiter, char comment) {
 			break;
 		}
 		parsedBlock.push_back(s);
-		
+
 	}
 	//remove the parsed block
 	parsedFile.erase(parsedFile.begin(), parsedFile.begin() + blockChunk);
@@ -74,5 +74,5 @@ void Parser::ParseBlock(char delimiter, char comment) {
 	for each (std::string s in parsedBlock) {
 		std::cout << s << std::endl;
 	}
-
+	return parsedBlock;
 }

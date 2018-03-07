@@ -4,6 +4,7 @@
 
 #include <string>
 #include "SoundEffectSelector.h"
+#include "../Timers/Cooldown.h"
 
 namespace ENGINE {
 
@@ -13,14 +14,16 @@ namespace ENGINE {
 		virtual ~Dialogue();
 		
 		/// Pure viturals
-		bool const Load(const std::vector<std::string> fileNames) const;
+		bool const Load(const std::vector<std::string> fileNames);
 		void SetVolume(int volume);
 		void Destroy();
 	protected:
 		//all dialogue is stored in dialogueOptions, via soundeffectselectors.
 		std::vector<SoundEffectSelector*> dialogueOptions;
 
-		enum dialogueStates {}; //defined by the inheriting classes
+		Cooldown minTimeBetweenSpeech;
+
+		//enum dialogueStates {}; //defined by the inheriting classes
 	private:
 		
 	};

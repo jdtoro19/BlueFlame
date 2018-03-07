@@ -8,6 +8,7 @@
 #include <BlueFlameEngine\Engine\Rendering\3D\Projectile.h>
 #include <BlueFlameEngine\Engine\BFEngine.h>
 #include <BlueFlameEngine\Engine\Core\ResourceManager.h>
+#include <BlueFlameEngine\Engine\Audio\PlayerDialogue.h>
 #include "PlayerBase.h"
 
 using namespace ENGINE;
@@ -73,23 +74,30 @@ namespace GAME {
 		void Block();
 		// Resets combo 
 		void ComboReset();
+		// Jump
+		void Jump();
+		// Switches target
+		void SwitchTarget();
+		// Enables / Disables targetting
+		void EnableTarget();
 		//
 
 		// Attack Functions
 		// Returns a projectile
-		virtual Projectile* LightAttack() { return NULL; };
-		virtual Projectile* MediumAttack() { return NULL; };
-		virtual Projectile* HeavyAttack() { return NULL; };
-		virtual Projectile* SpecialAttack() { return NULL; };
+		virtual std::vector<Projectile*> LightAttack() = 0;
+		virtual std::vector<Projectile*> MediumAttack() = 0;
+		virtual std::vector<Projectile*> HeavyAttack() = 0;
+		virtual std::vector<Projectile*> SpecialAttack() = 0;
 
 		// Target
 		// Used for setting the player's target
+		void SetEnemyTeam(Player* player1, Player* player2);
 		void SetTarget(glm::vec3 targetPlayer);
 		void SetTargetColour(glm::vec3 colour);
 
 		// Player number and team setter
 		void SetPlayerNumber(PLAYERNUMBER pN) { playerNumber = pN; };
-		void SetPlayerTeam(PLAYERTEAM pT) { playerTeam = pT; };
+		void SetPlayerTeam(PLAYERTEAM pT);
 
 		// Getters
 		int GetHealth() { return health; };
@@ -110,15 +118,23 @@ namespace GAME {
 		bool down = false;
 
 		// Player Target
+		bool isTargeting;
+		int currentTarget;
+		std::vector<Player*> enemyTeam;
 		glm::vec3 targetedPlayer;
 		glm::vec3 targetColour;
-		glm::vec3 targetDirection;
+		
+	public:
+		float targetAngle;
+		int dir;
 
 		// Player Stats
 		int health = 0;
 		int maxHealth = 100;
-		int specialMeter;
+		int specialMeter = 0;
 		int maxSpecialMeter = 100;
+		int staminaMeter = 0;
+		int maxStaminaMeter = 100;
 		float moveSpeed = 1.0f;
 		PLAYERNUMBER playerNumber = NONE;
 		PLAYERTEAM playerTeam = TEAM0;
@@ -126,6 +142,7 @@ namespace GAME {
 		PLAYERSTATES playerState = NORMAL;
 		float stunTimer = 0;
 		float stunTimerSet = 1.0f;
+		bool moveWhileShooting = false;
 
 		// Player Combo stats
 		float lightComboTimer = 0;
@@ -141,6 +158,12 @@ namespace GAME {
 		// Projectile shader
 		Shader* projectileShader;
 		ResourceHandle<Shader> pShader;
+
+		private:
+			//Player Specific Audio
+			//MUST HAVE A CONSTRUCTOR FOR THIS IN EXPANDED CLASS
+			PlayerDialogue dialogue; //USED TO STORE PLAYER DIALOGUE. LoadPlayerDialogue(
+			SoundEffectSelector pSoundEffects;
 	};
 
 }

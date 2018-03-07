@@ -23,7 +23,7 @@ void PhysicsComponent::Update(float deltaTime) {
 		}
 
 		if (hasGravity) {
-			force += glm::vec3(0.0f, -2000.0f, 0.0f);
+			force += glm::vec3(0.0f, -9800.0f, 0.0f);
 		}
 
 		velocity += (invMass * force) * deltaTime;

@@ -11,5 +11,7 @@ out vec3 Colour;
 void main()
 {
 	Colour = sColour;
+	if(sColour == vec3(0,0,0))
+		Colour = vec3(1,1,1);
 	gl_Position = projection * view * model * vec4(aPos, 1.0);
 }

@@ -71,25 +71,24 @@ void BFEngine::Run()
 	isRunning = true;
 
 	// Set up timer
-	Timer timer;
-	timer.Start();
+	Timer::GetInstance().Start();
 
 	while (isRunning) 
 	{
-		// Update timer
-		timer.UpdateFrameTicks();
-
-		// Call game loop functions
-		FixedUpdate();
-		Update(timer.GetDeltaTime());		
-		PreRender();
-		Render();
-		PostRender();
-		
 		// Check if the scene manager has quit
 		if (sceneManager->IsQuit()) {
 			isRunning = false;
-		}		
+		}
+
+		// Update timer
+		Timer::GetInstance().Update();
+
+		// Call game loop functions
+		FixedUpdate();
+		Update(Timer::GetInstance().GetDeltaTime());
+		PreRender();
+		Render();
+		PostRender();	
 
 		// Only display window after the first render has been called
 		if (firstLoad) {
@@ -97,9 +96,6 @@ void BFEngine::Run()
 			SDL_ShowWindow(window->GetWindow());
 			firstLoad = false;
 		}
-
-		// Clamp frame rate
-		SDL_Delay(timer.GetSleepTime(144));
 	}
 }
 
