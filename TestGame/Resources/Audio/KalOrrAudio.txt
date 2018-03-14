@@ -1,0 +1,13 @@
++1.	Character Select Screen
+.\Resources\Audio\KalOrr\Kal-Orr-HotHeaded.wav
+.\Resources\Audio\KalOrr\Kal-Orr-WellMetStranger.wav
+.\Resources\Audio\KalOrr\Kal-Orr-DesertSand.wav
+=2.	Match Start
+.\Resources\Audio\KalOrr\Kal-Orr-PackingHeat.wav
+.\Resources\Audio\KalOrr\Kal-Orr-BloodIsBoiling.wav
+.\Resources\Audio\KalOrr\Kal-Orr-ThisWillBeFun.wav
+.\Resources\Audio\KalOrr\Kal-Orr-WinSun.wav
+=3.	Character Fall
+.\Resources\Audio\KalOrr\Kal-Orr-HowCouldThisHappen.wav
+.\Resources\Audio\KalOrr\Kal-Orr-MyFireExtinguished.wav
+.\Resources\Audio\KalOrr\Kal-Orr-ThisCantBe.wav

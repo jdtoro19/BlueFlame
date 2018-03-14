@@ -9,7 +9,7 @@ PlayerDialogue::PlayerDialogue() {
 
 PlayerDialogue::PlayerDialogue(double averageSecondsBetweenLines) {
 	minTimeBetweenSpeech = Cooldown(averageSecondsBetweenLines);
-	hasCooldown = false;
+	hasCooldown = true;
 }
 
 PlayerDialogue::~PlayerDialogue() {
@@ -34,13 +34,28 @@ void PlayerDialogue::playRandomFromCurrentState(bool overrideCD) {
 }
 
 void PlayerDialogue::playRandomFromOtherState(DIALOGUESTATE d, bool overrideCD) {
-	dialogueOptions.at(d)->PlayRandom();
+	if (overrideCD || !hasCooldown) { //if there's a cooldown, makes sure that enough time has passed to talk again
+		dialogueOptions.at(d)->PlayRandom();
+	}
+	else { //you can override the current cooldown and play no matter what with overrideCD = true;
+		if (minTimeBetweenSpeech.checkOffCD()) {
+			dialogueOptions.at(d)->PlayRandom();
+			minTimeBetweenSpeech.startCD();
+		}
+	}
 }
 
 void PlayerDialogue::sometimesPlayRandomFromCurrentState(int percentage, bool overrideCD) {
 	if (Clock::GetInstance()->generateRandomNumber() > percentage) {
 		playRandomFromCurrentState(overrideCD);
 	}
+}
+
+void PlayerDialogue::playSpecifiedFromState(DIALOGUESTATE d, int x) {
+	if (x > dialogueOptions.at(d)->sizeOfMe() - 1) {
+		x = dialogueOptions.at(d)->sizeOfMe() - 1;
+	}
+	dialogueOptions.at(d)->Play(x);
 }
 
 //now we're getting serious

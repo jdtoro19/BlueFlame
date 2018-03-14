@@ -147,6 +147,11 @@ float TextUI::GetLength() {
 	return length;
 }
 
+float TextUI::GetSize()
+{
+	return size;
+}
+
 void TextUI::Update(const float deltaTime)
 {
 

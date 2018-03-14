@@ -5,9 +5,9 @@ using namespace GAME;
 Player::Player()
 {
 	// Make player parts
-	base = new PlayerBase();
-	base->SetWorldPosition(0.0f, 0.35f, 0.0f);
-	base->SetWorldScale(0.7f, 1.0f, 0.5f);
+	base = new PlayerBase("Resources/Models/Robot_Base_Greybox/Robot_Var_002_Gurran.obj");
+	base->SetWorldPosition(0.0f, 0.0f, 0.0f);
+	base->SetWorldScale(0.012f);
 	base->renderComponent->SetColour(0.2f, 0.7f, 0.0f);
 
 	ring = new PlayerBase();
@@ -30,13 +30,14 @@ Player::Player()
 	// Initialize collision component
 	collisionComponent = new CollisionComponent();
 	collisionComponent->CreateCollisionVolume(CollisionComponent::Collision_Type::BOX, base->renderComponent->getVertexList());
+	collisionComponent->SetBoxPadding(glm::vec3(1.0f, 1.2f, 1.0f));
 
 	// Initialize physics componenet
 	physicsComponent = new PhysicsComponent();
 	physicsComponent->SetAcceleration(glm::vec3(0.0f, -25.0f, 0.0f));
 	physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
-	physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_NON_ELASTIC);
-	physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
+	physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::VERY_ELASTIC);
+	physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::SMOOTH);
 	physicsComponent->SetMass(50.0f);
 
 	// Set up shader
@@ -50,6 +51,8 @@ Player::Player()
 	isTargeting = true;
 
 	SetStats();
+
+	movementCD = Cooldown(0.0);
 }
 
 Player::~Player()
@@ -76,6 +79,10 @@ void Player::Update(const float deltaTime)
 			stunTimer = 0;
 			playerState = NORMAL;
 		}
+	}
+
+	if (!movementCD.checkOffCD()) {
+		playerState = ATTACK;
 	}
 
 	// Combo timers
@@ -115,7 +122,12 @@ void Player::Update(const float deltaTime)
 	physicsComponent->Update(deltaTime);
 	collisionComponent->Update(GetWorldPosition());
 	SetWorldPosition(physicsComponent->GetPosition());
-	SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), -targetAngle);
+	if (playerTeam == PLAYERTEAM::TEAM1) {
+		SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), -targetAngle);
+	}
+	else if (playerTeam == PLAYERTEAM::TEAM2) {
+		SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), 3.14 - targetAngle);
+	}
 	if (playerState == NORMAL) {
 		physicsComponent->SetVelocity(glm::vec3(0.0f, physicsComponent->GetVelocity().y, 0.0f));
 	}
@@ -159,7 +171,7 @@ void Player::HandleStates(const Uint8 *state)
 
 void Player::Movement(PLAYERMOVEMENT movement, const float deltaTime) 
 {
-	if (playerState == NORMAL || moveWhileShooting) {
+	if (playerState == NORMAL || (movementCD.checkOffCD() && moveWhileShooting)) {
 
 		float moveMod = 1;
 
@@ -267,8 +279,11 @@ void Player::SetPlayerTeam(PLAYERTEAM pT) {
 }
 
 void Player::Hit(Projectile* projectile) {
-	Stun(projectile->GetStunTime());
-	health -= projectile->GetDamage();
+	if (playerState != BLOCK) {
+		physicsComponent->AddForce(projectile->GetForce());
+		Stun(projectile->GetStunTime());
+		health -= projectile->GetDamage();
+	}
 }
 
 void Player::Stun() {
@@ -302,7 +317,7 @@ void Player::ComboReset() {
 
 void Player::Jump() {
 	if (worldPosition.y < 0.1f && playerState == NORMAL) {
-		physicsComponent->SetVelocity(glm::vec3(0.0f, 30.0f, 0.0f));
+		physicsComponent->AddForce(glm::vec3(0.0f, 120.0f, 0.0f));
 	}
 }
 
@@ -326,15 +341,19 @@ void Player::EnableTarget() {
 
 void Player::Render(Shader* shader)
 {
-	shader->setMat4("model", worldModelMatrix * localModelMatrix * base->GetWorldModelMatrix() * base->GetLocalModelMatrix());
+	shader->setMat4("model", worldModelMatrix * localModelMatrix * base->GetWorldModelMatrix() * base->GetLocalModelMatrix() * base->model->GetWorldModelMatrix() * base->model->GetLocalModelMatrix());
 	base->Render(shader);
 
-	shader->setMat4("model", worldModelMatrix * localModelMatrix * ring->GetWorldModelMatrix() * ring->GetLocalModelMatrix());
+	//shader->setMat4("model", worldModelMatrix * localModelMatrix * ring->GetWorldModelMatrix() * ring->GetLocalModelMatrix());
+	ring->SetWorldPosition(worldPosition.x, ring->GetWorldPosition().y, worldPosition.z);
+	shader->setMat4("model", ring->GetWorldModelMatrix() * ring->GetLocalModelMatrix());
 	ring->Render(shader);
 
 	shader->setMat4("model", worldModelMatrix * localModelMatrix * shield->GetWorldModelMatrix() * shield->GetLocalModelMatrix());
 	shield->Render(shader);
 
-	shader->setMat4("model", marker->GetWorldModelMatrix() * marker->GetLocalModelMatrix());
-	marker->Render(shader);
+	if (isTargeting) {
+		shader->setMat4("model", marker->GetWorldModelMatrix() * marker->GetLocalModelMatrix());
+		marker->Render(shader);
+	}
 }

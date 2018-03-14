@@ -3,7 +3,7 @@
 using namespace GAME;
 
 EarthPlayer::EarthPlayer() {
-	base->renderComponent->SetColour(0.1f, 0.1f, 0.5f);
+	ring->renderComponent->SetColour(0.8, 0.5f, 0.3f);
 	HeavyCD = Cooldown(5.0);
 	LightCD = Cooldown(0.4);
 	MediumCD = Cooldown(3.0);
@@ -43,14 +43,14 @@ std::vector<Projectile*> EarthPlayer::MediumAttack()
 		cout << "FROM BELOW!" << endl;
 		if (playerState != BLOCK && playerState != STUN) {
 
-			Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), glm::vec3(0.0f, -200.0f, 300.0f), targetAngle, dir);
+			Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), targetAngle, dir);
+			p->SetImpulseForce(glm::vec3(0.0f, -200.0f, 300.0f));
 			p->SetActingForce(glm::vec3(0.0f, 10.0f, -7.5f));
 			p->SetKnockbackForce(glm::vec3(0.0f, 100.0f, 0.0f));
 			p->SetStunTime(1.0f);
 			p->SetWorldScale(0.5f);
-			p->SetShader(pShader);
-			p->setLifetime(0.8);
-			BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(p);
+			p->SetLifetime(0.8);
+			p->SetClipping(PROJECTILE_CLIP::YES_PLAYER_PROJECTILE);
 
 			MediumCD.startCD();
 
@@ -68,20 +68,20 @@ std::vector<Projectile*> EarthPlayer::HeavyAttack()
 	if (HeavyCD.checkOffCD()) {
 		cout << "Build a wall!" << endl;
 		if (playerState != BLOCK && playerState != STUN) {
-
-			Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y - 1.0f, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), glm::vec3(0.0f, 100.0f, 0.0f), targetAngle, dir);
-			p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
+			
+			Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), 0.0f, dir);
+			p->SetActingForce(glm::vec3(0.0f, -1.5f, 3.0f));
 			p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 0.0f));
 			p->SetStunTime(0.0f);
-			p->SetWorldScale(2,2,0.25);
-			p->SetShader(pShader);
-			p->addMaxDistance(2.0f);
-			p->setLifetime(5.0);
-			BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(p);
+			p->SetWorldScale(2.0f, 0.25f, 0.25f);
+			p->SetElement(PROJECTILE_ELEMENT::EARTH);
+			p->SetStrength(PROJECTILE_STRENGTH::HEAVY);
+			p->SetClipping(PROJECTILE_CLIP::YES_WALL_PROJECTILE);
+			p->SetLifetime(5.0f);
 
 			HeavyCD.startCD();
 
-			proj.push_back(p);
+		proj.push_back(p);
 		}
 	}
 	else {
@@ -138,27 +138,26 @@ void EarthPlayer::InheritedHandleStates(const Uint8 *state)
 }
 
 Projectile* EarthPlayer::smallRock(float offset, float xxx) {
-	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x + offset, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), glm::vec3(xxx, 100.0f, 180.0f), targetAngle, dir);
+	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x + offset, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), targetAngle, dir);
+	p->SetImpulseForce(glm::vec3(xxx, 100.0f, 180.0f));
 	p->SetActingForce(glm::vec3(0.0f, -5.0f, 0.0f));
 	p->SetKnockbackForce(glm::vec3(0.0f, 5.0f, 300.0f));
 	p->SetStunTime(0.5f);
 	p->SetWorldScale(0.35f);
-	p->SetShader(pShader);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(p);
 
 	return p;
 }
 
 
 Projectile* EarthPlayer::SpecialRock(float offset) {
-	Projectile* p = new Projectile(glm::vec3(offset, GetWorldPosition().y - 0.5f, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), glm::vec3(0.0f, 0.0f, 20.0f), targetAngle, dir);
+	Projectile* p = new Projectile(glm::vec3(offset, GetWorldPosition().y - 1.5f, -1.5f * -dir), 0.0f, dir);
+	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 60.0f));
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 	p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 0.0f));
+	p->SetFirstDelay(1.0f, glm::vec3(0.0f, 1.0f, 0.5f), glm::vec3(1.95f, 1.45f, 0.45f), glm::vec3(2.0f, 1.5f, 0.5f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 	p->SetStunTime(2.0f);
-	p->SetWorldScale(2.0f, 1.0f, 0.5f);
-	p->SetShader(pShader);
-	p->setLifetime(8.0f);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(p);
+	p->SetClipping(YES_PLAYER_PROJECTILE);
+	p->SetLifetime(8.0f);
 
 	return p;
 }

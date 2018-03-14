@@ -56,7 +56,9 @@ bool Window::Initialize(std::string windowName, int initWidth, int initHeight)
 	GetInstalledOpenGLInfo();
 
 	// Initialize Audio
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 1024) == -1) 
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 512) == -1)
+
+
 	{
 		std::cout << "Audio was not initialized" << std::endl;
 		return false;

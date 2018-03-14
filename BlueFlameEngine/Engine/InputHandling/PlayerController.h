@@ -4,7 +4,7 @@
 #define PLAYERCONTROLLER_H
 
 #include <SDL\SDL.h>
-#include <..\..\..\BlueFlame\BlueFlameEngine\Engine\Rendering\3D\Cube.h>
+#include "../Rendering/3D/Cube.h"
 
 
 namespace ENGINE {
@@ -26,6 +26,8 @@ namespace ENGINE {
 		//taring joysticks properly
 		Sint16 TareX = NULL;
 		Sint16 TareY = NULL;
+		Sint16 SecondaryTareX = NULL;
+		Sint16 SecondaryTareY = NULL;
 
 		int shotDelay = NULL;
 

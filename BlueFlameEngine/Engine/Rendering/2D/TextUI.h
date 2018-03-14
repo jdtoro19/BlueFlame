@@ -49,6 +49,7 @@ namespace ENGINE {
 		void SetSpacing(float setSpacing);
 
 		float GetLength();
+		float GetSize();
 
 		void Update(const float deltaTime) override;
 		void Draw(glm::mat4 projection) override;

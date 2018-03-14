@@ -15,6 +15,7 @@ namespace ENGINE {
 	public:
 		Model();
 		Model(std::string path);
+		Model(std::string path, bool check);
 		~Model();
 
 		void Update(const float deltaTime);

@@ -26,10 +26,6 @@ namespace GAME {
 		void InheritedHandleStates(const Uint8 *state);
 
 	private:
-		//new elements
-		Cooldown HeavyCD;
-		Cooldown LightCD;
-		Cooldown MediumCD;
 		Projectile* smallRock(float offset, float xxx); //used to create light attack
 		Projectile* SpecialRock(float offset); //used to create Special attack
 	};

@@ -42,9 +42,9 @@ void main()
 		);
 
 		float kernel[9] = float[](
-			0, 1, 0,
-			1,  -4, 1,
-			0, 1, 0
+			-1, -1, -1,
+			-1, 8, -1,
+			-1, -1, -1
 		);
 		
 		vec3 sampleTex[9];

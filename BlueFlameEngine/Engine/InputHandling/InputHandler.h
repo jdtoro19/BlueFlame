@@ -23,10 +23,12 @@ namespace ENGINE {
 		SDL_Joystick *joystick[4];
 		Sint16 TareX[4];
 		Sint16 TareY[4];
+		Sint16 TareX2[4];
+		Sint16 TareY2[4];
 		bool areJoysticksLive();
 		bool upDown = false;
 		glm::vec3 playerMotion(int p);
-		
+		glm::vec3 secondaryJoystick(int p);
 
 	private:
 		int connectedControllers = 0;

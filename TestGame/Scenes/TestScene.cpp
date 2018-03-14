@@ -151,7 +151,13 @@ bool TestScene::Initialize()
 	skybox->LoadTextures(faces);
 	skybox->SetShader(skyboxShaderHandle);
 
+	image = new ImageUI();
+	image->SetImage("Resources/Textures/DefaultButton.png");
+	image->SetPosition(300.0f, 300.0f);
+	image->SetColour(glm::vec3(0, 0, 0));
+
 	// add objects and lights to their lists
+	AddUIObject(image);
 	AddObject(model);
 	AddObject(model2);
 	AddObject(model3);

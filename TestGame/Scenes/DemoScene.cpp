@@ -75,7 +75,7 @@ bool DemoScene::Initialize()
 	}
 
 	// Player 2
-	player2 = new WindPlayer();
+	player2 = new IcePlayer();
 	player2->SetShader(defaultShaderHandle);
 	player2->SetWorldPosition(glm::vec3(2.0f, 0.0f, 3.0f));
 	player2->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER2);
@@ -86,7 +86,7 @@ bool DemoScene::Initialize()
 	}
 
 	// Player 3
-	player3 = new WindPlayer();
+	player3 = new FirePlayer();
 	player3->SetShader(defaultShaderHandle);
 	player3->SetWorldPosition(glm::vec3(2.0f, 0.0f, -3.0f));
 	player3->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER3);
@@ -98,7 +98,7 @@ bool DemoScene::Initialize()
 	}
 
 	// Player 4
-	player4 = new WindPlayer();
+	player4 = new EarthPlayer();
 	player4->SetShader(defaultShaderHandle);
 	player4->SetWorldPosition(glm::vec3(-2.0f, 0.0f, -3.0f));
 	player4->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER4);
@@ -125,6 +125,7 @@ bool DemoScene::Initialize()
 	floor->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
 	floor->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
 	floor->physicsComponent->SetMass(0.0f);
+	//projectileManager->AddEnvironment(floor);
 
 	wall = new Cube();
 	wall->SetShader(defaultShaderHandle);
@@ -168,13 +169,6 @@ bool DemoScene::Initialize()
 	skybox->LoadTextures(faces);
 	skybox->SetShader(skyboxShaderHandle);
 
-	// UI
-	text = new TextUI();
-	text->SetText("ALL OUT BRAWLER;");
-	text->SetColour(0.0f, 0.0f, 0.0f);
-	text->SetSize(1.0f);
-	text->SetPosition(sceneManager->GetScreenWidth() / 2 - text->GetLength() / 2, sceneManager->GetScreenHeight() - 100);
-
 	// add objects and lights to their lists
 	AddObject(player1);
 	AddObject(player2);
@@ -184,9 +178,9 @@ bool DemoScene::Initialize()
 	AddObject(wall);
 	AddObject(wall1);
 	AddObject(middleWall);
+	AddObject(projectileManager->GetProjectileRenderer());
 	AddLightObject(dirLight);
 	AddLightObject(pointLight);
-	AddUIObject(text);
 
 	// update phyics list
 	PhysicsEngine::GetInstance()->AddObjectList(objectList);
@@ -248,7 +242,7 @@ void DemoScene::Update(const float deltaTime)
 
 			mods *= BFEngine::GetInstance()->players[i].inverted();
 
-			glm::vec3 temp = BFEngine::GetInstance()->players[i].pObject()->physicsComponent->GetVelocity();
+			//glm::vec3 temp = BFEngine::GetInstance()->players[i].pObject()->physicsComponent->GetVelocity();
 
 			//BFEngine::GetInstance()->players[i].pObject()->physicsComponent->SetVelocity(temp + glm::vec3(mods.x * moveSpeed * deltaTime, 0.0f, mods.y * moveSpeed * deltaTime));
 
@@ -367,12 +361,14 @@ void DemoScene::HandleEvents(SDL_Event events)
 			/* code goes here */
 			//std::cout << "Left bumper was probably pressed." << std::endl;
 			//cube->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, -1.0f));
+			playerList.at(events.jbutton.which)->EnableTarget();
 		}
 		if (events.jbutton.button == 5) //right bumper
 		{
 			/* code goes here */
 			//std::cout << "right bumper was probably pressed." << std::endl;
 			//cube->physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, 1.0f));
+			playerList.at(events.jbutton.which)->SwitchTarget();
 		}
 		if (events.jbutton.button == 6) //back button
 		{
@@ -421,6 +417,30 @@ void DemoScene::HandleEvents(SDL_Event events)
 		if (events.jball.ball == 0)
 		{
 			/* ball handling */
+		}
+		break;
+
+	case SDL_JOYHATMOTION:  /* Handle Hat Motion */
+		if (events.jhat.value & SDL_HAT_UP)
+		{
+			/* Do up stuff here */
+			cout << "up" << endl;
+		}
+		if (events.jhat.value & SDL_HAT_DOWN)
+		{
+			/* Do down stuff here */
+			cout << "down" << endl;
+		}
+		if (events.jhat.value & SDL_HAT_LEFT)
+		{
+			/* Do left stuff here */
+			cout << "left" << endl;
+		}
+
+		if (events.jhat.value & SDL_HAT_RIGHT)
+		{
+			/* Do right  stuff here */
+			cout << "right" << endl;
 		}
 		break;
 	}
@@ -506,6 +526,7 @@ void DemoScene::HandleStates(const Uint8 *state)
 	player3->HandleStates(state);
 	player4->HandleStates(state);
 
+	/*
 	// TEST PROJECTILES
 	//
 	if (state[SDL_SCANCODE_SPACE]) {
@@ -515,8 +536,6 @@ void DemoScene::HandleStates(const Uint8 *state)
 			p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 25.0f));
 			p->SetWorldScale(0.5f);
 			p->SetShader(defaultShaderHandle);
-			AddObject(p);
-			PhysicsEngine::GetInstance()->AddObjectList(objectList);
 			projectileManager->AddProjectile(p);
 			fire = false;
 		}
@@ -527,8 +546,6 @@ void DemoScene::HandleStates(const Uint8 *state)
 			Projectile* p = new Projectile(glm::vec3(player1->GetWorldPosition().x, player1->GetWorldPosition().y + 6.0f, player1->GetWorldPosition().z - player1->collisionComponent->GetBoundingBox().r.z * 2.0f * player1->GetWorldScale().z - 5.0f), glm::vec3(0.0f, -2.0f, 0.0f), player1->targetAngle, player1->dir);
 			p->SetShader(defaultShaderHandle);
 			p->SetWorldScale(0.25f, 1.0f, 0.25f);
-			AddObject(p);
-			PhysicsEngine::GetInstance()->AddObjectList(objectList);
 			projectileManager->AddProjectile(p);
 			fire = false;
 		}
@@ -542,13 +559,12 @@ void DemoScene::HandleStates(const Uint8 *state)
 			p->SetWorldRotation(0.0f, 0.0f, 1.0f, 25.0f);
 			p->SetWorldScale(1.0f, 0.2f, 0.75f);
 			p->SetShader(defaultShaderHandle);
-			AddObject(p);
-			PhysicsEngine::GetInstance()->AddObjectList(objectList);
 			projectileManager->AddProjectile(p);
 			fire = false;
 		}
 	}
 	//
+	*/
 
 	// Player movement
 	// Only player 1 for now to test

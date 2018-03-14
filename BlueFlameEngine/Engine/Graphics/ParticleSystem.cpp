@@ -7,8 +7,8 @@ ParticleSystem::ParticleSystem(ResourceManager<Shader>* rm) : mesh(nullptr)
 	colour = glm::vec3(0.8f, 0.7f, 0.0f);
 	lifeTime = 5.0f;
 	loop = true;
-	size = 3;
-	alpha = 0.5f;
+	size = 2;
+	alpha = 1.0f;
 	glow = true;
 	canRender = true;
 	useImage = false;
@@ -27,10 +27,11 @@ void ParticleSystem::SetUpMesh()
 {
 	Randomizer* rand = new Randomizer();
 
-	for (size_t i = 0; i < 500; ++i) {
+	for (size_t i = 0; i < 100; ++i) {
 		v.position = glm::vec3(0.0f, 0.0f, 0.0f);
 		// repurpose normal for velocity
 		v.normal = glm::vec3(rand->box_muller(0, 1), rand->box_muller(15, 5), rand->box_muller(0, 1));
+		v.color = glm::vec3(rand->box_muller(2, 0.5), 0, rand->box_muller(2, 0.5));
 		vertexList.push_back(v);
 	}
 	mesh = new Mesh(&vertexList);

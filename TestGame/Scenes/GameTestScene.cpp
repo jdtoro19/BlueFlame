@@ -56,6 +56,7 @@ bool GameTestScene::Initialize()
 	// Player
 	player = new WindPlayer();
 	player->SetShader(defaultShaderHandle);
+	player->EnableTarget();
 
 	// Floor
 	floor = new Cube();

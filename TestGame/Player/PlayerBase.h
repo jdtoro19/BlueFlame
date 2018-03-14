@@ -4,6 +4,7 @@
 
 #include <BlueFlameEngine\Engine\Core\GameObject.h>
 #include <BlueFlameEngine\Engine\Core\RenderComponent.h>
+#include <BlueFlameEngine\Engine\Rendering\3D\Model.h>
 
 using namespace ENGINE;
 
@@ -13,12 +14,14 @@ namespace GAME {
 	{
 	public:
 		PlayerBase();
+		PlayerBase(std::string path);
 		~PlayerBase();
 
 		void Update(const float deltaTime);
 		void Render(Shader* shader);
 
 		RenderComponent* renderComponent;
+		Model* model;
 	};
 }
 

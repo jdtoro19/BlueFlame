@@ -15,6 +15,8 @@ PlayerController::PlayerController(SDL_Joystick* ref, int index) {
 	instanceID = SDL_JoystickInstanceID(ref);
 	TareX = SDL_JoystickGetAxis(ref, 0) * -1;
 	TareY = SDL_JoystickGetAxis(ref, 1) * -1;
+	SecondaryTareX = SDL_JoystickGetAxis(ref, 3) * -1;
+	SecondaryTareY = SDL_JoystickGetAxis(ref, 4) * -1;
 	shotDelay = 0;
 }
 

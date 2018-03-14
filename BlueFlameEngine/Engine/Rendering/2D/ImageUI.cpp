@@ -83,10 +83,9 @@ void ImageUI::Draw(glm::mat4 projection) {
 	shader->setFloat("alpha", alpha);
 	shader->setMat4("projection", projection);
 
-	shader->setInt("texture1", 0);
-	glBindTexture(GL_TEXTURE_2D, textureID);
-
+	glActiveTexture(GL_TEXTURE0);
 	glBindVertexArray(VAO);
+	glBindTexture(GL_TEXTURE_2D, textureID);
 
 	glm::mat4 model = glm::mat4();
 	model = glm::translate(model, position);
@@ -94,10 +93,9 @@ void ImageUI::Draw(glm::mat4 projection) {
 	model = glm::rotate(model, 0.0f, rotation);	
 	shader->setMat4("model", model);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
+
 	glBindVertexArray(0);
 	glBindTexture(GL_TEXTURE_2D, 0);
-
-	this->projection = projection;
 }
 
 unsigned int ImageUI::LoadTexture(char const * path)

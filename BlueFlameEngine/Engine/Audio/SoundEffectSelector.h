@@ -20,6 +20,7 @@ namespace ENGINE {
 		void PlayRandom();
 		void Play(const int x) const;
 		void SetVolume(const int musicVolume) const;
+		int sizeOfMe();
 
 	protected:
 		std::vector<SoundEffect*> SE;

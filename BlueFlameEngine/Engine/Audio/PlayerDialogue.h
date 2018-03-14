@@ -34,6 +34,7 @@ namespace ENGINE {
 		void playRandomFromCurrentState(bool overrideCD);
 		void playRandomFromOtherState(DIALOGUESTATE d, bool overrideCD);
 		void sometimesPlayRandomFromCurrentState(int percentage, bool overrideCD);
+		void playSpecifiedFromState(DIALOGUESTATE d, int x);
 
 		//now we're getting serious
 		void LoadPlayerDialogue(std::string filename);

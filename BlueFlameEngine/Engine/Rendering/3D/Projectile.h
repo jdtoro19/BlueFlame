@@ -13,6 +13,12 @@
 
 namespace ENGINE {
 
+	// Properties of the projectile that is saved and used during gameplay by the projectile manager
+	enum PROJECTILE_ELEMENT { WIND, ICE, FIRE, EARTH, LIGHTNING, DEFAULT_ELEMENT };
+	enum PROJECTILE_STRENGTH { LIGHT, MEDIUM, HEAVY, SPECIAL, DEFAULT_STRENGTH };
+	enum PROJECTILE_CLIP { NO, YES_WALL_PROJECTILE, YES_WALL_PLAYER, YES_PLAYER_PROJECTILE, YES_PLAYER, YES_WALL, YES_PROJECTILE, YES };
+	enum PROJECTILE_MESH { CUBE };
+
 	class Projectile : public GameObject {
 	private:
 
@@ -35,25 +41,67 @@ namespace ENGINE {
 		float delay;
 		float delayTimer;
 
+		// Second delay if desired for cool effect
+		float delay2;
+		float delayTimer2;
+
+		// Index of the current delay in progress
+		int delayIndex;
+
 		// Stun time given to player when projectile makes contact
 		float stunTime;
 
 		// Damage given to player when projectile makes contact
 		int damage;
 
-		// Scale difference if desired when using delay, if delay is not used the method will do nothing
+		// Scale difference if desired when using delay
 		glm::vec3 beginScale;
 		glm::vec3 endScale;
 
-		// Position difference if desired when using delay, if delay is not used the method will do nothing
+		// Position difference if desired when using delay, if delay is not used the variables will do nothing
+		glm::vec3 beginPosition;
 		glm::vec3 endPosition;
+
+		// Rotation differences if desired when using delay, if delay is not used the variables will do nothing
+		glm::quat beginRotation;
+		glm::quat endRotation;
+
+		// Position difference if desired when using delay (based off previous delay endPosition)
+		glm::vec3 endPosition2;
+
+		// Scale difference if desired when using second delay (based off previous delay endScale)
+		glm::vec3 endScale2;
+
+		// Rotation difference if desired when using second delay (based off previous delay endScale)
+		glm::quat endRotation2;
+
+		// Enum that defines the element of the projectile
+		PROJECTILE_ELEMENT element;
+
+		// Enum that defines the strength of the projectile
+		PROJECTILE_STRENGTH strength;
+
+		// Enum that defines what type of clipping the projectile can do
+		PROJECTILE_CLIP clipping;
+
+		// Enum that defines the type of mesh attached to the projectile
+		PROJECTILE_MESH mesh;
+
+		// Use the addMaxDistance function to adjust these. if you do, object will not go beyond a certain distance
+		bool maximumDistance = false;
+		float maxD;
+
+		// Used for lifetime of the projectile
+		Cooldown lifetime;
 
 	public:
 
 		// Default Constructor requires the start position, launch force, target angle, and direction
-		Projectile(glm::vec3 p, glm::vec3 _force, float _angle, int _dir);
-		Projectile(glm::vec3 p, glm::vec3 _force, float _angle, int _dir, float _delay);
+		Projectile(glm::vec3 p, float _angle, int _dir);
 		~Projectile();
+
+		// Sets the impulse force on the projectile when starting motion
+		void SetImpulseForce(glm::vec3 _force);
 
 		// Sets the acting force on the projectile during motion
 		void SetActingForce(glm::vec3 _force);
@@ -61,8 +109,16 @@ namespace ENGINE {
 		// Sets the knockback force applied to the player when hit
 		void SetKnockbackForce(glm::vec3 _force);
 
-		// Sets the delay before the projectile is set into motion
-		void SetDelayTime(float _time);
+		// Sets the delay before the projectile is set into motion, and its corresponding changes during that delay
+		void SetFirstDelay(float _time, glm::vec3 _endPosition, glm::vec3 _beginScale, glm::vec3 _endScale, glm::quat _endRotation);
+
+		// Sets the second delay before the projectile is set into motion, and its corresponding changes during that delay
+		// Second delay is offset off the first delay, if no change in position, scale, or rotation desired, set time in seconds and
+		// the rest of the parameters to 0
+		void SetSecondDelay(float _time, glm::vec3 _endPosition, glm::vec3 _endScale, glm::quat _endRotation);
+
+		// This method is used to stop all delays and launch the projectile into motion
+		void StopDelay();
 
 		// Sets the stun time applied to the player when hit
 		void SetStunTime(float time);
@@ -70,29 +126,51 @@ namespace ENGINE {
 		// Sets the damage applied to the player when hit
 		void SetDamage(int d);
 
-		// Sets the scale difference of the projectile when delayed
-		void SetScaleChange(glm::vec3 _beginScale, glm::vec3 _endScale);
+		// Sets the element of the projectile
+		void SetElement(PROJECTILE_ELEMENT _element);
 
-		// Sets the scale difference of the projectile when delayed
-		void SetPositionChange(glm::vec3 _endPosition);
+		// Sets the weight/strength of the projectile
+		void SetStrength(PROJECTILE_STRENGTH _strength);
+
+		// Sets the clip properties of the projectile
+		void SetClipping(PROJECTILE_CLIP _clipping);
+
+		// Sets the mesh type of the projectile
+		void SetMesh(PROJECTILE_MESH _mesh);
+
+		// Adds a maximum distance that the projectile can go from its initial position 
+		void AddMaxDistance(float distance);
+
+		// Gets the lifetime of the projectile in seconds
+		void SetLifetime(double seconds);
 
 		// Gets the knockback force applied to the player when hit
-		// Required in the projectile manager
 		glm::vec3 GetForce();
 
+		// Gets the stun time applied to the player when hit
 		float GetStunTime();
+
+		// Gets the damage applied to the player when hit
 		int GetDamage();
 
-		void addMaxDistance(float distance);
+		// Gets the element of the projectile
+		PROJECTILE_ELEMENT GetElement();
 
-		void setLifetime(double seconds);
+		// Gets the weight/strength of the projectile
+		PROJECTILE_STRENGTH GetStrength();
+
+		// Gets the clip properties of the projectile
+		PROJECTILE_CLIP GetClipping();
+
+		// gets the mesh type of the projectile
+		PROJECTILE_MESH GetMesh();
 
 		void Update(const float deltaTime);
 		void FixedUpdate(const float deltaTime);
 		void Render(Shader* shader);
 
-		int rip = NULL;
-		RenderComponent* renderComponent;
+		// Used to create the collision for the projectile
+		void CreateCollision(RenderComponent* renderComponent);
 
 		// Enable this bool to create zig zag effects
 		// Acting Force will flip in the x axis every flip interval 
@@ -105,18 +183,6 @@ namespace ENGINE {
 		float flipIntervalY;
 		float flipTimeX;
 		float flipTimeY;
-
-		//use the addMaxDistance function to adjust these. if you do, object will not go beyond a certain distance
-		bool maximumDistance = false;
-		float maxD;
-		glm::vec3 originalPos;
-
-		//used for lifetime over the old rip
-
-		Cooldown lifetime;
-		Cooldown delayCD;
-
-		bool hasFired;
 	};
 
 }

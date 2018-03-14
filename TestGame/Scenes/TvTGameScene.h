@@ -14,9 +14,12 @@
 #include <BlueFlameEngine\Engine\Math\PhysicsEngine.h>
 #include <BlueFlameEngine\Engine\InputHandling\InputHandler.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\TextUI.h>
+#include <BlueFlameEngine\Engine\Rendering\2D\ImageUI.h>
+#include <BlueFlameEngine\Engine\Timers\Cooldown.h>
 #include "../Game/ProjectileManager.h"
 #include "../Player/Player.h"
 #include "../Player/WindPlayer.h"
+#include "MenuSelectScene.h"
 
 using namespace ENGINE;
 
@@ -35,27 +38,10 @@ namespace GAME {
 		void HandleEvents(SDL_Event events);
 		void HandleStates(const Uint8 *state);
 
+		// scene manager
+		SceneManager* sceneManager;
+
 	private:
-		// Lights
-		Light* pointLight;
-		Light* pointLight2;
-		Light* pointLight3;
-		Light* pointLight4;
-		Light* blueLight;
-		Light* redLight;
-		Light* dirLight;
-
-		// Objects
-		Player* player1;  //P1
-		Player* player2;  //P2
-		Player* player3;  //P3
-		Player* player4;  //P4
-
-		Model* platform;
-		Model* topRing;
-		Model* middleRing;
-		Model* bottomRing;
-
 		// shaders
 		Shader* defaultShader;
 		Shader* skyboxShader;
@@ -66,21 +52,72 @@ namespace GAME {
 		ResourceHandle<Shader> skyboxShaderHandle;
 		ResourceHandle<Shader> lightShaderHandle;
 
-		// scene manager
-		SceneManager* sceneManager;
+		// Camera functions
+		void CameraMove(ENGINE::Camera_Movement direction, float yaw, float pitch, float speed, int camera);
+
+		// Intro 
+		void PlayIntro();
+		void SkipIntro();
+		void PlayRoundStart();
+
+		// UI
+		ImageUI* fadeImage;
+		TextUI* roundText;
+		TextUI* roundTextFade;
+
+		// Players
+		Player* player1;
+		Player* player2;
+		Player* player3;
+		Player* player4;
+
+		// Map
+		Model* platform;
+		Model* topRing;
+		Model* middleRing;
+		Model* bottomRing;
+		Cube* floor;
+
+		// Lights
+		Light* pointLight;
+		Light* pointLight2;
+		Light* pointLight3;
+		Light* pointLight4;
+		Light* blueLight;
+		Light* redLight;
+		Light* dirLight;
+
+		// Set up mathods
+		void SetUpPlayers();
+		void SetUpArena();
+
+		// Particles
+		ParticleSystem* particle1;
+		ParticleSystem* particle2;
+		ParticleSystem* particle3;
+		ParticleSystem* particle4;
 
 		// Projectile Manager
 		ProjectileManager* projectileManager;
 
-		// other variables
-		float moveSpeed = 2;
-		float deltaTime;
-
+		// Player List
 		vector<Player*> playerList;
 
-		bool fire = true;
-		float timer = 0.3f;
+		// Intro Variables
+		Cooldown cameraCD;
+		Cooldown roundCD;
+		float fadeAlpha = 1.0f;
+		bool cameraSwitch1 = false;
+		bool cameraSwitch2 = false;
+		bool cameraSwitch3 = false;
+		bool playingIntro = true;
+		bool ready = false;
+		bool startText = false;
+		bool roundStart = false;
+		bool playAudio = true;
+
+		// Audio
+		Music* bgm;
 	};
 }
 #endif
-

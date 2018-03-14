@@ -52,10 +52,7 @@ namespace GAME {
 		Cube* floor;
 		Cube* wall;
 		Cube* wall1;
-		Cube* middleWall;	
-
-		// UI
-		TextUI* text;
+		Cube* middleWall;
 
 		// shaders
 		Shader* defaultShader;

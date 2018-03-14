@@ -46,7 +46,7 @@ bool MenuScene::Initialize()
 	// UI
 	titleText = new TextUI();
 	titleText->SetFont("Resources/Fonts/ka1.ttf");
-	titleText->SetText("ALL OUT BRAWLER");
+	titleText->SetText("M.E.C.C");
 	titleText->SetColour(0.0, 0.0f, 0.0f);
 	titleText->SetSize(1.3f);
 	titleText->SetSpacing(9.0f);

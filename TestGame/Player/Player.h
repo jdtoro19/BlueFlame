@@ -123,6 +123,13 @@ namespace GAME {
 		std::vector<Player*> enemyTeam;
 		glm::vec3 targetedPlayer;
 		glm::vec3 targetColour;
+
+		//new elements
+		Cooldown HeavyCD;
+		Cooldown LightCD;
+		Cooldown MediumCD;
+
+		Cooldown movementCD;
 		
 	public:
 		float targetAngle;

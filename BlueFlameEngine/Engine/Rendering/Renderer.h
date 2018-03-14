@@ -89,7 +89,7 @@ namespace ENGINE {
 		bool screenBlur = false;
 
 		// blur amount
-		unsigned int blurAmount = 2;
+		unsigned int blurAmount = 4;
 		
 		// framebuffer
 		unsigned int framebuffer, colorBuffers[2], rboDepth, attachments[2];
@@ -100,6 +100,18 @@ namespace ENGINE {
 		// quad (square) 
 		unsigned int quadVAO;
 		unsigned int quadVBO;
+
+		/*
+		// meshes
+		unsigned int planeVAO;
+	public:
+		unsigned int depthMapFBO;
+		unsigned int depthMap;
+		const unsigned int SHADOW_WIDTH = 1024, SHADOW_HEIGHT = 1024;
+		Shader* shadowShader;
+		Shader* simpleDepthShader;
+		Shader* debugDepthQuad;
+		*/
 	};
 }
 

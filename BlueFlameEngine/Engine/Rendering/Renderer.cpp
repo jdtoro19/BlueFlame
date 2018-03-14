@@ -33,6 +33,70 @@ void Renderer::Initialize(Window* window) {
 	glEnable(GL_MULTISAMPLE);
 	//glEnable(GL_BLEND);
 	//glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	/*
+	shadowShader = new Shader("Shaders/model.vs", "Shaders/model.fs");
+	simpleDepthShader = new Shader("Shaders/shadowdepth.vs", "Shaders/shadowdepth.fs");
+	debugDepthQuad = new Shader("Shaders/shadowquad.vs", "Shaders/shadowquad.fs");
+
+	// set up vertex data (and buffer(s)) and configure vertex attributes
+	// ------------------------------------------------------------------
+	float planeVertices[] = {
+		// positions            // normals         // texcoords
+		25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
+		-25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
+		-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
+
+		25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
+		-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
+		25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,  25.0f, 25.0f
+	};
+	// plane VAO
+	unsigned int planeVBO;
+	glGenVertexArrays(1, &planeVAO);
+	glGenBuffers(1, &planeVBO);
+	glBindVertexArray(planeVAO);
+	glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
+	glBufferData(GL_ARRAY_BUFFER, sizeof(planeVertices), planeVertices, GL_STATIC_DRAW);
+	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glBindVertexArray(0);
+
+
+	// configure depth map FBO
+	// -----------------------
+	
+	
+	glGenFramebuffers(1, &depthMapFBO);
+	// create depth texture
+	
+	glGenTextures(1, &depthMap);
+	glBindTexture(GL_TEXTURE_2D, depthMap);
+	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+	float borderColor[] = { 1.0, 1.0, 1.0, 1.0 };
+	glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+	// attach depth texture as FBO's depth buffer
+	glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+	glDrawBuffer(GL_NONE);
+	glReadBuffer(GL_NONE);
+	glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+
+	// shader configuration
+	// --------------------
+	shadowShader->Use();
+	shadowShader->setInt("diffuseTexture", 0);
+	shadowShader->setInt("shadowMap", 1);
+	*/
 }
 
 // PreRender sets the projection matrix and clear colour for opengl
@@ -141,13 +205,13 @@ void Renderer::RenderObjects(glm::mat4 viewMatrix, Camera* camera, std::vector<G
 }
 
 // Renders objects from the object list
-void Renderer::RenderObjects(Shader* shader, glm::mat4 viewMatrix, Camera* camera, std::vector<GameObject*> objectList, 
+void Renderer::RenderObjects(Shader* shader, glm::mat4 viewMatrix, Camera* camera, std::vector<GameObject*> objectList,
 	std::vector<Light*> dirLightList,
 	std::vector<Light*> pointLightList,
 	std::vector<Light*> spotLightList)
 {
 	// SHADOW TESTING
-	/*
+
 	// check if the object list is empty
 	if (objectList.size() != NULL) {
 
@@ -206,7 +270,7 @@ void Renderer::RenderObjects(Shader* shader, glm::mat4 viewMatrix, Camera* camer
 			}
 		}
 	}
-	*/
+
 }
 
 void Renderer::RenderSkybox(Skybox* sceneSkybox, Camera* camera) {
@@ -361,11 +425,13 @@ void Renderer::PostProcess()
 
 	// bind colour buffer onto quad
 	glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);	
-	RenderQuad();
-
+	
 	// Bloom
 	if (useBloom && !inverted && !greyscale && !kernel) {
 		UseBloom();
+	}
+	else {
+		RenderQuad();
 	}
 }
 

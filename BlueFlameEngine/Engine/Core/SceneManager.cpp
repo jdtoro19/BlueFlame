@@ -79,6 +79,49 @@ void SceneManager::Render()
 																						  currentScene->GetPointLightList(), 
 																						  currentScene->GetSpotLightList());
 		renderer->RenderSkybox(currentScene->GetSkybox(), currentScene->GetCameraList()[0]);
+
+		/*
+
+		glm::mat4 lightProjection, lightView;
+		glm::mat4 lightSpaceMatrix;
+		float near_plane = 1.0f, far_plane = 7.5f;
+		//lightProjection = glm::perspective(glm::radians(45.0f), (GLfloat)SHADOW_WIDTH / (GLfloat)SHADOW_HEIGHT, near_plane, far_plane); // note that if you use a perspective projection matrix you'll have to change the light position as the current light position isn't enough to reflect the whole scene
+		lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, near_plane, far_plane);
+		lightView = glm::lookAt(glm::vec3(1.0f, 4.0f, 1.0f), glm::vec3(0.0f), glm::vec3(0.0, 1.0, 0.0));
+		lightSpaceMatrix = lightProjection * lightView;
+		// render scene from light's point of view
+		renderer->simpleDepthShader->Use();
+		renderer->simpleDepthShader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
+
+		glViewport(0, 0, renderer->SHADOW_WIDTH, renderer->SHADOW_HEIGHT);
+		glBindFramebuffer(GL_FRAMEBUFFER, renderer->depthMapFBO);
+		glClear(GL_DEPTH_BUFFER_BIT);
+		renderer->RenderObjects(renderer->simpleDepthShader, lightView, currentScene->GetCameraList()[0], currentScene->GetObjectList(), currentScene->GetDirLightList(),
+			currentScene->GetPointLightList(),
+			currentScene->GetSpotLightList());
+		glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+		// reset viewport
+		glViewport(0, 0, window->GetWidth() * resolutionScale, window->GetHeight() * resolutionScale);
+		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		
+
+		renderer->shadowShader->Use();
+		glm::mat4 projection = glm::perspective(glm::radians(currentScene->GetCameraList()[0]->Zoom), (float)window->GetWidth() / (float)window->GetHeight(), 0.1f, 100.0f);
+		glm::mat4 view = currentScene->GetCameraList()[0]->GetViewMatrix();
+		renderer->shadowShader->setMat4("projection", projection);
+		renderer->shadowShader->setMat4("view", view);
+		// set light uniforms
+		renderer->shadowShader->setVec3("viewPos", currentScene->GetCameraList()[0]->Position);
+		renderer->shadowShader->setVec3("lightPos", glm::vec3(1.0f, 4.0f, 1.0f));
+		renderer->shadowShader->setMat4("lightSpaceMatrix", lightSpaceMatrix);
+		glActiveTexture(GL_TEXTURE1);
+		glBindTexture(GL_TEXTURE_2D, renderer->depthMap);
+		renderer->RenderObjects(renderer->shadowShader, view, currentScene->GetCameraList()[0], currentScene->GetObjectList(), currentScene->GetDirLightList(),
+			currentScene->GetPointLightList(),
+			currentScene->GetSpotLightList());
+
+		*/
 	}
 }
 
@@ -208,7 +251,7 @@ void SceneManager::SwitchScene(Scene* scene) {
 	delete currentScene;
 	currentScene = scene;
 	if (currentScene->Initialize()) {
-		ClearSceneList();	
+		ClearSceneList();		
 		cout << "Scene loaded" << endl;
 	}
 	else 

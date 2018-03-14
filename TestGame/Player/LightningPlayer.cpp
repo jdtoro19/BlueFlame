@@ -3,7 +3,7 @@
 using namespace GAME;
 
 LightningPlayer::LightningPlayer() {
-	base->renderComponent->SetColour(0.1f, 0.1f, 0.5f);
+	ring->renderComponent->SetColour(0.1f, 0.1f, 0.5f);
 	HeavyCD = Cooldown(4.0);
 	LightCD = Cooldown(0.4);
 	MediumCD = Cooldown(2.5);
@@ -31,14 +31,13 @@ std::vector<Projectile*> LightningPlayer::LightAttack()
 			Projectile* r = Shocker(-0.5f, 0, 0.0f, 20.0f, 0.5f, 50.0f);
 			proj.push_back(r);*/
 
-			Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z)), glm::vec3(0.0f, 0.0f, 0.0f), targetAngle, dir);
+			Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z)), targetAngle, dir);
+			p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 0.0f));
 			p->SetActingForce(glm::vec3(0.0f, 0.0f, 15.0f)); //no accel
 			p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 400.0f)); //static
 			p->SetStunTime(0.75f);
 			p->SetWorldScale(0.25f, 0.25f, 0.5f);
-			p->setLifetime(3.0f);
-			p->SetShader(pShader);
-			BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(p);
+			p->SetLifetime(3.0f);
 
 			proj.push_back(p);
 			LightCD.startCD();
@@ -135,66 +134,60 @@ void LightningPlayer::InheritedHandleStates(const Uint8 *state)
 }
 
 Projectile* LightningPlayer::LightningCloud(float offset) {
-	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + 6.0f, GetWorldPosition().z - ( collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z ) + offset), glm::vec3(0.0f, 0.0f, 0.0f), targetAngle, dir);
+	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + 6.0f, GetWorldPosition().z - ( collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z ) + offset), targetAngle, dir);
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f)); //static
 	p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 0.0f)); //static
 	p->SetStunTime(0.0f);
 	p->SetWorldScale(1.0f, 0.5f, 1.0f);
-	p->setLifetime(0.8f);
-	p->SetShader(pShader);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(p);
+	p->SetLifetime(0.8f);
 
 	return p;
 }
 
 Projectile* LightningPlayer::Strike(float offsetx, float offsety, float offsetz) {
-	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + 5.0f, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z) + offsetz), glm::vec3(0.0f, -100.0f, 0.0f), targetAngle, dir);
+	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + 5.0f, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z) + offsetz), targetAngle, dir);
+	p->SetImpulseForce(glm::vec3(0.0f, -100.0f, 0.0f));
 	p->SetActingForce(glm::vec3(0.0f, -10.0f, 0.0f)); //no accel
 	p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, -400.0f)); //knocks them forward for forked lightning
 	p->SetStunTime(0.75f);
 	p->SetWorldScale(0.2f, 1.0f, 0.2f);
-	p->setLifetime(0.5f);
-	p->SetShader(pShader);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(p);
+	p->SetLifetime(0.5f);
 
 	return p;
 }
 
 Projectile* LightningPlayer::ZeroLaser() {
-	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z)), glm::vec3(0.0f, 0.0f,400.0f), targetAngle, dir);
+	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z)), targetAngle, dir);
+	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 400.0f));
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f)); //no accel
 	p->SetKnockbackForce(glm::vec3(0.0f, 00.0f, 50.0f)); //static
 	p->SetStunTime(0.2f);
 	p->SetWorldScale(1.0f, 0.1f, 0.5f);
-	p->setLifetime(1.0f);
-	p->SetShader(pShader);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(p);
+	p->SetLifetime(1.0f);
 
 	return p;
 }
 
 Projectile* LightningPlayer::ForkedLightning(float offset) {
-	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z)), glm::vec3(offset, 0.0f, 400.0f), targetAngle, dir);
+	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z)), targetAngle, dir);
+	p->SetImpulseForce(glm::vec3(offset, 0.0f, 400.0f));
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f)); //no accel
 	p->SetKnockbackForce(glm::vec3(0.0f, 20.0f, 50.0f)); //static
 	p->SetStunTime(0.2f);
 	p->SetWorldScale(0.2f, 0.2f, 0.2f);
-	p->setLifetime(0.15f);
-	p->SetShader(pShader);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(p);
+	p->SetLifetime(0.15f);
 
 	return p;
 }
 
 Projectile* LightningPlayer::Shocker(float offsetx, float offsetz, float speed, float accel, float stun, float knockback) {
-	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x + offsetx, GetWorldPosition().y, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z) - offsetz), glm::vec3(0.0f, 0.0f, speed), targetAngle, dir);
+	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x + offsetx, GetWorldPosition().y, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z) - offsetz), targetAngle, dir);
+	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, speed));
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, accel)); //no accel
 	p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, knockback)); //static
 	p->SetStunTime(stun);
 	p->SetWorldScale(0.25f, 0.25f, 0.5f);
-	p->setLifetime(3.0f);
-	p->SetShader(pShader);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(p);
+	p->SetLifetime(3.0f);
 
 	return p;
 }

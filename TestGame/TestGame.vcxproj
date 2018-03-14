@@ -122,7 +122,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Game\Cinematics.cpp" />
     <ClCompile Include="Game\ProjectileManager.cpp" />
+    <ClCompile Include="Game\ProjectileRenderer.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Player\EarthPlayer.cpp" />
     <ClCompile Include="Player\FirePlayer.cpp" />
@@ -139,7 +141,9 @@
     <ClCompile Include="Scenes\TestScene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Game\Cinematics.h" />
     <ClInclude Include="Game\ProjectileManager.h" />
+    <ClInclude Include="Game\ProjectileRenderer.h" />
     <ClInclude Include="Player\EarthPlayer.h" />
     <ClInclude Include="Player\FirePlayer.h" />
     <ClInclude Include="Player\IcePlayer.h" />

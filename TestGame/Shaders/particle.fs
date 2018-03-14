@@ -15,8 +15,8 @@ void main()
 	float sum  = (texColor.x + texColor.y + texColor.z);
 	float alpha = exp(-sum);
 	texColor.w = alpha;
-    FragColor = texColor * Colour * eTime;
+    FragColor = texColor * Colour / eTime;
 	
 	if(Glow)
-		BrightColor = FragColor * Colour * eTime;
+		BrightColor = FragColor * Colour / eTime;
 }

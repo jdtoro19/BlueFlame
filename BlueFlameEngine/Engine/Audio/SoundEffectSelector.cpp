@@ -53,3 +53,7 @@ void SoundEffectSelector::SetVolume(const int musicVolume) const {
 		s->SetVolume(musicVolume);
 	}
 }
+
+int SoundEffectSelector::sizeOfMe() {
+	return SE.size();
+}

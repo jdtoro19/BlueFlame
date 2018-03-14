@@ -146,7 +146,7 @@ namespace ENGINE {
 			while (rand > bounds) {
 				rand -= bounds;
 			}
-			return bounds;
+			return rand;
 		}
 
 		static double getCTimeInHours();

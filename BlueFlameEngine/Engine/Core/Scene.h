@@ -34,12 +34,7 @@ namespace ENGINE {
 
 			if (objectList.size() != NULL) {
 				for (size_t i = 0; i < objectList.size(); ++i) {
-					if (objectList.at(i)->deleted) {
-						RemoveObject(objectList.at(i));
-					}
-					else {
-						objectList.at(i)->Update(deltaTime);
-					}
+					objectList.at(i)->Update(deltaTime);
 				}
 			}
 
@@ -49,7 +44,16 @@ namespace ENGINE {
 				}
 			}
 		};
-		virtual void LateUpdate(const float deltaTime) {};
+		virtual void LateUpdate(const float deltaTime) 
+		{
+			if (objectList.size() != NULL) {
+				for (size_t i = 0; i < objectList.size(); ++i) {
+					if (objectList.at(i)->deleted) {
+						RemoveObject(objectList.at(i));
+					}
+				}
+			}
+		};
 		// ADD LIST FUNCTIONS
 		virtual void AddObject(GameObject* c) { objectList.push_back(c); };
 		virtual void AddPhysicsObject(GameObject* c) { physicsObjectList.push_back(c); objectList.push_back(c); };

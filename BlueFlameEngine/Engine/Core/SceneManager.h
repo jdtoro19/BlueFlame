@@ -92,7 +92,7 @@ namespace ENGINE {
 		//
 
 		// GETTERS
-
+	
 		// Returns the current scene
 		Scene* GetCurrentScene();
 		// Returns the renderer

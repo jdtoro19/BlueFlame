@@ -18,13 +18,13 @@ namespace GAME
 		std::vector<Projectile*> MediumAttack();
 		std::vector<Projectile*> HeavyAttack();
 		std::vector<Projectile*> SpecialAttack();
-		std::vector<Projectile*> ExtraProjectiles();
 
 		void InheritedUpdate(const float deltaTime);
 		void InheritedHandleEvents(SDL_Event events);
 		void InheritedHandleStates(const Uint8 *state);
 
 	private:
+		std::vector<Projectile*> tempSpecialProjs;
 
 	};
 }

@@ -25,6 +25,7 @@ bool MenuSelectScene::Initialize()
 	sceneManager->EnableSplitscreen(false);
 	sceneManager->EnableFullscreen(false);
 	sceneManager->ShowFPS(true);
+	sceneManager->GetRenderer()->EnableBloom(true);
 	
 	// Load shaders
 	defaultShader = new Shader("Shaders/model.vs", "Shaders/model.fs");
@@ -49,7 +50,7 @@ bool MenuSelectScene::Initialize()
 	// UI
 	titleText = new TextUI();
 	titleText->SetFont("Resources/Fonts/ka1.ttf");
-	titleText->SetText("ALL OUT BRAWLER");
+	titleText->SetText("M.E.C.C");
 	titleText->SetColour(1.0, 1.0f, 1.0f);
 	titleText->SetSize(0.8f);
 	titleText->SetSpacing(9.0f);
@@ -93,8 +94,8 @@ bool MenuSelectScene::Initialize()
 	sliderTEST->SetHeight(100);
 	sliderTEST->SetValue(0.9f);
 
+	//kyouko = new Model("Resources/Models/Kyouko/figyrk0003.obj");
 	kyouko = new Model("Resources/Models/Robot_Base_Greybox/Robot_Var_002_Gurran.obj");
-	//kyouko = new Model("Resources/Models/Robot_Base_Greybox/Robot_Base_0001.obj");
 	kyouko->SetShader(defaultShaderHandle);
 	kyouko->physicsComponent->SetPosition(glm::vec3(1.0f, -1.0f, -2.5f));
 	kyouko->SetWorldScale(0.008f);

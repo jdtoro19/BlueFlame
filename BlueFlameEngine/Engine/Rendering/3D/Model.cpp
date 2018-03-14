@@ -15,15 +15,22 @@ Model::Model(std::string path)
 	physicsComponent = new PhysicsComponent();
 }
 
+Model::Model(std::string path, bool check)
+{
+	model = new ModelComponent(path);
+}
+
 Model::~Model()
 {
 }
 
 void Model::Update(const float deltaTime) {
-	physicsComponent->Update(deltaTime);
-	collisionComponent->Update(GetWorldPosition());
-	SetWorldPosition(physicsComponent->GetPosition());
-	model->Update();
+	if (physicsComponent != NULL) {
+		physicsComponent->Update(deltaTime);
+		collisionComponent->Update(GetWorldPosition());
+		SetWorldPosition(physicsComponent->GetPosition());
+		model->Update();
+	}
 }
 
 void Model::Render(Shader* shader) {
