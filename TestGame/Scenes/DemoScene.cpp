@@ -64,7 +64,7 @@ bool DemoScene::Initialize()
 	// Make Players
 	//
 	// Player 1
-	player1 = new WindPlayer();
+	player1 = new EarthPlayer();
 	player1->SetShader(defaultShaderHandle);
 	player1->SetWorldPosition(glm::vec3(-2.0f, 0.0f, 3.0f));
 	player1->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER1);
@@ -125,7 +125,6 @@ bool DemoScene::Initialize()
 	floor->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
 	floor->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
 	floor->physicsComponent->SetMass(0.0f);
-	//projectileManager->AddEnvironment(floor);
 
 	wall = new Cube();
 	wall->SetShader(defaultShaderHandle);
@@ -156,6 +155,10 @@ bool DemoScene::Initialize()
 	middleWall->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_NON_ELASTIC);
 	middleWall->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_ROUGH);
 	middleWall->physicsComponent->SetMass(0.0f);
+
+	projectileManager->AddEnvironment(floor);
+	projectileManager->AddEnvironment(wall);
+	projectileManager->AddEnvironment(wall1);
 
 	// Make skybox, load its textures, set properties, and give to the renderer
 	skybox = new Skybox();

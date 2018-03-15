@@ -16,12 +16,7 @@ ProjectileRenderer::~ProjectileRenderer() {
 }
 
 void ProjectileRenderer::Update(const float deltaTime) {
-	for (unsigned int i = 0; i < projectiles.size(); ++i) {
-		projectiles.at(i)->Update(deltaTime);
-	}
-	for (unsigned int i = 0; i < spawnedProjectiles.size(); ++i) {
-		spawnedProjectiles.at(i)->Update(deltaTime);
-	}
+
 }
 
 void ProjectileRenderer::Render(Shader* shader) {

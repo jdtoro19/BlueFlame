@@ -317,7 +317,7 @@ void Player::ComboReset() {
 
 void Player::Jump() {
 	if (worldPosition.y < 0.1f && playerState == NORMAL) {
-		physicsComponent->AddForce(glm::vec3(0.0f, 120.0f, 0.0f));
+		physicsComponent->AddForce(glm::vec3(0.0f, 110.0f, 0.0f));
 	}
 }
 

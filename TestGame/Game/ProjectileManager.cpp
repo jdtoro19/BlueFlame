@@ -48,6 +48,13 @@ namespace GAME {
 		projectileRenderer->SetProjectileList(projectileList);
 		projectileRenderer->SetSpawnedProjectileList(spawnedProjectiles);
 
+		for (unsigned int i = 0; i < projectileList.size(); ++i) {
+			projectileList.at(i)->Update(deltaTime);
+		}
+		for (unsigned int i = 0; i < spawnedProjectiles.size(); ++i) {
+			spawnedProjectiles.at(i)->Update(deltaTime);
+		}
+
 		int proSize = projectileList.size();
 		int plaSize = playerList.size();
 

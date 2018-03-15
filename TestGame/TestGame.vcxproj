@@ -123,6 +123,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Game\Cinematics.cpp" />
+    <ClCompile Include="Game\GameManager.cpp" />
     <ClCompile Include="Game\ProjectileManager.cpp" />
     <ClCompile Include="Game\ProjectileRenderer.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -142,6 +143,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Game\Cinematics.h" />
+    <ClInclude Include="Game\GameManager.h" />
     <ClInclude Include="Game\ProjectileManager.h" />
     <ClInclude Include="Game\ProjectileRenderer.h" />
     <ClInclude Include="Player\EarthPlayer.h" />

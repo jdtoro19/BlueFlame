@@ -17,6 +17,7 @@
 #include <BlueFlameEngine\Engine\Rendering\2D\ImageUI.h>
 #include <BlueFlameEngine\Engine\Timers\Cooldown.h>
 #include "../Game/ProjectileManager.h"
+#include "../Game/GameManager.h"
 #include "../Player/Player.h"
 #include "../Player/WindPlayer.h"
 #include "MenuSelectScene.h"
@@ -99,6 +100,12 @@ namespace GAME {
 
 		// Projectile Manager
 		ProjectileManager* projectileManager;
+
+		// Game Manager
+		GameManager* gameManager;
+
+		Cooldown roundTimer;
+		TextUI* roundTimerText;
 
 		// Player List
 		vector<Player*> playerList;

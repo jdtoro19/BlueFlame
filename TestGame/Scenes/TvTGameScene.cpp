@@ -201,6 +201,9 @@ bool TvTGameScene::Initialize()
 	AddObject(particle3);
 	AddObject(particle4);
 
+	gameManager = new GameManager();
+	gameManager->Initialize();
+
 	// update phyics list
 	PhysicsEngine::GetInstance()->AddObjectList(objectList);
 
@@ -213,6 +216,8 @@ bool TvTGameScene::Initialize()
 }
 void TvTGameScene::Update(const float deltaTime)
 {
+	gameManager->Update();
+
 	if (playingIntro) {
 		PlayIntro();
 	}
