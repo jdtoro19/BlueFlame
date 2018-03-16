@@ -50,9 +50,10 @@ Projectile::~Projectile() {
 
 }
 
-void Projectile::CreateCollision(RenderComponent* renderComponent) {
+void Projectile::CreateCollision(RenderComponent* renderComponent, glm::vec3 p) {
 	collisionComponent = new CollisionComponent();
 	collisionComponent->CreateCollisionVolume(CollisionComponent::Collision_Type::BOX, renderComponent->getVertexList());
+	collisionComponent->GetBoundingBox().c = p;
 	collisionComponent->SetLayer(2);
 }
 

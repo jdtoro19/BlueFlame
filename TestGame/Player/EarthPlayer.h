@@ -28,6 +28,8 @@ namespace GAME {
 	private:
 		Projectile* smallRock(float offset, float xxx); //used to create light attack
 		Projectile* SpecialRock(float offset); //used to create Special attack
+		Projectile* stalagmite(float offset, float delay); //used to creat really cool attack
+		bool specialActivated = false;
 	};
 
 }

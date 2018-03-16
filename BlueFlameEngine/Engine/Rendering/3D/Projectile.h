@@ -170,7 +170,7 @@ namespace ENGINE {
 		void Render(Shader* shader);
 
 		// Used to create the collision for the projectile
-		void CreateCollision(RenderComponent* renderComponent);
+		void CreateCollision(RenderComponent* renderComponent, glm::vec3 p);
 
 		// Enable this bool to create zig zag effects
 		// Acting Force will flip in the x axis every flip interval 

@@ -53,6 +53,8 @@ Player::Player()
 	SetStats();
 
 	movementCD = Cooldown(0.0);
+
+	out = false;
 }
 
 Player::~Player()
@@ -63,8 +65,13 @@ void Player::Update(const float deltaTime)
 {
 	// Target Direction
 	if (isTargeting) {
-		targetedPlayer = enemyTeam.at(currentTarget)->worldPosition;
-		targetAngle = -glm::atan((targetedPlayer.x - worldPosition.x) / (targetedPlayer.z - worldPosition.z));
+		if (!enemyTeam.at(currentTarget)->out) {
+			targetedPlayer = enemyTeam.at(currentTarget)->worldPosition;
+			targetAngle = -glm::atan((targetedPlayer.x - worldPosition.x) / (targetedPlayer.z - worldPosition.z));
+		}
+		else if (enemyTeam.at(currentTarget)->out) {
+			SwitchTarget();
+		}
 	}
 	else if (!isTargeting) {
 		targetedPlayer = glm::vec3(worldPosition);
@@ -263,6 +270,10 @@ void Player::SetTarget(glm::vec3 targetPlayer) {
 	targetedPlayer = targetPlayer;
 }
 
+void Player::SetTarget(int target) {
+	currentTarget = target;
+}
+
 void Player::SetTargetColour(glm::vec3 colour) {
 	targetColour = colour;
 	marker->renderComponent->SetColour(targetColour.x, targetColour.y, targetColour.z);
@@ -283,6 +294,11 @@ void Player::Hit(Projectile* projectile) {
 		physicsComponent->AddForce(projectile->GetForce());
 		Stun(projectile->GetStunTime());
 		health -= projectile->GetDamage();
+		specialMeter += 10;
+		if (specialMeter >= 100)
+		{
+			specialMeter = 100;
+		}
 	}
 }
 
@@ -344,9 +360,14 @@ void Player::Render(Shader* shader)
 	shader->setMat4("model", worldModelMatrix * localModelMatrix * base->GetWorldModelMatrix() * base->GetLocalModelMatrix() * base->model->GetWorldModelMatrix() * base->model->GetLocalModelMatrix());
 	base->Render(shader);
 
-	//shader->setMat4("model", worldModelMatrix * localModelMatrix * ring->GetWorldModelMatrix() * ring->GetLocalModelMatrix());
-	ring->SetWorldPosition(worldPosition.x, ring->GetWorldPosition().y, worldPosition.z);
-	shader->setMat4("model", ring->GetWorldModelMatrix() * ring->GetLocalModelMatrix());
+	if (worldPosition.y > 0.0f) {
+		ring->SetWorldPosition(worldPosition.x, ring->GetWorldPosition().y, worldPosition.z);
+		shader->setMat4("model", ring->GetWorldModelMatrix() * ring->GetLocalModelMatrix());
+	}
+	else {
+		ring->SetWorldPosition(0.0f, ring->GetWorldPosition().y, 0.0f);
+		shader->setMat4("model", worldModelMatrix * localModelMatrix * ring->GetWorldModelMatrix() * ring->GetLocalModelMatrix());
+	}
 	ring->Render(shader);
 
 	shader->setMat4("model", worldModelMatrix * localModelMatrix * shield->GetWorldModelMatrix() * shield->GetLocalModelMatrix());

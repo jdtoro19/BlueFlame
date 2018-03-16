@@ -188,7 +188,7 @@ void GameObject::UpdateLocalMatrix() {
 	localModelMatrix = glm::mat4();
 	localModelMatrix = glm::translate(localModelMatrix, localPosition);
 	localModelMatrix = glm::rotate(localModelMatrix, localRotationAngle, localRotation);
-	localModelMatrix = glm::scale(localModelMatrix, localScale);	
+	localModelMatrix = glm::scale(localModelMatrix, localScale);
 }
 
 glm::mat4 GameObject::GetLocalModelMatrix() const {

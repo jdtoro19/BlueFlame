@@ -123,6 +123,8 @@ namespace GAME {
 		bool roundStart = false;
 		bool playAudio = true;
 
+		void Restart();
+
 		// Audio
 		Music* bgm;
 	};

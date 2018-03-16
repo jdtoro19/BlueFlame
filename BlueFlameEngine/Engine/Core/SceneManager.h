@@ -133,6 +133,7 @@ namespace ENGINE {
 		float fpsTimer = 0;
 		float fpsTimerSet = 0.1f;
 		float fpsTimeStep = 0;
+		int loops = 0;
 		// Deltatime
 		float deltaTime;
 		// Resolution Scale

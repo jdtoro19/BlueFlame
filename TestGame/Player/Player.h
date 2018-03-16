@@ -93,6 +93,7 @@ namespace GAME {
 		// Used for setting the player's target
 		void SetEnemyTeam(Player* player1, Player* player2);
 		void SetTarget(glm::vec3 targetPlayer);
+		void SetTarget(int target);
 		void SetTargetColour(glm::vec3 colour);
 
 		// Player number and team setter
@@ -108,6 +109,8 @@ namespace GAME {
 		PLAYERNUMBER GetPlayerNumber() { return playerNumber; };
 		PLAYERTEAM GetPlayerTeam() { return playerTeam; };
 		float GetStunTimer() { return stunTimer; };
+		bool GetIsTargeting() { return isTargeting; };
+		std::vector<Player*> GetEnemyTeam() { return enemyTeam; };
 
 	protected:
 		// Player model parts
@@ -165,6 +168,9 @@ namespace GAME {
 		// Projectile shader
 		Shader* projectileShader;
 		ResourceHandle<Shader> pShader;
+
+		// Check to see if off arena
+		bool out;
 
 		private:
 			//Player Specific Audio

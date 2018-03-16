@@ -8,7 +8,7 @@ namespace GAME {
 	}
 
 	void ProjectileManager::AddProjectile(Projectile* _projectile) {
-		_projectile->CreateCollision(projectileRenderer->GetCubeMesh());
+		_projectile->CreateCollision(projectileRenderer->GetCubeMesh(), _projectile->GetWorldPosition());
 		projectileList.push_back(_projectile);
 	}
 
@@ -61,7 +61,7 @@ namespace GAME {
 		// Collisions with player
 		for (int i = 0; i < plaSize; i++) {
 			for (int j = 0; j < proSize; j++) {
-				if (playerList.at(i)->collisionComponent != NULL && projectileList.at(j)->collisionComponent != NULL) {
+				if (playerList.at(i)->collisionComponent != NULL && projectileList.at(j)->collisionComponent != NULL && projectileList.at(j)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f)) {
 					if (PhysicsEngine::isColliding(playerList.at(i)->collisionComponent, projectileList.at(j)->collisionComponent)) {
 						if (projectileList.at(j)->GetClipping() == PROJECTILE_CLIP::YES_WALL_PLAYER ||
 							projectileList.at(j)->GetClipping() == PROJECTILE_CLIP::YES_PLAYER_PROJECTILE ||
@@ -81,7 +81,7 @@ namespace GAME {
 		// Collisions with environment
 		for (int i = 0; i < envSize; i++) {
 			for (int j = 0; j < proSize; j++) {
-				if (environmentList.at(i)->collisionComponent != NULL && projectileList.at(j)->collisionComponent != NULL) {
+				if (playerList.at(i)->collisionComponent != NULL && projectileList.at(j)->collisionComponent != NULL && projectileList.at(j)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f)) {
 					if (PhysicsEngine::isColliding(environmentList.at(i)->collisionComponent, projectileList.at(j)->collisionComponent)) {
 						if (projectileList.at(j)->GetClipping() == PROJECTILE_CLIP::YES_WALL_PLAYER || 
 							projectileList.at(j)->GetClipping() == PROJECTILE_CLIP::YES_WALL_PROJECTILE ||
@@ -93,7 +93,7 @@ namespace GAME {
 						if (projectileList.at(j)->GetStrength() == PROJECTILE_STRENGTH::HEAVY && projectileList.at(j)->GetElement() == PROJECTILE_ELEMENT::EARTH) {
 							Projectile *p = new Projectile(projectileList.at(j)->GetWorldPosition(), 0.0f, 0.0f);
 							p->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
-							p->CreateCollision(projectileRenderer->GetCubeMesh());
+							p->CreateCollision(projectileRenderer->GetCubeMesh(), p->GetWorldPosition());
 							p->collisionComponent->SetLayer(0);
 							p->SetClipping(PROJECTILE_CLIP::YES);
 							p->physicsComponent->destructible = false;

@@ -5,6 +5,7 @@ using namespace GAME;
 FirePlayer::FirePlayer()
 {
 	ring->renderComponent->SetColour(0.7f, 0.2f, 0.1f);
+	specialMeter = 0;
 }
 
 FirePlayer::~FirePlayer()

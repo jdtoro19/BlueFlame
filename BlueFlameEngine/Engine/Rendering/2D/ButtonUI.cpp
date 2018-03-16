@@ -53,6 +53,27 @@ bool ButtonUI::OnHover(SDL_Event events, SceneManager* sceneManager)
 	}
 }
 
+bool ButtonUI::OnHover(ImageUI* crossHair, SceneManager* sceneManager)
+{
+	float y = crossHair->GetPosition().y;
+
+	float x = crossHair->GetPosition().x;
+
+	if (y > image->GetPosition().y - (image->GetHeight() / 2) + paddingY &&
+		y < image->GetPosition().y + (image->GetHeight() / 2) + paddingY &&
+		x > image->GetPosition().x - (image->GetWidth() / 2) + paddingX &&
+		x < image->GetPosition().x + (image->GetWidth() / 2) + paddingX)
+	{
+		hovered = true;
+		return true;
+	}
+	else
+	{
+		hovered = false;
+		return false;
+	}
+}
+
 void ButtonUI::OnClick()
 {
 	clicked = true;

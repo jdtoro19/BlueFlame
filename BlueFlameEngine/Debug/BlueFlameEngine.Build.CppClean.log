@@ -1,5 +1,6 @@
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\blueflameengine.pdb
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\blueflameengine.idb
+c:\users\juan toro\documents\blueflame\blueflameengine\debug\bfengine.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\shader.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\window.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\mesh.obj
@@ -10,7 +11,6 @@ c:\users\juan toro\documents\blueflame\blueflameengine\debug\gameobject.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\rendercomponent.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\lightcomponent.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\light.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\inputcomponent.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\scenemanager.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\model.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\skybox.obj
@@ -23,6 +23,7 @@ c:\users\juan toro\documents\blueflame\blueflameengine\debug\masterclock.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\music.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\soundeffect.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\soundeffectselector.obj
+c:\users\juan toro\documents\blueflame\blueflameengine\debug\camera.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\defaultscene.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\parser.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\timer.obj
@@ -39,10 +40,12 @@ c:\users\juan toro\documents\blueflame\blueflameengine\debug\randomizer.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\buttonui.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\sliderui.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\cube.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\bfengine.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\audiofile.obj
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\dialogue.obj
-c:\users\juan toro\documents\blueflame\blueflameengine\debug\camera.obj
+c:\users\juan toro\documents\blueflame\blueflameengine\debug\settings.obj
+c:\users\juan toro\documents\blueflame\blueflameengine\debug\announcer.obj
+c:\users\juan toro\documents\blueflame\blueflameengine\debug\playerdialogue.obj
+c:\users\juan toro\documents\blueflame\blueflameengine\debug\cooldown.obj
 c:\users\juan toro\documents\blueflame\debug\blueflameengine.lib
 c:\users\juan toro\documents\blueflame\debug\blueflameengine.pdb
 c:\users\juan toro\documents\blueflame\blueflameengine\debug\blueflameengine.tlog\cl.command.1.tlog

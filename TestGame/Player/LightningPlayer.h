@@ -33,9 +33,10 @@ namespace GAME {
 		Cooldown MediumCD;
 		Cooldown SpecialDuration;
 		Cooldown SpecialCharge;
-		Projectile* LightningCloud(float offset); //creates cloud to fire heavy attack
-		Projectile* Strike(float offsetx, float offsety, float offsetz); //lightning strikes
-		Projectile* ZeroLaser(); //for special attack
+		bool specialActivated = false;
+		Projectile* LightningCloud(float offset, float height); //creates cloud to fire heavy attack
+		Projectile* Strike(float offsetx, float offsety, float offsetz, float height); //lightning strikes
+		Projectile* ZeroLaser(float delay, float speed, float baseLifetime); //for special attack
 		bool ZeroLasering = false;
 		bool charging = false;
 		Projectile* ForkedLightning(float offset); //used to create heavy attack

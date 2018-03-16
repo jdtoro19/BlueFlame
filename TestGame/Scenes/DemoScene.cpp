@@ -64,7 +64,7 @@ bool DemoScene::Initialize()
 	// Make Players
 	//
 	// Player 1
-	player1 = new EarthPlayer();
+	player1 = new WindPlayer();
 	player1->SetShader(defaultShaderHandle);
 	player1->SetWorldPosition(glm::vec3(-2.0f, 0.0f, 3.0f));
 	player1->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER1);

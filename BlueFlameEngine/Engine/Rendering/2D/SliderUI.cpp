@@ -80,7 +80,7 @@ void SliderUI::SetValue(float val)
 	value = val;
 	if (val > 1.0f)
 	{
-		value = 1.0f;
+		//value = 1.0f;
 	}
 }
 
@@ -163,6 +163,8 @@ void SliderUI::UpdateText()
 {
 	//conversion of percentage value to string
 	//setting text value here
+	text->SetText(std::to_string((int)value));
+	/*
 	if (value <= 0.5f)
 	{
 		if (value <= 0.25f)
@@ -306,11 +308,12 @@ void SliderUI::UpdateText()
 			}
 		}
 	}
+	*/
 }
 
 void SliderUI::Update(const float deltaTime)
 {
-	imageF->SetWidth((int(width * value)));
+	imageF->SetWidth((int(width * (value / 100))));
 	UpdateText();
 	//imageF->SetPosition(position.x * (value / 2), imageF->GetPosition().y);
 

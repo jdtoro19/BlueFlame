@@ -18,7 +18,7 @@ bool TvTGameScene::Initialize()
 
 	// Set screen options
 	sceneManager->EnableSplitscreen(false);
-	sceneManager->ShowFPS(true);
+	sceneManager->ShowFPS(false);
 	sceneManager->CaptureMouse(true);
 
 	// Set the options for the first camera
@@ -168,7 +168,7 @@ bool TvTGameScene::Initialize()
 	// Make directional light
 	dirLight = new Light(LightComponent::Light_Type::DIRECTIONAL);
 	dirLight->lightComponent->SetDirection(glm::vec3(1.0f, -1.0f, 1.0f));
-	//dirLight->lightComponent->SetColour(glm::vec3(0.5f, 0.5f, 0.5f));
+	dirLight->lightComponent->SetColour(glm::vec3(0.2f, 0.2f, 0.2f));
 	//
 
 	// fireworks
@@ -183,6 +183,9 @@ bool TvTGameScene::Initialize()
 	// fireworks
 	particle4 = new ParticleSystem(sceneManager->GetRenderer()->GetShaderManager());
 	particle4->SetWorldPosition(0.0f, 0.0f, -20.0f);
+
+	gameManager = new GameManager(playerList);
+	gameManager->Initialize();
 
 	// Add scene objects
 	AddObject(projectileManager->GetProjectileRenderer());
@@ -200,9 +203,6 @@ bool TvTGameScene::Initialize()
 	AddObject(particle2);
 	AddObject(particle3);
 	AddObject(particle4);
-
-	gameManager = new GameManager();
-	gameManager->Initialize();
 
 	// update phyics list
 	PhysicsEngine::GetInstance()->AddObjectList(objectList);
@@ -285,106 +285,114 @@ void TvTGameScene::HandleEvents(SDL_Event events)
 			cameraList[0]->ProcessMouseMovement((float)events.motion.x, (float)events.motion.y);
 		}
 
-		// Controller
-		switch (events.type)
-		{
-		case SDL_JOYAXISMOTION:  /* Handle Joystick Motion */
-			if (events.jaxis.axis == 2) //left trigger
-			{
-			}
-			if (events.jaxis.axis == 5) //right trigger
-			{
-				playerList.at(events.jbutton.which)->Jump();
-			}
-			break;
+		if (!playerList.at(events.jbutton.which)->out) {
 
-		case SDL_JOYBUTTONDOWN:  /* Handle Joystick Button Presses */
-
-			if (events.jbutton.button == 0) //A button
+			// Controller
+			switch (events.type)
 			{
-				std::vector<Projectile*> p = playerList.at(events.jbutton.which)->SpecialAttack();
-				if (p.size() > 0) {
-					for each (Projectile* subP in p) {
-						projectileManager->AddProjectile(subP);
+			case SDL_JOYAXISMOTION:  /* Handle Joystick Motion */
+				if (events.jaxis.axis == 2) //left trigger
+				{
+				}
+				if (events.jaxis.axis == 5) //right trigger
+				{
+					playerList.at(events.jbutton.which)->Jump();
+				}
+				break;
+
+			case SDL_JOYBUTTONDOWN:  /* Handle Joystick Button Presses */
+
+				if (events.jbutton.button == 0) //A button
+				{
+					std::vector<Projectile*> p = playerList.at(events.jbutton.which)->SpecialAttack();
+					if (p.size() > 0) {
+						for each (Projectile* subP in p) {
+							projectileManager->AddProjectile(subP);
+						}
 					}
 				}
-			}
-			if (events.jbutton.button == 1) //B button
-			{
-				std::vector<Projectile*> p = playerList.at(events.jbutton.which)->HeavyAttack();
-				if (p.size() > 0) {
-					for each (Projectile* subP in p) {
-						projectileManager->AddProjectile(subP);
+				if (events.jbutton.button == 1) //B button
+				{
+					std::vector<Projectile*> p = playerList.at(events.jbutton.which)->HeavyAttack();
+					if (p.size() > 0) {
+						for each (Projectile* subP in p) {
+							projectileManager->AddProjectile(subP);
+						}
 					}
 				}
-			}
-			if (events.jbutton.button == 2) //X button
-			{
-				std::vector<Projectile*> p = playerList.at(events.jbutton.which)->LightAttack();
-				if (p.size() > 0) {
-					for each (Projectile* subP in p) {
-						projectileManager->AddProjectile(subP);
+				if (events.jbutton.button == 2) //X button
+				{
+					std::vector<Projectile*> p = playerList.at(events.jbutton.which)->LightAttack();
+					if (p.size() > 0) {
+						for each (Projectile* subP in p) {
+							projectileManager->AddProjectile(subP);
+						}
 					}
 				}
-			}
-			if (events.jbutton.button == 3) //Y button
-			{
-				std::vector<Projectile*> p = playerList.at(events.jbutton.which)->MediumAttack();
-				if (p.size() > 0) {
-					for each (Projectile* subP in p) {
-						projectileManager->AddProjectile(subP);
+				if (events.jbutton.button == 3) //Y button
+				{
+					std::vector<Projectile*> p = playerList.at(events.jbutton.which)->MediumAttack();
+					if (p.size() > 0) {
+						for each (Projectile* subP in p) {
+							projectileManager->AddProjectile(subP);
+						}
 					}
 				}
-			}
-			if (events.jbutton.button == 4) //left bumper
-			{
-				playerList.at(events.jbutton.which)->EnableTarget();
-			}
-			if (events.jbutton.button == 5) //right bumper
-			{
-				playerList.at(events.jbutton.which)->SwitchTarget();
-			}
-			if (events.jbutton.button == 6) //back button
-			{	
-			}
-			if (events.jbutton.button == 7) //start button
-			{
-				bgm->Stop();
-				sceneManager->SwitchScene(new TvTGameScene());
-			}
-			if (events.jbutton.button == 8) //left joystick button
-			{
-			}
-			if (events.jbutton.button == 9) //right joystick button
-			{
-			}
-			if (events.jbutton.button == 10) //xbox key
-			{
-			}
-			if (events.jbutton.button == 11) //left trigger
-			{
-			}
-			if (events.jbutton.button == 12) //right trigger
-			{
-			}
-			break;
+				if (events.jbutton.button == 4) //left bumper
+				{
+					playerList.at(events.jbutton.which)->EnableTarget();
+				}
+				if (events.jbutton.button == 5) //right bumper
+				{
+					playerList.at(events.jbutton.which)->SwitchTarget();
+				}
+				if (events.jbutton.button == 6) //back button
+				{
+				}
+				if (events.jbutton.button == 7) //start button
+				{
+					if (gameManager->IsGameOver()) {
+						Restart();
+					}
+					else 
+					{
+						SkipIntro();
+					}
+				}
+				if (events.jbutton.button == 8) //left joystick button
+				{
+				}
+				if (events.jbutton.button == 9) //right joystick button
+				{
+				}
+				if (events.jbutton.button == 10) //xbox key
+				{
+				}
+				if (events.jbutton.button == 11) //left trigger
+				{
+				}
+				if (events.jbutton.button == 12) //right trigger
+				{
+				}
+				break;
 
-		case SDL_JOYHATMOTION:  /* Handle Hat Motion */
+			case SDL_JOYHATMOTION:  /* Handle Hat Motion */
 
-			if (events.jhat.value & SDL_HAT_UP)
-			{
-			}
-			if (events.jhat.value & SDL_HAT_DOWN)
-			{
-			}
-			if (events.jhat.value & SDL_HAT_LEFT)
-			{
-			}
+				if (events.jhat.value & SDL_HAT_UP)
+				{
+				}
+				if (events.jhat.value & SDL_HAT_DOWN)
+				{
+				}
+				if (events.jhat.value & SDL_HAT_LEFT)
+				{
+				}
 
-			if (events.jhat.value & SDL_HAT_RIGHT)
-			{
+				if (events.jhat.value & SDL_HAT_RIGHT)
+				{
+				}
+				break;
 			}
-			break;
 		}
 
 		// PLAYER
@@ -489,6 +497,11 @@ void TvTGameScene::HandleStates(const Uint8 *state)
 			sceneManager->SwitchScene(new TvTGameScene());
 		}
 
+		// Reload match
+		if (state[SDL_SCANCODE_R]) {
+			Restart();
+		}
+
 		// Call player handle states
 		player1->HandleStates(state);
 		player2->HandleStates(state);
@@ -538,6 +551,7 @@ void TvTGameScene::PlayIntro()
 	}
 	else if (cameraCD.checkOffCD()) {
 		if (!cameraSwitch3) {
+			gameManager->StartMatch();
 			cameraList[0]->Position = glm::vec3(0.0f, 7.5f, 9.5f);
 			cameraList[0]->SetRotationY(-90.0f);
 			cameraList[0]->SetRotationX(-25.0f);
@@ -576,21 +590,29 @@ void TvTGameScene::SkipIntro()
 	if (playingIntro) {
 		playingIntro = false;
 
+		cameraSwitch1 = true;
+		cameraSwitch2 = true;
+		cameraSwitch3 = true;
+
+		gameManager->StartMatch();
+
+		fadeImage->SetVisible(false);
+
+		sceneManager->EnableSplitscreen(true);
+
+		fadeAlpha = 1.0f;
+		fadeImage->SetAlpha(1.0f);
+
+		roundText->SetVisible(true);
+		
+		roundCD.startCD();
+
 		cameraList[0]->Position = glm::vec3(0.0f, 7.5f, 9.5f);
 		cameraList[0]->SetRotationY(-90.0f);
 		cameraList[0]->SetRotationX(-45.0f);
 		cameraList[1]->Position = glm::vec3(0.0f, 7.5f, -9.5f);
 		cameraList[1]->SetRotationY(90.0f);
 		cameraList[1]->SetRotationX(-45.0f);
-		fadeImage->SetVisible(false);
-
-		sceneManager->EnableSplitscreen(true);
-
-		fadeAlpha = 1.0f;
-
-		roundText->SetVisible(true);
-		
-		roundCD.startCD();
 	}
 }
 
@@ -607,6 +629,7 @@ void TvTGameScene::PlayRoundStart()
 			roundText->SetSize(10.0f);
 			roundText->SetText("Round Start");
 			ready = true;
+			gameManager->StartTimer();
 		}
 	}
 	if (ready) {
@@ -780,15 +803,57 @@ void TvTGameScene::SetUpArena()
 	floor->physicsComponent->SetPosition(glm::vec3(0.0f, -1.0f, 0.0f));
 	floor->SetWorldScale(11.0f, 1.0f, 12.0f);
 	floor->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
-	floor->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
-	floor->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
+	floor->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NORMAL_ELASTIC);
+	floor->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::SMOOTH);
 	floor->physicsComponent->SetMass(0.0f);
 	floor->canRender = false;
 	//
+
+	projectileManager->AddEnvironment(floor);
 
 	AddObject(platform);
 	AddObject(topRing);
 	AddObject(middleRing);
 	AddObject(bottomRing);
 	AddObject(floor);
+}
+
+void TvTGameScene::Restart()
+{
+	fadeImage->SetVisible(true);
+
+	gameManager->Reset();
+
+	sceneManager->EnableSplitscreen(false);
+	cameraList[0]->Position = glm::vec3(7.0f, 0.7f, 7.0f);
+	cameraList[0]->Yaw = 0.0f;
+	cameraList[0]->Pitch = 0.0f;
+	cameraList[1]->Position = glm::vec3(7.0f, 0.7f, 7.0f);
+
+	roundText->SetText("Ready?");
+	roundText->SetSize(0.0f);
+	roundText->SetSpacing(9.0f);
+	roundText->SetAlpha(1.0f);
+	roundText->SetPosition((sceneManager->GetScreenWidth() / 2) - (roundText->GetLength() / 2), sceneManager->GetScreenHeight() / 2);
+	roundText->SetVisible(false);
+
+	roundTextFade->SetSize(1.0f);
+	roundTextFade->SetSpacing(9.0f);
+	roundTextFade->SetPosition((sceneManager->GetScreenWidth() / 2) - (roundText->GetLength() / 2), sceneManager->GetScreenHeight() / 2);
+	roundTextFade->SetVisible(false);
+
+	cameraCD = Cooldown(4.5);
+	cameraCD.startCD();
+
+	roundCD = Cooldown(0.5);
+
+	fadeAlpha = 1.0f;
+	cameraSwitch1 = false;
+	cameraSwitch2 = false;
+	cameraSwitch3 = false;
+	playingIntro = true;
+	ready = false;
+	startText = false;
+	roundStart = false;
+	playAudio = true;
 }
