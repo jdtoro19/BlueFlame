@@ -351,13 +351,7 @@ void TvTGameScene::HandleEvents(SDL_Event events)
 				}
 				if (events.jbutton.button == 7) //start button
 				{
-					if (gameManager->IsGameOver()) {
-						Restart();
-					}
-					else 
-					{
-						SkipIntro();
-					}
+					SkipIntro();
 				}
 				if (events.jbutton.button == 8) //left joystick button
 				{
@@ -453,6 +447,13 @@ void TvTGameScene::HandleEvents(SDL_Event events)
 		player3->HandleEvents(events);
 		player4->HandleEvents(events);
 
+	}
+
+	if (events.jbutton.button == 7) //start button
+	{
+		if (gameManager->IsGameOver()) {
+			Restart();
+		}
 	}
 }
 

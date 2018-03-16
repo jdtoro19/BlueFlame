@@ -64,7 +64,7 @@ std::vector<Projectile*> EarthPlayer::MediumAttack()
 				specialActivated = false;
 			}
 			else {
-				Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), targetAngle, dir);
+				Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
 				p->SetImpulseForce(glm::vec3(0.0f, -200.0f, 300.0f));
 				p->SetActingForce(glm::vec3(0.0f, 10.0f, -7.5f));
 				p->SetKnockbackForce(glm::vec3(0.0f, 80.0f, -10.0f));

@@ -170,7 +170,7 @@ void MenuSelectScene::Update(const float deltaTime)
 
 void MenuSelectScene::HandleEvents(SDL_Event events)
 {
-	if (events.jbutton.button == 7) //start button
+	if (events.jbutton.button == 2) //start button
 	{
 		sceneManager->SwitchScene(new TvTGameScene());
 	}

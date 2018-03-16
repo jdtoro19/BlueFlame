@@ -24,7 +24,7 @@ std::vector<Projectile*> FirePlayer::LightAttack()
 		lightComboTimer = 0.5f;
 		lightComboPosition++;
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 		
 		p->SetImpulseForce(glm::vec3(0.0f, 100.0f, 500.0f));
@@ -41,7 +41,7 @@ std::vector<Projectile*> FirePlayer::LightAttack()
 		lightComboPosition++;
 		lightComboTimer = 0.5f;
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(100.0f, 100.0f, 500.0f));
@@ -58,7 +58,7 @@ std::vector<Projectile*> FirePlayer::LightAttack()
 		lightComboPosition++;
 		lightComboTimer = 0.5f;
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(-100.0f, 100.0f, 500.0f));
@@ -83,7 +83,7 @@ std::vector<Projectile*> FirePlayer::MediumAttack()
 		mediumComboPosition++;
 		mediumComboTimer = 0.85f;
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 650.0f));
@@ -103,7 +103,7 @@ std::vector<Projectile*> FirePlayer::MediumAttack()
 		mediumComboPosition++;
 		mediumComboTimer = 0.25f;
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x - collisionComponent->GetBoundingBox().r.x / 1.5f * GetWorldScale().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x - collisionComponent->GetBoundingBox().r.x / 1.5f * GetWorldScale().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 450.0f));
@@ -114,7 +114,7 @@ std::vector<Projectile*> FirePlayer::MediumAttack()
 		projectiles.push_back(p);
 
 		//second projectile curves left, but it starts a little to the right
-		p = new Projectile(glm::vec3(GetWorldPosition().x + collisionComponent->GetBoundingBox().r.x / 1.5f * GetWorldScale().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		p = new Projectile(glm::vec3(GetWorldPosition().x + collisionComponent->GetBoundingBox().r.x / 1.5f * GetWorldScale().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 450.0f));
@@ -135,7 +135,7 @@ std::vector<Projectile*> FirePlayer::MediumAttack()
 		mediumComboPosition++;
 		mediumComboTimer = 1.0f;
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 450.0f));
@@ -146,7 +146,7 @@ std::vector<Projectile*> FirePlayer::MediumAttack()
 		projectiles.push_back(p);
 
 		//second projectile delays for 0.5 seconds, then hits player downwards
-		p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + collisionComponent->GetBoundingBox().r.y / 1.5f * GetWorldScale().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + collisionComponent->GetBoundingBox().r.y / 1.5f * GetWorldScale().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(0.0f, 480.0f, 575.0f));
@@ -171,7 +171,7 @@ std::vector<Projectile*> FirePlayer::HeavyAttack()
 		heavyComboPosition++;
 		heavyComboTimer = 0.5f;
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + collisionComponent->GetBoundingBox().r.y / 1.5f * GetWorldScale().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + collisionComponent->GetBoundingBox().r.y / 1.5f * GetWorldScale().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 450.0f));
@@ -188,7 +188,7 @@ std::vector<Projectile*> FirePlayer::HeavyAttack()
 		heavyComboPosition++;
 		heavyComboTimer = 0.5f;
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + collisionComponent->GetBoundingBox().r.y / 1.5f * GetWorldScale().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + collisionComponent->GetBoundingBox().r.y / 1.5f * GetWorldScale().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(0.0f, 50.0f, 450.0f));
@@ -205,7 +205,7 @@ std::vector<Projectile*> FirePlayer::HeavyAttack()
 		heavyComboPosition++;
 		heavyComboTimer = 1.2f;
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + collisionComponent->GetBoundingBox().r.y / 1.5f * GetWorldScale().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + collisionComponent->GetBoundingBox().r.y / 1.5f * GetWorldScale().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(0.0f, 100.0f, 450.0f));
@@ -231,7 +231,7 @@ std::vector<Projectile*> FirePlayer::SpecialAttack()
 			specialMeter = 0;
 		}
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), 
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(0.0f, -60.0f, 200.0f));
@@ -254,7 +254,7 @@ std::vector<Projectile*> FirePlayer::SpecialAttack()
 			specialMeter = 0;
 		}
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 450.0f));
@@ -279,7 +279,7 @@ std::vector<Projectile*> FirePlayer::SpecialAttack()
 			specialMeter = 0;
 		}
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 450.0f));
@@ -304,7 +304,7 @@ std::vector<Projectile*> FirePlayer::SpecialAttack()
 			specialMeter = 0;
 		}
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 450.0f));
@@ -329,7 +329,7 @@ std::vector<Projectile*> FirePlayer::SpecialAttack()
 			specialMeter = 0;
 		}
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z),
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
 
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 450.0f));
