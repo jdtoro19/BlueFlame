@@ -107,6 +107,8 @@ namespace ENGINE {
 		// Returns the height used for the UI
 		// Do not use this if you want the window height
 		float GetScreenHeight();
+		// DeltaTIme
+		float GetDeltaTime();
 		//
 		
 	private:

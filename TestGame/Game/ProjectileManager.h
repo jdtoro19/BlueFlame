@@ -14,6 +14,9 @@
 using namespace ENGINE;
 
 namespace GAME {
+	// Forward delcare player class to avoid circular dependency
+	class Player;
+
 	class ProjectileManager {
 	private:
 		// Lists of projectiles and players/environments they can come into contact with

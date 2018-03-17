@@ -133,7 +133,9 @@
     <ClCompile Include="Player\LightningPlayer.cpp" />
     <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="Player\PlayerBase.cpp" />
+    <ClCompile Include="Player\PlayerInput.cpp" />
     <ClCompile Include="Player\WindPlayer.cpp" />
+    <ClCompile Include="Scenes\ShowCaseScene.cpp" />
     <ClCompile Include="Scenes\TvTGameScene.cpp" />
     <ClCompile Include="Scenes\DemoScene.cpp" />
     <ClCompile Include="Scenes\GameTestScene.cpp" />
@@ -152,7 +154,9 @@
     <ClInclude Include="Player\LightningPlayer.h" />
     <ClInclude Include="Player\Player.h" />
     <ClInclude Include="Player\PlayerBase.h" />
+    <ClInclude Include="Player\PlayerInput.h" />
     <ClInclude Include="Player\WindPlayer.h" />
+    <ClInclude Include="Scenes\ShowCaseScene.h" />
     <ClInclude Include="Scenes\TvTGameScene.h" />
     <ClInclude Include="Scenes\DemoScene.h" />
     <ClInclude Include="Scenes\GameTestScene.h" />

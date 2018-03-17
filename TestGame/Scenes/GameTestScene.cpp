@@ -126,64 +126,6 @@ void GameTestScene::Update(const float deltaTime)
 		timer = 0;
 		fire = true;
 	}
-
-	//check for joystick so we're not wasting time
-	if (InputHandler::GetInstance()->areJoysticksLive()) {
-		//joystick motion update
-		//maybe we don't handle it as handleevent
-
-		//handle it as a for loop
-
-		for (int i = 0; i < InputHandler::GetInstance()->jCheck(); i++) {
-
-			Sint32 x_move = SDL_JoystickGetAxis(InputHandler::GetInstance()->joystick[i], 0);
-			Sint32 y_move = SDL_JoystickGetAxis(InputHandler::GetInstance()->joystick[i], 1);
-
-			//tareing the joysticks
-
-			//if (x_move + InputHandler::GetInstance()->TareX[0])
-
-			x_move += InputHandler::GetInstance()->TareX[i];
-			y_move += InputHandler::GetInstance()->TareY[i];
-
-			float modifierX = 0;
-			float modifierY = 0;
-
-			Sint16 jStickMod = 10000;
-
-			if (x_move < 320 && x_move > -320) {
-				modifierX = 0;
-			}
-			else if (x_move >= 320) {
-
-				modifierX = x_move / jStickMod; //right
-				cameraList[0]->ProcessKeyboard(RIGHT, 0.01f * modifierX);
-			}
-			else if (x_move <= -320) {
-				modifierX = x_move / jStickMod; //left
-				cameraList[0]->ProcessKeyboard(LEFT, 0.01f * -modifierX);
-			}
-
-			if (y_move < 320 && y_move > -320) {
-				modifierY = 0;
-			}
-
-			else if (y_move >= 320) {
-				modifierY = y_move / jStickMod; //down
-				cameraList[0]->ProcessKeyboard(BACKWARD, 0.01f * modifierY);
-			}
-			else if (y_move <= -320) {
-				modifierY = y_move / jStickMod; //up
-				cameraList[0]->ProcessKeyboard(FORWARD, 0.01f * -modifierY);
-			}
-			//cout << x_move << " " << x_move / jStickMod << " " << y_move << " " << y_move / jStickMod << endl;
-			//std::cout << "ModX: " << modifierX << " ModY: " << modifierY << std::endl;
-		}
-
-	}
-	else {
-		//std::cout << "No joystick events today." << std::endl;
-	}
 }
 
 void GameTestScene::HandleEvents(SDL_Event events)

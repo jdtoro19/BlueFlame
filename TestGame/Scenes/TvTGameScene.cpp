@@ -210,8 +210,6 @@ bool TvTGameScene::Initialize()
 	cameraCD = Cooldown(4.5f);
 	cameraCD.startCD();
 
-	roundCD = Cooldown(0.5f);
-
 	return true;
 }
 void TvTGameScene::Update(const float deltaTime)
@@ -240,28 +238,6 @@ void TvTGameScene::Update(const float deltaTime)
 			}
 		}
 	}
-
-	if (roundStart) {
-
-		// Update Controller
-		if (InputHandler::GetInstance()->areJoysticksLive()) {
-			// Player Movement
-			for (int i = 0; i < InputHandler::GetInstance()->jCheck(); i++) {
-				if (InputHandler::GetInstance()->playerMotion(i).x > 0.01f) {
-					playerList.at(i)->Movement(Player::PLAYERMOVEMENT::RIGHT, deltaTime);
-				}
-				if (InputHandler::GetInstance()->playerMotion(i).x < -0.01f) {
-					playerList.at(i)->Movement(Player::PLAYERMOVEMENT::LEFT, deltaTime);
-				}
-				if (InputHandler::GetInstance()->playerMotion(i).y > 0.01f) {
-					playerList.at(i)->Movement(Player::PLAYERMOVEMENT::BACKWARD, deltaTime);
-				}
-				if (InputHandler::GetInstance()->playerMotion(i).y < -0.01f) {
-					playerList.at(i)->Movement(Player::PLAYERMOVEMENT::FORWARD, deltaTime);
-				}
-			}
-		}
-	}
 }
 void TvTGameScene::FixedUpdate(const float deltaTime)
 {
@@ -283,110 +259,6 @@ void TvTGameScene::HandleEvents(SDL_Event events)
 		// Camera look
 		if (events.type == SDL_MOUSEMOTION) {
 			cameraList[0]->ProcessMouseMovement((float)events.motion.x, (float)events.motion.y);
-		}
-
-		if (!playerList.at(events.jbutton.which)->out) {
-
-			// Controller
-			switch (events.type)
-			{
-			case SDL_JOYAXISMOTION:  /* Handle Joystick Motion */
-				if (events.jaxis.axis == 2) //left trigger
-				{
-				}
-				if (events.jaxis.axis == 5) //right trigger
-				{
-					playerList.at(events.jbutton.which)->Jump();
-				}
-				break;
-
-			case SDL_JOYBUTTONDOWN:  /* Handle Joystick Button Presses */
-
-				if (events.jbutton.button == 0) //A button
-				{
-					std::vector<Projectile*> p = playerList.at(events.jbutton.which)->SpecialAttack();
-					if (p.size() > 0) {
-						for each (Projectile* subP in p) {
-							projectileManager->AddProjectile(subP);
-						}
-					}
-				}
-				if (events.jbutton.button == 1) //B button
-				{
-					std::vector<Projectile*> p = playerList.at(events.jbutton.which)->HeavyAttack();
-					if (p.size() > 0) {
-						for each (Projectile* subP in p) {
-							projectileManager->AddProjectile(subP);
-						}
-					}
-				}
-				if (events.jbutton.button == 2) //X button
-				{
-					std::vector<Projectile*> p = playerList.at(events.jbutton.which)->LightAttack();
-					if (p.size() > 0) {
-						for each (Projectile* subP in p) {
-							projectileManager->AddProjectile(subP);
-						}
-					}
-				}
-				if (events.jbutton.button == 3) //Y button
-				{
-					std::vector<Projectile*> p = playerList.at(events.jbutton.which)->MediumAttack();
-					if (p.size() > 0) {
-						for each (Projectile* subP in p) {
-							projectileManager->AddProjectile(subP);
-						}
-					}
-				}
-				if (events.jbutton.button == 4) //left bumper
-				{
-					playerList.at(events.jbutton.which)->EnableTarget();
-				}
-				if (events.jbutton.button == 5) //right bumper
-				{
-					playerList.at(events.jbutton.which)->SwitchTarget();
-				}
-				if (events.jbutton.button == 6) //back button
-				{
-				}
-				if (events.jbutton.button == 7) //start button
-				{
-					SkipIntro();
-				}
-				if (events.jbutton.button == 8) //left joystick button
-				{
-				}
-				if (events.jbutton.button == 9) //right joystick button
-				{
-				}
-				if (events.jbutton.button == 10) //xbox key
-				{
-				}
-				if (events.jbutton.button == 11) //left trigger
-				{
-				}
-				if (events.jbutton.button == 12) //right trigger
-				{
-				}
-				break;
-
-			case SDL_JOYHATMOTION:  /* Handle Hat Motion */
-
-				if (events.jhat.value & SDL_HAT_UP)
-				{
-				}
-				if (events.jhat.value & SDL_HAT_DOWN)
-				{
-				}
-				if (events.jhat.value & SDL_HAT_LEFT)
-				{
-				}
-
-				if (events.jhat.value & SDL_HAT_RIGHT)
-				{
-				}
-				break;
-			}
 		}
 
 		// PLAYER
@@ -683,10 +555,9 @@ void TvTGameScene::SetUpPlayers()
 	player1->SetWorldPosition(glm::vec3(-3.0f, 0.0f, 4.0f));
 	player1->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER1);
 	player1->SetPlayerTeam(Player::PLAYERTEAM::TEAM1);
-	// Bind Controller
-	if (BFEngine::GetInstance()->numPlayers > 0) {
-		BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[0]].playerControls(player1);
-	}
+	player1->GetPlayerInput()->AddAnyController();
+	player1->AddProjecitleManager(projectileManager);
+	player1->SetCanMove(false);
 
 	// Player 2
 	player2 = new IcePlayer();
@@ -694,10 +565,9 @@ void TvTGameScene::SetUpPlayers()
 	player2->SetWorldPosition(glm::vec3(3.0f, 0.0f, 4.0f));
 	player2->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER2);
 	player2->SetPlayerTeam(Player::PLAYERTEAM::TEAM1);
-	// Bind Controller
-	if (BFEngine::GetInstance()->numPlayers > 1) {
-		BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[1]].playerControls(player2);
-	}
+	player2->GetPlayerInput()->AddAnyController();
+	player2->AddProjecitleManager(projectileManager);
+	player2->SetCanMove(false);
 
 	// Player 3
 	player3 = new FirePlayer();
@@ -705,11 +575,9 @@ void TvTGameScene::SetUpPlayers()
 	player3->SetWorldPosition(glm::vec3(3.0f, 0.0f, -4.0f));
 	player3->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER3);
 	player3->SetPlayerTeam(Player::PLAYERTEAM::TEAM2);
-	// Bind Controller
-	if (BFEngine::GetInstance()->numPlayers > 2) {
-		BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[2]].playerControls(player3);
-		BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[2]].setTeam(1);
-	}
+	player3->GetPlayerInput()->AddAnyController();
+	player3->AddProjecitleManager(projectileManager);
+	player3->SetCanMove(false);
 
 	// Player 4
 	player4 = new EarthPlayer();
@@ -717,11 +585,9 @@ void TvTGameScene::SetUpPlayers()
 	player4->SetWorldPosition(glm::vec3(-3.0f, 0.0f, -4.0f));
 	player4->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER4);
 	player4->SetPlayerTeam(Player::PLAYERTEAM::TEAM2);
-	// Bind Controller
-	if (BFEngine::GetInstance()->numPlayers > 3) {
-		BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[3]].playerControls(player4);
-		BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[3]].setTeam(1);
-	}
+	player4->GetPlayerInput()->AddAnyController();
+	player4->AddProjecitleManager(projectileManager);
+	player4->SetCanMove(false);
 
 	// Enemy Target set up
 	player1->SetEnemyTeam(player3, player4);

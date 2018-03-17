@@ -114,7 +114,7 @@ void GameManager::Update()
 
 		for (unsigned int i = 0; i < playerList.size(); ++i) {
 			if (playerList[i]->GetWorldPosition().y < -10) {
-				playerList[i]->out = true;
+				playerList[i]->SetIsOut(true);
 				playerList[i]->canRender = false;
 				if (playerList[i]->GetIsTargeting()) {
 					playerList[i]->EnableTarget();
@@ -127,7 +127,7 @@ void GameManager::Update()
 				}
 			}
 
-			if (playerList[i]->out) {
+			if (playerList[i]->IsOut()) {
 				playerList[i]->SetWorldPosition(0.0f, -5.0f, 0.0f);
 			}
 		}
@@ -161,6 +161,10 @@ void GameManager::StartMatch()
 void GameManager::StartTimer()
 {
 	roundTimer.startCD();
+
+	for (unsigned int i = 0; i < playerList.size(); ++i) {
+		playerList[i]->SetCanMove(true);
+	}
 }
 
 void GameManager::GameOver()
@@ -174,7 +178,7 @@ void GameManager::GameOver()
 	p4Meter->SetVisible(false);
 
 	for (unsigned int i = 0; i < playerList.size(); ++i) {
-		playerList[i]->out = true;
+		playerList[i]->SetIsOut(true);
 		playerList[i]->canRender = true;
 		if (playerList[i]->GetIsTargeting()) {
 			playerList[i]->EnableTarget();
@@ -187,8 +191,8 @@ void GameManager::GameOver()
 		}
 	}
 
-	team1List[0]->SetWorldPosition(-1.0f, 0.0f, 4.0f);
-	team1List[1]->SetWorldPosition(1.0f, 0.0f, 4.0f);
+	team1List[0]->SetWorldPosition(1.0f, 0.0f, 4.0f);
+	team1List[1]->SetWorldPosition(-1.0f, 0.0f, 4.0f);
 
 	team2List[0]->SetWorldPosition(-1.0f, 0.0f, -4.0f);
 	team2List[1]->SetWorldPosition(1.0f, 0.0f, -4.0f);
@@ -253,7 +257,8 @@ void GameManager::Reset()
 
 	for (unsigned int i = 0; i < playerList.size(); ++i) {
 		playerList[i]->canRender = true;
-		playerList[i]->out = false;
+		playerList[i]->SetIsOut(false);
+		playerList[i]->SetCanMove(false);
 		if (!playerList[i]->GetIsTargeting()) {
 			playerList[i]->EnableTarget();
 		}
@@ -277,6 +282,6 @@ void GameManager::Reset()
 
 		playerList[i]->SetTarget(0);
 
-		playerList[i]->specialMeter = 0;
+		playerList[i]->SetStats();
 	}
 }

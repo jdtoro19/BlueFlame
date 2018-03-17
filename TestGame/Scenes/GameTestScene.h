@@ -12,7 +12,6 @@
 #include <BlueFlameEngine\Engine\Graphics\Shader.h> 
 #include <BlueFlameEngine\Engine\Graphics\ParticleSystem.h>
 #include <BlueFlameEngine\Engine\Math\PhysicsEngine.h>
-#include <BlueFlameEngine\Engine\InputHandling\InputHandler.h>
 #include <BlueFlameEngine\Engine\Audio\Music.h>
 #include <BlueFlameEngine\Engine\Audio\SoundEffect.h>
 #include "..\Player\Player.h"

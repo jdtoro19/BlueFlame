@@ -3,17 +3,22 @@
 #define PLAYER_H
 
 #include <SDL/SDL.h>
+#include <BlueFlameEngine\Engine\BFEngine.h>
+#include <BlueFlameEngine\Engine\Audio\PlayerDialogue.h>
 #include <BlueFlameEngine\Engine\Core\GameObject.h>
 #include <BlueFlameEngine\Engine\Core\RenderComponent.h>
-#include <BlueFlameEngine\Engine\Rendering\3D\Projectile.h>
-#include <BlueFlameEngine\Engine\BFEngine.h>
 #include <BlueFlameEngine\Engine\Core\ResourceManager.h>
-#include <BlueFlameEngine\Engine\Audio\PlayerDialogue.h>
+#include <BlueFlameEngine\Engine\Rendering\3D\Projectile.h>
+#include "../Game/ProjectileManager.h"
 #include "PlayerBase.h"
+#include "PlayerInput.h"
 
 using namespace ENGINE;
 
 namespace GAME {
+	
+	// Forward declare Projectile Manager to avoid circular dependency 
+	class ProjectileManager;
 
 	// Base Player Class
 	class Player : public GameObject
@@ -70,8 +75,10 @@ namespace GAME {
 		void Stun();
 		// Call this to stun player for a certain amount of time
 		void Stun(float stunTime);
-		// Class this to set the player to block and render shield
+		// Call this to set the player to block and render shield
 		void Block();
+		// Call this to set the player to stop blocking
+		void StopBlock();
 		// Resets combo 
 		void ComboReset();
 		// Jump
@@ -83,11 +90,14 @@ namespace GAME {
 		//
 
 		// Attack Functions
-		// Returns a projectile
+		// Returns a list of projectile
 		virtual std::vector<Projectile*> LightAttack() = 0;
 		virtual std::vector<Projectile*> MediumAttack() = 0;
 		virtual std::vector<Projectile*> HeavyAttack() = 0;
 		virtual std::vector<Projectile*> SpecialAttack() = 0;
+
+		// Sets the projectile manager for the player to use
+		void AddProjecitleManager(ProjectileManager* pM);
 
 		// Target
 		// Used for setting the player's target
@@ -100,6 +110,10 @@ namespace GAME {
 		void SetPlayerNumber(PLAYERNUMBER pN) { playerNumber = pN; };
 		void SetPlayerTeam(PLAYERTEAM pT);
 
+		// Set player gameplay status
+		void SetIsOut(bool isOut) { out = isOut; };
+		void SetCanMove(bool canM) { canMove = canM; };
+
 		// Getters
 		int GetHealth() { return health; };
 		int GetMaxHealth() { return maxHealth; };
@@ -111,6 +125,9 @@ namespace GAME {
 		float GetStunTimer() { return stunTimer; };
 		bool GetIsTargeting() { return isTargeting; };
 		std::vector<Player*> GetEnemyTeam() { return enemyTeam; };
+		PlayerInput* GetPlayerInput() { return playerInput; };
+		bool IsOut() { return out; };
+		bool CanMove() { return canMove; };
 
 	protected:
 		// Player model parts
@@ -126,17 +143,20 @@ namespace GAME {
 		std::vector<Player*> enemyTeam;
 		glm::vec3 targetedPlayer;
 		glm::vec3 targetColour;
+		float targetAngle;
+		int dir;
 
-		//new elements
+		// Combo and movement cooldowns
 		Cooldown HeavyCD;
 		Cooldown LightCD;
 		Cooldown MediumCD;
-
 		Cooldown movementCD;
-		
-	public:
-		float targetAngle;
-		int dir;
+
+		// Projectile manager reference 
+		ProjectileManager* projectileManager;
+
+		// Player Input 
+		PlayerInput* playerInput;
 
 		// Player Stats
 		int health = 0;
@@ -148,6 +168,7 @@ namespace GAME {
 		float moveSpeed = 1.0f;
 		PLAYERNUMBER playerNumber = NONE;
 		PLAYERTEAM playerTeam = TEAM0;
+
 		// Player State
 		PLAYERSTATES playerState = NORMAL;
 		float stunTimer = 0;
@@ -172,11 +193,14 @@ namespace GAME {
 		// Check to see if off arena
 		bool out;
 
-		private:
-			//Player Specific Audio
-			//MUST HAVE A CONSTRUCTOR FOR THIS IN EXPANDED CLASS
-			PlayerDialogue dialogue; //USED TO STORE PLAYER DIALOGUE. LoadPlayerDialogue(
-			SoundEffectSelector pSoundEffects;
+		// Check to see if player can move
+		bool canMove;
+
+	private:
+		//Player Specific Audio
+		//MUST HAVE A CONSTRUCTOR FOR THIS IN EXPANDED CLASS
+		PlayerDialogue dialogue; //USED TO STORE PLAYER DIALOGUE. LoadPlayerDialogue(
+		SoundEffectSelector pSoundEffects;
 	};
 
 }

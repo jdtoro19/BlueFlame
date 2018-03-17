@@ -10,6 +10,7 @@
 #include "../Camera/Camera.h"
 #include "../Rendering/2D/UIObject.h"
 #include "../Rendering/3D/Skybox.h"
+#include "../InputHandling/InputManager.h"
 
 namespace ENGINE {
 

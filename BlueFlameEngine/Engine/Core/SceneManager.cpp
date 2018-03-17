@@ -155,7 +155,7 @@ void SceneManager::HandleEvents()
 		}
 
 		// Resize window
-		if (events.window.event == SDL_WINDOWEVENT_SIZE_CHANGED) {
+		if (events.window.event == SDL_WINDOWEVENT_SIZE_CHANGED && events.type != SDL_JOYBUTTONUP && events.type != SDL_JOYBUTTONDOWN) {
 			OnResize(events.window.data1, events.window.data2);
 			renderer->SetUpFrameBuffers(window, resolutionScale);
 		}
@@ -415,4 +415,9 @@ void SceneManager::DrawDebugFPS() {
 
 Scene* SceneManager::GetCurrentScene() {
 	return currentScene;
+}
+
+float SceneManager::GetDeltaTime()
+{
+	return deltaTime;
 }

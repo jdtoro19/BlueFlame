@@ -11,7 +11,6 @@
 #include <BlueFlameEngine\Engine\Rendering\3D\Skybox.h> 
 #include <BlueFlameEngine\Engine\Graphics\Shader.h> 
 #include <BlueFlameEngine\Engine\Math\PhysicsEngine.h>
-#include <BlueFlameEngine\Engine\InputHandling\InputHandler.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\TextUI.h>
 #include "../Game/ProjectileManager.h"
 #include "../Player/Player.h"
@@ -68,14 +67,12 @@ namespace GAME {
 		// Projectile Manager
 		ProjectileManager* projectileManager;
 
+		// Player list
+		vector<Player*> playerList;
+
 		// other variables
 		float moveSpeed = 2;
 		float deltaTime;
-
-		vector<Player*> playerList;
-
-		bool fire = true;
-		float timer = 0.3f;
 	};
 }
 #endif

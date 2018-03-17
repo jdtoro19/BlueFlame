@@ -6,9 +6,8 @@
 #include "Core/Window.h"
 #include "Core/SceneManager.h"
 #include "Core/Timer.h"
-#include "InputHandling/InputHandler.h"
-#include "InputHandling/PlayerController.h"
 #include "Timers/MasterClock.h"
+#include "InputHandling/InputManager.h"
 
 namespace ENGINE {
 
@@ -40,12 +39,6 @@ namespace ENGINE {
 		void SetWindowName(std::string name);
 		void SetWindowDimensions(int width, int height);
 
-		// Create player controllers
-		PlayerController players[4];
-		int numPlayers = NULL;
-		// Used to get player number
-		int indexOfPlayer[4]; 
-
 		// Clean up
 		static void TerminateGame();
 
@@ -56,9 +49,6 @@ namespace ENGINE {
 		
 		static std::unique_ptr<BFEngine> BFEngineInstance;
 		friend std::default_delete<BFEngine>;
-
-		// Set up controllers for players
-		void SetUpControllers();
 
 		// Running check
 		bool isRunning;

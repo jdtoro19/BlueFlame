@@ -35,8 +35,7 @@
     <ClCompile Include="Engine\Graphics\Bone.cpp" />
     <ClCompile Include="Engine\Graphics\ParticleSystem.cpp" />
     <ClCompile Include="Engine\Graphics\stb_image.cpp" />
-    <ClCompile Include="Engine\InputHandling\InputHandler.cpp" />
-    <ClCompile Include="Engine\InputHandling\PlayerController.cpp" />
+    <ClCompile Include="Engine\InputHandling\InputManager.cpp" />
     <ClCompile Include="Engine\Math\CollisionComponent.cpp" />
     <ClCompile Include="Engine\Math\PhysicsComponent.cpp" />
     <ClCompile Include="Engine\Math\PhysicsEngine.cpp" />
@@ -84,8 +83,7 @@
     <ClInclude Include="Engine\Graphics\Animation.h" />
     <ClInclude Include="Engine\Graphics\Bone.h" />
     <ClInclude Include="Engine\Graphics\ParticleSystem.h" />
-    <ClInclude Include="Engine\InputHandling\InputHandler.h" />
-    <ClInclude Include="Engine\InputHandling\PlayerController.h" />
+    <ClInclude Include="Engine\InputHandling\InputManager.h" />
     <ClInclude Include="Engine\Math\CollisionComponent.h" />
     <ClInclude Include="Engine\Math\ContactData.h" />
     <ClInclude Include="Engine\Math\PhysicsComponent.h" />

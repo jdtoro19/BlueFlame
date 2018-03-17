@@ -50,20 +50,34 @@ Player::Player()
 	// Set player to target another enemy by default
 	isTargeting = true;
 
-	SetStats();
-
+	// Set cooldowns
 	movementCD = Cooldown(0.0);
 
+	// Set game gamplay status
 	out = false;
+	canMove = true;
+
+	// Make player input
+	playerInput = new PlayerInput();
+
+	// Set player stats
+	SetStats();	
 }
 
 Player::~Player()
 {
+	// TODO: delete everything
+}
+
+void Player::AddProjecitleManager(ProjectileManager* pM)
+{
+	projectileManager = pM;
 }
 
 void Player::Update(const float deltaTime)
 {
 	// Target Direction
+	//
 	if (isTargeting) {
 		if (!enemyTeam.at(currentTarget)->out) {
 			targetedPlayer = enemyTeam.at(currentTarget)->worldPosition;
@@ -78,7 +92,9 @@ void Player::Update(const float deltaTime)
 		targetedPlayer.z += dir;
 		targetAngle = -glm::atan((targetedPlayer.x - worldPosition.x) / (targetedPlayer.z - worldPosition.z));
 	}
-
+	
+	// UPDATE TIMERS
+	//
 	// Update stun timer
 	if (playerState == STUN) {
 		stunTimer -= deltaTime;
@@ -124,17 +140,22 @@ void Player::Update(const float deltaTime)
 		specialComboTimer = 0;
 		specialComboPosition = 0;
 	}
+	//
 
 	// Update collision and physics
 	physicsComponent->Update(deltaTime);
 	collisionComponent->Update(GetWorldPosition());
 	SetWorldPosition(physicsComponent->GetPosition());
+
+	// Update rotation
 	if (playerTeam == PLAYERTEAM::TEAM1) {
 		SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), -targetAngle);
 	}
 	else if (playerTeam == PLAYERTEAM::TEAM2) {
 		SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), 3.14 - targetAngle);
 	}
+
+	// Set velocity to zero when not moving
 	if (playerState == NORMAL) {
 		physicsComponent->SetVelocity(glm::vec3(0.0f, physicsComponent->GetVelocity().y, 0.0f));
 	}
@@ -144,35 +165,120 @@ void Player::Update(const float deltaTime)
 
 	// Update function from child
 	InheritedUpdate(deltaTime);
+
+	// If player can move update movement 
+	if (canMove) {
+		if (playerInput->CheckForController()) {//if they have a controller
+			glm::vec2 mods = playerInput->LeftJoystick();
+
+			if (playerInput->LeftTriggerPressed()) {
+				Block();
+			}
+			else {
+				StopBlock();
+				if (mods.x > 0.01f) {
+					Movement(Player::PLAYERMOVEMENT::RIGHT, deltaTime);
+				}
+				if (mods.x < -0.01f) {
+					Movement(Player::PLAYERMOVEMENT::LEFT, deltaTime);
+				}
+				if (mods.y > 0.01f) {
+					Movement(Player::PLAYERMOVEMENT::BACKWARD, deltaTime);
+				}
+				if (mods.y < -0.01f) {
+					Movement(Player::PLAYERMOVEMENT::FORWARD, deltaTime);
+				}
+			}
+			if (playerInput->RightTriggerPressed()) {
+				Jump();
+			}
+		}
+	}
 }
 
 void Player::HandleEvents(SDL_Event events) 
 {
-	// Child events
-	InheritedHandleEvents(events);
+	// Player can press buttons when not off the arena
+	if (!out) {
+		switch (events.type)
+		{
+		case SDL_JOYBUTTONDOWN:
+			// X button
+			if (events.jbutton.button == 2 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
+			{
+				std::vector<Projectile*> p = LightAttack();
+				if (p.size() > 0) {
+					for each (Projectile* subP in p) {
+						projectileManager->AddProjectile(subP);
+					}
+				}
+			}
+			// Y button
+			if (events.jbutton.button == 3 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
+			{
+				std::vector<Projectile*> p = MediumAttack();
+				if (p.size() > 0) {
+					for each (Projectile* subP in p) {
+						projectileManager->AddProjectile(subP);
+					}
+				}
+			}
+			// B button
+			if (events.jbutton.button == 1 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
+			{
+				std::vector<Projectile*> p = HeavyAttack();
+				if (p.size() > 0) {
+					for each (Projectile* subP in p) {
+						projectileManager->AddProjectile(subP);
+					}
+				}
+			}
+			// A button
+			if (events.jbutton.button == 0 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
+			{
+				std::vector<Projectile*> p = SpecialAttack();
+				if (p.size() > 0) {
+					for each (Projectile* subP in p) {
+						projectileManager->AddProjectile(subP);
+					}
+				}
+			}
+			// Left Bumper
+			if (events.jbutton.button == 4 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
+			{
+				EnableTarget();
+			}
+			// Right Bumper
+			if (events.jbutton.button == 5 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
+			{
+				SwitchTarget();
+			}
+			break;
+
+		case SDL_JOYHATMOTION: 
+			// DPAD
+			if (events.jhat.value & SDL_HAT_UP)
+			{
+			}
+			if (events.jhat.value & SDL_HAT_DOWN)
+			{
+			}
+			if (events.jhat.value & SDL_HAT_LEFT)
+			{
+			}
+			if (events.jhat.value & SDL_HAT_RIGHT)
+			{
+			}
+			break;
+		}
+
+		// Child events
+		InheritedHandleEvents(events);
+	}
 }
 
 void Player::HandleStates(const Uint8 *state)
 {
-	// Debug commands
-	//----------------------------------------------
-	if (state[SDL_SCANCODE_Q]) {
-		Stun();
-	}
-
-	if (state[SDL_SCANCODE_E]) {
-		if (playerState != STUN) {
-			Block();
-		}
-	}
-	else {
-		if (playerState != STUN && playerState != ATTACK) {
-			playerState = NORMAL;
-		}
-	}
-	//----------------------------------------------
-
-	// Child events
 	InheritedHandleStates(state);
 }
 
@@ -186,22 +292,18 @@ void Player::Movement(PLAYERMOVEMENT movement, const float deltaTime)
 			moveMod = 0.2f;
 		}
 		if (movement == FORWARD) {
-			//SetWorldPosition(GetWorldPosition() + glm::vec3(0.0f, 0.0f, -moveSpeed * deltaTime));
 			physicsComponent->SetVelocity(glm::vec3(physicsComponent->GetVelocity().x, physicsComponent->GetVelocity().y, (-moveSpeed * moveMod) * deltaTime * 500 * dir));
 			base->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), -0.2f);
 		}
 		if (movement == BACKWARD) {
-			//SetWorldPosition(GetWorldPosition() + glm::vec3(0.0f, 0.0f, moveSpeed * deltaTime));
 			physicsComponent->SetVelocity(glm::vec3(physicsComponent->GetVelocity().x, physicsComponent->GetVelocity().y, (moveSpeed * moveMod) * deltaTime * 500 * dir));
 			base->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), 0.2f);
 		}
 		if (movement == RIGHT) {
-			//SetWorldPosition(GetWorldPosition() + glm::vec3(moveSpeed * deltaTime, 0.0f, 0.0f));
 			physicsComponent->SetVelocity(glm::vec3((moveSpeed * moveMod) * deltaTime * 500 * dir, physicsComponent->GetVelocity().y, physicsComponent->GetVelocity().z));
 			base->SetLocalRotation(glm::vec3(0.0f, 0.0f, 1.0f), -0.2f);
 		}
 		if (movement == LEFT) {
-			//SetWorldPosition(GetWorldPosition() + glm::vec3(-moveSpeed * deltaTime, 0.0f, 0.0f));
 			physicsComponent->SetVelocity(glm::vec3((-moveSpeed * moveMod) * deltaTime * 500 * dir, physicsComponent->GetVelocity().y, physicsComponent->GetVelocity().z));
 			base->SetLocalRotation(glm::vec3(0.0f, 0.0f, 1.0f), 0.2f);			
 		}
@@ -233,7 +335,6 @@ void Player::UpdateModel(const float deltaTime)
 	}
 
 	if (playerState == STUN) {
-		// Rotate Ring
 		ring->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), ring->GetWorldRotationAngle() - 10.0f * deltaTime);
 		base->SetWorldRotation(glm::vec3(0.0f, 1.0f, 1.0f), base->GetWorldRotationAngle() + 0.3f * deltaTime);
 	}
@@ -259,6 +360,7 @@ void Player::ResetModel() {
 void Player::SetStats() {
 	health = maxHealth;
 	moveSpeed = 1.0f;
+	specialMeter = 0;
 }
 
 void Player::SetEnemyTeam(Player* player1, Player* player2) {
@@ -320,6 +422,13 @@ void Player::Block() {
 	ResetModel();
 }
 
+void Player::StopBlock() {
+	if (playerState == BLOCK) {
+		playerState = NORMAL;
+		ResetModel();
+	}
+}
+
 void Player::ComboReset() {
 	lightComboTimer = 0;
 	lightComboPosition = 0;
@@ -332,7 +441,7 @@ void Player::ComboReset() {
 }
 
 void Player::Jump() {
-	if (worldPosition.y < 0.1f && playerState == NORMAL) {
+	if (worldPosition.y < 0.1f && worldPosition.y > -0.1f && playerState == NORMAL) {
 		physicsComponent->AddForce(glm::vec3(0.0f, 110.0f, 0.0f));
 	}
 }

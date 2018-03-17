@@ -8,7 +8,6 @@
 #include <BlueFlameEngine\Engine\Core\ResourceManager.h>
 #include <BlueFlameEngine\Engine\Rendering\3D\Skybox.h> 
 #include <BlueFlameEngine\Engine\Graphics\Shader.h> 
-#include <BlueFlameEngine\Engine\InputHandling\InputHandler.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\TextUI.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\ImageUI.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\ButtonUI.h>
@@ -17,6 +16,7 @@
 #include "TestScene.h"
 #include "GameTestScene.h"
 #include "TvTGameScene.h"
+#include "ShowCaseScene.h"
 
 using namespace ENGINE;
 

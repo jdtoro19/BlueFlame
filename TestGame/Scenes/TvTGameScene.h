@@ -12,7 +12,6 @@
 #include <BlueFlameEngine\Engine\Rendering\3D\Model.h>
 #include <BlueFlameEngine\Engine\Graphics\Shader.h> 
 #include <BlueFlameEngine\Engine\Math\PhysicsEngine.h>
-#include <BlueFlameEngine\Engine\InputHandling\InputHandler.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\TextUI.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\ImageUI.h>
 #include <BlueFlameEngine\Engine\Timers\Cooldown.h>

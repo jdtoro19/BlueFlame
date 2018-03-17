@@ -12,7 +12,6 @@
 #include <BlueFlameEngine\Engine\Rendering\2D\ImageUI.h> 
 #include <BlueFlameEngine\Engine\Graphics\Shader.h> 
 #include <BlueFlameEngine\Engine\Math\PhysicsEngine.h>
-#include <BlueFlameEngine\Engine\InputHandling\InputHandler.h>
 #include "DemoScene.h"
 #include "GameTestScene.h"
 

@@ -58,7 +58,7 @@ bool BFEngine::Initialize()
 	cout << "Clock Initialized" << endl;
 
 	// Set up controllers
-	SetUpControllers();
+	InputManager::GetInstance()->initalizeControllers();
 
 	cout << "BFEngine Initialized" << endl;
 
@@ -139,25 +139,4 @@ void BFEngine::SetWindowDimensions(int width, int height)
 {
 	this->width = width;
 	this->height = height;
-}
-
-void BFEngine::SetUpControllers()
-{
-	// Initialize Input Handler
-	InputHandler::GetInstance()->InitControllers();
-	numPlayers = InputHandler::GetInstance()->jCheck();
-
-	// Check if controllers were detected
-	if (numPlayers != 0) 
-	{
-		// Iterate through the players and set them up
-		for (int i = 0; i < numPlayers; i++) 
-		{
-			int temp = SDL_JoystickInstanceID(InputHandler::GetInstance()->joystick[i]);
-			indexOfPlayer[i] = temp; // Translates player X into joystick X
-			cout << "Setting up instance ID " << temp << endl;
-			players[temp] = PlayerController(InputHandler::GetInstance()->joystick[i], temp);
-			cout << "Successfully set up player " << i << endl;
-		}
-	}
 }

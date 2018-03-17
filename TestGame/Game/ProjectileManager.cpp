@@ -113,7 +113,7 @@ namespace GAME {
 		// Collisions with spawned projectiles
 		for (int i = 0; i < spawnSize; i++) {
 			for (int j = 0; j < proSize; j++) {
-					if (PhysicsEngine::isColliding(spawnedProjectiles.at(i)->collisionComponent, projectileList.at(j)->collisionComponent)) {
+					if (PhysicsEngine::isColliding(spawnedProjectiles.at(i)->collisionComponent, projectileList.at(j)->collisionComponent) && projectileList.at(j)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f)) {
 						projectileList.at(j)->deleted = true;
 				}
 			}

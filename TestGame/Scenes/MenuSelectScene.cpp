@@ -293,4 +293,8 @@ void MenuSelectScene::HandleStates(const Uint8 *state)
 	if (state[SDL_SCANCODE_P]) {
 		sceneManager->SwitchScene(new TvTGameScene());
 	}
+
+	if (state[SDL_SCANCODE_O]) {
+		sceneManager->SwitchScene(new ShowCaseScene());
+	}
 }
