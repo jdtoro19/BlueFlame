@@ -3,6 +3,11 @@
 using namespace GAME;
 
 LightningPlayer::LightningPlayer() {
+	base = new PlayerBase("Resources/Models/Alex (Electric)/Models/Electric_0001.obj");
+	base->SetWorldPosition(0.0f, 0.0f, 0.0f);
+	base->SetWorldScale(0.012f);
+	base->renderComponent->SetColour(0.2f, 0.7f, 0.0f);
+
 	ring->renderComponent->SetColour(0.1f, 0.1f, 0.5f);
 	HeavyCD = Cooldown(4.0);
 	LightCD = Cooldown(0.4);

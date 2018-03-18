@@ -3,9 +3,9 @@
 using namespace GAME;
 
 EarthPlayer::EarthPlayer() {
-	base = new PlayerBase("Resources/Models/Robot_Base_Greybox/Robot_Base_0001.obj");
+	base = new PlayerBase("Resources/Models/Flint (Earth)/Models/Earth_0001.obj");
 	base->SetWorldPosition(0.0f, 0.0f, 0.0f);
-	base->SetWorldScale(0.007f);
+	base->SetWorldScale(0.012f);
 	base->renderComponent->SetColour(0.2f, 0.7f, 0.0f);
 
 	ring->renderComponent->SetColour(0.8, 0.5f, 0.3f);

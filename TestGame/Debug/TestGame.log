@@ -1,4 +1,7 @@
-﻿  IcePlayer.cpp
-c:\users\juan toro\documents\blueflame\testgame\player\iceplayer.cpp(265): warning C4305: '=': truncation from 'double' to 'float'
+﻿  WindPlayer.cpp
+  LightningPlayer.cpp
+  FirePlayer.cpp
+c:\users\juan toro\documents\blueflame\testgame\player\fireplayer.cpp(382): warning C4018: '<': signed/unsigned mismatch
+  Generating Code...
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.exe
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.pdb (Partial PDB)

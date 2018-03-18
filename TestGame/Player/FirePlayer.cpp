@@ -4,6 +4,10 @@ using namespace GAME;
 
 FirePlayer::FirePlayer()
 {
+	base = new PlayerBase("Resources/Models/Kal (Fire)/Models/Fire_0001.obj");
+	base->SetWorldPosition(0.0f, 0.0f, 0.0f);
+	base->SetWorldScale(0.012f);
+	base->renderComponent->SetColour(0.2f, 0.7f, 0.0f);
 	ring->renderComponent->SetColour(0.7f, 0.2f, 0.1f);
 	specialMeter = 0;
 }

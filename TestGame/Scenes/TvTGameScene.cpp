@@ -36,7 +36,7 @@ bool TvTGameScene::Initialize()
 
 	// Music
 	bgm = new Music();
-	if (!bgm->Load("Resources/Audio/Arena.mp3")) {
+	if (!bgm->Load("Resources/Audio/20XX Theme Battle.mp3")) {
 		std::cout << "BGM could not load" << std::endl;
 	}
 	bgm->SetVolume(0);
@@ -209,6 +209,8 @@ bool TvTGameScene::Initialize()
 
 	cameraCD = Cooldown(4.5f);
 	cameraCD.startCD();
+
+	roundCD = Cooldown(0.5f);
 
 	return true;
 }
