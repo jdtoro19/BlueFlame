@@ -94,7 +94,9 @@ namespace ENGINE {
 	//private:
 
 		// Values used in movement, and collision calculation
+		glm::vec3 previousPosition;
 		glm::vec3 position;
+		glm::vec3 previousVelocity;
 		glm::vec3 velocity;
 		glm::vec3 acceleration;
 		glm::vec3 force;

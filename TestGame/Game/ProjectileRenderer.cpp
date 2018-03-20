@@ -19,13 +19,19 @@ void ProjectileRenderer::Update(const float deltaTime) {
 
 }
 
-void ProjectileRenderer::Render(Shader* shader) {
+void ProjectileRenderer::Render(Shader* shader, const double _interpolation) {
+
+	// Account for interpolation
+	glm::mat4 interpolatedMatrix;
+
 	for (unsigned int i = 0; i < projectiles.size(); ++i) {
-		shader->setMat4("model", projectiles.at(i)->GetWorldModelMatrix() * projectiles.at(i)->GetLocalModelMatrix());
+		interpolatedMatrix = (projectiles.at(i)->GetWorldModelMatrix() * (float)_interpolation) + (projectiles.at(i)->GetPreviousWorldMatrix() * (1.0f - (float)_interpolation));
+		shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix());
 		cubeMesh->Render(shader);
 	}
 	for (unsigned int i = 0; i < spawnedProjectiles.size(); ++i) {
-		shader->setMat4("model", spawnedProjectiles.at(i)->GetWorldModelMatrix() * spawnedProjectiles.at(i)->GetLocalModelMatrix());
+		interpolatedMatrix = spawnedProjectiles.at(i)->GetWorldModelMatrix() * (float)_interpolation + spawnedProjectiles.at(i)->GetPreviousWorldMatrix() * (1.0f - (float)_interpolation);
+		shader->setMat4("model", interpolatedMatrix * spawnedProjectiles.at(i)->GetLocalModelMatrix());
 		cubeMesh->Render(shader);
 	}
 }

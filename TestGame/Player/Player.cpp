@@ -61,7 +61,7 @@ Player::Player()
 	playerInput = new PlayerInput();
 
 	// Set player stats
-	SetStats();	
+	SetStats();
 }
 
 Player::~Player()
@@ -92,7 +92,7 @@ void Player::Update(const float deltaTime)
 		targetedPlayer.z += dir;
 		targetAngle = -glm::atan((targetedPlayer.x - worldPosition.x) / (targetedPlayer.z - worldPosition.z));
 	}
-	
+
 	// UPDATE TIMERS
 	//
 	// Update stun timer
@@ -142,11 +142,6 @@ void Player::Update(const float deltaTime)
 	}
 	//
 
-	// Update collision and physics
-	physicsComponent->Update(deltaTime);
-	collisionComponent->Update(GetWorldPosition());
-	SetWorldPosition(physicsComponent->GetPosition());
-
 	// Update rotation
 	if (playerTeam == PLAYERTEAM::TEAM1) {
 		SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), -targetAngle);
@@ -154,17 +149,18 @@ void Player::Update(const float deltaTime)
 	else if (playerTeam == PLAYERTEAM::TEAM2) {
 		SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), 3.14 - targetAngle);
 	}
+}
 
-	// Set velocity to zero when not moving
+void Player::FixedUpdate(const float deltaTime) {
+
+	// Update collision and physics
+	physicsComponent->Update(deltaTime);
+	SetWorldPosition(physicsComponent->GetPosition());
+	collisionComponent->Update(GetWorldPosition());
+
 	if (playerState == NORMAL) {
 		physicsComponent->SetVelocity(glm::vec3(0.0f, physicsComponent->GetVelocity().y, 0.0f));
 	}
-
-	// Update player model
-	UpdateModel(deltaTime);
-
-	// Update function from child
-	InheritedUpdate(deltaTime);
 
 	// If player can move update movement 
 	if (canMove) {
@@ -172,7 +168,9 @@ void Player::Update(const float deltaTime)
 			glm::vec2 mods = playerInput->LeftJoystick();
 
 			if (playerInput->LeftTriggerPressed()) {
-				Block();
+				if (!out) {
+					Block();
+				}
 			}
 			else {
 				StopBlock();
@@ -190,13 +188,21 @@ void Player::Update(const float deltaTime)
 				}
 			}
 			if (playerInput->RightTriggerPressed()) {
-				Jump();
+				if (!out) {
+					Jump();
+				}
 			}
 		}
 	}
+
+	// Update player model
+	UpdateModel(deltaTime);
+
+	// Update function from child
+	InheritedUpdate(deltaTime);
 }
 
-void Player::HandleEvents(SDL_Event events) 
+void Player::HandleEvents(SDL_Event events)
 {
 	// Player can press buttons when not off the arena
 	if (!out) {
@@ -255,7 +261,7 @@ void Player::HandleEvents(SDL_Event events)
 			}
 			break;
 
-		case SDL_JOYHATMOTION: 
+		case SDL_JOYHATMOTION:
 			// DPAD
 			if (events.jhat.value & SDL_HAT_UP)
 			{
@@ -282,7 +288,7 @@ void Player::HandleStates(const Uint8 *state)
 	InheritedHandleStates(state);
 }
 
-void Player::Movement(PLAYERMOVEMENT movement, const float deltaTime) 
+void Player::Movement(PLAYERMOVEMENT movement, const float deltaTime)
 {
 	if (playerState == NORMAL || (movementCD.checkOffCD() && moveWhileShooting)) {
 
@@ -292,25 +298,33 @@ void Player::Movement(PLAYERMOVEMENT movement, const float deltaTime)
 			moveMod = 0.2f;
 		}
 		if (movement == FORWARD) {
-			physicsComponent->SetVelocity(glm::vec3(physicsComponent->GetVelocity().x, physicsComponent->GetVelocity().y, (-moveSpeed * moveMod) * deltaTime * 500 * dir));
+			if (!out) {
+				physicsComponent->SetVelocity(glm::vec3(physicsComponent->GetVelocity().x, physicsComponent->GetVelocity().y, (-moveSpeed * moveMod) * deltaTime * 500 * dir));
+			}
 			base->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), -0.2f);
 		}
 		if (movement == BACKWARD) {
-			physicsComponent->SetVelocity(glm::vec3(physicsComponent->GetVelocity().x, physicsComponent->GetVelocity().y, (moveSpeed * moveMod) * deltaTime * 500 * dir));
+			if (!out) {
+				physicsComponent->SetVelocity(glm::vec3(physicsComponent->GetVelocity().x, physicsComponent->GetVelocity().y, (moveSpeed * moveMod) * deltaTime * 500 * dir));
+			}
 			base->SetWorldRotation(glm::vec3(1.0f, 0.0f, 0.0f), 0.2f);
 		}
 		if (movement == RIGHT) {
-			physicsComponent->SetVelocity(glm::vec3((moveSpeed * moveMod) * deltaTime * 500 * dir, physicsComponent->GetVelocity().y, physicsComponent->GetVelocity().z));
+			if (!out) {
+				physicsComponent->SetVelocity(glm::vec3((moveSpeed * moveMod) * deltaTime * 500 * dir, physicsComponent->GetVelocity().y, physicsComponent->GetVelocity().z));
+			}
 			base->SetLocalRotation(glm::vec3(0.0f, 0.0f, 1.0f), -0.2f);
 		}
 		if (movement == LEFT) {
-			physicsComponent->SetVelocity(glm::vec3((-moveSpeed * moveMod) * deltaTime * 500 * dir, physicsComponent->GetVelocity().y, physicsComponent->GetVelocity().z));
-			base->SetLocalRotation(glm::vec3(0.0f, 0.0f, 1.0f), 0.2f);			
+			if (!out) {
+				physicsComponent->SetVelocity(glm::vec3((-moveSpeed * moveMod) * deltaTime * 500 * dir, physicsComponent->GetVelocity().y, physicsComponent->GetVelocity().z));
+			}
+			base->SetLocalRotation(glm::vec3(0.0f, 0.0f, 1.0f), 0.2f);
 		}
 	}
 }
 
-void Player::UpdateModel(const float deltaTime) 
+void Player::UpdateModel(const float deltaTime)
 {
 	if (playerState == NORMAL) {
 		// Rotate Ring
@@ -464,10 +478,14 @@ void Player::EnableTarget() {
 	}
 }
 
-void Player::Render(Shader* shader)
+void Player::Render(Shader* shader, const double _interpolation)
 {
-	shader->setMat4("model", worldModelMatrix * localModelMatrix * base->GetWorldModelMatrix() * base->GetLocalModelMatrix() * base->model->GetWorldModelMatrix() * base->model->GetLocalModelMatrix());
-	base->Render(shader);
+	// Account for interpolation
+	glm::mat4 interpolatedMatrix;
+	interpolatedMatrix = worldModelMatrix * (float)_interpolation + previousWorldModelMatrix * (1.0f - (float)_interpolation);
+
+	shader->setMat4("model", interpolatedMatrix * localModelMatrix * base->GetWorldModelMatrix() * base->GetLocalModelMatrix() * base->model->GetWorldModelMatrix() * base->model->GetLocalModelMatrix());
+	base->Render(shader, _interpolation);
 
 	if (worldPosition.y > 0.0f) {
 		ring->SetWorldPosition(worldPosition.x, ring->GetWorldPosition().y, worldPosition.z);
@@ -475,15 +493,15 @@ void Player::Render(Shader* shader)
 	}
 	else {
 		ring->SetWorldPosition(0.0f, ring->GetWorldPosition().y, 0.0f);
-		shader->setMat4("model", worldModelMatrix * localModelMatrix * ring->GetWorldModelMatrix() * ring->GetLocalModelMatrix());
+		shader->setMat4("model", interpolatedMatrix * localModelMatrix * ring->GetWorldModelMatrix() * ring->GetLocalModelMatrix());
 	}
-	ring->Render(shader);
+	ring->Render(shader, _interpolation);
 
-	shader->setMat4("model", worldModelMatrix * localModelMatrix * shield->GetWorldModelMatrix() * shield->GetLocalModelMatrix());
-	shield->Render(shader);
+	shader->setMat4("model", interpolatedMatrix * localModelMatrix * shield->GetWorldModelMatrix() * shield->GetLocalModelMatrix());
+	shield->Render(shader, _interpolation);
 
 	if (isTargeting) {
 		shader->setMat4("model", marker->GetWorldModelMatrix() * marker->GetLocalModelMatrix());
-		marker->Render(shader);
+		marker->Render(shader, _interpolation);
 	}
 }

@@ -26,12 +26,16 @@ void Cube::AddVelocity(glm::vec3 vel) {
 }
 
 void Cube::Update(const float deltaTime) {
-	physicsComponent->Update(deltaTime);
-	collisionComponent->Update(GetWorldPosition());
-	SetWorldPosition(physicsComponent->GetPosition());	
+
 }
 
-void Cube::Render(Shader* shader)
+void Cube::FixedUpdate(const float deltaTime) {
+	physicsComponent->Update(deltaTime);
+	collisionComponent->Update(physicsComponent->GetPosition());
+	SetWorldPosition(physicsComponent->GetPosition());
+}
+
+void Cube::Render(Shader* shader, const double _interpolation)
 {
 	renderComponent->Render(shader);
 }

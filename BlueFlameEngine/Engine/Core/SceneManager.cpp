@@ -48,25 +48,38 @@ void SceneManager::Update(const float deltaTime) {
 	loading = false;
 }
 
+// Calls the current scene and updates its state
+void SceneManager::UpdateState() {
+	currentScene->UpdateState();
+}
+
+// Calls the current scene's fixedUpdate
+void SceneManager::FixedUpdate(const float deltaTime) {
+	this->fixedDeltaTime = deltaTime;
+	currentScene->PreFixedUpdate(deltaTime);
+	currentScene->FixedUpdate(deltaTime);
+	currentScene->LateFixedUpdate(deltaTime);
+}
+
 // The renderer is split into PreRender, Render, and PostRender
 void SceneManager::PreRender() {
 	renderer->PreRender(window, currentScene->GetCameraList()[0], splitscreen);
 }
 
-void SceneManager::Render()
+void SceneManager::Render(const double _interpolation)
 {
 	// SPLITSCREEN
 	if (splitscreen) {
 		// LEFT SCREEN
 		glViewport(0, 0, (window->GetWidth() / 2) * resolutionScale, window->GetHeight() * resolutionScale);
-		renderer->Render(window, currentScene->GetCameraList()[0], currentScene->GetObjectList(), currentScene->GetDirLightList(), 
+		renderer->Render(window, currentScene->GetCameraList()[0], _interpolation, currentScene->GetObjectList(), currentScene->GetDirLightList(), 
 																						  currentScene->GetPointLightList(), 
 																						  currentScene->GetSpotLightList());
 		renderer->RenderSkybox(currentScene->GetSkybox(), currentScene->GetCameraList()[0]);
 
 		// RIGHT SCREEN
 		glViewport((window->GetWidth() / 2) * resolutionScale, 0, (window->GetWidth() / 2)* resolutionScale, window->GetHeight() * resolutionScale);
-		renderer->Render(window, currentScene->GetCameraList()[1], currentScene->GetObjectList(), currentScene->GetDirLightList(), 
+		renderer->Render(window, currentScene->GetCameraList()[1], _interpolation, currentScene->GetObjectList(), currentScene->GetDirLightList(),
 																						  currentScene->GetPointLightList(), 
 																						  currentScene->GetSpotLightList());
 		renderer->RenderSkybox(currentScene->GetSkybox(), currentScene->GetCameraList()[1]);
@@ -75,7 +88,7 @@ void SceneManager::Render()
 	// NO SPLITSCREEN
 	else if (!splitscreen) {
 		glViewport(0, 0, window->GetWidth() * resolutionScale, window->GetHeight() * resolutionScale);
-		renderer->Render(window, currentScene->GetCameraList()[0], currentScene->GetObjectList(), currentScene->GetDirLightList(), 
+		renderer->Render(window, currentScene->GetCameraList()[0], _interpolation, currentScene->GetObjectList(), currentScene->GetDirLightList(),
 																						  currentScene->GetPointLightList(), 
 																						  currentScene->GetSpotLightList());
 		renderer->RenderSkybox(currentScene->GetSkybox(), currentScene->GetCameraList()[0]);

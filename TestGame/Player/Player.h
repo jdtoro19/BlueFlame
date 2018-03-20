@@ -40,6 +40,7 @@ namespace GAME {
 		// Loop functions
 		// DO NOT OVERRIDE THIS FUNCTION
 		void Update(const float deltaTime);
+		void FixedUpdate(const float deltaTime);
 		//
 		// Children use this method
 		virtual void InheritedUpdate(const float deltaTime) {}; 
@@ -54,7 +55,7 @@ namespace GAME {
 		// Children use this method
 		virtual void InheritedHandleStates(const Uint8 *state) {}; 
 		// Render
-		void Render(Shader* shader);
+		void Render(Shader* shader, const double _interpolation);
 
 		// Player movement
 		// Give a direction and deltatime to move player

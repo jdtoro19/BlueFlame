@@ -179,60 +179,6 @@ void Projectile::Update(const float deltaTime) {
 
 		if (maximumDistance == false || glm::length(worldPosition - beginPosition) <= maxD) {
 
-			if (delayIndex == 0) {
-				
-				if (beginScale != endScale)
-					SetWorldScale(glm::lerp(beginScale, endScale, delayTimer / delay));
-
-				if (beginPosition != endPosition)
-					SetWorldPosition(glm::lerp(beginPosition, endPosition, delayTimer / delay));
-
-				if (beginRotation != endRotation) {
-					glm::quat rotation = glm::lerp(beginRotation, endRotation, delayTimer / delay);
-					SetWorldRotation(rotation.x, rotation.y, rotation.z, rotation.w);
-				}
-
-				delayTimer += deltaTime;
-				if (delayTimer >= delay) {
-					if (delay2 != 0.0f) {
-						delayIndex++;
-					}
-					else {
-						delayIndex = 2;
-					}
-				}
-			}
-
-			if (delayIndex == 1) {
-
-				if (endScale != endScale2)
-					SetWorldScale(glm::lerp(endScale, endScale2, delayTimer2 / delay2));
-
-				if (endPosition != endPosition2)
-					SetWorldPosition(glm::lerp(endPosition, endPosition2, delayTimer2 / delay2));
-
-				if (endRotation != endRotation2) {
-					glm::quat rotation = glm::lerp(endRotation, endRotation2, delayTimer2 / delay2);
-					SetWorldRotation(rotation.x, rotation.y, rotation.z, rotation.w);
-				}
-
-				delayTimer2 += deltaTime;
-				if (delayTimer2 >= delay2) {
-					delayIndex++;
-				}
-			}
-
-			if (delayIndex == 2) {
-				physicsComponent->AddForce(impulseForce);
-				impulseForce = glm::vec3(0.0f);
-				physicsComponent->AddForce(actingForce);
-				physicsComponent->Update(deltaTime);
-				SetWorldPosition(physicsComponent->GetPosition());
-				collisionComponent->Update(GetWorldPosition());
-			}
-
-
-
 			if (canFlipX) {
 				flipTimeX += deltaTime;
 			}
@@ -252,17 +198,76 @@ void Projectile::Update(const float deltaTime) {
 			}
 		}
 	}
-	else if (lifetime.checkOffCD()) {
-		deleted = true;
-		//delete this;
-	}
 }
 
 void Projectile::FixedUpdate(const float deltaTime) {
+	// This has to be done here 
+	UpdatePreviousModelMatrix();
 
+	if (deleted == false && !lifetime.checkOffCD()) {
+
+		if (maximumDistance == false || glm::length(worldPosition - beginPosition) <= maxD) {
+
+			if (delayIndex == 0) {
+
+				if (delayTimer != 0.0f)
+					SetWorldScale(glm::lerp(beginScale, endScale, delayTimer / delay));
+
+				if (delayTimer != 0.0f)
+					SetWorldPosition(glm::lerp(beginPosition, endPosition, delayTimer / delay));
+
+				if (delayTimer != 0.0f) {
+					glm::quat rotation = glm::lerp(beginRotation, endRotation, delayTimer / delay);
+					SetWorldRotation(rotation.x, rotation.y, rotation.z, rotation.w);
+				}
+
+				delayTimer += deltaTime;
+				if (delayTimer >= delay) {
+					if (delay2 != 0.0f) {
+						delayIndex++;
+					}
+					else {
+						delayIndex = 2;
+					}
+				}
+			}
+
+			if (delayIndex == 1) {
+
+				if (delayTimer2 != 0.0f)
+					SetWorldScale(glm::lerp(endScale, endScale2, delayTimer2 / delay2));
+
+				if (delayTimer2 != 0.0f)
+					SetWorldPosition(glm::lerp(endPosition, endPosition2, delayTimer2 / delay2));
+
+				if (delayTimer2 != 0.0f) {
+					glm::quat rotation = glm::lerp(endRotation, endRotation2, delayTimer2 / delay2);
+					SetWorldRotation(rotation.x, rotation.y, rotation.z, rotation.w);
+				}
+
+				delayTimer2 += deltaTime;
+				if (delayTimer2 >= delay2) {
+					delayIndex++;
+				}
+			}
+
+
+			if (delayIndex == 2) {
+				physicsComponent->AddForce(impulseForce);
+				impulseForce = glm::vec3(0.0f);
+				physicsComponent->AddForce(actingForce);
+				physicsComponent->Update(deltaTime);
+				SetWorldPosition(physicsComponent->GetPosition());
+				collisionComponent->Update(physicsComponent->GetPosition());
+			}
+		}
+	}
+	else if (lifetime.checkOffCD()) {
+		deleted = true;
+	}
 }
 
-void Projectile::Render(Shader* shader)
+void Projectile::Render(Shader* shader, const double _interpolation)
 {
 
 }

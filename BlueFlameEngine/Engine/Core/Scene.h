@@ -25,11 +25,12 @@ namespace ENGINE {
 		// REQUIRED FUNCTIONS
 		virtual bool Initialize() = 0;
 		virtual void Update(const float deltaTime) = 0;
+		virtual void FixedUpdate(const float deltaTime) = 0;
 		virtual void HandleEvents(SDL_Event events) = 0;
 		virtual void HandleStates(const Uint8 *state) = 0;
 		//
 		// NOT REQUIRED FUNCTIONS
-		virtual void PreUpdate(const float deltaTime) 
+		virtual void PreUpdate(const float deltaTime)
 		{
 			this->deltaTime = deltaTime;
 
@@ -45,7 +46,30 @@ namespace ENGINE {
 				}
 			}
 		};
-		virtual void LateUpdate(const float deltaTime) 
+		virtual void LateUpdate(const float deltaTime)
+		{
+
+		};
+		virtual void UpdateState() 
+		{
+			if (objectList.size() != NULL) {
+				for (size_t i = 0; i < objectList.size(); ++i) {
+					objectList.at(i)->UpdateState();
+				}
+			}
+		}
+		virtual void PreFixedUpdate(const float deltaTime)
+		{
+
+			this->fixedDeltaTime = deltaTime;
+
+			if (objectList.size() != NULL) {
+				for (size_t i = 0; i < objectList.size(); ++i) {
+					objectList.at(i)->FixedUpdate(deltaTime);
+				}
+			}
+		};
+		virtual void LateFixedUpdate(const float deltaTime)
 		{
 			if (objectList.size() != NULL) {
 				for (size_t i = 0; i < objectList.size(); ++i) {
@@ -120,6 +144,8 @@ namespace ENGINE {
 		};
 		Skybox* skybox;
 		float deltaTime;
+		float fixedDeltaTime;
+		double interpolation;
 	};
 }
 #endif

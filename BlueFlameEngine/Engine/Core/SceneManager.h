@@ -21,10 +21,14 @@ namespace ENGINE {
 		void Initialize(Window* w);
 		// Update SceneManager and the current scene
 		void Update(const float deltaTime);
+		// Update the state of the game
+		void UpdateState();
+		// Fixed Update Scene manager and the current scene
+		void FixedUpdate(const float deltaTime);
 		// Clears the screen and sets up render options
 		void PreRender();
 		// Render objects
-		void Render();
+		void Render(const double _interpolation);
 		// Render frame buffers
 		void PostRender();
 		// Draw UI elements
@@ -138,6 +142,8 @@ namespace ENGINE {
 		int loops = 0;
 		// Deltatime
 		float deltaTime;
+		float fixedDeltaTime;
+		double interpolation;
 		// Resolution Scale
 		float resolutionScale = 1.0f;
 	};

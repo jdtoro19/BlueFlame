@@ -50,7 +50,7 @@ bool MenuSelectScene::Initialize()
 	// UI
 	titleText = new TextUI();
 	titleText->SetFont("Resources/Fonts/ka1.ttf");
-	titleText->SetText("M.E.C.C");
+	titleText->SetText("M.E.C.C.");
 	titleText->SetColour(1.0, 1.0f, 1.0f);
 	titleText->SetSize(0.8f);
 	titleText->SetSpacing(9.0f);
@@ -141,7 +141,6 @@ bool MenuSelectScene::Initialize()
 void MenuSelectScene::Update(const float deltaTime)
 {
 	//cameraList[0]->SetRotationY(cameraList[0]->Yaw -= deltaTime * 5);	
-	kyouko->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), kyouko->GetWorldRotationAngle() + 2.0f * deltaTime);
 
 	float lastPosition = buttonTest->GetPosition().x;
 	buttonTest->SetPosition(lastPosition += deltaTime * 3000, buttonTest->GetPosition().y);
@@ -168,6 +167,11 @@ void MenuSelectScene::Update(const float deltaTime)
 	//}
 	//sliderTEST->Update(deltaTime);
 }
+
+void MenuSelectScene::FixedUpdate(const float deltaTime) 
+{
+	kyouko->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), kyouko->GetWorldRotationAngle() + 2.0f * deltaTime);
+};
 
 void MenuSelectScene::HandleEvents(SDL_Event events)
 {

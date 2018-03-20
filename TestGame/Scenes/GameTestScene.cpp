@@ -115,8 +115,6 @@ void GameTestScene::Update(const float deltaTime)
 	sceneManager->DebugText("Press space for sound effect");
 	sceneManager->DebugText(player->GetPlayerState());
 
-	PhysicsEngine::GetInstance()->AddObjectList(objectList);
-	PhysicsEngine::GetInstance()->Update(deltaTime);
 
 	player->SetTarget(pointLight->GetWorldPosition());
 
@@ -126,6 +124,12 @@ void GameTestScene::Update(const float deltaTime)
 		timer = 0;
 		fire = true;
 	}
+}
+
+void GameTestScene::FixedUpdate(const float deltaTime) 
+{
+	PhysicsEngine::GetInstance()->AddObjectList(objectList);
+	PhysicsEngine::GetInstance()->Update(deltaTime);
 }
 
 void GameTestScene::HandleEvents(SDL_Event events)
@@ -262,16 +266,16 @@ void GameTestScene::HandleStates(const Uint8 *state)
 	player->HandleStates(state);
 
 	if (state[SDL_SCANCODE_T]) {
-		player->Movement(Player::PLAYERMOVEMENT::FORWARD, deltaTime);
+		player->Movement(Player::PLAYERMOVEMENT::FORWARD, fixedDeltaTime);
 	}
 	if (state[SDL_SCANCODE_G]) {
-		player->Movement(Player::PLAYERMOVEMENT::BACKWARD, deltaTime);
+		player->Movement(Player::PLAYERMOVEMENT::BACKWARD, fixedDeltaTime);
 	}
 	if (state[SDL_SCANCODE_H]) {
-		player->Movement(Player::PLAYERMOVEMENT::RIGHT, deltaTime);
+		player->Movement(Player::PLAYERMOVEMENT::RIGHT, fixedDeltaTime);
 	}
 	if (state[SDL_SCANCODE_F]) {
-		player->Movement(Player::PLAYERMOVEMENT::LEFT, deltaTime);
+		player->Movement(Player::PLAYERMOVEMENT::LEFT, fixedDeltaTime);
 	}
 
 	// Light

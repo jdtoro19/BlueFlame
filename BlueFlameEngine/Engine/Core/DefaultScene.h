@@ -15,6 +15,7 @@ namespace ENGINE {
 
 		bool Initialize();
 		void Update(const float deltaTime);
+		void FixedUpdate(const float deltaTime);
 		void HandleEvents(SDL_Event events);
 		void HandleStates(const Uint8 *state);
 

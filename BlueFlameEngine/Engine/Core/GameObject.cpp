@@ -206,6 +206,14 @@ glm::mat4 GameObject::GetWorldModelMatrix() const {
 	return worldModelMatrix;
 }
 
+void GameObject::UpdatePreviousModelMatrix() {
+	previousWorldModelMatrix = worldModelMatrix;
+}
+
+glm::mat4 GameObject::GetPreviousWorldMatrix() const {
+	return previousWorldModelMatrix;
+}
+
 ResourceHandle<Shader> GameObject::GetShader() {
 	return shader;
 }
@@ -218,6 +226,14 @@ void GameObject::Update(const float deltaTime)
 {
 }
 
-void GameObject::Render(Shader* shader)
+void GameObject::UpdateState() {
+	UpdatePreviousModelMatrix();
+}
+
+void GameObject::FixedUpdate(const float deltaTime)
+{
+}
+
+void GameObject::Render(Shader* shader, const double _interpolation)
 {
 }

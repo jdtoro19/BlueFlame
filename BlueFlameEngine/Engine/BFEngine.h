@@ -23,7 +23,8 @@ namespace ENGINE {
 
 		bool Initialize();
 		void Run();
-		void FixedUpdate();
+		void UpdateState();
+		void FixedUpdate(const float deltaTime);
 		void Update(const float deltaTime);		
 		void PreRender();
 		void Render();
@@ -64,6 +65,9 @@ namespace ENGINE {
 		std::string windowName;
 		int width;
 		int height;
+
+		// Interpolation between fixed game loop and rendering loop
+		double interpolation;
 	};
 }
 

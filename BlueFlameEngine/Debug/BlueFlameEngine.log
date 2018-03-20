@@ -10,17 +10,17 @@ c:\users\juan toro\documents\blueflame\blueflameengine\engine\rendering\uirender
   Skybox.cpp
   Model.cpp
   SceneManager.cpp
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(61): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(68): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(68): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(77): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(408): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(74): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(81): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(81): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(90): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(421): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
   Light.cpp
   LightComponent.cpp
   RenderComponent.cpp
   GameObject.cpp
   Renderer.cpp
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\rendering\renderer.cpp(370): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\rendering\renderer.cpp(374): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
   ModelMesh.cpp
   ModelComponent.cpp
   Mesh.cpp
@@ -29,7 +29,9 @@ c:\users\juan toro\documents\blueflame\blueflameengine\engine\rendering\renderer
   Generating Code...
   Compiling...
   BFEngine.cpp
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\bfengine.cpp(88): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\bfengine.cpp(127): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\bfengine.cpp(144): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\bfengine.cpp(89): warning C4101: 'loops': unreferenced local variable
   Cube.cpp
   SliderUI.cpp
 c:\users\juan toro\documents\blueflame\blueflameengine\engine\rendering\2d\sliderui.cpp(66): warning C4244: 'argument': conversion from 'float' to 'const int', possible loss of data

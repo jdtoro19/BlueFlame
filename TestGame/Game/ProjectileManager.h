@@ -52,6 +52,7 @@ namespace GAME {
 		ProjectileRenderer* GetProjectileRenderer() { return projectileRenderer; };
 
 		void Update(float deltaTime);
+		void FixedUpdate(const float deltaTime);
 
 	};
 }

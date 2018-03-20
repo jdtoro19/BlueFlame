@@ -117,7 +117,7 @@ void Renderer::PreRender(Window* window, Camera* camera, bool splitscreen) {
 }
 
 // Render sets up the shaders then renders objects
-void Renderer::Render(Window* window, Camera* camera, std::vector<GameObject*> objectList, std::vector<Light*> dirLightList,
+void Renderer::Render(Window* window, Camera* camera, const double _interpolation, std::vector<GameObject*> objectList, std::vector<Light*> dirLightList,
 																						   std::vector<Light*> pointLightList,
 																						   std::vector<Light*> spotLightList) 
 {
@@ -125,7 +125,7 @@ void Renderer::Render(Window* window, Camera* camera, std::vector<GameObject*> o
 	glm::mat4 view = camera->GetViewMatrix();
 
 	// Render objects
-	RenderObjects(view, camera, objectList, dirLightList, pointLightList, spotLightList);
+	RenderObjects(view, camera, _interpolation, objectList, dirLightList, pointLightList, spotLightList);
 }
 
 // PostRender swaps the frame buffer
@@ -135,7 +135,7 @@ void Renderer::PostRender(Window* window, bool splitscreen)
 }
 
 // Renders objects from the object list
-void Renderer::RenderObjects(glm::mat4 viewMatrix, Camera* camera, std::vector<GameObject*> objectList,	std::vector<Light*> dirLightList,
+void Renderer::RenderObjects(glm::mat4 viewMatrix, Camera* camera, const double _interpolation, std::vector<GameObject*> objectList,	std::vector<Light*> dirLightList,
 																										std::vector<Light*> pointLightList,
 																										std::vector<Light*> spotLightList)
 {
@@ -190,14 +190,18 @@ void Renderer::RenderObjects(glm::mat4 viewMatrix, Camera* camera, std::vector<G
 						}
 					}
 
+					// Account for interpolation
+					glm::mat4 interpolatedMatrix;
+					interpolatedMatrix = object->GetWorldModelMatrix() * (float)_interpolation + object->GetPreviousWorldMatrix() * (1.0f - (float)_interpolation);
+
 					// Set shader options
-					shader->setMat4("model", object->GetWorldModelMatrix() * object->GetLocalModelMatrix());
+					shader->setMat4("model", interpolatedMatrix * object->GetLocalModelMatrix());
 					shader->setMat4("projection", projection);
 					shader->setMat4("view", viewMatrix);
 					shader->setVec3("viewPos", camera->Position);
 
 					// Render object
-					object->Render(shader);
+					object->Render(shader, _interpolation);
 				}
 			}
 		}
@@ -266,7 +270,7 @@ void Renderer::RenderObjects(Shader* shader, glm::mat4 viewMatrix, Camera* camer
 				shader->setVec3("viewPos", camera->Position);
 
 				// Render object
-				object->Render(shader);
+				object->Render(shader, 0.0f);
 			}
 		}
 	}

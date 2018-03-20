@@ -18,8 +18,9 @@ PhysicsComponent::~PhysicsComponent() {
 
 void PhysicsComponent::Update(float deltaTime) {
 	if (physicsType == DYNAMIC) {
-		if (deltaTime >= 1 / 144.0f) {
-			deltaTime = 1 / 144.0f;
+
+		if (deltaTime >= 1.0f / 144.0f) {
+			deltaTime = 1.0f / 144.0f;
 		}
 
 		if (hasGravity) {

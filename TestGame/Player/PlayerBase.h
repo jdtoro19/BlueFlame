@@ -18,7 +18,7 @@ namespace GAME {
 		~PlayerBase();
 
 		void Update(const float deltaTime);
-		void Render(Shader* shader);
+		void Render(Shader* shader, const double _interpolation);
 
 		RenderComponent* renderComponent;
 		Model* model;

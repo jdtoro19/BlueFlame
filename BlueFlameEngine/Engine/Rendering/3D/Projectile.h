@@ -167,7 +167,7 @@ namespace ENGINE {
 
 		void Update(const float deltaTime);
 		void FixedUpdate(const float deltaTime);
-		void Render(Shader* shader);
+		void Render(Shader* shader, const double _interpolation);
 
 		// Used to create the collision for the projectile
 		void CreateCollision(RenderComponent* renderComponent, glm::vec3 p);

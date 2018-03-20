@@ -216,7 +216,7 @@ bool TvTGameScene::Initialize()
 }
 void TvTGameScene::Update(const float deltaTime)
 {
-	gameManager->Update();
+	projectileManager->Update(deltaTime);
 
 	if (playingIntro) {
 		PlayIntro();
@@ -224,13 +224,17 @@ void TvTGameScene::Update(const float deltaTime)
 	if (!playingIntro && !startText) {
 		PlayRoundStart();
 	}
+}
 
+void TvTGameScene::FixedUpdate(const float deltaTime)
+{
 	// Update object list for physics
 	PhysicsEngine::GetInstance()->AddObjectList(objectList);
 
 	// Update physics and projectile manager
 	PhysicsEngine::GetInstance()->Update(deltaTime);
-	projectileManager->Update(deltaTime);
+	projectileManager->FixedUpdate(deltaTime);
+	gameManager->Update();
 
 	// Update projectiles in projectile manager
 	if (projectileManager->GetProjectileList().size() != NULL) {
@@ -240,10 +244,6 @@ void TvTGameScene::Update(const float deltaTime)
 			}
 		}
 	}
-}
-void TvTGameScene::FixedUpdate(const float deltaTime)
-{
-
 }
 void TvTGameScene::HandleEvents(SDL_Event events)
 {
@@ -355,16 +355,16 @@ void TvTGameScene::HandleStates(const Uint8 *state)
 
 		// Player 1 movement
 		if (state[SDL_SCANCODE_W]) {
-			player1->Movement(Player::PLAYERMOVEMENT::FORWARD, deltaTime);
+			player1->Movement(Player::PLAYERMOVEMENT::FORWARD, fixedDeltaTime);
 		}
 		if (state[SDL_SCANCODE_S]) {
-			player1->Movement(Player::PLAYERMOVEMENT::BACKWARD, deltaTime);
+			player1->Movement(Player::PLAYERMOVEMENT::BACKWARD, fixedDeltaTime);
 		}
 		if (state[SDL_SCANCODE_D]) {
-			player1->Movement(Player::PLAYERMOVEMENT::RIGHT, deltaTime);
+			player1->Movement(Player::PLAYERMOVEMENT::RIGHT, fixedDeltaTime);
 		}
 		if (state[SDL_SCANCODE_A]) {
-			player1->Movement(Player::PLAYERMOVEMENT::LEFT, deltaTime);
+			player1->Movement(Player::PLAYERMOVEMENT::LEFT, fixedDeltaTime);
 		}
 
 		// Reload Scene

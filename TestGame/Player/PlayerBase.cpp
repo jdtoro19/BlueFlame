@@ -26,13 +26,13 @@ void PlayerBase::Update(const float deltaTime)
 {
 }
 
-void PlayerBase::Render(Shader* shader)
+void PlayerBase::Render(Shader* shader, const double _interpolation)
 {
 	if (renderComponent != NULL) {
 		renderComponent->Render(shader);
 	}
 
 	if (model != NULL) {
-		model->Render(shader);
+		model->Render(shader, _interpolation);
 	}
 }

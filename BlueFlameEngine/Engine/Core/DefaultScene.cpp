@@ -25,6 +25,12 @@ void DefaultScene::Update(const float deltaTime)
 {
 	
 }
+
+void DefaultScene::FixedUpdate(const float deltaTime)
+{
+
+}
+
 void DefaultScene::HandleEvents(SDL_Event events)
 {
 

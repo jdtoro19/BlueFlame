@@ -25,14 +25,17 @@ Model::~Model()
 }
 
 void Model::Update(const float deltaTime) {
+	model->Update();
+}
+
+void Model::FixedUpdate(const float deltaTime) {
 	if (physicsComponent != NULL) {
 		physicsComponent->Update(deltaTime);
 		collisionComponent->Update(GetWorldPosition());
 		SetWorldPosition(physicsComponent->GetPosition());
-		model->Update();
 	}
 }
 
-void Model::Render(Shader* shader) {
+void Model::Render(Shader* shader, const double _interpolation) {
 	model->Render(shader);
 }

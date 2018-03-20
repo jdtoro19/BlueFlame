@@ -28,7 +28,8 @@ namespace ENGINE {
 
 		// Model Matrix
 		glm::mat4 localModelMatrix = glm::mat4();
-		glm::mat4 worldModelMatrix = glm::mat4();		
+		glm::mat4 worldModelMatrix = glm::mat4();
+		glm::mat4 previousWorldModelMatrix = glm::mat4();
 
 		// Object Shader
 		ResourceHandle<Shader> shader;
@@ -78,6 +79,9 @@ namespace ENGINE {
 		// Update World Model Matrix
 		virtual void UpdateWorldMatrix();
 		virtual glm::mat4 GetWorldModelMatrix() const;
+		virtual void UpdatePreviousModelMatrix();
+		virtual glm::mat4 GetPreviousWorldMatrix() const;
+
 
 		// Shader getter and setter
 		ResourceHandle<Shader> GetShader();
@@ -95,7 +99,9 @@ namespace ENGINE {
 
 		// Loop functions
 		virtual void Update(const float deltaTime);
-		virtual void Render(Shader* shader);
+		virtual void UpdateState();
+		virtual void FixedUpdate(const float deltaTime);
+		virtual void Render(Shader* shader, const double _interpolation);
 	};
 }
 #endif

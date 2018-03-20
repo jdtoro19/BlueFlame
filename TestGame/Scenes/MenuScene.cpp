@@ -46,7 +46,7 @@ bool MenuScene::Initialize()
 	// UI
 	titleText = new TextUI();
 	titleText->SetFont("Resources/Fonts/ka1.ttf");
-	titleText->SetText("M.E.C.C");
+	titleText->SetText("M.E.C.C.");
 	titleText->SetColour(0.0, 0.0f, 0.0f);
 	titleText->SetSize(1.3f);
 	titleText->SetSpacing(9.0f);
@@ -77,6 +77,11 @@ void MenuScene::Update(const float deltaTime)
 	float fade = (sin(z+=deltaTime) / 2.0f) + 0.5f;
 	startText->SetAlpha(fade);
 	cameraList[0]->SetRotationY(cameraList[0]->Yaw += deltaTime * 5);	
+}
+
+void MenuScene::FixedUpdate(const float deltaTime) 
+{
+
 }
 
 void MenuScene::HandleEvents(SDL_Event events)

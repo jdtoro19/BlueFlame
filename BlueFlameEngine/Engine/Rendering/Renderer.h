@@ -26,12 +26,12 @@ namespace ENGINE {
 
 		// Rendering Functions
 		void PreRender(Window* window, Camera* camera, bool splitscreen);
-		void Render(Window* window, Camera* camera, std::vector<GameObject*> objectList, 
+		void Render(Window* window, Camera* camera, const double _interpolation, std::vector<GameObject*> objectList, 
 									std::vector<Light*> dirLightList, 
 									std::vector<Light*> pointLightList, 
 									std::vector<Light*> spotLightList);
 		void PostRender(Window* window, bool splitscreen);
-		void RenderObjects(glm::mat4 viewMatrix, Camera* camera, std::vector<GameObject*> objectList,
+		void RenderObjects(glm::mat4 viewMatrix, Camera* camera, const double _interpolation, std::vector<GameObject*> objectList,
 																 std::vector<Light*> dirLightList,
 																 std::vector<Light*> pointLightList,
 																 std::vector<Light*> spotLightList);	

@@ -178,6 +178,11 @@ void TestScene::Update(const float deltaTime)
 	//model->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), model->GetWorldRotationAngle() + moveSpeed * deltaTime);
 }
 
+void TestScene::FixedUpdate(const float deltaTime)
+{
+
+};
+
 void TestScene::HandleEvents(SDL_Event events)
 {
 	//joystick

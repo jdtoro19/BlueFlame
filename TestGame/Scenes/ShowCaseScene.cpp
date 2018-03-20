@@ -130,9 +130,6 @@ void ShowCaseScene::Update(const float deltaTime)
 	//sceneManager->DebugText(cameraList[0]->Pitch);
 	//sceneManager->DebugText(cameraList[0]->Zoom);
 
-	PhysicsEngine::GetInstance()->AddObjectList(objectList);
-	PhysicsEngine::GetInstance()->Update(deltaTime);
-
 	if (playingIntro) {
 		if (cameraCD.secondsLeft() > 2.5) {
 			CameraMove(RIGHT, -143.0f, 10.0f, 0.5f, 0);
@@ -180,6 +177,12 @@ void ShowCaseScene::Update(const float deltaTime)
 		}
 	}
 }
+
+void ShowCaseScene::FixedUpdate(const float deltaTime) 
+{
+	PhysicsEngine::GetInstance()->AddObjectList(objectList);
+	PhysicsEngine::GetInstance()->Update(deltaTime);
+};
 
 void ShowCaseScene::HandleEvents(SDL_Event events)
 {

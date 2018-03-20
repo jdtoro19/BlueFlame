@@ -31,6 +31,7 @@ namespace GAME {
 		// Every scene requires these three methods to be implemented
 		bool Initialize();
 		void Update(const float deltaTime);
+		void FixedUpdate(const float deltaTime);
 		void HandleEvents(SDL_Event events);
 		void HandleStates(const Uint8 *state);
 

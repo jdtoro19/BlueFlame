@@ -15,7 +15,7 @@ namespace ENGINE {
 		Light(LightComponent::Light_Type lt);
 		~Light();
 
-		void Render(Shader* shader);
+		void Render(Shader* shader, const double _interpolation);
 
 		LightComponent* lightComponent;
 		RenderComponent* renderComponent;

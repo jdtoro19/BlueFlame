@@ -19,7 +19,8 @@ namespace ENGINE {
 		~Model();
 
 		void Update(const float deltaTime);
-		void Render(Shader* shader);
+		void FixedUpdate(const float deltaTime);
+		void Render(Shader* shader, const double _interpolation);
 
 		ModelComponent* model;
 	};

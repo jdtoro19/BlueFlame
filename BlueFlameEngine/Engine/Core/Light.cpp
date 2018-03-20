@@ -20,7 +20,7 @@ Light::~Light()
 
 }
 
-void Light::Render(Shader* shader)
+void Light::Render(Shader* shader, const double _interpolation)
 {
 	renderComponent->Render(shader);
 }

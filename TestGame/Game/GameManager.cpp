@@ -51,7 +51,7 @@ void GameManager::Initialize()
 	team2Text->SetSpacing(9.0f);
 	team2Text->SetPosition(((team1Text->GetLength() / 2) - 50) + (BFEngine::GetInstance()->GetSceneManager()->GetScreenWidth() / 2), (BFEngine::GetInstance()->GetSceneManager()->GetScreenHeight() / 2) - 200);
 	team2Text->SetVisible(false);
-	
+
 	p1Meter = new SliderUI("Resources/Textures/Green.jpg", "Resources/Textures/blackFILL.png");
 	p1Meter->SetPosition(250, 1000);
 	p1Meter->SetHeight(100);
@@ -128,6 +128,7 @@ void GameManager::Update()
 			}
 
 			if (playerList[i]->IsOut()) {
+				playerList[i]->physicsComponent->hasGravity = false;
 				playerList[i]->SetWorldPosition(0.0f, -5.0f, 0.0f);
 			}
 		}
@@ -146,7 +147,7 @@ void GameManager::Update()
 	}
 }
 
-void GameManager::StartMatch() 
+void GameManager::StartMatch()
 {
 	roundTimerText->SetVisible(true);
 
@@ -180,6 +181,7 @@ void GameManager::GameOver()
 	for (unsigned int i = 0; i < playerList.size(); ++i) {
 		playerList[i]->SetIsOut(true);
 		playerList[i]->canRender = true;
+		playerList[i]->physicsComponent->hasGravity = true;
 		if (playerList[i]->GetIsTargeting()) {
 			playerList[i]->EnableTarget();
 		}
