@@ -1,4 +1,8 @@
 #pragma once
+
+#define DEFAULT_BUFLEN 512
+#define DEFAULT_PORT "27015"
+
 #ifndef BFEngine_H
 #define BFEngine_H
 
@@ -8,6 +12,9 @@
 #include "Core/Timer.h"
 #include "Timers/MasterClock.h"
 #include "InputHandling/InputManager.h"
+#include "Debuging/Settings.h"
+//#include "Networking/UDPNet.h"
+//#include "Networking\Winsock.h"
 
 namespace ENGINE {
 
@@ -43,6 +50,12 @@ namespace ENGINE {
 		// Clean up
 		static void TerminateGame();
 
+		// Networking
+		std::string performNetworking();
+		//net "working"
+		//UDPnet udpNet;
+		//Winsock winNet;
+
 	private:
 		// Private Constructor and Destructor so no other class can create it
 		BFEngine();
@@ -68,6 +81,28 @@ namespace ENGINE {
 
 		// Interpolation between fixed game loop and rendering loop
 		double interpolation;
+
+		// Networking
+		WSADATA wsaData;
+		int iResult;
+		char connectedClientName[256];
+
+		SOCKET ListenSocket = INVALID_SOCKET;
+		SOCKET ClientSocket = INVALID_SOCKET;
+
+		int iSendResult;
+		char recvbuf[DEFAULT_BUFLEN];
+		int recvbuflen = DEFAULT_BUFLEN;
+
+		SOCKADDR_IN client_info = { 0 };
+		int addrsize = sizeof(client_info);
+
+		std::vector<std::string> clientTable;
+		std::string spacer = "============================================";
+
+		bool setUpNetwork();
+		int closeNetwork();
+		bool acceptConnection();
 	};
 }
 

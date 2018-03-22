@@ -1,0 +1,18 @@
++Settings file for Blue Flame Engine
+++++++++++++++++++++++++++++++++++++
++Fullscreen (1 for true, 0 for false)
+0
++Splitscreen (1 for true, 0 for false)
+1
++Networked Multiplayer. Must be enabled to start in networked mode.
++(1 for true, 0 for false)
+0
++Acting as the server? If false, you will need an IP Address to connect to.
++(1 for true, 0 for false)
+1
++IP Address you're trying to connect to when acting as client
+
++Game Resolution
+800
+640
+++++++++++++++++++++++++++++++++++++

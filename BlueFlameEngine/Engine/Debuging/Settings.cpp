@@ -26,7 +26,7 @@ Settings* Settings::getInstance(void)
 	return gameSettings.get();
 }
 
-void Settings::loadSettings(std::string &fileName)
+void Settings::loadSettings(std::string fileName)
 {
 	settingsFile.clear();
 	std::string STRING;
@@ -43,13 +43,19 @@ void Settings::loadSettings(std::string &fileName)
 		while (!infile.eof()) // To get you all the lines.
 		{
 			getline(infile, STRING); // Saves the line in STRING.
-			settingsFile.push_back(STRING); //pushes the line into the file
+			if (STRING[0] == '+') {
+				//discard this line since its a comment
+			}
+			else {
+				settingsFile.push_back(STRING); //pushes the line into the file
+			}
+
 		}
 		std::cout << "Successfully parsed the file" << std::endl;
 
 		infile.close();
 
-		if (settingsFile.size() >= 5) { //make sure we have the correct amount of settings
+		if (settingsFile.size() >= 7) { //make sure we have the correct amount of settings
 			setSettingsFromFile();
 		}
 		else {
@@ -72,11 +78,24 @@ void Settings::close()
 void Settings::restoreDefaultSettings(std::string &fileName) {
 	std::vector<std::string> defaultSettings;
 
+	defaultSettings.push_back("+Settings file for Blue Flame Engine");
+	defaultSettings.push_back("++++++++++++++++++++++++++++++++++++");
+	defaultSettings.push_back("+Fullscreen (1 for true, 0 for false)");
 	defaultSettings.push_back(std::to_string(fullscreen));
+	defaultSettings.push_back("+Splitscreen (1 for true, 0 for false)");
 	defaultSettings.push_back(std::to_string(splitscreen));
-	defaultSettings.push_back(std::to_string(networked));
+	defaultSettings.push_back("+Networked Multiplayer. Must be enabled to start in networked mode.");
+	defaultSettings.push_back("+(1 for true, 0 for false)");
+	defaultSettings.push_back(std::to_string(networkedGame));
+	defaultSettings.push_back("+Acting as the server? If false, you will need an IP Address to connect to.");
+	defaultSettings.push_back("+(1 for true, 0 for false)");
+	defaultSettings.push_back(std::to_string(isServer));
+	defaultSettings.push_back("+IP Address you're trying to connect to when acting as client");
+	defaultSettings.push_back(serverIPAddress);
+	defaultSettings.push_back("+Game Resolution");
 	defaultSettings.push_back(std::to_string(resolutionX));
 	defaultSettings.push_back(std::to_string(resolutionY));
+	defaultSettings.push_back("++++++++++++++++++++++++++++++++++++");
 
 	close();
 	outStream = new std::ofstream(fileName.c_str());
@@ -104,17 +123,25 @@ void Settings::setSettingsFromFile() {
 	}
 
 	if (settingsFile.at(2) == "0") {
-		networked = false;
+		networkedGame = false;
 	}
 	else {
-		networked = true;
+		networkedGame = true;
+		if (settingsFile.at(3) == "1") {
+			isServer = true;
+		}
+		else {
+			isServer = false;
+			serverIPAddress = settingsFile.at(4);
+		}
 	}
-	int x = stoi(settingsFile.at(3));
+
+	int x = stoi(settingsFile.at(5));
 	if (x > 0) {
 		resolutionX = x;
 	}
 
-	int y = stoi(settingsFile.at(4));
+	int y = stoi(settingsFile.at(6));
 	if (y > 0) {
 		resolutionY = y;
 	}

@@ -51,7 +51,7 @@ namespace ENGINE {
 		* THis closes any open log files and opens a new settings file.
 		* @param fileName The name of the new settings file.
 		*/
-		void loadSettings(std::string &fileName);
+		void loadSettings(std::string fileName);
 
 		/**
 		* This closes the current log file without opening a new one.
@@ -62,7 +62,9 @@ namespace ENGINE {
 
 		bool fullscreen = false;
 		bool splitscreen = true;
-		bool networked = false;
+		bool networkedGame = false;
+		bool isServer = true;
+		std::string serverIPAddress = "";
 		int resolutionX = 800;
 		int resolutionY = 640;
 
