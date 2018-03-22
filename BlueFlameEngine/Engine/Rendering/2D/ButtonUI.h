@@ -16,7 +16,7 @@ namespace ENGINE {
 		~ButtonUI();
 
 		bool OnHover(SDL_Event events, SceneManager* sceneManager);
-		bool OnHover(ImageUI* crossHair, SceneManager* sceneManager);
+		bool OnHover(ImageUI* crossHair);
 		void OnClick();
 		void EnableClickable(bool clickable);
 		void SetWidth(int width);

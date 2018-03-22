@@ -39,9 +39,9 @@ void InputManager::initalizeControllers() {
 
 SDL_Joystick* InputManager::getController(SDL_JoystickID id) {
 	//check that the controller isn't already in use
-		if (newController(id)){
-			return nullptr;
-		}
+	if (!newController(id)) {
+		return nullptr;
+	}
 
 	//push back the reference to the controller
 	for each (SDL_Joystick* pInput in spareControllers) {

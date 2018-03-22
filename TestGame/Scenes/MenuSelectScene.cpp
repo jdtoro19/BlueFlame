@@ -175,9 +175,9 @@ void MenuSelectScene::FixedUpdate(const float deltaTime)
 
 void MenuSelectScene::HandleEvents(SDL_Event events)
 {
-	if (events.jbutton.button == 2) //start button
+	if (events.jbutton.button == 2) //x button
 	{
-		sceneManager->SwitchScene(new TvTGameScene());
+		sceneManager->SwitchScene(new CharacterSelectScene());
 	}
 
 	if (buttonTest->OnHover(events, sceneManager))
@@ -296,7 +296,7 @@ void MenuSelectScene::HandleStates(const Uint8 *state)
 	}
 
 	if (state[SDL_SCANCODE_P]) {
-		sceneManager->SwitchScene(new TvTGameScene());
+		sceneManager->SwitchScene(new CharacterSelectScene());
 	}
 
 	if (state[SDL_SCANCODE_O]) {

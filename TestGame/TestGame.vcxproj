@@ -124,9 +124,11 @@
   <ItemGroup>
     <ClCompile Include="Game\Cinematics.cpp" />
     <ClCompile Include="Game\GameManager.cpp" />
+    <ClCompile Include="Game\PlayerPortrait.cpp" />
     <ClCompile Include="Game\ProjectileManager.cpp" />
     <ClCompile Include="Game\ProjectileRenderer.cpp" />
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="Player\Crosshair.cpp" />
     <ClCompile Include="Player\EarthPlayer.cpp" />
     <ClCompile Include="Player\FirePlayer.cpp" />
     <ClCompile Include="Player\IcePlayer.cpp" />
@@ -135,6 +137,7 @@
     <ClCompile Include="Player\PlayerBase.cpp" />
     <ClCompile Include="Player\PlayerInput.cpp" />
     <ClCompile Include="Player\WindPlayer.cpp" />
+    <ClCompile Include="Scenes\CharacterSelectScene.cpp" />
     <ClCompile Include="Scenes\ShowCaseScene.cpp" />
     <ClCompile Include="Scenes\TvTGameScene.cpp" />
     <ClCompile Include="Scenes\DemoScene.cpp" />
@@ -146,8 +149,10 @@
   <ItemGroup>
     <ClInclude Include="Game\Cinematics.h" />
     <ClInclude Include="Game\GameManager.h" />
+    <ClInclude Include="Game\PlayerPortrait.h" />
     <ClInclude Include="Game\ProjectileManager.h" />
     <ClInclude Include="Game\ProjectileRenderer.h" />
+    <ClInclude Include="Player\Crosshair.h" />
     <ClInclude Include="Player\EarthPlayer.h" />
     <ClInclude Include="Player\FirePlayer.h" />
     <ClInclude Include="Player\IcePlayer.h" />
@@ -156,6 +161,7 @@
     <ClInclude Include="Player\PlayerBase.h" />
     <ClInclude Include="Player\PlayerInput.h" />
     <ClInclude Include="Player\WindPlayer.h" />
+    <ClInclude Include="Scenes\CharacterSelectScene.h" />
     <ClInclude Include="Scenes\ShowCaseScene.h" />
     <ClInclude Include="Scenes\TvTGameScene.h" />
     <ClInclude Include="Scenes\DemoScene.h" />

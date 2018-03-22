@@ -53,7 +53,7 @@ bool ButtonUI::OnHover(SDL_Event events, SceneManager* sceneManager)
 	}
 }
 
-bool ButtonUI::OnHover(ImageUI* crossHair, SceneManager* sceneManager)
+bool ButtonUI::OnHover(ImageUI* crossHair)
 {
 	float y = crossHair->GetPosition().y;
 

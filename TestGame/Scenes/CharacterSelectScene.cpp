@@ -1,0 +1,435 @@
+#include "CharacterSelectScene.h"
+
+using namespace GAME;
+
+CharacterSelectScene::CharacterSelectScene()
+{
+
+}
+
+CharacterSelectScene::~CharacterSelectScene()
+{
+	sceneManager = nullptr;
+}
+
+bool CharacterSelectScene::Initialize()
+{
+	// Make reference to the scene manager
+	sceneManager = BFEngine::GetInstance()->GetSceneManager();
+
+	// Set screen options
+	sceneManager->EnableSplitscreen(false);
+	sceneManager->EnableFullscreen(false);
+	sceneManager->ShowFPS(true);
+	sceneManager->GetRenderer()->EnableBloom(true);
+
+	// Load shaders
+	skyboxShader = new Shader("Shaders/skybox.vs", "Shaders/skybox.fs");
+
+	// Put shaders into shader manager
+	skyboxShaderHandle = sceneManager->GetRenderer()->GetShaderManager()->put(std::string("skybox"), skyboxShader);
+
+	// Make skybox, load its textures, set properties, and give to the renderer
+	skybox = new Skybox();
+	std::vector<char*> faces;
+	faces.push_back("Resources/Textures/Skyboxes/mp_midnight/right.png");
+	faces.push_back("Resources/Textures/Skyboxes/mp_midnight/left.png");
+	faces.push_back("Resources/Textures/Skyboxes/mp_midnight/top.png");
+	faces.push_back("Resources/Textures/Skyboxes/mp_midnight/bottom.png");
+	faces.push_back("Resources/Textures/Skyboxes/mp_midnight/back.png");
+	faces.push_back("Resources/Textures/Skyboxes/mp_midnight/front.png");
+	skybox->LoadTextures(faces);
+	skybox->SetShader(skyboxShaderHandle);
+
+	//if (BFEngine::GetInstance()->numPlayers > 0) {
+	//	BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[0]].  //.playerControls(player1);
+	//}
+
+	// UI
+	titleText = new TextUI();
+	titleText->SetFont("Resources/Fonts/ka1.ttf");
+	titleText->SetText("CHAMPION SELECT!");
+	titleText->SetColour(1.0, 1.0f, 1.0f);
+	titleText->SetSize(0.8f);
+	titleText->SetSpacing(9.0f);
+	titleText->SetPosition(50, 100);
+
+	crosshair1 = new Crosshair("Resources/Textures/CharacterSelectScreen/crosshair.png", 200, 300);
+	crosshair1->GetImage()->SetName("crosshair1");
+	//crosshair1->GetPlayerInput()->AddAnyController();
+	crosshairList.push_back(crosshair1);
+
+	crosshair2 = new Crosshair("Resources/Textures/CharacterSelectScreen/crosshairP2.png", 200, 900);
+	crosshair2->GetImage()->SetName("crosshair2");
+	//crosshair2->GetPlayerInput()->AddAnyController();
+	crosshairList.push_back(crosshair2);
+	
+	crosshair3 = new Crosshair("Resources/Textures/CharacterSelectScreen/crosshairP3.png", 1700, 300);
+	crosshair3->GetImage()->SetName("crosshair3");
+	//crosshair3->GetPlayerInput()->AddAnyController();
+	crosshairList.push_back(crosshair3);
+	
+	crosshair4 = new Crosshair("Resources/Textures/CharacterSelectScreen/crosshairP4.png", 1700, 900);
+	crosshair4->GetImage()->SetName("crosshair4");
+	//crosshair4->GetPlayerInput()->AddAnyController();
+	crosshairList.push_back(crosshair4);
+
+	player1Back = new ImageUI();
+	player1Back->SetImage("Resources/Textures/CharacterSelectScreen/blueBack.png");
+	player1Back->SetName("Player1Back");
+	player1Back->SetPosition(200, 300);
+	player1Back->SetHeight(250);
+	player1Back->SetWidth(250);
+	player1Port = new PlayerPortrait(200, 300, 300, 460);
+
+	player2Back = new ImageUI();
+	player2Back->SetImage("Resources/Textures/CharacterSelectScreen/blueBack.png");
+	player2Back->SetName("Player2Back");
+	player2Back->SetPosition(200, 900);
+	player2Back->SetHeight(250);
+	player2Back->SetWidth(250);
+	player2Port = new PlayerPortrait(200, 900, 300, 740);
+
+	player3Back = new ImageUI();
+	player3Back->SetImage("Resources/Textures/CharacterSelectScreen/redBack.png");
+	player3Back->SetName("Player3Back");
+	player3Back->SetPosition(1700, 300);
+	player3Back->SetHeight(250);
+	player3Back->SetWidth(250);
+	player3Port = new PlayerPortrait(1700, 300, 1600, 460);
+
+	player4Back = new ImageUI();
+	player4Back->SetImage("Resources/Textures/CharacterSelectScreen/redBack.png");
+	player4Back->SetName("Player4Back");
+	player4Back->SetPosition(1700, 900);
+	player4Back->SetHeight(250);
+	player4Back->SetWidth(250);
+	player4Port = new PlayerPortrait(1700, 900, 1600, 740);
+
+	champAlexTrix = new ButtonUI("Resources/Textures/CharacterSelectScreen/Alex_Trix.png");
+	champAlexTrix->GetImage()->SetName("Alex_Trix");
+	champAlexTrix->SetPosition(760, 780);
+	champAlexTrix->SetHeight(180);
+	champAlexTrix->SetWidth(180);
+
+	champFlintDamascus = new ButtonUI("Resources/Textures/CharacterSelectScreen/Flint_Damascus.png");
+	champFlintDamascus->GetImage()->SetName("Flint_Damascus");
+	champFlintDamascus->SetPosition(760, 420);
+	champFlintDamascus->SetHeight(180);
+	champFlintDamascus->SetWidth(180);
+
+	champJackCole = new ButtonUI("Resources/Textures/CharacterSelectScreen/Jack_Cole.png");
+	champJackCole->GetImage()->SetName("Jack_Cole");
+	champJackCole->SetPosition(1120, 780);
+	champJackCole->SetHeight(180);
+	champJackCole->SetWidth(180);
+
+	champKalOrr = new ButtonUI("Resources/Textures/CharacterSelectScreen/Kal_Orr.png");
+	champKalOrr->GetImage()->SetName("Kal_Orr");
+	champKalOrr->SetPosition(940, 600);
+	champKalOrr->SetHeight(180);
+	champKalOrr->SetWidth(180);
+
+	champOkiCaeli = new ButtonUI("Resources/Textures/CharacterSelectScreen/Oki_Caeli.png");
+	champOkiCaeli->GetImage()->SetName("Oki_Caeli");
+	champOkiCaeli->SetPosition(1120, 420);
+	champOkiCaeli->SetHeight(180);
+	champOkiCaeli->SetWidth(180);
+
+	champMystery = new ImageUI();
+	champMystery->SetImage("Resources/Textures/CharacterSelectScreen/Mystery_Champ2.png");
+	champMystery->SetName("Mystery_Champ");
+	champMystery->SetPosition(940, 240);
+	champMystery->SetHeight(180);
+	champMystery->SetWidth(180);
+
+	champMystery2 = new ImageUI();
+	champMystery2->SetImage("Resources/Textures/CharacterSelectScreen/Mystery_Champ2.png");
+	champMystery2->SetName("Mystery_Champ2");
+	champMystery2->SetPosition(940, 960);
+	champMystery2->SetHeight(180);
+	champMystery2->SetWidth(180);
+
+	champMystery3 = new ImageUI();
+	champMystery3->SetImage("Resources/Textures/CharacterSelectScreen/Mystery_Champ2.png");
+	champMystery3->SetName("Mystery_Champ2");
+	champMystery3->SetPosition(1300, 600);
+	champMystery3->SetHeight(180);
+	champMystery3->SetWidth(180);
+
+	champMystery4 = new ImageUI();
+	champMystery4->SetImage("Resources/Textures/CharacterSelectScreen/Mystery_Champ2.png");
+	champMystery4->SetName("Mystery_Champ2");
+	champMystery4->SetPosition(580, 600);
+	champMystery4->SetHeight(180);
+	champMystery4->SetWidth(180);
+
+	blueJoiner = new ImageUI();
+	blueJoiner->SetImage("Resources/Textures/CharacterSelectScreen/greyJoin.png");
+	blueJoiner->SetName("Blue_Joiner");
+	blueJoiner->SetPosition(100, 600);
+	blueJoiner->SetHeight(349);
+	blueJoiner->SetWidth(152);
+
+	redJoiner = new ImageUI();
+	redJoiner->SetImage("Resources/Textures/CharacterSelectScreen/greyJoin2.png");
+	redJoiner->SetName("Red_Joiner");
+	redJoiner->SetPosition(1800, 600);
+	redJoiner->SetHeight(349);
+	redJoiner->SetWidth(152);
+
+	portraitList.push_back(player1Port);
+	portraitList.push_back(player2Port);
+	portraitList.push_back(player3Port);
+	portraitList.push_back(player4Port);
+
+
+	//add objects to relevant scene lists crosshair1
+	{
+	AddUIObject(titleText);
+	AddUIObject(blueJoiner);
+	AddUIObject(redJoiner);
+
+	////
+	//Setup player portraits and text boxes here
+	AddUIObject(player1Back);
+	SetUpPlayerPorts(player1Port);
+
+	AddUIObject(player2Back);
+	SetUpPlayerPorts(player2Port);
+
+	AddUIObject(player3Back);
+	SetUpPlayerPorts(player3Port);
+
+	AddUIObject(player4Back);
+	SetUpPlayerPorts(player4Port);
+	//setup end
+	/////
+
+	AddUIObject(champAlexTrix);
+	AddUIObject(champFlintDamascus);
+	AddUIObject(champJackCole);
+	AddUIObject(champKalOrr);
+	AddUIObject(champOkiCaeli);
+
+	AddUIObject(champMystery);
+	AddUIObject(champMystery2);
+	AddUIObject(champMystery3);
+	AddUIObject(champMystery4);
+	}
+
+	//everything loaded fine
+	return true;
+}
+
+void CharacterSelectScene::Update(const float deltaTime)
+{
+	//rotate portrait backgrounds
+	portBackRot += deltaTime * 2;
+	player1Back->SetRotationAngle(portBackRot);
+	player2Back->SetRotationAngle(portBackRot);
+	player3Back->SetRotationAngle(portBackRot);
+	player4Back->SetRotationAngle(portBackRot);
+
+	//Update Crosshair Movement
+	for (int i = 0; i < crosshairList.size(); i++)
+	{
+		crosshairList.at(i)->Update(deltaTime);
+	}
+
+	//update portraits and textboxes for alpha
+	for (int i = 0; i < portraitList.size(); i++)
+	{
+		portraitList.at(i)->Update(deltaTime);
+	}
+
+	//check to see that all players have selected
+	if (crosshair1->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
+		crosshair2->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
+		crosshair3->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
+		crosshair4->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE)
+	{
+		sceneManager->SwitchScene(new DemoScene());
+	}
+}
+
+void CharacterSelectScene::HandleEvents(SDL_Event events)
+{
+	//check to see if any players already pressed start
+	for (int i = 0; i < crosshairList.size(); i++)
+	{
+		//check to see if player allowed to move and if event matches crosshair controller
+		if (crosshairList.at(i)->CanMove() && events.jbutton.which == SDL_JoystickInstanceID(crosshairList.at(i)->GetPlayerInput()->GetJoystick()))
+		{
+			//do the same for all 5 champions
+			//is crosshair hovering over Alex Trix?
+			if (champAlexTrix->OnHover(crosshairList.at(i)->GetImage()))
+			{
+				//set player portrait to Alex Type (this sets the alpha portrait and text to visible)
+				portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::ALEX);
+
+				//if pressing A over the image, select that champion
+				if (events.type == SDL_JOYBUTTONDOWN) {
+					if (events.jbutton.button == 0) //A button
+					{
+						if(portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::ALEX)
+						{
+							//disable movement, disable visibility of crosshair, pass the chartype to crosshair
+							crosshairList.at(i)->SetCanMove(false);
+							crosshairList.at(i)->SetVisible(false);
+							crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
+						}
+					}
+				}
+			}
+			else if (champFlintDamascus->OnHover(crosshairList.at(i)->GetImage()))
+			{
+				portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::FLINT);
+				if (events.type == SDL_JOYBUTTONDOWN) {
+					if (events.jbutton.button == 0) //A button
+					{
+						if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::FLINT)
+						{
+							crosshairList.at(i)->SetCanMove(false);
+							crosshairList.at(i)->SetVisible(false);
+							crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
+						}
+					}
+				}
+			}
+			else if (champKalOrr->OnHover(crosshairList.at(i)->GetImage()))
+			{
+				portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::KAL);
+				if (events.type == SDL_JOYBUTTONDOWN) {
+					if (events.jbutton.button == 0) //A button
+					{
+						if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::KAL)
+						{
+							crosshairList.at(i)->SetCanMove(false);
+							crosshairList.at(i)->SetVisible(false);
+							crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
+						}
+					}
+				}
+			}
+			else if (champJackCole->OnHover(crosshairList.at(i)->GetImage()))
+			{
+				portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::JACK);
+				if (events.type == SDL_JOYBUTTONDOWN) {
+					if (events.jbutton.button == 0) //A button
+					{
+						if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::JACK)
+						{
+							crosshairList.at(i)->SetCanMove(false);
+							crosshairList.at(i)->SetVisible(false);
+							crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
+						}
+					}
+				}
+			}
+			else if (champOkiCaeli->OnHover(crosshairList.at(i)->GetImage()))
+			{
+				portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::OKI);
+				if (events.type == SDL_JOYBUTTONDOWN) {
+					if (events.jbutton.button == 0) //A button
+					{
+						if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::OKI)
+						{
+							crosshairList.at(i)->SetCanMove(false);
+							crosshairList.at(i)->SetVisible(false);
+							crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
+						}
+					}
+				}
+			}
+			else
+			{
+				//if not hovering over any champions, update portrait and text to show nothing and update chartype
+				portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::NONE);
+			}
+		}
+		
+		if (events.type == SDL_JOYBUTTONDOWN && events.jbutton.which == SDL_JoystickInstanceID(crosshairList.at(i)->GetPlayerInput()->GetJoystick())) {
+			if (events.jbutton.button == 1) //B button
+			{
+				//if crosshair pressed B, allow movement, set visibility of crosshair to true, set chartype to nothing since its unselected
+				crosshairList.at(i)->SetCanMove(true);
+				crosshairList.at(i)->SetVisible(true);
+				crosshairList.at(i)->SetCharSelected(PlayerPortrait::CHARTYPE::NONE);
+			}
+		}
+	}
+
+	if (events.type == SDL_JOYBUTTONDOWN) {
+
+		if (events.jbutton.button == 7) //Start button
+		{
+			//create new controller
+			ControllerPressStart(events.jbutton.which);
+		}
+	}
+}
+
+void CharacterSelectScene::HandleStates(const Uint8 *state)
+{
+	//if (state[SDL_SCANCODE_Z]) {
+	//	sceneManager->PreviousScene();
+	//}
+
+	//if (state[SDL_SCANCODE_P]) {
+	//	sceneManager->SwitchScene(new TvTGameScene());
+	//}
+}
+
+void CharacterSelectScene::ControllerPressStart(SDL_JoystickID jID)
+{
+	// Bind Controller
+	for (int i = 0; i < crosshairList.size(); i++)
+	{
+		if (crosshairList.at(i)->GetEnabled() == true)
+		{
+			continue;
+		}
+
+		crosshairList.at(i)->GetPlayerInput()->CheckForController(jID);
+		crosshairList.at(i)->SetCanMove(true);
+		crosshairList.at(i)->SetEnabled(true);
+		AddUIObject(crosshairList.at(i)->GetImage());
+		break;
+		
+		/*if (crosshairList.at(i)->GetPlayerInput()->CheckForController(i + 1))
+		{
+			AddUIObject(crosshairList.at(i)->GetImage());
+			crosshairList.at(i)->SetCanMove(true);
+		}*/
+		//if (crosshairList.at(i)->GetPlayerInput()->GetJoystick() > 0) {
+			//else if (crosshair1->GetPlayerInput()->CheckForController(2))
+			//{
+			//	//BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[0]].playerControls(player1);
+			//	AddUIObject(crosshair2);
+			//}
+			//else if (InputHandler::GetInstance()->jCheck() == 3)
+			//{
+			//	//BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[0]].playerControls(player1);
+			//	AddUIObject(crosshair3);
+			//}
+			//else if (InputHandler::GetInstance()->jCheck() == 4)
+			//{
+			//	//BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[0]].playerControls(player1);
+			//	AddUIObject(crosshair4);
+			//}
+		//}
+	}
+}
+
+void CharacterSelectScene::SetUpPlayerPorts(PlayerPortrait* tempP)
+{
+	std::vector<ImageUI*> imgList;
+
+	imgList = tempP->GetImages();
+
+	for (int i = 0; i < imgList.size(); i++)
+	{
+		AddUIObject(imgList.at(i));
+	}
+}

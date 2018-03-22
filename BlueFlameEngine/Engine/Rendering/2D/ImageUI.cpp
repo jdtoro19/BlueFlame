@@ -90,7 +90,7 @@ void ImageUI::Draw(glm::mat4 projection) {
 	glm::mat4 model = glm::mat4();
 	model = glm::translate(model, position);
 	model = glm::scale(model, glm::vec3(width, height, 0.0f) * scale);
-	model = glm::rotate(model, 0.0f, rotation);	
+	model = glm::rotate(model, rotationAngle, rotation);
 	shader->setMat4("model", model);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 

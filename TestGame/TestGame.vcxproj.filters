@@ -84,6 +84,15 @@
     <ClCompile Include="Scenes\ShowCaseScene.cpp">
       <Filter>Source Files\Scenes</Filter>
     </ClCompile>
+    <ClCompile Include="Game\PlayerPortrait.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Player\Crosshair.cpp">
+      <Filter>Source Files\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="Scenes\CharacterSelectScene.cpp">
+      <Filter>Source Files\Scenes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Scenes\TestScene.h">
@@ -141,6 +150,15 @@
       <Filter>Source Files\Player</Filter>
     </ClInclude>
     <ClInclude Include="Scenes\ShowCaseScene.h">
+      <Filter>Source Files\Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Game\PlayerPortrait.h">
+      <Filter>Source Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Player\Crosshair.h">
+      <Filter>Source Files\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="Scenes\CharacterSelectScene.h">
       <Filter>Source Files\Scenes</Filter>
     </ClInclude>
   </ItemGroup>

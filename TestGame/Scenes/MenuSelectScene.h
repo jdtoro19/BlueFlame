@@ -17,6 +17,7 @@
 #include "GameTestScene.h"
 #include "TvTGameScene.h"
 #include "ShowCaseScene.h"
+#include "CharacterSelectScene.h"
 
 using namespace ENGINE;
 

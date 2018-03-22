@@ -13,6 +13,7 @@ namespace ENGINE {
 		// object variables
 		glm::vec3 position;
 		glm::vec3 rotation;
+		float rotationAngle;
 		glm::vec3 scale;
 
 		// sets whether this object is rendered
@@ -27,6 +28,7 @@ namespace ENGINE {
 		virtual void SetPosition(const glm::vec3 &p);
 		virtual void SetRotation(const float &x, const float &y, const float &z);
 		virtual void SetRotation(const glm::vec3 &r);
+		virtual void SetRotationAngle(const float &a);
 		virtual void SetScale(const float &x, const float &y);
 		virtual void SetScale(const glm::vec3 &s);
 		virtual void SetScale(const float &s);
@@ -35,6 +37,7 @@ namespace ENGINE {
 		// getters
 		virtual glm::vec3 GetPosition() const;
 		virtual glm::vec3 GetRotation() const;
+		virtual float GetRotationAngle() const;
 		virtual glm::vec3 GetScale() const;
 		virtual bool GetVisible() const;
 

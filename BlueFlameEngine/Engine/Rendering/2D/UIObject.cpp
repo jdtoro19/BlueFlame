@@ -2,7 +2,7 @@
 
 using namespace ENGINE;
 
-UIObject::UIObject() : position(0.0f, 0.0f, 0.0f), rotation(0.0f, 0.0f, 1.0f), scale(1.0f, 1.0, 1.0f)
+UIObject::UIObject() : position(0.0f, 0.0f, 0.0f), rotation(0.0f, 0.0f, 1.0f), rotationAngle(0.0f), scale(1.0f, 1.0, 1.0f)
 {
 }
 
@@ -28,6 +28,11 @@ void UIObject::SetRotation(const float &x, const float &y, const float &z)
 void UIObject::SetRotation(const glm::vec3 &p)
 {
 	rotation = p;
+}
+
+void UIObject::SetRotationAngle(const float &a)
+{
+	rotationAngle = a;
 }
 
 void UIObject::SetScale(const float &x, const float &y)
@@ -58,6 +63,11 @@ glm::vec3 UIObject::GetPosition() const
 glm::vec3 UIObject::GetRotation() const
 {
 	return rotation;
+}
+
+float UIObject::GetRotationAngle() const
+{
+	return rotationAngle;
 }
 
 glm::vec3 UIObject::GetScale() const

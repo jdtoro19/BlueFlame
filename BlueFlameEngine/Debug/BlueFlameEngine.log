@@ -2,12 +2,7 @@
 c:\users\juan toro\documents\blueflame\blueflameengine\engine\bfengine.cpp(151): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
 c:\users\juan toro\documents\blueflame\blueflameengine\engine\bfengine.cpp(168): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
 c:\users\juan toro\documents\blueflame\blueflameengine\engine\bfengine.cpp(113): warning C4101: 'loops': unreferenced local variable
-  Generating Code...
 c:\users\juan toro\documents\blueflame\blueflameengine\engine\bfengine.cpp(367): warning C4715: 'ENGINE::BFEngine::performNetworking': not all control paths return a value
-  Compiling...
-  MasterClock.cpp
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\timers\masterclock.cpp(29): warning C4800: 'BOOL': forcing value to bool 'true' or 'false' (performance warning)
-  Generating Code...
 SDL2_image.lib(SDL2_image.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
 SDL2_image.lib(SDL2_image.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
 SDL2_mixer.lib(SDL2_mixer.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
