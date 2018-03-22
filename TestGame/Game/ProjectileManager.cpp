@@ -5,6 +5,9 @@ namespace GAME {
 
 	ProjectileManager::ProjectileManager() {
 		projectileRenderer = new ProjectileRenderer();
+
+		// Default to no friendly fire and no phase through
+		SetFriendlyFire(false);
 	}
 
 	void ProjectileManager::AddProjectile(Projectile* _projectile) {
@@ -30,6 +33,54 @@ namespace GAME {
 
 	void ProjectileManager::RemoveEnvironment(GameObject* _environment) {
 		environmentList.erase(std::remove(environmentList.begin(), environmentList.end(), _environment), environmentList.end());
+	}
+
+	void ProjectileManager::SetFriendlyFire(bool _fireType) {
+		if (_fireType)
+			projectileInteraction = 1;
+		else if (!_fireType && (projectileInteraction == 2 || projectileInteraction == 3))
+			projectileInteraction = 2;
+		else if (!_fireType)
+			projectileInteraction = 0;
+	}
+
+	void ProjectileManager::SetPhaseThrough(bool _phaseType) {
+		if (_phaseType && projectileInteraction == 1)
+			projectileInteraction = 3;
+		else if (_phaseType && projectileInteraction == 0)
+			projectileInteraction = 2;
+		else if (!_phaseType && projectileInteraction == 3)
+			projectileInteraction = 1;
+		else if (!_phaseType && projectileInteraction == 2)
+			projectileInteraction = 0;
+		else if (!_phaseType) {
+			projectileInteraction = 0;
+		}
+		else if (_phaseType) {
+			projectileInteraction = 2;
+		}
+	}
+
+	bool ProjectileManager::IsSameTeam(Player &_player, Projectile &_projectile) {
+		if ((_player.GetPlayerTeam() == Player::PLAYERTEAM::TEAM1 && _projectile.GetTeam() == PROJECTILE_TEAM::TEAM1) ||
+			(_player.GetPlayerTeam() == Player::PLAYERTEAM::TEAM2 && _projectile.GetTeam() == PROJECTILE_TEAM::TEAM2)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	bool ProjectileManager::IsSamePlayer(Player &_player, Projectile &_projectile) {
+		if ((_player.GetPlayerNumber() == Player::PLAYERNUMBER::PLAYER1 && _projectile.GetPlayer() == PROJECTILE_PLAYER::PLAYER1) ||
+			(_player.GetPlayerNumber() == Player::PLAYERNUMBER::PLAYER2 && _projectile.GetPlayer() == PROJECTILE_PLAYER::PLAYER2) ||
+			(_player.GetPlayerNumber() == Player::PLAYERNUMBER::PLAYER3 && _projectile.GetPlayer() == PROJECTILE_PLAYER::PLAYER3) ||
+			(_player.GetPlayerNumber() == Player::PLAYERNUMBER::PLAYER4 && _projectile.GetPlayer() == PROJECTILE_PLAYER::PLAYER4)) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	void ProjectileManager::AddSpawnedProjectile(Projectile* _projectile) {
@@ -75,14 +126,41 @@ namespace GAME {
 		// Collisions with player
 		for (int i = 0; i < plaSize; i++) {
 			for (int j = 0; j < proSize; j++) {
-				if (playerList.at(i)->collisionComponent != NULL && projectileList.at(j)->collisionComponent != NULL && projectileList.at(j)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f)) {
-					if (PhysicsEngine::isColliding(playerList.at(i)->collisionComponent, projectileList.at(j)->collisionComponent)) {
-						if (projectileList.at(j)->GetClipping() == PROJECTILE_CLIP::YES_WALL_PLAYER ||
-							projectileList.at(j)->GetClipping() == PROJECTILE_CLIP::YES_PLAYER_PROJECTILE ||
-							projectileList.at(j)->GetClipping() == PROJECTILE_CLIP::YES_PLAYER ||
-							projectileList.at(j)->GetClipping() == PROJECTILE_CLIP::YES) {
-							projectileList.at(j)->deleted = true;
-							playerList.at(i)->Hit(projectileList.at(j));
+				// First Check
+				// Don't bother checking collision if the projectile was sent by that player 
+				if (!IsSamePlayer(*playerList.at(i), *projectileList.at(j))) {
+					if (playerList.at(i)->collisionComponent != NULL && projectileList.at(j)->collisionComponent != NULL && projectileList.at(j)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f)) {
+						if (PhysicsEngine::isColliding(playerList.at(i)->collisionComponent, projectileList.at(j)->collisionComponent)) {
+							if (projectileList.at(j)->GetClipping() == PROJECTILE_CLIP::YES_WALL_PLAYER ||
+								projectileList.at(j)->GetClipping() == PROJECTILE_CLIP::YES_PLAYER_PROJECTILE ||
+								projectileList.at(j)->GetClipping() == PROJECTILE_CLIP::YES_PLAYER ||
+								projectileList.at(j)->GetClipping() == PROJECTILE_CLIP::YES) {
+
+								// If friendly fire is off, delete projectiles when they hit friend
+								if (projectileInteraction == 0) {
+									projectileList.at(j)->deleted = true;
+									if (!IsSameTeam(*playerList.at(i), *projectileList.at(j))) {
+										playerList.at(i)->Hit(projectileList.at(j));
+									}
+								}
+								// If friendly fire is on, act like the hit player is an enemy
+								else if (projectileInteraction == 1) {
+									projectileList.at(j)->deleted = true;
+									playerList.at(i)->Hit(projectileList.at(j));
+								}
+								// If the projectiles are set to phase through, projectiles only detect collision with enemy team
+								else if (projectileInteraction == 2 || projectileInteraction == 3) {
+									if (!IsSameTeam(*playerList.at(i), *projectileList.at(j))) {
+										projectileList.at(j)->deleted = true;
+										playerList.at(i)->Hit(projectileList.at(j));
+									}
+								}
+								// If all fails, just act like every player is an enemy
+								else {
+									projectileList.at(j)->deleted = true;
+									playerList.at(i)->Hit(projectileList.at(j));
+								}
+							}
 						}
 					}
 				}

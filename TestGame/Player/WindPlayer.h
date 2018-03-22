@@ -23,7 +23,7 @@ namespace GAME {
 		void InheritedUpdate(const float deltaTime);
 		void InheritedHandleEvents(SDL_Event events);
 		void InheritedHandleStates(const Uint8 *state);
-
+		
 		void SetStats();
 
 	public:

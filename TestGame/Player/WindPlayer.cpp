@@ -17,7 +17,7 @@ WindPlayer::~WindPlayer() {
 }
 
 void WindPlayer::SetStats() {
-	health = maxHealth;
+	shieldHealth = maxHealth;
 	moveSpeed = 1.0f;
 	specialMeter = 0;
 }
@@ -32,11 +32,11 @@ std::vector<Projectile*> WindPlayer::LightAttack()
 			physicsComponent->SetVelocity(glm::vec3(0, 5, 0));
 		}
 
-		lightComboTimer = 0.3f;
+		lightComboTimer = 0.5f;
 		lightComboPosition++;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 400.0f));
+		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 200.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 25.0f, 10.0f));
 		p->SetStunTime(0.3f);
@@ -49,12 +49,12 @@ std::vector<Projectile*> WindPlayer::LightAttack()
 			physicsComponent->SetVelocity(glm::vec3(0, 5, 0));
 		}
 
-		lightComboTimer = 0.3f;
+		lightComboTimer = 0.5f;
 		lightComboPosition++;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p->SetImpulseForce(glm::vec3(300.0f, 0.0f, 500.0f));
-		p->SetActingForce(glm::vec3(-50.0f, 0.0f, 0.0f));
+		p->SetImpulseForce(glm::vec3(125.0f, 0.0f, 200.0f));
+		p->SetActingForce(glm::vec3(-10.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 100.0f, 10.0f));
 		p->SetStunTime(0.3f);
 		p->SetWorldScale(0.5f);
@@ -71,9 +71,9 @@ std::vector<Projectile*> WindPlayer::LightAttack()
 		lightComboPosition++;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p->SetImpulseForce(glm::vec3(-300.0f, 500.0f, 500.0f));
-		p->SetActingForce(glm::vec3(50.0f, -70.0f, 0.0f));
-		p->SetKnockbackForce(glm::vec3(0.0f, -200.0f, 0.0f));
+		p->SetImpulseForce(glm::vec3(-200.0f, 335.0f, 375.0f));
+		p->SetActingForce(glm::vec3(20.0f, -35.0f, 0.0f));
+		p->SetKnockbackForce(glm::vec3(0.0f, -100.0f, 0.0f));
 		p->SetStunTime(0.5f);
 		p->SetWorldScale(0.5f);
 		projectiles.push_back(p);
@@ -92,9 +92,9 @@ std::vector<Projectile*> WindPlayer::MediumAttack()
 		mediumComboPosition++;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p->SetImpulseForce(glm::vec3(200.0f, 0.0f, 400.0f));
-		p->SetActingForce(glm::vec3(-30.0f, 0.0f, 0.0f));
-		p->SetKnockbackForce(glm::vec3(20.0f, 25.0f, 10.0f));
+		p->SetImpulseForce(glm::vec3(50.0f, 0.0f, 150.0f));
+		p->SetActingForce(glm::vec3(-2.0f, 0.0f, 0.0f));
+		p->SetKnockbackForce(glm::vec3(20.0f, 25.0f, 5.0f));
 		p->SetStunTime(0.4f);
 		p->SetWorldScale(0.5f);
 		projectiles.push_back(p);
@@ -106,9 +106,9 @@ std::vector<Projectile*> WindPlayer::MediumAttack()
 		mediumComboPosition++;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p->SetImpulseForce(glm::vec3(200.0f, 0.0f, 400.0f));
-		p->SetActingForce(glm::vec3(-30.0f, 0.0f, 0.0f));
-		p->SetKnockbackForce(glm::vec3(-20.0f, 25.0f, 10.0f));
+		p->SetImpulseForce(glm::vec3(50.0f, 0.0f, 150.0f));
+		p->SetActingForce(glm::vec3(-2.0f, 0.0f, 0.0f));
+		p->SetKnockbackForce(glm::vec3(20.0f, 25.0f, 5.0f));
 		p->SetStunTime(0.4f);
 		p->SetWorldScale(0.5f);
 		projectiles.push_back(p);
@@ -120,9 +120,9 @@ std::vector<Projectile*> WindPlayer::MediumAttack()
 		mediumComboPosition++;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 500.0f));
+		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 130.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
-		p->SetKnockbackForce(glm::vec3(0.0f, 125.0f, 10.0f));
+		p->SetKnockbackForce(glm::vec3(0.0f, 150.0f, 5.0f));
 		p->SetStunTime(0.6f);
 		p->SetWorldScale(0.5f);
 		projectiles.push_back(p);
@@ -141,7 +141,7 @@ std::vector<Projectile*> WindPlayer::HeavyAttack()
 		heavyComboPosition++;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 100.0f));
+		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 75.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 20.0f));
 		p->SetStunTime(0.8f);
@@ -155,7 +155,7 @@ std::vector<Projectile*> WindPlayer::HeavyAttack()
 		heavyComboPosition++;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 100.0f));
+		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 75.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 25.0f));
 		p->SetStunTime(1.5f);
@@ -171,7 +171,7 @@ std::vector<Projectile*> WindPlayer::HeavyAttack()
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 25.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
-		p->SetKnockbackForce(glm::vec3(0.0f, 100.0f, 25.0f));
+		p->SetKnockbackForce(glm::vec3(0.0f, 70.0f, 25.0f));
 		p->SetStunTime(2.0f);
 		p->SetWorldScale(1.5f, 1.5f, 0.2f);
 		projectiles.push_back(p);

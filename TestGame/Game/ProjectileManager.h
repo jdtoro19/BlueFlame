@@ -24,11 +24,14 @@ namespace GAME {
 		std::vector<Player*> playerList;
 		std::vector<GameObject*> environmentList;
 
-		// List of projectiles that were spawned in the game scene from other projectiles
+		// List of special projectiles that were spawned in the game scene from other projectiles
 		std::vector<Projectile*> spawnedProjectiles;
 
 		// Projectile Renderer 
 		ProjectileRenderer* projectileRenderer;
+
+		// Int that checks if you'd like friendly fire / no friendly fire / phase through
+		int projectileInteraction;
 
 	public:
 		ProjectileManager();
@@ -41,6 +44,14 @@ namespace GAME {
 		void RemovePlayer(Player* _player);
 		void RemoveEnvironment(GameObject* _environment);
 
+		// Sets the projectile interaction type
+		void SetFriendlyFire(bool _fireType);
+		void SetPhaseThrough(bool _phaseType);
+
+		// Checking if projectile should collide with players
+		bool IsSameTeam(Player &_player, Projectile &_projectile);
+		bool IsSamePlayer(Player &_player, Projectile &_projectile);
+
 	private:
 		void AddSpawnedProjectile(Projectile* _projectile);
 		void RemoveSpawnedProjectile(Projectile* _projectile);
@@ -51,6 +62,7 @@ namespace GAME {
 
 		ProjectileRenderer* GetProjectileRenderer() { return projectileRenderer; };
 
+		// Game and graphics loops
 		void Update(float deltaTime);
 		void FixedUpdate(const float deltaTime);
 

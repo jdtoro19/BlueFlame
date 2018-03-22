@@ -64,7 +64,7 @@ bool DemoScene::Initialize()
 	// Make Players
 	//
 	// Player 1
-	player1 = new WindPlayer();
+	player1 = new IcePlayer();
 	player1->SetShader(defaultShaderHandle);
 	player1->SetWorldPosition(glm::vec3(-2.0f, 0.0f, 3.0f));
 	player1->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER1);
@@ -326,6 +326,19 @@ void DemoScene::HandleStates(const Uint8 *state)
 	// Reload Scene
 	if (state[SDL_SCANCODE_Z]) {
 		sceneManager->SwitchScene(new DemoScene());
+	}
+
+	if (state[SDL_SCANCODE_E]) {
+		player1->Block();
+		player2->Block();
+		player3->Block();
+		player4->Block();
+	}
+	else {
+		player1->StopBlock();
+		player2->StopBlock();
+		player3->StopBlock();
+		player4->StopBlock();
 	}
 
 	// ENABLE OR DISABLE FULLSCREEN WITH V AND B

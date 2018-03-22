@@ -44,6 +44,8 @@ Projectile::Projectile(glm::vec3 p, float _angle, int _dir)
 	strength = PROJECTILE_STRENGTH::DEFAULT_STRENGTH;
 	clipping = PROJECTILE_CLIP::YES;
 	mesh = PROJECTILE_MESH::CUBE;
+	team = PROJECTILE_TEAM::TEAM0;
+	player = PROJECTILE_PLAYER::NONE;
 }
 
 Projectile::~Projectile() {
@@ -134,6 +136,14 @@ void Projectile::SetMesh(PROJECTILE_MESH _mesh) {
 	mesh = _mesh;
 }
 
+void Projectile::SetTeam(PROJECTILE_TEAM _team) {
+	team = _team;
+}
+
+void Projectile::SetPlayer(PROJECTILE_PLAYER _player) {
+	player = _player; 
+}
+
 void Projectile::AddMaxDistance(float distance) {
 	maximumDistance = true;
 	maxD = distance;
@@ -171,6 +181,14 @@ PROJECTILE_CLIP Projectile::GetClipping() {
 
 PROJECTILE_MESH Projectile::GetMesh() {
 	return mesh;
+}
+
+PROJECTILE_TEAM Projectile::GetTeam() {
+	return team;
+}
+
+PROJECTILE_PLAYER Projectile::GetPlayer() {
+	return player;
 }
 
 void Projectile::Update(const float deltaTime) {

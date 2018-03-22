@@ -16,7 +16,7 @@
 using namespace ENGINE;
 
 namespace GAME {
-	
+
 	// Forward declare Projectile Manager to avoid circular dependency 
 	class ProjectileManager;
 
@@ -29,13 +29,13 @@ namespace GAME {
 		virtual ~Player();
 
 		// Enum for Player number
-		enum PLAYERNUMBER {PLAYER1, PLAYER2, PLAYER3, PLAYER4, NONE};
+		enum PLAYERNUMBER { PLAYER1, PLAYER2, PLAYER3, PLAYER4, NONE };
 		// Enum for Player Team
-		enum PLAYERTEAM {TEAM1, TEAM2, TEAM0};
+		enum PLAYERTEAM { TEAM1, TEAM2, TEAM0 };
 		// Enum for player movement
-		enum PLAYERMOVEMENT {FORWARD, BACKWARD, RIGHT, LEFT};
+		enum PLAYERMOVEMENT { FORWARD, BACKWARD, RIGHT, LEFT };
 		// Enum for player states
-		enum PLAYERSTATES {NORMAL, ATTACK, BLOCK, STUN, JUMP, DODGE, DEAD};
+		enum PLAYERSTATES { NORMAL, ATTACK, BLOCK, STUN, JUMP, DODGE, DEAD };
 
 		// Loop functions
 		// DO NOT OVERRIDE THIS FUNCTION
@@ -43,17 +43,17 @@ namespace GAME {
 		void FixedUpdate(const float deltaTime);
 		//
 		// Children use this method
-		virtual void InheritedUpdate(const float deltaTime) {}; 
+		virtual void InheritedUpdate(const float deltaTime) {};
 		// DO NOT OVERRIDE THIS FUNCTION
 		void HandleEvents(SDL_Event events);
 		//
 		// Children use this method
-		virtual void InheritedHandleEvents(SDL_Event events) {}; 
+		virtual void InheritedHandleEvents(SDL_Event events) {};
 		// DO NOT OVERRIDE THIS FUNCTION
 		void HandleStates(const Uint8 *state);
 		//
 		// Children use this method
-		virtual void InheritedHandleStates(const Uint8 *state) {}; 
+		virtual void InheritedHandleStates(const Uint8 *state) {};
 		// Render
 		void Render(Shader* shader, const double _interpolation);
 
@@ -116,7 +116,7 @@ namespace GAME {
 		void SetCanMove(bool canM) { canMove = canM; };
 
 		// Getters
-		int GetHealth() { return health; };
+		int GetHealth() { return shieldHealth; };
 		int GetMaxHealth() { return maxHealth; };
 		float GetMoveSpeed() { return moveSpeed; };
 		int GetSpecialMeter() { return specialMeter; };
@@ -152,6 +152,8 @@ namespace GAME {
 		Cooldown LightCD;
 		Cooldown MediumCD;
 		Cooldown movementCD;
+		Cooldown shieldCD;
+		Cooldown healthIncrementCD;
 
 		// Projectile manager reference 
 		ProjectileManager* projectileManager;
@@ -160,7 +162,7 @@ namespace GAME {
 		PlayerInput* playerInput;
 
 		// Player Stats
-		int health = 0;
+		int shieldHealth = 0;
 		int maxHealth = 100;
 		int specialMeter = 0;
 		int maxSpecialMeter = 100;

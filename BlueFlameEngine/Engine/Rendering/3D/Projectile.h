@@ -18,6 +18,8 @@ namespace ENGINE {
 	enum PROJECTILE_STRENGTH { LIGHT, MEDIUM, HEAVY, SPECIAL, DEFAULT_STRENGTH };
 	enum PROJECTILE_CLIP { NO, YES_WALL_PROJECTILE, YES_WALL_PLAYER, YES_PLAYER_PROJECTILE, YES_PLAYER, YES_WALL, YES_PROJECTILE, YES };
 	enum PROJECTILE_MESH { CUBE };
+	enum PROJECTILE_PLAYER { PLAYER1, PLAYER2, PLAYER3, PLAYER4, NONE };
+	enum PROJECTILE_TEAM { TEAM1, TEAM2, TEAM0 };
 
 	class Projectile : public GameObject {
 	private:
@@ -87,6 +89,12 @@ namespace ENGINE {
 		// Enum that defines the type of mesh attached to the projectile
 		PROJECTILE_MESH mesh;
 
+		// Enum that defines what team sent the projectile
+		PROJECTILE_TEAM team;
+
+		// Enum that defines what player sent the projectile
+		PROJECTILE_PLAYER player;
+
 		// Use the addMaxDistance function to adjust these. if you do, object will not go beyond a certain distance
 		bool maximumDistance = false;
 		float maxD;
@@ -138,6 +146,12 @@ namespace ENGINE {
 		// Sets the mesh type of the projectile
 		void SetMesh(PROJECTILE_MESH _mesh);
 
+		// Sets the team of the projectile
+		void SetTeam(PROJECTILE_TEAM _team);
+
+		// Sets the player who send the projectile
+		void SetPlayer(PROJECTILE_PLAYER _player);
+
 		// Adds a maximum distance that the projectile can go from its initial position 
 		void AddMaxDistance(float distance);
 
@@ -162,8 +176,14 @@ namespace ENGINE {
 		// Gets the clip properties of the projectile
 		PROJECTILE_CLIP GetClipping();
 
-		// gets the mesh type of the projectile
+		// Gets the mesh type of the projectile
 		PROJECTILE_MESH GetMesh();
+
+		// Get the team of the projectile
+		PROJECTILE_TEAM GetTeam();
+
+		// Gets the player who send the projectile
+		PROJECTILE_PLAYER GetPlayer();
 
 		void Update(const float deltaTime);
 		void FixedUpdate(const float deltaTime);

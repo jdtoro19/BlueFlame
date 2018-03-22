@@ -15,9 +15,10 @@ int main(int argc, char* args[]) {
 	//Start Engine
 	if (BFEngine::GetInstance()->Initialize()) {
 		// Add scenes
-		BFEngine::GetInstance()->GetSceneManager()->AddScene(new MenuScene);
-		BFEngine::GetInstance()->GetSceneManager()->AddScene(new MenuSelectScene);
-		BFEngine::GetInstance()->GetSceneManager()->StartScene();
+		//BFEngine::GetInstance()->GetSceneManager()->AddScene(new MenuScene);
+		//BFEngine::GetInstance()->GetSceneManager()->AddScene(new MenuSelectScene);
+		//BFEngine::GetInstance()->GetSceneManager()->StartScene();
+		BFEngine::GetInstance()->GetSceneManager()->SwitchScene(new DemoScene());
 		//Game Loop
 		BFEngine::GetInstance()->Run();
 	}

@@ -21,7 +21,7 @@ IcePlayer::~IcePlayer() {
 }
 
 void IcePlayer::SetStats() {
-	health = maxHealth;
+	shieldHealth = maxHealth;
 	moveSpeed = 1.0f;
 	specialMeter = 0;
 }
