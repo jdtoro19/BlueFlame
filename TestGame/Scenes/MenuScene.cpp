@@ -88,7 +88,7 @@ void MenuScene::HandleEvents(SDL_Event events)
 {
 	if (events.jbutton.button == 7) //start button
 	{
-		sceneManager->NextScene();
+		sceneManager->SwitchScene(new CharacterSelectScene());
 	}
 }
 

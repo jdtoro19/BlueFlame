@@ -8,7 +8,7 @@ LightningPlayer::LightningPlayer() {
 	base->SetWorldScale(0.012f);
 	base->renderComponent->SetColour(0.2f, 0.7f, 0.0f);
 
-	ring->renderComponent->SetColour(0.1f, 0.1f, 0.5f);
+	ring->renderComponent->SetColour(0.0f, 1.0f, 1.0f);
 	HeavyCD = Cooldown(4.0);
 	LightCD = Cooldown(0.4);
 	MediumCD = Cooldown(2.5);

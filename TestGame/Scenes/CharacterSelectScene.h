@@ -7,12 +7,14 @@
 #include <BlueFlameEngine\Engine\Core\ResourceManager.h>
 #include <BlueFlameEngine\Engine\Rendering\3D\Skybox.h> 
 #include <BlueFlameEngine\Engine\Graphics\Shader.h> 
+#include <BlueFlameEngine\Engine\Timers\Cooldown.h>
 //#include <BlueFlameEngine\Engine\InputHandling\InputHandler.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\TextUI.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\ImageUI.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\ButtonUI.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\SliderUI.h>
 #include "DemoScene.h"
+#include "TvTGameScene.h"
 #include "..\Player\Crosshair.h"
 #include "..\Game\PlayerPortrait.h"
 
@@ -28,7 +30,7 @@ namespace GAME {
 
 		// Every scene requires these three methods to be implemented
 		bool Initialize();
-		void FixedUpdate(const float deltaTime) {};
+		void FixedUpdate(const float deltaTime);
 		void Update(const float deltaTime);
 		void HandleEvents(SDL_Event events);
 		void HandleStates(const Uint8 *state);
@@ -55,6 +57,7 @@ namespace GAME {
 		Crosshair* crosshair3;
 		Crosshair* crosshair4;
 		std::vector<Crosshair*> crosshairList;
+		std::vector<SDL_JoystickID> usedCrosshairList;
 
 
 		float portBackRot = 0.0f;
@@ -82,6 +85,16 @@ namespace GAME {
 		ImageUI* champMystery2;
 		ImageUI* champMystery3;
 		ImageUI* champMystery4;
+
+		// Loading Screen
+		ImageUI* loadingScreen;
+		Cooldown loadingCD;
+		bool loading = false;
+
+		float cameraTimer = 0;
+
+		// Audio
+		Music* bgm;
 	};
 }
 #endif

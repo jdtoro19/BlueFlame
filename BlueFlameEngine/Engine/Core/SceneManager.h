@@ -74,6 +74,7 @@ namespace ENGINE {
 		// Set whether to capture the mouse or not
 		void CaptureMouse(bool setCaptureMouse);
 		//
+		bool IsSplitScreen() { return splitscreen; };
 
 		// DEBUG FUNCTIONS
 		
@@ -114,6 +115,12 @@ namespace ENGINE {
 		// DeltaTIme
 		float GetDeltaTime();
 		//
+
+		// Controllers
+		vector<SDL_Joystick*> controllers;
+
+		// Save data
+		vector<int> saveData;
 		
 	private:
 		// SceneManager variables

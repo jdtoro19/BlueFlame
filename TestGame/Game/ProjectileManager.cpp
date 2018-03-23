@@ -192,6 +192,8 @@ namespace GAME {
 							p->SetFirstDelay(1.0f, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(2.0f, 2.0f, 0.75f), glm::vec3(2.0f, 2.0f, 0.75f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 							p->SetLifetime(3.0);
 
+							p->canRender = false;
+							BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(p);
 							AddSpawnedProjectile(p);
 						}
 					}

@@ -177,6 +177,9 @@ void Player::FixedUpdate(const float deltaTime) {
 		physicsComponent->SetVelocity(glm::vec3(0.0f, physicsComponent->GetVelocity().y, 0.0f));
 	}
 
+	// Update player model
+	UpdateModel(deltaTime);
+
 	// If player can move update movement 
 	if (canMove) {
 		if (playerInput->CheckForController()) {//if they have a controller
@@ -217,9 +220,6 @@ void Player::FixedUpdate(const float deltaTime) {
 	else if (playerTeam == PLAYERTEAM::TEAM2) {
 		SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), 3.14 - targetAngle);
 	}
-
-	// Update player model
-	UpdateModel(deltaTime);
 
 	// Update function from child
 	InheritedUpdate(deltaTime);

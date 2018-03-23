@@ -98,7 +98,7 @@ void Camera::updateCameraVectors()
 
 void Camera::SetRotationY(float yaw) {
 	Yaw = yaw;
-	if (Yaw > 360) {
+	if (Yaw > 359) {
 		Yaw = 0.0f;
 	}
 	updateCameraVectors();
@@ -106,7 +106,7 @@ void Camera::SetRotationY(float yaw) {
 
 void Camera::SetRotationX(float pitch) {
 	Pitch = pitch;
-	if (Pitch > 360) {
+	if (Pitch > 359) {
 		Pitch = 0.0f;
 	}
 	updateCameraVectors();

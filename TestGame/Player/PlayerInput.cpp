@@ -45,6 +45,10 @@ SDL_Joystick* PlayerInput::GetJoystick() {
 	return joystick;
 }
 
+void PlayerInput::SetJoystick(SDL_Joystick* js) { 
+	joystick = js;
+}
+
 glm::vec2 PlayerInput::LeftJoystick() {
 	return AnyJoystick(0, 1);
 }

@@ -549,46 +549,90 @@ void TvTGameScene::PlayRoundStart()
 
 void TvTGameScene::SetUpPlayers()
 {
-	// Make Players
-	//
-	// Player 1
-	player1 = new WindPlayer();
+	// Add players to the player list
+	playerList.push_back(player1);
+	playerList.push_back(player2);
+	playerList.push_back(player3);
+	playerList.push_back(player4);
+
+	// Loop through player list and create character based on save data from chararcter select
+	for (unsigned int i = 0; i < playerList.size(); i++)
+	{
+		if (sceneManager->saveData.size() != 0) {
+			if (sceneManager->saveData[i] == 0) {
+				playerList.at(i) = new LightningPlayer();
+			}
+			else if (sceneManager->saveData[i] == 1) {
+				playerList.at(i) = new EarthPlayer();
+			}
+			else if (sceneManager->saveData[i] == 2) {
+				playerList.at(i) = new IcePlayer();
+			}
+			else if (sceneManager->saveData[i] == 3) {
+				playerList.at(i) = new FirePlayer();
+			}
+			else if (sceneManager->saveData[i] == 4) {
+				playerList.at(i) = new WindPlayer();
+			}
+			else
+			{
+				playerList.at(i) = new WindPlayer();
+			}
+		}
+		else
+		{
+			playerList.at(i) = new WindPlayer();
+		}
+	}
+
+	// Assign player reference
+	player1 = playerList[0];
+	player2 = playerList[1];
+	player3 = playerList[2];
+	player4 = playerList[3];
+
+	// Set Shaders
 	player1->SetShader(defaultShaderHandle);
-	player1->SetWorldPosition(glm::vec3(-3.0f, 0.0f, 4.0f));
-	player1->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER1);
-	player1->SetPlayerTeam(Player::PLAYERTEAM::TEAM1);
-	player1->GetPlayerInput()->AddAnyController();
-	player1->AddProjecitleManager(projectileManager);
-	player1->SetCanMove(false);
-
-	// Player 2
-	player2 = new IcePlayer();
 	player2->SetShader(defaultShaderHandle);
-	player2->SetWorldPosition(glm::vec3(3.0f, 0.0f, 4.0f));
-	player2->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER2);
-	player2->SetPlayerTeam(Player::PLAYERTEAM::TEAM1);
-	player2->GetPlayerInput()->AddAnyController();
-	player2->AddProjecitleManager(projectileManager);
-	player2->SetCanMove(false);
-
-	// Player 3
-	player3 = new FirePlayer();
 	player3->SetShader(defaultShaderHandle);
-	player3->SetWorldPosition(glm::vec3(3.0f, 0.0f, -4.0f));
-	player3->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER3);
-	player3->SetPlayerTeam(Player::PLAYERTEAM::TEAM2);
-	player3->GetPlayerInput()->AddAnyController();
-	player3->AddProjecitleManager(projectileManager);
-	player3->SetCanMove(false);
-
-	// Player 4
-	player4 = new EarthPlayer();
 	player4->SetShader(defaultShaderHandle);
+
+	// Set Positions
+	player1->SetWorldPosition(glm::vec3(-3.0f, 0.0f, 4.0f));
+	player2->SetWorldPosition(glm::vec3(3.0f, 0.0f, 4.0f));
+	player3->SetWorldPosition(glm::vec3(3.0f, 0.0f, -4.0f));
 	player4->SetWorldPosition(glm::vec3(-3.0f, 0.0f, -4.0f));
+
+	// Set player numbers
+	player1->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER1);
+	player2->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER2);
+	player3->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER3);
 	player4->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER4);
+
+	// Set player teams
+	player1->SetPlayerTeam(Player::PLAYERTEAM::TEAM1);
+	player2->SetPlayerTeam(Player::PLAYERTEAM::TEAM1);
+	player3->SetPlayerTeam(Player::PLAYERTEAM::TEAM2);
 	player4->SetPlayerTeam(Player::PLAYERTEAM::TEAM2);
-	player4->GetPlayerInput()->AddAnyController();
+
+	// Assign controllers saved from character select if there are any
+	if (sceneManager->controllers.size() != 0) {
+		player1->GetPlayerInput()->SetJoystick(sceneManager->controllers[0]);
+		player2->GetPlayerInput()->SetJoystick(sceneManager->controllers[1]);
+		player3->GetPlayerInput()->SetJoystick(sceneManager->controllers[2]);
+		player4->GetPlayerInput()->SetJoystick(sceneManager->controllers[3]);
+	}
+
+	// Add projectile manager
+	player1->AddProjecitleManager(projectileManager);
+	player2->AddProjecitleManager(projectileManager);
+	player3->AddProjecitleManager(projectileManager);
 	player4->AddProjecitleManager(projectileManager);
+
+	// Set the players to not  move when scene starts
+	player1->SetCanMove(false);
+	player2->SetCanMove(false);
+	player3->SetCanMove(false);
 	player4->SetCanMove(false);
 
 	// Enemy Target set up
@@ -597,6 +641,7 @@ void TvTGameScene::SetUpPlayers()
 	player3->SetEnemyTeam(player1, player2);
 	player4->SetEnemyTeam(player2, player1);
 
+	// Add players to object list
 	AddObject(player1);
 	AddObject(player2);
 	AddObject(player3);
@@ -607,11 +652,6 @@ void TvTGameScene::SetUpPlayers()
 	projectileManager->AddPlayer(player2);
 	projectileManager->AddPlayer(player3);
 	projectileManager->AddPlayer(player4);
-
-	playerList.push_back(player1);
-	playerList.push_back(player2);
-	playerList.push_back(player3);
-	playerList.push_back(player4);
 }
 
 void TvTGameScene::SetUpArena()

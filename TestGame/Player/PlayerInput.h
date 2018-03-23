@@ -22,6 +22,7 @@ namespace GAME {
 		bool CheckForController();
 		void AddAnyController();
 		SDL_Joystick* GetJoystick();
+		void SetJoystick(SDL_Joystick* js);
 
 		glm::vec2 LeftJoystick();
 		glm::vec2 RightJoystick();

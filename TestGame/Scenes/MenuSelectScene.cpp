@@ -295,6 +295,10 @@ void MenuSelectScene::HandleStates(const Uint8 *state)
 		sceneManager->PreviousScene();
 	}
 
+	if (state[SDL_SCANCODE_I]) {
+		sceneManager->SwitchScene(new TvTGameScene());
+	}
+
 	if (state[SDL_SCANCODE_P]) {
 		sceneManager->SwitchScene(new CharacterSelectScene());
 	}

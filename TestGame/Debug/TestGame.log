@@ -1,7 +1,3 @@
-﻿  MenuSelectScene.cpp
-c:\users\juan toro\documents\blueflame\testgame\scenes\menuselectscene.cpp(60): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-c:\users\juan toro\documents\blueflame\testgame\scenes\menuselectscene.cpp(85): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-c:\users\juan toro\documents\blueflame\testgame\scenes\menuselectscene.cpp(148): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-c:\users\juan toro\documents\blueflame\testgame\scenes\menuselectscene.cpp(154): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+﻿  MenuScene.cpp
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.exe
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.pdb (Partial PDB)
