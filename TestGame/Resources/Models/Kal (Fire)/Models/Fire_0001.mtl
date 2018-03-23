@@ -4,6 +4,8 @@ Kd 1.00 0.00 0.00
 Ka 0.00 0.00 0.00
 Tf 1.00 1.00 1.00
 Ni 1.00
+map_Kd ../Textures/Fire_RB_Fire_Bot_Diffuse.png
+map_Ks ../Textures/Fire_RB_Fire_Bot_Specular.png
 newmtl lambert4SG
 illum 4
 Kd 0.11 0.11 0.11

@@ -203,12 +203,11 @@ Projectile* LightningPlayer::Strike(float offsetx, float offsety, float offsetz,
 
 Projectile* LightningPlayer::ZeroLaser(float delay, float speed, float baseLifetime) {
 	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z)), targetAngle, dir);
-	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, speed * dir));
+	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, speed));
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f)); //no accel
-	p->SetFirstDelay(delay, glm::vec3(0), glm::vec3(0), glm::vec3(0), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+	p->SetFirstDelay(delay, glm::vec3(0), glm::vec3(1.0f, 0.1f, 0.5f), glm::vec3(1.0f, 0.1f, 0.5f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 	p->SetKnockbackForce(glm::vec3(0.0f, 00.0f, 40.0f)); //static
 	p->SetStunTime(0.2f);
-	p->SetWorldScale(1.0f, 0.1f, 0.5f);
 	p->SetLifetime(delay + baseLifetime);
 	p->SetElement(PROJECTILE_ELEMENT::LIGHTNING);
 	p->SetStrength(PROJECTILE_STRENGTH::SPECIAL);

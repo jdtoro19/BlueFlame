@@ -259,6 +259,7 @@ void Player::HandleEvents(SDL_Event events)
 							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
 						}
 
+						subP->SetStrength(PROJECTILE_STRENGTH::LIGHT);
 						projectileManager->AddProjectile(subP);
 					}
 				}
@@ -290,6 +291,7 @@ void Player::HandleEvents(SDL_Event events)
 							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
 						}
 
+						subP->SetStrength(PROJECTILE_STRENGTH::MEDIUM);
 						projectileManager->AddProjectile(subP);
 					}
 				}
@@ -321,6 +323,7 @@ void Player::HandleEvents(SDL_Event events)
 							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
 						}
 
+						subP->SetStrength(PROJECTILE_STRENGTH::HEAVY);
 						projectileManager->AddProjectile(subP);
 					}
 				}
@@ -352,6 +355,7 @@ void Player::HandleEvents(SDL_Event events)
 							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
 						}
 
+						subP->SetStrength(PROJECTILE_STRENGTH::SPECIAL);
 						projectileManager->AddProjectile(subP);
 					}
 				}
@@ -359,7 +363,7 @@ void Player::HandleEvents(SDL_Event events)
 			// Left Bumper
 			if (events.jbutton.button == 4 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
 			{
-				EnableTarget();
+				SwitchTarget();
 			}
 			// Right Bumper
 			if (events.jbutton.button == 5 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
@@ -372,6 +376,7 @@ void Player::HandleEvents(SDL_Event events)
 			// DPAD
 			if (events.jhat.value & SDL_HAT_UP)
 			{
+				EnableTarget();
 			}
 			if (events.jhat.value & SDL_HAT_DOWN)
 			{
@@ -516,7 +521,7 @@ void Player::Hit(Projectile* projectile) {
 	if (playerState != BLOCK) {
 		physicsComponent->AddForce(projectile->GetForce());
 		Stun(projectile->GetStunTime());
-		specialMeter += projectile->GetDamage() / 5;
+		specialMeter += projectile->GetDamage() / 2;
 		if (specialMeter >= 100)
 		{
 			specialMeter = 100;
@@ -530,7 +535,7 @@ void Player::Hit(Projectile* projectile) {
 
 	if (playerState == BLOCK) {
 		shieldHealth -= projectile->GetDamage();
-		specialMeter += projectile->GetDamage() / 7;
+		specialMeter += projectile->GetDamage() / 2;
 		if (shieldHealth > 0) {
 			shield->SetWorldScale(shieldHealth / 100.0f, shieldHealth / 100.0f, 0.05f);
 		}

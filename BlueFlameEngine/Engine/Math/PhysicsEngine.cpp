@@ -527,15 +527,15 @@ void PhysicsEngine::ApplyImpulse(ContactData *c) {
 	// FIX FOR CURRENT PHYISCS ENGINE BUILD
 	// LIMITS IMPULSE TO PROVIDE LESS REALISTIC PHYSICS
 	// MAKES FAST FLYING OBJECTS ON COLLISIONS IMPOSSIBLE
-	if (impulse.x >= 100.0f || impulse.x <= -100.0f) {
+	if (impulse.x >= 150.0f || impulse.x <= -150.0f) {
 		impulse.x = 0.0f;
 	}
 
-	if (impulse.y >= 100.0f || impulse.y <= -100.0f) {
+	if (impulse.y >= 150.0f || impulse.y <= -150.0f) {
 		impulse.y = 0.0f;
 	}
 
-	if (impulse.z >= 100.0f || impulse.z <= -100.0f) {
+	if (impulse.z >= 150.0f || impulse.z <= -150.0f) {
 		impulse.z = 0.0f;
 	}
 
@@ -583,15 +583,15 @@ void PhysicsEngine::ApplyImpulse(ContactData *c) {
 	// FIX FOR CURRENT PHYISCS ENGINE BUILD
 	// LIMITS IMPULSE TO PROVIDE LESS REALISTIC PHYSICS
 	// MAKES FAST FLYING OBJECTS ON COLLISIONS IMPOSSIBLE
-	if (frictionImpulse.x >= 200.0f || frictionImpulse.x <= -200.0f) {
+	if (frictionImpulse.x >= 300.0f || frictionImpulse.x <= -300.0f) {
 		frictionImpulse.x = 0.0f;
 	}
 
-	if (frictionImpulse.y >= 200.0f || frictionImpulse.y <= -200.0f) {
+	if (frictionImpulse.y >= 300.0f || frictionImpulse.y <= -300.0f) {
 		frictionImpulse.y = 0.0f;
 	}
 
-	if (frictionImpulse.z >= 200.0f || frictionImpulse.z <= -200.0f) {
+	if (frictionImpulse.z >= 300.0f || frictionImpulse.z <= -300.0f) {
 		frictionImpulse.z = 0.0f;
 	}
 

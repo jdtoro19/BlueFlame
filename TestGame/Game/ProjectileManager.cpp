@@ -5,7 +5,7 @@ namespace GAME {
 
 	ProjectileManager::ProjectileManager() {
 		projectileRenderer = new ProjectileRenderer();
-
+		
 		// Default to no friendly fire and no phase through
 		SetFriendlyFire(false);
 	}
@@ -61,9 +61,43 @@ namespace GAME {
 		}
 	}
 
+	void ProjectileManager::ProjectileCollision(Projectile &_proj1, Projectile &_proj2) {
+		if (_proj1.GetClipping() == PROJECTILE_CLIP::YES_PLAYER_PROJECTILE ||
+			_proj1.GetClipping() == PROJECTILE_CLIP::YES_WALL_PROJECTILE ||
+			_proj1.GetClipping() == PROJECTILE_CLIP::YES_PROJECTILE ||
+			_proj1.GetClipping() == PROJECTILE_CLIP::YES ||
+			_proj2.GetClipping() == PROJECTILE_CLIP::YES_PLAYER_PROJECTILE ||
+			_proj2.GetClipping() == PROJECTILE_CLIP::YES_WALL_PROJECTILE ||
+			_proj2.GetClipping() == PROJECTILE_CLIP::YES_PROJECTILE ||
+			_proj2.GetClipping() == PROJECTILE_CLIP::YES) {
+
+			if (_proj1.GetStrength() == _proj2.GetStrength()) {
+				_proj1.deleted = true;
+				_proj2.deleted = true;
+			}
+			else if (_proj1.GetStrength() > _proj2.GetStrength()) {
+				_proj2.deleted = true;
+			}
+			else if (_proj1.GetStrength() < _proj2.GetStrength()) {
+				_proj1.deleted = true;
+			}
+			else {
+
+			}
+		}
+	}
 	bool ProjectileManager::IsSameTeam(Player &_player, Projectile &_projectile) {
 		if ((_player.GetPlayerTeam() == Player::PLAYERTEAM::TEAM1 && _projectile.GetTeam() == PROJECTILE_TEAM::TEAM1) ||
 			(_player.GetPlayerTeam() == Player::PLAYERTEAM::TEAM2 && _projectile.GetTeam() == PROJECTILE_TEAM::TEAM2)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	bool ProjectileManager::IsSameTeam(Projectile &_proj1, Projectile &_proj2) {
+		if (_proj1.GetTeam() == _proj2.GetTeam()) {
 			return true;
 		}
 		else {
@@ -76,6 +110,15 @@ namespace GAME {
 			(_player.GetPlayerNumber() == Player::PLAYERNUMBER::PLAYER2 && _projectile.GetPlayer() == PROJECTILE_PLAYER::PLAYER2) ||
 			(_player.GetPlayerNumber() == Player::PLAYERNUMBER::PLAYER3 && _projectile.GetPlayer() == PROJECTILE_PLAYER::PLAYER3) ||
 			(_player.GetPlayerNumber() == Player::PLAYERNUMBER::PLAYER4 && _projectile.GetPlayer() == PROJECTILE_PLAYER::PLAYER4)) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+
+	bool ProjectileManager::IsSamePlayer(Projectile &_proj1, Projectile &_proj2) {
+		if (_proj1.GetPlayer() == _proj2.GetPlayer()) {
 			return true;
 		}
 		else {
@@ -120,10 +163,9 @@ namespace GAME {
 			spawnedProjectiles.at(i)->FixedUpdate(deltaTime);
 		}
 
+		// Collisions with player
 		int proSize = projectileList.size();
 		int plaSize = playerList.size();
-
-		// Collisions with player
 		for (int i = 0; i < plaSize; i++) {
 			for (int j = 0; j < proSize; j++) {
 				// First Check
@@ -167,10 +209,9 @@ namespace GAME {
 			}
 		}
 
+		// Collisions with environment
 		proSize = projectileList.size();
 		int envSize = environmentList.size();
-
-		// Collisions with environment
 		for (int i = 0; i < envSize; i++) {
 			for (int j = 0; j < proSize; j++) {
 				if (environmentList.at(i)->collisionComponent != NULL && projectileList.at(j)->collisionComponent != NULL && projectileList.at(j)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f)) {
@@ -182,6 +223,7 @@ namespace GAME {
 							projectileList.at(j)->deleted = true;
 						}
 
+						// Spawning flint's impenetrable wall
 						if (projectileList.at(j)->GetStrength() == PROJECTILE_STRENGTH::HEAVY && projectileList.at(j)->GetElement() == PROJECTILE_ELEMENT::EARTH) {
 							Projectile *p = new Projectile(projectileList.at(j)->GetWorldPosition(), 0.0f, 0.0f);
 							p->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
@@ -201,10 +243,20 @@ namespace GAME {
 			}
 		}
 
+
+		// Collisions with other players' projectiles
 		proSize = projectileList.size();
-		int spawnSize = spawnedProjectiles.size();
+		for (int i = 1; i < proSize; ++i) {
+			if (projectileList.at(i - 1) != projectileList.at(i) && !IsSamePlayer(*projectileList.at(i - 1), *projectileList.at(i))) {
+				if (PhysicsEngine::isColliding(projectileList.at(i - 1)->collisionComponent, projectileList.at(i)->collisionComponent)) {
+					ProjectileCollision(*projectileList.at(i - 1), *projectileList.at(i));
+				}
+			}
+		}
 
 		// Collisions with spawned projectiles
+		proSize = projectileList.size();
+		int spawnSize = spawnedProjectiles.size();
 		for (int i = 0; i < spawnSize; i++) {
 			for (int j = 0; j < proSize; j++) {
 				if (spawnedProjectiles.at(i)->collisionComponent != NULL && projectileList.at(j)->collisionComponent != NULL && projectileList.at(j)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f)) {
@@ -216,10 +268,8 @@ namespace GAME {
 		}
 
 
-
-		spawnSize = spawnedProjectiles.size();
-
 		// Spawned projectile garbage collection
+		spawnSize = spawnedProjectiles.size();
 		for (int i = 0; i < spawnSize; i++) {
 			if (spawnedProjectiles.at(i)->deleted == true) {
 				RemoveSpawnedProjectile(spawnedProjectiles.at(i));

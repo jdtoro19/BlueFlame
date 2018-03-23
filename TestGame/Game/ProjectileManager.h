@@ -48,9 +48,14 @@ namespace GAME {
 		void SetFriendlyFire(bool _fireType);
 		void SetPhaseThrough(bool _phaseType);
 
+		// Deletes the projectile that is weaker
+		void ProjectileCollision(Projectile &_proj1, Projectile &_proj2);
+
 		// Checking if projectile should collide with players
 		bool IsSameTeam(Player &_player, Projectile &_projectile);
+		bool IsSameTeam(Projectile &_proj1, Projectile &_proj2);
 		bool IsSamePlayer(Player &_player, Projectile &_projectile);
+		bool IsSamePlayer(Projectile &_proj1, Projectile &_proj2);
 
 	private:
 		void AddSpawnedProjectile(Projectile* _projectile);

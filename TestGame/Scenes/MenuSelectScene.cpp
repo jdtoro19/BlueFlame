@@ -96,7 +96,7 @@ bool MenuSelectScene::Initialize()
 
 	//kyouko = new Model("Resources/Models/Kyouko/figyrk0003.obj");
 	//kyouko = new Model("Resources/Models/Robot_Base_Greybox/Robot_Var_002_Gurran.obj");
-	kyouko = new Model("Resources/Models/Flint (Earth)/Models/Earth_0001.obj");
+	kyouko = new Model("Resources/Models/Kal (Fire)/Models/Fire_0001.obj");
 	kyouko->SetShader(defaultShaderHandle);
 	kyouko->physicsComponent->SetPosition(glm::vec3(1.0f, -1.0f, -2.5f));
 	kyouko->SetWorldScale(0.008f);

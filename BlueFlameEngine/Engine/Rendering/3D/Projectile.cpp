@@ -141,7 +141,7 @@ void Projectile::SetTeam(PROJECTILE_TEAM _team) {
 }
 
 void Projectile::SetPlayer(PROJECTILE_PLAYER _player) {
-	player = _player; 
+	player = _player;
 }
 
 void Projectile::AddMaxDistance(float distance) {
