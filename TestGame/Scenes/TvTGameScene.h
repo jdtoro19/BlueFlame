@@ -20,6 +20,7 @@
 #include "../Player/Player.h"
 #include "../Player/WindPlayer.h"
 #include "MenuSelectScene.h"
+#include "CharacterSelectScene.h"
 
 using namespace ENGINE;
 
@@ -77,6 +78,7 @@ namespace GAME {
 		Model* middleRing;
 		Model* bottomRing;
 		Cube* floor;
+		Cube* divider;
 
 		// Lights
 		Light* pointLight;
@@ -86,6 +88,7 @@ namespace GAME {
 		Light* blueLight;
 		Light* redLight;
 		Light* dirLight;
+		Light* middleLight;
 
 		// Set up mathods
 		void SetUpPlayers();

@@ -248,8 +248,12 @@ namespace GAME {
 		proSize = projectileList.size();
 		for (int i = 1; i < proSize; ++i) {
 			if (projectileList.at(i - 1) != projectileList.at(i) && !IsSamePlayer(*projectileList.at(i - 1), *projectileList.at(i))) {
-				if (PhysicsEngine::isColliding(projectileList.at(i - 1)->collisionComponent, projectileList.at(i)->collisionComponent)) {
-					ProjectileCollision(*projectileList.at(i - 1), *projectileList.at(i));
+				if (projectileList.at(i - 1)->collisionComponent != NULL && projectileList.at(i)->collisionComponent != NULL &&
+					projectileList.at(i - 1)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f) &&
+					projectileList.at(i)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f)) {
+					if (PhysicsEngine::isColliding(projectileList.at(i - 1)->collisionComponent, projectileList.at(i)->collisionComponent)) {
+						ProjectileCollision(*projectileList.at(i - 1), *projectileList.at(i));
+					}
 				}
 			}
 		}

@@ -9,15 +9,13 @@
 
 namespace ENGINE {
 
-	class PlayerDialogue : Dialogue {
+	class PlayerDialogue : public Dialogue {
 	public:
 		PlayerDialogue();
 		PlayerDialogue(double seconds);
 		~PlayerDialogue();
 
-		//enum dialogueStates {}; //defined by the inheriting classes
 		enum DIALOGUESTATE {
-			CharSelect,
 			MatchStart,
 			WinMatch,
 			LoseMatch,
@@ -27,7 +25,14 @@ namespace ENGINE {
 			RegularProjectile,
 			SpecialProjectile,
 			Falling,
-			Interaction
+			Interaction,
+			Rare,
+			SoundEffects,
+			CharSelectAlex,
+			CharSelectFlint,
+			CharSelectJack,
+			CharSelectKal,
+			CharSelectOki
 		};
 
 		void setDialogueState(DIALOGUESTATE d);
@@ -35,15 +40,18 @@ namespace ENGINE {
 		void playRandomFromOtherState(DIALOGUESTATE d, bool overrideCD);
 		void sometimesPlayRandomFromCurrentState(int percentage, bool overrideCD);
 		void playSpecifiedFromState(DIALOGUESTATE d, int x);
+		void playIdle();
 
 		//now we're getting serious
 		void LoadPlayerDialogue(std::string filename);
 
-	protected:
+		int channel = 1;
+
 	private:
-		DIALOGUESTATE currentState = CharSelect;
+		DIALOGUESTATE currentState = MatchStart;
 		Parser p = Parser();
 		bool hasCooldown = false;
+		Cooldown idleTimer;
 
 	};
 }

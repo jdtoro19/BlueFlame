@@ -148,7 +148,7 @@ bool TvTGameScene::Initialize()
 	blueLight->SetShader(lightShaderHandle);
 	blueLight->renderComponent->SetRenderType(RenderComponent::Render_Type::CUBE);
 	blueLight->renderComponent->SetColour(0.0f, 0.0f, 1.0f);
-	blueLight->SetWorldPosition(0.0f, -2.95f, 5.0f);
+	blueLight->SetWorldPosition(0.0f, -2.95f, 5.5f);
 	blueLight->SetWorldScale(11.0f, 5.0f, 0.5f);
 	blueLight->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
 	blueLight->lightComponent->SetColour(glm::vec3(0.0f, 0.0f, 1.0f));
@@ -159,10 +159,21 @@ bool TvTGameScene::Initialize()
 	redLight->SetShader(lightShaderHandle);
 	redLight->renderComponent->SetRenderType(RenderComponent::Render_Type::CUBE);
 	redLight->renderComponent->SetColour(1.0f, 0.0f, 0.0f);
-	redLight->SetWorldPosition(0.0f, -2.95f, -5.0f);
+	redLight->SetWorldPosition(0.0f, -2.95f, -5.5f);
 	redLight->SetWorldScale(11.0f, 5.0f, 0.5f);
 	redLight->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
 	redLight->lightComponent->SetColour(glm::vec3(1.0f, 0.0f, 0.0f));
+	//
+
+	//
+	middleLight = new Light();
+	middleLight->SetShader(lightShaderHandle);
+	middleLight->renderComponent->SetRenderType(RenderComponent::Render_Type::CUBE);
+	middleLight->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
+	middleLight->SetWorldPosition(0.0f, -2.95f, 0.0f);
+	middleLight->SetWorldScale(11.0f, 5.0f, 0.5f);
+	middleLight->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
+	middleLight->lightComponent->SetColour(glm::vec3(0.0f, 0.0f, 0.0f));
 	//
 	
 	// Make directional light
@@ -190,19 +201,20 @@ bool TvTGameScene::Initialize()
 	// Add scene objects
 	AddObject(projectileManager->GetProjectileRenderer());
 	AddLightObject(dirLight);
-	AddLightObject(pointLight);
-	AddLightObject(pointLight2);
-	AddLightObject(pointLight3);
-	AddLightObject(pointLight4);
+	//AddLightObject(pointLight);
+	//AddLightObject(pointLight2);
+	//AddLightObject(pointLight3);
+	//AddLightObject(pointLight4);
 	AddLightObject(blueLight);
 	AddLightObject(redLight);
+	AddLightObject(middleLight);
 	AddUIObject(fadeImage);
 	AddUIObject(roundTextFade);
 	AddUIObject(roundText);
-	AddObject(particle1);
-	AddObject(particle2);
-	AddObject(particle3);
-	AddObject(particle4);
+	//AddObject(particle1);
+	//AddObject(particle2);
+	//AddObject(particle3);
+	//AddObject(particle4);
 
 	// update phyics list
 	PhysicsEngine::GetInstance()->AddObjectList(objectList);
@@ -325,8 +337,19 @@ void TvTGameScene::HandleEvents(SDL_Event events)
 
 	if (events.jbutton.button == 7) //start button
 	{
-		if (gameManager->IsGameOver()) {
+		if (gameManager->IsGameOver() && gameManager->canContinue) {
 			Restart();
+		}
+	}
+
+	if (events.jbutton.button == 1 && events.type == SDL_JOYBUTTONDOWN) //b button
+	{
+		if (gameManager->IsGameOver()) {
+			InputManager::GetInstance()->ClearControllers();
+			InputManager::GetInstance()->initalizeControllers();
+			sceneManager->controllers.clear();
+			sceneManager->saveData.clear();
+			sceneManager->SwitchScene(new CharacterSelectScene());
 		}
 	}
 }
@@ -374,7 +397,9 @@ void TvTGameScene::HandleStates(const Uint8 *state)
 
 		// Reload match
 		if (state[SDL_SCANCODE_R]) {
-			Restart();
+			if (gameManager->canContinue) {
+				Restart();
+			}
 		}
 
 		// Call player handle states
@@ -398,7 +423,7 @@ void TvTGameScene::CameraMove(ENGINE::Camera_Movement direction, float yaw, floa
 
 void TvTGameScene::PlayIntro()
 {
-	bgm->SetVolume(50);
+	bgm->SetVolume(127);
 	if (playAudio) {
 		bgm->Play(-1);
 		playAudio = false;
@@ -623,6 +648,12 @@ void TvTGameScene::SetUpPlayers()
 		player4->GetPlayerInput()->SetJoystick(sceneManager->controllers[3]);
 	}
 
+	// Set player audio channels
+	player1->dialogue.channel = 2;
+	player2->dialogue.channel = 3;
+	player3->dialogue.channel = 4;
+	player4->dialogue.channel = 5;
+
 	// Add projectile manager
 	player1->AddProjecitleManager(projectileManager);
 	player2->AddProjecitleManager(projectileManager);
@@ -718,6 +749,19 @@ void TvTGameScene::SetUpArena()
 	floor->canRender = false;
 	//
 
+	// map middle divider
+	divider = new Cube();
+	divider->SetShader(defaultShaderHandle);
+	divider->renderComponent->SetColour(0.1f, 0.1f, 0.1f);
+	divider->physicsComponent->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
+	divider->SetWorldScale(11.0f, 2.0f, 0.5f);
+	divider->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
+	divider->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_NON_ELASTIC);
+	divider->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
+	divider->physicsComponent->SetMass(0.0f);
+	divider->canRender = false;
+	//
+
 	projectileManager->AddEnvironment(floor);
 
 	AddObject(platform);
@@ -725,6 +769,7 @@ void TvTGameScene::SetUpArena()
 	AddObject(middleRing);
 	AddObject(bottomRing);
 	AddObject(floor);
+	AddObject(divider);
 }
 
 void TvTGameScene::Restart()

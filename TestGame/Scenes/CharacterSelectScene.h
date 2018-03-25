@@ -90,6 +90,7 @@ namespace GAME {
 		ImageUI* loadingScreen;
 		Cooldown loadingCD;
 		bool loading = false;
+		bool ready = false;
 
 		float cameraTimer = 0;
 

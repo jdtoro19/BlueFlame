@@ -19,13 +19,13 @@ Cooldown::~Cooldown() {
 }
 
 double Cooldown::secondsLeft() {
-	if (Clock::GetInstance()->ticksToSeconds(remainingDuration()) >= 0) {
+	//if (Clock::GetInstance()->ticksToSeconds(remainingDuration()) >= 0) {
 		return Clock::GetInstance()->ticksToSeconds(remainingDuration());
-	}
-	else
-	{
-		return 0;
-	}
+	//}
+	//else
+	//{
+	//	return 0;
+	//}
 }
 
 LARGE_INTEGER Cooldown::remainingDuration() {

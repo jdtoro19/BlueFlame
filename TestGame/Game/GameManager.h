@@ -34,6 +34,8 @@ namespace GAME {
 
 		void Reset();
 
+		bool canContinue = false;
+
 	private:
 		int matchTime;
 
@@ -58,10 +60,18 @@ namespace GAME {
 		int outTeam1;
 		int outTeam2;
 
+		bool timeUp;
+		bool teamOut;
+		Cooldown endGameCD;
+
 		bool gameOver;
 
 		std::string time;
 
+		bool player1voice = false;
+		bool player2voice = false;
+		bool player3voice = false;
+		bool player4voice = false;
 	};
 
 }

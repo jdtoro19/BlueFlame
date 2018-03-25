@@ -24,15 +24,18 @@ bool SoundEffect::Load(const std::string& fileName) {
 		//Debug::Log(EMessageType::INFO, "Loaded the sound effect", __FILE__, __LINE__);
 		printf("Sound effect loaded successfully");
 	}
+
+	Mix_VolumeChunk(mixChunk, 40);
+
 	return true;
 }
 
 void SoundEffect::Play(const int loopCount) const {
-	Play();
+	//Play();
 }
 
-void SoundEffect::Play() {
-	if (Mix_PlayChannel(-1, mixChunk, 0) == -1) {
+void SoundEffect::Play(int channel) {
+	if (Mix_PlayChannel(channel, mixChunk, 0) == -1) {
 		//Debug::Log(EMessageType::ERROR, std::string(Mix_GetError()), __FILE__, __LINE__);
 		printf(Mix_GetError());
 	}

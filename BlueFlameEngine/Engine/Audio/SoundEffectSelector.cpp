@@ -38,13 +38,17 @@ void SoundEffectSelector::LoadEffectsFromFile(const std::string filenames) {
 }
 
 void SoundEffectSelector::PlayRandom() {
-	int rand = Clock::GetInstance()->boundedRandomNumber(SE.size() - 1);
-	SE.at(rand)->Play();
+	Randomizer rand = Randomizer();
+	int r = rand.rand(0, 10);
+	if (r >= SE.size()) {
+		r = SE.size() - 1;
+	}
+	SE.at(r)->Play(channel);
 }
 
 void SoundEffectSelector::Play(const int x) const {
 	if (x < SE.size()) {
-		SE.at(x)->Play();
+		SE.at(x)->Play(channel);
 	}
 }
 

@@ -15,7 +15,7 @@ namespace ENGINE {
 		
 		/// Pure viturals
 		bool const Load(const std::vector<std::string> fileNames);
-		void SetVolume(int volume);
+		virtual void SetVolume(int volume);
 		void Destroy();
 	protected:
 		//all dialogue is stored in dialogueOptions, via soundeffectselectors.

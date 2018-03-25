@@ -17,16 +17,20 @@ void GameManager::Initialize()
 	outTeam1 = 0;
 	outTeam2 = 0;
 
+	teamOut = false;
+	timeUp = false;
 	gameOver = false;
 
-	matchTime = 90;
+	matchTime = 92;
 
 	roundTimer = Cooldown(matchTime);
+
+	endGameCD = Cooldown(2.0);
 
 	// UI
 	roundTimerText = new TextUI();
 	roundTimerText->SetFont("Resources/Fonts/ka1.ttf");
-	roundTimerText->SetText(std::to_string(matchTime));
+	roundTimerText->SetText(std::to_string(matchTime - 2));
 	roundTimerText->SetColour(1.0f, 1.0f, 1.0f);
 	roundTimerText->SetSize(1.0f);
 	roundTimerText->SetSpacing(9.0f);
@@ -100,7 +104,7 @@ void GameManager::Update()
 	p4Meter->SetValue(playerList[3]->GetSpecialMeter());
 
 
-	time = std::to_string((int)roundTimer.secondsLeft() + 1);
+	time = std::to_string((int)roundTimer.secondsLeft() - 1);
 
 	if (time.size() == 1) {
 		time = "0" + time;
@@ -133,12 +137,30 @@ void GameManager::Update()
 			}
 		}
 
-		if (outTeam1 == 2 || outTeam2 == 2) {
-			gameOver = true;
+		if (!teamOut) {
+			if (outTeam1 == 2 || outTeam2 == 2) {
+				timeUp = true;
+				teamOut = true;
+				roundTimer.refeshCD();
+			}
 		}
 	}
 
-	if (time == "00") {
+	if (!roundTimer.checkOffCD() && roundTimer.secondsLeft() <= 1 && !teamOut) {
+		timeUp = true;
+	}
+
+	if (timeUp) {
+		BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->EnableKernel(true);
+		for (unsigned int i = 0; i < playerList.size(); ++i) {
+			playerList[i]->SetCanMove(false);
+		}
+		roundTimerText->SetText("00");
+		endGameCD.startCD();
+		timeUp = false;
+	}
+
+	if (!endGameCD.checkOffCD() && endGameCD.secondsLeft() <= 1) {
 		gameOver = true;
 	}
 
@@ -149,6 +171,7 @@ void GameManager::Update()
 
 void GameManager::StartMatch()
 {
+	roundTimerText->SetText(std::to_string(matchTime - 2));
 	roundTimerText->SetVisible(true);
 
 	p1Meter->SetVisible(true);
@@ -170,6 +193,8 @@ void GameManager::StartTimer()
 
 void GameManager::GameOver()
 {
+	BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->EnableKernel(false);
+
 	roundTimer.refeshCD();
 	roundTimerText->SetVisible(false);
 
@@ -180,6 +205,7 @@ void GameManager::GameOver()
 
 	for (unsigned int i = 0; i < playerList.size(); ++i) {
 		playerList[i]->SetIsOut(true);
+		playerList[i]->SetCanMove(true);
 		playerList[i]->canRender = true;
 		playerList[i]->physicsComponent->hasGravity = true;
 		if (playerList[i]->GetIsTargeting()) {
@@ -203,10 +229,26 @@ void GameManager::GameOver()
 		team1Text->SetText("Winner");
 		team1Text->SetColour(glm::vec3(0.0f, 0.0f, 1.0f));
 		team1Text->SetVisible(true);
+		if (!player1voice) {
+			team1List[0]->dialogue.playRandomFromOtherState(team1List[0]->dialogue.WinMatch, true);
+			player1voice = true;
+		}
+		if (player1voice && !player2voice) {
+			team1List[1]->dialogue.playRandomFromOtherState(team1List[1]->dialogue.WinMatch, true);
+			player2voice = true;
+		}
 
 		team2Text->SetText("Loser");
 		team2Text->SetColour(glm::vec3(1.0f, 0.0f, 0.0f));
 		team2Text->SetVisible(true);
+		if (player2voice && !player3voice) {
+			team2List[0]->dialogue.playRandomFromOtherState(team2List[0]->dialogue.LoseMatch, true);
+			player3voice = true;
+		}
+		if (player3voice && !player4voice) {
+			team2List[1]->dialogue.playRandomFromOtherState(team2List[1]->dialogue.LoseMatch, true);
+			player4voice = true;
+		}
 	}
 	else if (outTeam1 == 2) {
 		team2Text->SetText("Winner");
@@ -234,6 +276,8 @@ void GameManager::GameOver()
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->GetCameraList()[1]->Position = glm::vec3(0.0f, 0.6f, -1.0f);
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->GetCameraList()[1]->SetRotationY(-90.0f);
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->GetCameraList()[1]->SetRotationX(0.0f);
+
+	canContinue = true;
 }
 
 void GameManager::Reset()
@@ -250,9 +294,16 @@ void GameManager::Reset()
 	roundTimer.refeshCD();
 	time = "90";
 	roundTimerText->SetVisible(false);
+	teamOut = false;
+	timeUp = false;
 	gameOver = false;
 	outTeam1 = 0;
 	outTeam2 = 0;
+	player1voice = false;
+	player2voice = false;
+	player3voice = false;
+	player4voice = false;
+	canContinue = false;
 
 	vector<Player*> team1;
 	vector<Player*> team2;

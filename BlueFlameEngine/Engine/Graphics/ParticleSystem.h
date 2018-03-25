@@ -51,7 +51,7 @@ namespace ENGINE {
 		std::vector<Vertex> getVertexList() { return vertexList; }
 
 		void Update(const float deltaTime);
-		void Render(Shader* shader);
+		void Render(Shader* shader, const double _interpolation);
 
 	private:
 		// Vertices and mesh

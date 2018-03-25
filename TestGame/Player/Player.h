@@ -199,7 +199,7 @@ namespace GAME {
 		// Check to see if player can move
 		bool canMove;
 
-	private:
+	public:
 		//Player Specific Audio
 		//MUST HAVE A CONSTRUCTOR FOR THIS IN EXPANDED CLASS
 		PlayerDialogue dialogue; //USED TO STORE PLAYER DIALOGUE. LoadPlayerDialogue(

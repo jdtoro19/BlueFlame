@@ -55,16 +55,16 @@ void Crosshair::Update(const float deltaTime)
 			glm::vec2 mods = playerInput->LeftJoystick();
 
 			if (mods.x > 0.01f) {
-				crosshair->SetPosition(crosshair->GetPosition().x + deltaTime * 500, crosshair->GetPosition().y);
+				crosshair->SetPosition(crosshair->GetPosition().x + deltaTime * 800, crosshair->GetPosition().y);
 			}
 			if (mods.x < -0.01f) {
-				crosshair->SetPosition(crosshair->GetPosition().x - deltaTime * 500, crosshair->GetPosition().y);
+				crosshair->SetPosition(crosshair->GetPosition().x - deltaTime * 800, crosshair->GetPosition().y);
 			}
 			if (mods.y > 0.01f) {
-				crosshair->SetPosition(crosshair->GetPosition().x, crosshair->GetPosition().y + deltaTime * 500);
+				crosshair->SetPosition(crosshair->GetPosition().x, crosshair->GetPosition().y + deltaTime * 800);
 			}
 			if (mods.y < -0.01f) {
-				crosshair->SetPosition(crosshair->GetPosition().x, crosshair->GetPosition().y - deltaTime * 500);
+				crosshair->SetPosition(crosshair->GetPosition().x, crosshair->GetPosition().y - deltaTime * 800);
 			}
 		}
 	}

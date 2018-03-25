@@ -22,6 +22,7 @@ namespace ENGINE {
 		SDL_Joystick* getAnyController();
 		bool newController(SDL_JoystickID id);
 		int connectedControllers = 0;
+		void ClearControllers() { spareControllers.clear(); usedControllers.clear(); };
 
 	private:
 		

@@ -25,7 +25,7 @@ namespace ENGINE {
 
 		virtual bool Load(const std::string& fileName) override;
 		virtual void Play(const int loopCount = 0) const override;
-		virtual void Play();
+		virtual void Play(int channel);
 		virtual void SetVolume(int volume) const override;
 		virtual void Destroy() override;
 		/*void Stop() const;
@@ -33,7 +33,6 @@ namespace ENGINE {
 		void Resume() const;
 		void TogglePause() const;*/
 		Mix_Chunk* mixChunk = nullptr;
-
 	protected:
 	private:
 		

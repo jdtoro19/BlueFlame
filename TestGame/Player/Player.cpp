@@ -158,6 +158,34 @@ void Player::Update(const float deltaTime)
 		specialComboPosition = 0;
 	}
 	//
+
+	//passive dialogue block
+
+	switch (playerState)
+	{
+	case GAME::Player::NORMAL:
+		dialogue.setDialogueState(dialogue.Idle);
+		break;
+	case GAME::Player::ATTACK:
+		dialogue.setDialogueState(dialogue.Moving);
+		break;
+	case GAME::Player::BLOCK:
+		dialogue.setDialogueState(dialogue.TakingDamage);
+		break;
+	case GAME::Player::STUN:
+		dialogue.setDialogueState(dialogue.TakingDamage);
+		break;
+	case GAME::Player::JUMP:
+		dialogue.setDialogueState(dialogue.Moving);
+		break;
+	case GAME::Player::DODGE:
+		break;
+	case GAME::Player::DEAD:
+		break;
+	default:
+		break;
+	}
+	//dialogue.playIdle(); //will play an idle sound if sound hasn't been played recently
 }
 
 void Player::FixedUpdate(const float deltaTime) {
@@ -374,7 +402,7 @@ void Player::HandleEvents(SDL_Event events)
 
 		case SDL_JOYHATMOTION:
 			// DPAD
-			if (events.jhat.value & SDL_HAT_UP)
+			if (events.jhat.value & SDL_HAT_UP && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
 			{
 				EnableTarget();
 			}
@@ -545,6 +573,7 @@ void Player::Hit(Projectile* projectile) {
 		physicsComponent->AddForce(projectile->GetForce() / 2.0f);
 		Stun(2.0f);
 	}
+	dialogue.playRandomFromOtherState(dialogue.TakingDamage, true);
 }
 
 void Player::Stun() {
@@ -630,15 +659,11 @@ void Player::Render(Shader* shader, const double _interpolation)
 	shader->setMat4("model", interpolatedMatrix * localModelMatrix * base->GetWorldModelMatrix() * base->GetLocalModelMatrix() * base->model->GetWorldModelMatrix() * base->model->GetLocalModelMatrix());
 	base->Render(shader, _interpolation);
 
-	if (worldPosition.y > 0.0f) {
+	if (worldPosition.y > -1.0f) {
 		ring->SetWorldPosition(worldPosition.x, ring->GetWorldPosition().y, worldPosition.z);
 		shader->setMat4("model", ringInterpolatedMatrix * ring->GetLocalModelMatrix());
-	}
-	else {
-		ring->SetWorldPosition(0.0f, ring->GetWorldPosition().y, 0.0f);
-		shader->setMat4("model", interpolatedMatrix * localModelMatrix * ringInterpolatedMatrix * ring->GetLocalModelMatrix());
-	}
-	ring->Render(shader, _interpolation);
+		ring->Render(shader, _interpolation);
+	}	
 
 	shader->setMat4("model", interpolatedMatrix * localModelMatrix * shieldInterpolatedMatrix * shield->GetLocalModelMatrix());
 	shield->Render(shader, _interpolation);

@@ -10,6 +10,9 @@ WindPlayer::WindPlayer() {
 
 	ring->renderComponent->SetColour(0.1f, 0.1f, 0.5f);
 	SetStats();
+
+	dialogue = PlayerDialogue();
+	dialogue.LoadPlayerDialogue("Resources/Audio/OkiCaeliAudio.txt");
 }
 
 WindPlayer::~WindPlayer() {
@@ -19,7 +22,7 @@ WindPlayer::~WindPlayer() {
 void WindPlayer::SetStats() {
 	shieldHealth = maxHealth;
 	moveSpeed = 1.0f;
-	specialMeter = 0;
+	specialMeter = 100;
 }
 
 std::vector<Projectile*> WindPlayer::LightAttack()
@@ -77,6 +80,7 @@ std::vector<Projectile*> WindPlayer::LightAttack()
 		p->SetStunTime(0.5f);
 		p->SetWorldScale(0.5f);
 		projectiles.push_back(p);
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 0);
 		return projectiles;
 	}
 	
@@ -126,6 +130,7 @@ std::vector<Projectile*> WindPlayer::MediumAttack()
 		p->SetStunTime(0.6f);
 		p->SetWorldScale(0.5f);
 		projectiles.push_back(p);
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 1);
 		return projectiles;
 	}
 	
@@ -161,6 +166,7 @@ std::vector<Projectile*> WindPlayer::HeavyAttack()
 		p->SetStunTime(1.5f);
 		p->SetWorldScale(0.2f, 1.0f, 1.0f);
 		projectiles.push_back(p);
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 2);
 		return projectiles;
 	}
 	if (lightComboPosition == 3) {
@@ -175,6 +181,7 @@ std::vector<Projectile*> WindPlayer::HeavyAttack()
 		p->SetStunTime(2.0f);
 		p->SetWorldScale(1.5f, 1.5f, 0.2f);
 		projectiles.push_back(p);
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 1);
 		return projectiles;
 	}
 	
@@ -199,6 +206,8 @@ std::vector<Projectile*> WindPlayer::SpecialAttack()
 		physicsComponent->SetVelocity(glm::vec3(0, 5, 0));
 
 		ComboReset();
+
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 0);
 	}
 
 	if (heavyComboPosition == 2 && specialMeter > 0) {
@@ -215,6 +224,7 @@ std::vector<Projectile*> WindPlayer::SpecialAttack()
 		p->SetStunTime(0.1f);
 		p->SetWorldScale(3.0f, 0.2f, 1.0f);
 		projectiles.push_back(p);
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 3);
 		return projectiles;
 	}
 
@@ -236,6 +246,7 @@ std::vector<Projectile*> WindPlayer::SpecialAttack()
 		p->SetStunTime(0.5f);
 		p->SetWorldScale(6.0f, 0.2f, 1.0f);
 		projectiles.push_back(p);
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 5);
 		return projectiles;
 	}
 
@@ -254,6 +265,7 @@ std::vector<Projectile*> WindPlayer::SpecialAttack()
 		p->SetStunTime(0.3f);
 		p->SetWorldScale(0.5f);
 		projectiles.push_back(p);
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 2);
 		return projectiles;
 	}
 

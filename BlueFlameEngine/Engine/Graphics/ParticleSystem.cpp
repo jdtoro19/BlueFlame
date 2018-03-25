@@ -53,7 +53,7 @@ void ParticleSystem::Update(const float deltaTime)
 	}
 }
 
-void ParticleSystem::Render(Shader* shader) 
+void ParticleSystem::Render(Shader* shader, const double _interpolation)
 {
 	if (canRender) {
 		if (mesh != nullptr) {

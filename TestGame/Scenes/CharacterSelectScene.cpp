@@ -277,41 +277,17 @@ void CharacterSelectScene::Update(const float deltaTime)
 
 	//check to see that all players have selected
 	if (loading == false &&
-		crosshair1->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
-		crosshair2->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
-		crosshair3->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
-		crosshair4->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE)
+		crosshair1->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE)// &&
+		//crosshair2->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
+		//crosshair3->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
+		//crosshair4->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE)
 	{
-		for (int i = 0; i < crosshairList.size(); i++) {
-			sceneManager->controllers.push_back(crosshairList.at(i)->GetPlayerInput()->GetJoystick());
-			if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::ALEX)
-			{
-				sceneManager->saveData.push_back(0);
-			}
-			else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::FLINT)
-			{
-				sceneManager->saveData.push_back(1);
-			}
-			else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::JACK)
-			{
-				sceneManager->saveData.push_back(2);
-			}
-			else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::KAL)
-			{
-				sceneManager->saveData.push_back(3);
-			}
-			else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::OKI)
-			{
-				sceneManager->saveData.push_back(4);
-			}
-			else
-			{
-				sceneManager->saveData.push_back(0);
-			}
-		}
-		loadingCD.startCD();
-		loading = true;
-		loadingScreen->SetVisible(true);
+		ready = true;
+		sceneManager->GetRenderer()->EnableInvertedColours(true);
+	}
+	else {
+		ready = false;
+		sceneManager->GetRenderer()->EnableInvertedColours(false);
 	}
 
 	if (!loadingCD.checkOffCD() && loadingCD.secondsLeft() <= 1)
@@ -432,21 +408,58 @@ void CharacterSelectScene::HandleEvents(SDL_Event events)
 
 			if (events.jbutton.button == 7) //Start button
 			{
-				bool canSelect = true;
-
-				if (usedCrosshairList.size() != 0)
-				{
-					for (int i = 0; i < usedCrosshairList.size(); i++)
-					{
-						if (events.jbutton.which == usedCrosshairList.at(i)) {
-							canSelect = false;
+				if (ready) {
+					for (int i = 0; i < crosshairList.size(); i++) {
+						sceneManager->controllers.push_back(crosshairList.at(i)->GetPlayerInput()->GetJoystick());
+						if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::ALEX)
+						{
+							sceneManager->saveData.push_back(0);
+						}
+						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::FLINT)
+						{
+							sceneManager->saveData.push_back(1);
+						}
+						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::JACK)
+						{
+							sceneManager->saveData.push_back(2);
+						}
+						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::KAL)
+						{
+							sceneManager->saveData.push_back(3);
+						}
+						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::OKI)
+						{
+							sceneManager->saveData.push_back(4);
+						}
+						else
+						{
+							sceneManager->saveData.push_back(0);
 						}
 					}
+					loadingCD.startCD();
+					loading = true;
+					loadingScreen->SetVisible(true);
+					sceneManager->GetRenderer()->EnableInvertedColours(false);
+					bgm->Stop();
 				}
+				else
+				{
+					bool canSelect = true;
 
-				if (canSelect) {
-					//create new controller
-					ControllerPressStart(events.jbutton.which);
+					if (usedCrosshairList.size() != 0)
+					{
+						for (int i = 0; i < usedCrosshairList.size(); i++)
+						{
+							if (events.jbutton.which == usedCrosshairList.at(i)) {
+								canSelect = false;
+							}
+						}
+					}
+
+					if (canSelect) {
+						//create new controller
+						ControllerPressStart(events.jbutton.which);
+					}
 				}
 			}
 		}
@@ -476,29 +489,6 @@ void CharacterSelectScene::ControllerPressStart(SDL_JoystickID jID)
 		usedCrosshairList.push_back(jID);
 		AddUIObject(crosshairList.at(i)->GetImage());
 		break;
-		
-		/*if (crosshairList.at(i)->GetPlayerInput()->CheckForController(i + 1))
-		{
-			AddUIObject(crosshairList.at(i)->GetImage());
-			crosshairList.at(i)->SetCanMove(true);
-		}*/
-		//if (crosshairList.at(i)->GetPlayerInput()->GetJoystick() > 0) {
-			//else if (crosshair1->GetPlayerInput()->CheckForController(2))
-			//{
-			//	//BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[0]].playerControls(player1);
-			//	AddUIObject(crosshair2);
-			//}
-			//else if (InputHandler::GetInstance()->jCheck() == 3)
-			//{
-			//	//BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[0]].playerControls(player1);
-			//	AddUIObject(crosshair3);
-			//}
-			//else if (InputHandler::GetInstance()->jCheck() == 4)
-			//{
-			//	//BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[0]].playerControls(player1);
-			//	AddUIObject(crosshair4);
-			//}
-		//}
 	}
 }
 

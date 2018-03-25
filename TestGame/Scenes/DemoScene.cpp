@@ -64,7 +64,8 @@ bool DemoScene::Initialize()
 	// Make Players
 	//
 	// Player 1
-	player1 = new IcePlayer();
+	player1 = new WindPlayer();
+	player1->dialogue.channel = 1;
 	player1->SetShader(defaultShaderHandle);
 	player1->SetWorldPosition(glm::vec3(-2.0f, 0.0f, 3.0f));
 	player1->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER1);
@@ -73,7 +74,8 @@ bool DemoScene::Initialize()
 	player1->AddProjecitleManager(projectileManager);
 
 	// Player 2
-	player2 = new IcePlayer();
+	player2 = new WindPlayer();
+	player2->dialogue.channel = 2;
 	player2->SetShader(defaultShaderHandle);
 	player2->SetWorldPosition(glm::vec3(2.0f, 0.0f, 3.0f));
 	player2->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER2);
@@ -82,7 +84,8 @@ bool DemoScene::Initialize()
 	player2->AddProjecitleManager(projectileManager);
 
 	// Player 3
-	player3 = new FirePlayer();
+	player3 = new WindPlayer();
+	player3->dialogue.channel = 3;
 	player3->SetShader(defaultShaderHandle);
 	player3->SetWorldPosition(glm::vec3(2.0f, 0.0f, -3.0f));
 	player3->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER3);
@@ -91,7 +94,8 @@ bool DemoScene::Initialize()
 	player3->AddProjecitleManager(projectileManager);
 
 	// Player 4
-	player4 = new EarthPlayer();
+	player4 = new WindPlayer();
+	player4->dialogue.channel = 4;
 	player4->SetShader(defaultShaderHandle);
 	player4->SetWorldPosition(glm::vec3(-2.0f, 0.0f, -3.0f));
 	player4->SetPlayerNumber(Player::PLAYERNUMBER::PLAYER4);
