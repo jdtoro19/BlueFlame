@@ -224,6 +224,9 @@ bool TvTGameScene::Initialize()
 
 	roundCD = Cooldown(0.5f);
 
+	voiceCD = Cooldown(4.5);
+	voiceCD.startCD();
+
 	return true;
 }
 void TvTGameScene::Update(const float deltaTime)
@@ -335,7 +338,7 @@ void TvTGameScene::HandleEvents(SDL_Event events)
 
 	}
 
-	if (events.jbutton.button == 7) //start button
+	if (events.jbutton.button == 7 && events.type == SDL_JOYBUTTONDOWN) //start button
 	{
 		if (gameManager->IsGameOver() && gameManager->canContinue) {
 			Restart();
@@ -345,6 +348,10 @@ void TvTGameScene::HandleEvents(SDL_Event events)
 	if (events.jbutton.button == 1 && events.type == SDL_JOYBUTTONDOWN) //b button
 	{
 		if (gameManager->IsGameOver()) {
+			Mix_HaltChannel(playerList[0]->dialogue.channel);
+			Mix_HaltChannel(playerList[1]->dialogue.channel);
+			Mix_HaltChannel(playerList[2]->dialogue.channel);
+			Mix_HaltChannel(playerList[3]->dialogue.channel);
 			InputManager::GetInstance()->ClearControllers();
 			InputManager::GetInstance()->initalizeControllers();
 			sceneManager->controllers.clear();
@@ -483,6 +490,24 @@ void TvTGameScene::PlayIntro()
 	if (fadeAlpha <= 0) {
 		fadeAlpha = 0;
 	}
+
+	if (!player1voice) {
+		player1->dialogue.playRandomFromOtherState(player1->dialogue.Interaction, true);
+		player1voice = true;
+	}
+	if (!player2voice && voiceCD.secondsLeft() < 3.0) {
+		player2->dialogue.playRandomFromOtherState(player2->dialogue.Interaction, true);
+		player2voice = true;
+	}
+
+	if (!player3voice && voiceCD.secondsLeft() < 1.5) {
+		player3->dialogue.playRandomFromOtherState(player3->dialogue.Interaction, true);
+		player3voice = true;
+	}
+	if (!player4voice && voiceCD.secondsLeft() < 0) {
+		player4->dialogue.playRandomFromOtherState(player4->dialogue.Interaction, true);
+		player4voice = true;
+	}
 }
 
 void TvTGameScene::SkipIntro()
@@ -513,6 +538,11 @@ void TvTGameScene::SkipIntro()
 		cameraList[1]->Position = glm::vec3(0.0f, 7.5f, -9.5f);
 		cameraList[1]->SetRotationY(90.0f);
 		cameraList[1]->SetRotationX(-45.0f);
+
+		Mix_HaltChannel(playerList[0]->dialogue.channel);
+		Mix_HaltChannel(playerList[1]->dialogue.channel);
+		Mix_HaltChannel(playerList[2]->dialogue.channel);
+		Mix_HaltChannel(playerList[3]->dialogue.channel);
 	}
 }
 
@@ -799,6 +829,9 @@ void TvTGameScene::Restart()
 	cameraCD = Cooldown(4.5);
 	cameraCD.startCD();
 
+	voiceCD = Cooldown(4.5);
+	voiceCD.startCD();
+
 	roundCD = Cooldown(0.5);
 
 	fadeAlpha = 1.0f;
@@ -810,4 +843,9 @@ void TvTGameScene::Restart()
 	startText = false;
 	roundStart = false;
 	playAudio = true;
+
+	bool player1voice = false;
+	bool player2voice = false;
+	bool player3voice = false;
+	bool player4voice = false;
 }

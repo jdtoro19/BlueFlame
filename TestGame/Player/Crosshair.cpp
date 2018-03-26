@@ -68,6 +68,22 @@ void Crosshair::Update(const float deltaTime)
 			}
 		}
 	}
+
+	if (crosshair->GetPosition().x < 0) {
+		crosshair->SetPosition(0, crosshair->GetPosition().y);
+	}
+
+	if (crosshair->GetPosition().y < 0) {
+		crosshair->SetPosition(crosshair->GetPosition().x, 0);
+	}
+
+	if (crosshair->GetPosition().x > BFEngine::GetInstance()->GetSceneManager()->GetScreenWidth()) {
+		crosshair->SetPosition(BFEngine::GetInstance()->GetSceneManager()->GetScreenWidth(), crosshair->GetPosition().y);
+	}
+
+	if (crosshair->GetPosition().y > BFEngine::GetInstance()->GetSceneManager()->GetScreenHeight()) {
+		crosshair->SetPosition(crosshair->GetPosition().x, BFEngine::GetInstance()->GetSceneManager()->GetScreenHeight());
+	}
 }
 
 void Crosshair::HandleEvents(SDL_Event events)

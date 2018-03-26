@@ -62,6 +62,10 @@ Player::Player()
 	// Make player input
 	playerInput = new PlayerInput();
 
+	// Particles
+	stunEffect = new ParticleSystem(BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager(), glm::vec3(1.0f, 0.5f, 1.0f));
+	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(stunEffect);
+
 	// Set player stats
 	SetStats();
 }
@@ -78,7 +82,6 @@ void Player::AddProjecitleManager(ProjectileManager* pM)
 
 void Player::Update(const float deltaTime)
 {
-
 	if (specialMeter > 100) {
 		specialMeter = 100;
 	}
@@ -289,6 +292,9 @@ void Player::HandleEvents(SDL_Event events)
 
 						subP->SetStrength(PROJECTILE_STRENGTH::LIGHT);
 						projectileManager->AddProjectile(subP);
+
+						shootEffect->Play();
+						shootEffect->SetWorldPosition(subP->GetWorldPosition());
 					}
 				}
 			}
@@ -321,6 +327,9 @@ void Player::HandleEvents(SDL_Event events)
 
 						subP->SetStrength(PROJECTILE_STRENGTH::MEDIUM);
 						projectileManager->AddProjectile(subP);
+
+						shootEffect->Play();
+						shootEffect->SetWorldPosition(subP->GetWorldPosition());
 					}
 				}
 			}
@@ -353,6 +362,9 @@ void Player::HandleEvents(SDL_Event events)
 
 						subP->SetStrength(PROJECTILE_STRENGTH::HEAVY);
 						projectileManager->AddProjectile(subP);
+
+						shootEffect->Play();
+						shootEffect->SetWorldPosition(subP->GetWorldPosition());
 					}
 				}
 			}
@@ -385,6 +397,9 @@ void Player::HandleEvents(SDL_Event events)
 
 						subP->SetStrength(PROJECTILE_STRENGTH::SPECIAL);
 						projectileManager->AddProjectile(subP);
+
+						shootEffect->Play();
+						shootEffect->SetWorldPosition(subP->GetWorldPosition());
 					}
 				}
 			}
@@ -574,6 +589,8 @@ void Player::Hit(Projectile* projectile) {
 		Stun(2.0f);
 	}
 	dialogue.playRandomFromOtherState(dialogue.TakingDamage, true);
+	stunEffect->Play();
+	stunEffect->SetWorldPosition(worldPosition.x, worldPosition.y + 0.5f, worldPosition.z);
 }
 
 void Player::Stun() {

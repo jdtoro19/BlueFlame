@@ -45,6 +45,11 @@ namespace GAME {
 		TextUI* team1Text;
 		TextUI* team2Text;
 
+		TextUI* gameoverText;
+		ImageUI* gameoverBack;
+
+		ImageUI* end;
+
 		SliderUI* p1Meter;
 		SliderUI* p2Meter;
 		SliderUI* p3Meter;
@@ -72,6 +77,10 @@ namespace GAME {
 		bool player2voice = false;
 		bool player3voice = false;
 		bool player4voice = false;
+
+		bool endGame = false;
+
+		Cooldown voiceCD;
 	};
 
 }

@@ -115,6 +115,11 @@ namespace GAME {
 		// Intro Variables
 		Cooldown cameraCD;
 		Cooldown roundCD;
+		Cooldown voiceCD;
+		bool player1voice = false;
+		bool player2voice = false;
+		bool player3voice = false;
+		bool player4voice = false;
 		float fadeAlpha = 1.0f;
 		bool cameraSwitch1 = false;
 		bool cameraSwitch2 = false;

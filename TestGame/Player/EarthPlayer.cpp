@@ -13,6 +13,12 @@ EarthPlayer::EarthPlayer() {
 	LightCD = Cooldown(0.4);
 	MediumCD = Cooldown(3.0);
 	specialMeter = 100;
+
+	shootEffect = new ParticleSystem(BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager(), glm::vec3(0.8f, 0.5f, 0.3f));
+	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(shootEffect);
+
+	dialogue = PlayerDialogue();
+	dialogue.LoadPlayerDialogue("Resources/Audio/OkiCaeliAudio.txt");
 }
 
 EarthPlayer::~EarthPlayer() {

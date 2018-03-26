@@ -86,6 +86,8 @@ namespace GAME {
 		ImageUI* champMystery3;
 		ImageUI* champMystery4;
 
+		ImageUI* start;
+
 		// Loading Screen
 		ImageUI* loadingScreen;
 		Cooldown loadingCD;

@@ -9,6 +9,7 @@
 #include <BlueFlameEngine\Engine\Core\RenderComponent.h>
 #include <BlueFlameEngine\Engine\Core\ResourceManager.h>
 #include <BlueFlameEngine\Engine\Rendering\3D\Projectile.h>
+#include <BlueFlameEngine\Engine\Graphics\ParticleSystem.h>
 #include "../Game/ProjectileManager.h"
 #include "PlayerBase.h"
 #include "PlayerInput.h"
@@ -198,6 +199,10 @@ namespace GAME {
 
 		// Check to see if player can move
 		bool canMove;
+
+		// Particles
+		ParticleSystem* stunEffect;
+		ParticleSystem* shootEffect;
 
 	public:
 		//Player Specific Audio

@@ -1,28 +1,10 @@
-﻿  TvTGameScene.cpp
-  Crosshair.cpp
-  GameManager.cpp
-c:\users\juan toro\documents\blueflame\testgame\game\gamemanager.cpp(101): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\juan toro\documents\blueflame\testgame\game\gamemanager.cpp(102): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\juan toro\documents\blueflame\testgame\game\gamemanager.cpp(103): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-c:\users\juan toro\documents\blueflame\testgame\game\gamemanager.cpp(104): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-  Generating Code...
-  Compiling...
-  MenuSelectScene.cpp
-c:\users\juan toro\documents\blueflame\testgame\scenes\menuselectscene.cpp(60): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-c:\users\juan toro\documents\blueflame\testgame\scenes\menuselectscene.cpp(85): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-c:\users\juan toro\documents\blueflame\testgame\scenes\menuselectscene.cpp(148): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-c:\users\juan toro\documents\blueflame\testgame\scenes\menuselectscene.cpp(154): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
-  CharacterSelectScene.cpp
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(267): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(273): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(303): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(412): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(451): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(479): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(501): warning C4018: '<': signed/unsigned mismatch
-  Generating Code...
-  Skipping... (no relevant changes detected)
-  MenuScene.cpp
-  Main.cpp
+﻿  CharacterSelectScene.cpp
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(275): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(281): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(313): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(422): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(461): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(493): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(515): warning C4018: '<': signed/unsigned mismatch
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.exe
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.pdb (Partial PDB)

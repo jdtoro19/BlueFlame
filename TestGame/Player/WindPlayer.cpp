@@ -8,8 +8,11 @@ WindPlayer::WindPlayer() {
 	base->SetWorldScale(0.012f);
 	base->renderComponent->SetColour(0.2f, 0.7f, 0.0f);
 
-	ring->renderComponent->SetColour(0.1f, 0.1f, 0.5f);
+	ring->renderComponent->SetColour(0.0f, 1.0f, 0.0f);
 	SetStats();
+
+	shootEffect = new ParticleSystem(BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager(), glm::vec3(0.0f, 1.0f, 0.0f));
+	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(shootEffect);
 
 	dialogue = PlayerDialogue();
 	dialogue.LoadPlayerDialogue("Resources/Audio/OkiCaeliAudio.txt");

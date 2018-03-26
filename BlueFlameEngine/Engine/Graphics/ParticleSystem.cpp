@@ -18,6 +18,22 @@ ParticleSystem::ParticleSystem(ResourceManager<Shader>* rm) : mesh(nullptr)
 	SetUpMesh();
 }
 
+ParticleSystem::ParticleSystem(ResourceManager<Shader>* rm, glm::vec3 colour) : mesh(nullptr)
+{
+	this->colour = colour;
+	lifeTime = 5.0f;
+	loop = false;
+	size = 2;
+	alpha = 1.0f;
+	glow = true;
+	canRender = true;
+	useImage = false;
+	time = 5.0f;
+	particleShader = new Shader("Shaders/particle.vs", "Shaders/particle.fs");
+	shader = rm->put(std::string("particle"), particleShader);
+	SetUpSparkMesh();
+}
+
 ParticleSystem::~ParticleSystem()
 {
 
@@ -37,6 +53,25 @@ void ParticleSystem::SetUpMesh()
 	mesh = new Mesh(&vertexList);
 }
 
+void ParticleSystem::SetUpSparkMesh()
+{
+	Randomizer rand = Randomizer();
+
+	for (size_t i = 0; i < 40; ++i) {
+		v.position = glm::vec3(0.0f, 0.0f, 0.0f);
+		// repurpose normal for velocity
+		v.normal = glm::vec3(rand.box_muller(0.1, 1.0), rand.box_muller(0.1, 1.0), rand.box_muller(0.1, 1.0));
+		v.color = colour;
+		vertexList.push_back(v);
+	}
+	mesh = new Mesh(&vertexList);
+}
+
+void ParticleSystem::Play()
+{
+	time = 0;
+}
+
 void ParticleSystem::Update(const float deltaTime) 
 {
 	time += deltaTime;
@@ -48,7 +83,7 @@ void ParticleSystem::Update(const float deltaTime)
 	else 
 	{
 		if (time > lifeTime) {
-			deleted = true;
+			time = lifeTime;
 		}
 	}
 }

@@ -25,7 +25,9 @@ void GameManager::Initialize()
 
 	roundTimer = Cooldown(matchTime);
 
-	endGameCD = Cooldown(2.0);
+	endGameCD = Cooldown(3.0);
+
+	voiceCD = Cooldown(4.5);
 
 	// UI
 	roundTimerText = new TextUI();
@@ -55,6 +57,27 @@ void GameManager::Initialize()
 	team2Text->SetSpacing(9.0f);
 	team2Text->SetPosition(((team1Text->GetLength() / 2) - 50) + (BFEngine::GetInstance()->GetSceneManager()->GetScreenWidth() / 2), (BFEngine::GetInstance()->GetSceneManager()->GetScreenHeight() / 2) - 200);
 	team2Text->SetVisible(false);
+
+	gameoverText = new TextUI();
+	gameoverText->SetFont("Resources/Fonts/ka1.ttf");
+	gameoverText->SetText("Red Team Wins");
+	gameoverText->SetColour(1.0f, 1.0f, 1.0f);
+	gameoverText->SetSize(1.0f);
+	gameoverText->SetSpacing(9.0f);
+	gameoverText->SetPosition((BFEngine::GetInstance()->GetSceneManager()->GetScreenWidth() / 2) - gameoverText->GetLength() / 2, (BFEngine::GetInstance()->GetSceneManager()->GetScreenHeight() / 2));
+	gameoverText->SetVisible(false);
+
+	gameoverBack = new ImageUI;
+	gameoverBack->SetImage("Resources/Textures/banner.png");
+	gameoverBack->SetPosition(960.0f, 510.0f);
+	gameoverBack->SetScale(5.0f, 1.5f);
+	gameoverBack->SetVisible(false);
+
+	end = new ImageUI;
+	end->SetImage("Resources/Textures/end.png");
+	end->SetPosition(960.0f, 540.0f);
+	end->SetScale(1.0f);
+	end->SetVisible(false);
 
 	p1Meter = new SliderUI("Resources/Textures/Green.jpg", "Resources/Textures/blackFILL.png");
 	p1Meter->SetPosition(250, 1000);
@@ -87,9 +110,12 @@ void GameManager::Initialize()
 	divider->SetVisible(false);
 
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(divider);
+	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(end);
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(roundTimerText);
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(team1Text);
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(team2Text);
+	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(gameoverBack);
+	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(gameoverText);
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(p1Meter);
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(p2Meter);
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(p3Meter);
@@ -156,6 +182,25 @@ void GameManager::Update()
 			playerList[i]->SetCanMove(false);
 		}
 		roundTimerText->SetText("00");
+		if (outTeam2 == 2) {
+			gameoverText->SetColour(0.0f, 0.0f, 1.0f);
+			gameoverText->SetText("Blue Team Wins");
+			gameoverText->SetPosition((BFEngine::GetInstance()->GetSceneManager()->GetScreenWidth() / 2) - gameoverText->GetLength() / 2, (BFEngine::GetInstance()->GetSceneManager()->GetScreenHeight() / 2));
+			gameoverText->SetVisible(true);
+		}
+		else if (outTeam1 == 2) {
+			gameoverText->SetColour(1.0f, 0.0f, 0.0f);
+			gameoverText->SetText("Red Team Wins");
+			gameoverText->SetPosition((BFEngine::GetInstance()->GetSceneManager()->GetScreenWidth() / 2) - gameoverText->GetLength() / 2, (BFEngine::GetInstance()->GetSceneManager()->GetScreenHeight() / 2));
+			gameoverText->SetVisible(true);
+		}
+		else {
+			gameoverText->SetColour(1.0f, 0.0f, 1.0f);
+			gameoverText->SetText("DRAW");
+			gameoverText->SetPosition((BFEngine::GetInstance()->GetSceneManager()->GetScreenWidth() / 2) - gameoverText->GetLength() / 2, (BFEngine::GetInstance()->GetSceneManager()->GetScreenHeight() / 2));
+			gameoverText->SetVisible(true);
+		}
+		gameoverBack->SetVisible(true);
 		endGameCD.startCD();
 		timeUp = false;
 	}
@@ -164,8 +209,69 @@ void GameManager::Update()
 		gameOver = true;
 	}
 
-	if (gameOver) {
+	if (gameOver && !endGame) {
 		GameOver();
+	}
+
+	if (gameOver) {
+		if (outTeam2 == 2) {
+			if (!player1voice) {
+				team1List[0]->dialogue.playRandomFromOtherState(team1List[0]->dialogue.WinMatch, true);
+				player1voice = true;
+			}
+			if (!player2voice && voiceCD.secondsLeft() < 3.0) {
+				team1List[1]->dialogue.playRandomFromOtherState(team1List[1]->dialogue.WinMatch, true);
+				player2voice = true;
+			}
+
+			if (!player3voice && voiceCD.secondsLeft() < 1.5) {
+				team2List[0]->dialogue.playRandomFromOtherState(team2List[0]->dialogue.LoseMatch, true);
+				player3voice = true;
+			}
+			if (!player4voice && voiceCD.secondsLeft() < 0) {
+				team2List[1]->dialogue.playRandomFromOtherState(team2List[1]->dialogue.LoseMatch, true);
+				player4voice = true;
+			}
+		}
+		else if (outTeam1 == 2) {
+			if (!player1voice) {
+				team1List[0]->dialogue.playRandomFromOtherState(team1List[0]->dialogue.LoseMatch, true);
+				player1voice = true;
+			}
+			if (!player2voice && voiceCD.secondsLeft() < 3.0) {
+				team1List[1]->dialogue.playRandomFromOtherState(team1List[1]->dialogue.LoseMatch, true);
+				player2voice = true;
+			}
+
+			if (!player3voice && voiceCD.secondsLeft() < 1.5) {
+				team2List[0]->dialogue.playRandomFromOtherState(team2List[0]->dialogue.WinMatch, true);
+				player3voice = true;
+			}
+			if (!player4voice && voiceCD.secondsLeft() < 0) {
+				team2List[1]->dialogue.playRandomFromOtherState(team2List[1]->dialogue.WinMatch, true);
+				player4voice = true;
+			}
+		}
+		else 
+		{
+			if (!player1voice) {
+				team1List[0]->dialogue.playRandomFromOtherState(team1List[0]->dialogue.LoseMatch, true);
+				player1voice = true;
+			}
+			if (!player2voice && voiceCD.secondsLeft() < 3.0) {
+				team1List[1]->dialogue.playRandomFromOtherState(team1List[1]->dialogue.LoseMatch, true);
+				player2voice = true;
+			}
+
+			if (!player3voice && voiceCD.secondsLeft() < 1.5) {
+				team2List[0]->dialogue.playRandomFromOtherState(team2List[0]->dialogue.LoseMatch, true);
+				player3voice = true;
+			}
+			if (!player4voice && voiceCD.secondsLeft() < 0) {
+				team2List[1]->dialogue.playRandomFromOtherState(team2List[1]->dialogue.LoseMatch, true);
+				player4voice = true;
+			}
+		}
 	}
 }
 
@@ -195,13 +301,20 @@ void GameManager::GameOver()
 {
 	BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->EnableKernel(false);
 
+	gameoverText->SetVisible(false);
+	gameoverBack->SetVisible(false);
+
 	roundTimer.refeshCD();
 	roundTimerText->SetVisible(false);
+
+	voiceCD.startCD();
 
 	p1Meter->SetVisible(false);
 	p2Meter->SetVisible(false);
 	p3Meter->SetVisible(false);
 	p4Meter->SetVisible(false);
+
+	end->SetVisible(true);
 
 	for (unsigned int i = 0; i < playerList.size(); ++i) {
 		playerList[i]->SetIsOut(true);
@@ -229,26 +342,10 @@ void GameManager::GameOver()
 		team1Text->SetText("Winner");
 		team1Text->SetColour(glm::vec3(0.0f, 0.0f, 1.0f));
 		team1Text->SetVisible(true);
-		if (!player1voice) {
-			team1List[0]->dialogue.playRandomFromOtherState(team1List[0]->dialogue.WinMatch, true);
-			player1voice = true;
-		}
-		if (player1voice && !player2voice) {
-			team1List[1]->dialogue.playRandomFromOtherState(team1List[1]->dialogue.WinMatch, true);
-			player2voice = true;
-		}
 
 		team2Text->SetText("Loser");
 		team2Text->SetColour(glm::vec3(1.0f, 0.0f, 0.0f));
 		team2Text->SetVisible(true);
-		if (player2voice && !player3voice) {
-			team2List[0]->dialogue.playRandomFromOtherState(team2List[0]->dialogue.LoseMatch, true);
-			player3voice = true;
-		}
-		if (player3voice && !player4voice) {
-			team2List[1]->dialogue.playRandomFromOtherState(team2List[1]->dialogue.LoseMatch, true);
-			player4voice = true;
-		}
 	}
 	else if (outTeam1 == 2) {
 		team2Text->SetText("Winner");
@@ -260,12 +357,12 @@ void GameManager::GameOver()
 		team1Text->SetVisible(true);
 	}
 	else {
-		team2Text->SetText("Tie");
-		team2Text->SetColour(glm::vec3(1.0f, 0.0f, 1.0f));
+		team2Text->SetText("Loser");
+		team2Text->SetColour(glm::vec3(1.0f, 0.0f, 0.0f));
 		team2Text->SetVisible(true);
 
-		team1Text->SetText("Tie");
-		team1Text->SetColour(glm::vec3(1.0f, 0.0f, 1.0f));
+		team1Text->SetText("Loser");
+		team1Text->SetColour(glm::vec3(1.0f, 0.0f, 0.0f));
 		team1Text->SetVisible(true);
 	}
 
@@ -277,6 +374,7 @@ void GameManager::GameOver()
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->GetCameraList()[1]->SetRotationY(-90.0f);
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->GetCameraList()[1]->SetRotationX(0.0f);
 
+	endGame = true;
 	canContinue = true;
 }
 
@@ -288,10 +386,13 @@ void GameManager::Reset()
 	p4Meter->SetVisible(false);
 
 	divider->SetVisible(false);
+	end->SetVisible(false);
 
 	team1Text->SetVisible(false);
 	team2Text->SetVisible(false);
 	roundTimer.refeshCD();
+	endGameCD.refeshCD();
+	voiceCD.refeshCD();
 	time = "90";
 	roundTimerText->SetVisible(false);
 	teamOut = false;
@@ -304,6 +405,12 @@ void GameManager::Reset()
 	player3voice = false;
 	player4voice = false;
 	canContinue = false;
+	endGame = false;
+
+	Mix_HaltChannel(playerList[0]->dialogue.channel);
+	Mix_HaltChannel(playerList[1]->dialogue.channel);
+	Mix_HaltChannel(playerList[2]->dialogue.channel);
+	Mix_HaltChannel(playerList[3]->dialogue.channel);
 
 	vector<Player*> team1;
 	vector<Player*> team2;

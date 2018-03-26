@@ -3,6 +3,7 @@
 
 #include "PlayerInput.h"
 #include <BlueFlameEngine\Engine\Rendering\2D\ImageUI.h>
+#include <BlueFlameEngine\Engine\BFEngine.h>
 #include "../Game/PlayerPortrait.h"
 
 using namespace ENGINE;

@@ -14,6 +14,12 @@ IcePlayer::IcePlayer() {
 	MediumCD = Cooldown(1.5);
 	moveWhileShooting = true;
 	SetStats();
+
+	shootEffect = new ParticleSystem(BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager(), glm::vec3(0.4f, 0.7f, 1.0f));
+	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(shootEffect);
+
+	dialogue = PlayerDialogue();
+	dialogue.LoadPlayerDialogue("Resources/Audio/OkiCaeliAudio.txt");
 }
 
 IcePlayer::~IcePlayer() {

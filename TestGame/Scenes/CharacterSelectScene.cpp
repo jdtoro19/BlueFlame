@@ -21,6 +21,7 @@ bool CharacterSelectScene::Initialize()
 	// Set screen options
 	sceneManager->EnableSplitscreen(false);
 	sceneManager->ShowFPS(false);
+	sceneManager->CaptureMouse(true);
 
 	// Load shaders
 	skyboxShader = new Shader("Shaders/skybox.vs", "Shaders/skybox.fs");
@@ -46,7 +47,7 @@ bool CharacterSelectScene::Initialize()
 
 	// Music
 	bgm = new Music();
-	if (!bgm->Load("Resources/Audio/20XX Theme Battle.mp3")) {
+	if (!bgm->Load("Resources/Audio/20XX Theme Menu.mp3")) {
 		std::cout << "BGM could not load" << std::endl;
 	}
 	bgm->Play(-1);
@@ -224,6 +225,13 @@ bool CharacterSelectScene::Initialize()
 	AddUIObject(champMystery4);
 	}
 
+	start = new ImageUI;
+	start->SetImage("Resources/Textures/start.png");
+	start->SetPosition(960.0f, 540.0f);
+	start->SetScale(1.0f);
+	start->SetVisible(false);
+	AddUIObject(start);
+
 	// Loading Screen
 	loadingScreen = new ImageUI();
 	loadingScreen->SetImage("Resources/Textures/Loading.png");
@@ -284,10 +292,12 @@ void CharacterSelectScene::Update(const float deltaTime)
 	{
 		ready = true;
 		sceneManager->GetRenderer()->EnableInvertedColours(true);
+		start->SetVisible(true);
 	}
 	else {
 		ready = false;
 		sceneManager->GetRenderer()->EnableInvertedColours(false);
+		start->SetVisible(false);
 	}
 
 	if (!loadingCD.checkOffCD() && loadingCD.secondsLeft() <= 1)
@@ -470,6 +480,10 @@ void CharacterSelectScene::HandleStates(const Uint8 *state)
 {
 	if (state[SDL_SCANCODE_P]) {
 		sceneManager->SwitchScene(new TvTGameScene());
+	}
+
+	if (state[SDL_SCANCODE_X]) {
+		InputManager::GetInstance()->initalizeControllers();
 	}
 }
 

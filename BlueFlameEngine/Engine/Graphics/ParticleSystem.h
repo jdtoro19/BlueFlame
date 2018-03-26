@@ -16,6 +16,7 @@ namespace ENGINE {
 		// Constructor
 		// Takes a shader manager to add its shader
 		ParticleSystem(ResourceManager<Shader>* rm);
+		ParticleSystem(ResourceManager<Shader>* rm, glm::vec3 colour);
 		~ParticleSystem();
 
 		// Set Colour
@@ -53,6 +54,8 @@ namespace ENGINE {
 		void Update(const float deltaTime);
 		void Render(Shader* shader, const double _interpolation);
 
+		void Play();
+
 	private:
 		// Vertices and mesh
 		Vertex v;
@@ -77,6 +80,7 @@ namespace ENGINE {
 
 		// Mesh set up
 		void SetUpMesh();
+		void SetUpSparkMesh();
 	};
 }
 #endif

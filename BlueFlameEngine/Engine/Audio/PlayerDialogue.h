@@ -41,6 +41,7 @@ namespace ENGINE {
 		void sometimesPlayRandomFromCurrentState(int percentage, bool overrideCD);
 		void playSpecifiedFromState(DIALOGUESTATE d, int x);
 		void playIdle();
+		void stopPlaying() { Mix_HaltChannel(channel); };
 
 		//now we're getting serious
 		void LoadPlayerDialogue(std::string filename);
