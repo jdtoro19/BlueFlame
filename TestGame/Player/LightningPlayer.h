@@ -35,7 +35,7 @@ namespace GAME {
 		Cooldown SpecialCharge;
 		bool specialActivated = false;
 		Projectile* LightningCloud(float offset, float height); //creates cloud to fire heavy attack
-		Projectile* Strike(float offsetx, float offsety, float offsetz, float height); //lightning strikes
+		Projectile* Strike(float offsetx, float offsety, float offsetz, float height, float kBack); //lightning strikes
 		Projectile* ZeroLaser(float delay, float speed, float baseLifetime); //for special attack
 		bool ZeroLasering = false;
 		bool charging = false;

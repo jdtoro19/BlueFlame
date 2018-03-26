@@ -58,7 +58,7 @@ bool ShowCaseScene::Initialize()
 	fadeImage->SetScale(4.0f, 11.0f);
 
 	// Player
-	player = new WindPlayer();
+	player = new LightningPlayer();
 	player->SetShader(defaultShaderHandle);
 	player->EnableTarget();
 

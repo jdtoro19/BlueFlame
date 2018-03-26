@@ -5,6 +5,11 @@
 using namespace ENGINE;
 
 SoundEffect::SoundEffect() {
+	volume = 40;
+}
+
+SoundEffect::SoundEffect(int volume) {
+	this->volume = volume;
 }
 
 SoundEffect::~SoundEffect() {
@@ -25,7 +30,7 @@ bool SoundEffect::Load(const std::string& fileName) {
 		printf("Sound effect loaded successfully");
 	}
 
-	Mix_VolumeChunk(mixChunk, 40);
+	Mix_VolumeChunk(mixChunk, volume);
 
 	return true;
 }
@@ -43,7 +48,7 @@ void SoundEffect::Play(int channel) {
 }
 
 void SoundEffect::SetVolume(const int musicVolume) const {
-	Mix_VolumeMusic(musicVolume);
+	Mix_VolumeChunk(mixChunk, musicVolume);
 }
 
 void SoundEffect::Destroy() {

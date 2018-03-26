@@ -55,7 +55,7 @@ void Settings::loadSettings(std::string fileName)
 
 		infile.close();
 
-		if (settingsFile.size() >= 7) { //make sure we have the correct amount of settings
+		if (settingsFile.size() >= 11) { //make sure we have the correct amount of settings
 			setSettingsFromFile();
 		}
 		else {
@@ -92,9 +92,18 @@ void Settings::restoreDefaultSettings(std::string &fileName) {
 	defaultSettings.push_back(std::to_string(isServer));
 	defaultSettings.push_back("+IP Address you're trying to connect to when acting as client");
 	defaultSettings.push_back(serverIPAddress);
+	defaultSettings.push_back("+A spectotor mode server will send data to be parsed by a spectator mode client");
+	defaultSettings.push_back("+Spectator Mode Active? (1 for true, 0 for false)");
+	defaultSettings.push_back(std::to_string(spectatorMode));
 	defaultSettings.push_back("+Game Resolution");
 	defaultSettings.push_back(std::to_string(resolutionX));
 	defaultSettings.push_back(std::to_string(resolutionY));
+	defaultSettings.push_back("+Use Bloom effects? (1 for true, 0 for false)");
+	defaultSettings.push_back(std::to_string(useBloom));
+	defaultSettings.push_back("+Show FPS counter in game? (1 for true, 0 for false)");
+	defaultSettings.push_back(std::to_string(showFPS));
+	defaultSettings.push_back("+Resolution Scale (goes from 0 to 1)");
+	defaultSettings.push_back(std::to_string(resolutionScale));
 	defaultSettings.push_back("++++++++++++++++++++++++++++++++++++");
 
 	close();
@@ -134,15 +143,66 @@ void Settings::setSettingsFromFile() {
 			isServer = false;
 			serverIPAddress = settingsFile.at(4);
 		}
+		if (settingsFile.at(5) == "1") {
+			spectatorMode = true;
+		}
+		else {
+			spectatorMode = false;
+		}
 	}
 
-	int x = stoi(settingsFile.at(5));
+	int x = resolutionX;
+	try
+	{
+		x = stoi(settingsFile.at(6));
+	}
+	catch (const std::exception&)
+	{
+		
+	}
+
 	if (x > 0) {
 		resolutionX = x;
 	}
+	
 
-	int y = stoi(settingsFile.at(6));
+	int y = resolutionY;
+	try
+	{
+		y = stoi(settingsFile.at(7));
+	}
+	catch (const std::exception&)
+	{
+
+	}
 	if (y > 0) {
 		resolutionY = y;
+	}
+
+	if (settingsFile.at(8) == "0") {
+		useBloom = false;
+	}
+	else {
+		useBloom = true;
+	}
+
+	if (settingsFile.at(9) == "0") {
+		showFPS = false;
+	}
+	else {
+		showFPS = true;
+	}
+
+	double z = resolutionScale;
+	try
+	{
+		z = stod(settingsFile.at(10));
+	}
+	catch (const std::exception&)
+	{
+
+	}
+	if (z >= 0 && z <= 1) {
+		resolutionScale = z;
 	}
 }

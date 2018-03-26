@@ -39,10 +39,7 @@ void SoundEffectSelector::LoadEffectsFromFile(const std::string filenames) {
 
 void SoundEffectSelector::PlayRandom() {
 	Randomizer rand = Randomizer();
-	int r = rand.rand(0, 10);
-	if (r >= SE.size()) {
-		r = SE.size() - 1;
-	}
+	int r = rand.rand(0, SE.size());
 	SE.at(r)->Play(channel);
 }
 

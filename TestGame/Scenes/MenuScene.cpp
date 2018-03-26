@@ -76,7 +76,19 @@ void MenuScene::Update(const float deltaTime)
 {
 	float fade = (sin(z+=deltaTime) / 2.0f) + 0.5f;
 	startText->SetAlpha(fade);
-	cameraList[0]->SetRotationY(cameraList[0]->Yaw += deltaTime * 5);	
+	cameraList[0]->SetRotationY(cameraList[0]->Yaw += deltaTime * 5);
+
+	if (Settings::getInstance()->networkedGame) {
+		std::string dataChunk = "0";
+		BFEngine::GetInstance()->sendData(dataChunk);
+
+		std::string externalInput = BFEngine::GetInstance()->receiveData();
+
+		if (externalInput == "1") {
+			sceneManager->SwitchScene(new CharacterSelectScene());
+		}
+	}
+
 }
 
 void MenuScene::FixedUpdate(const float deltaTime) 
@@ -88,6 +100,10 @@ void MenuScene::HandleEvents(SDL_Event events)
 {
 	if (events.jbutton.button == 7) //start button
 	{
+		if (Settings::getInstance()->networkedGame) {
+			std::string dataChunk = "1";
+			BFEngine::GetInstance()->sendData(dataChunk);
+		}
 		sceneManager->SwitchScene(new CharacterSelectScene());
 	}
 }

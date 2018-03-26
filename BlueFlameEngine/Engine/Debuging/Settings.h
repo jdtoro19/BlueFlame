@@ -65,9 +65,12 @@ namespace ENGINE {
 		bool networkedGame = false;
 		bool isServer = true;
 		std::string serverIPAddress = "";
+		bool spectatorMode = false;
 		int resolutionX = 800;
 		int resolutionY = 640;
-
+		bool useBloom = false;
+		bool showFPS = true;
+		double resolutionScale = 1.0;
 	};
 }
 

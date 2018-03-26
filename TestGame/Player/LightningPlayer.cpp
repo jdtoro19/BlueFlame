@@ -19,7 +19,8 @@ LightningPlayer::LightningPlayer() {
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(shootEffect);
 
 	dialogue = PlayerDialogue();
-	dialogue.LoadPlayerDialogue("Resources/Audio/OkiCaeliAudio.txt");
+	dialogue.LoadPlayerDialogue("Resources/Audio/AlexTrixAudio.txt");
+	dialogue.playRandomFromOtherState(dialogue.MatchStart, true);
 }
 
 LightningPlayer::~LightningPlayer() {
@@ -29,138 +30,275 @@ LightningPlayer::~LightningPlayer() {
 std::vector<Projectile*> LightningPlayer::LightAttack()
 {
 	std::vector<Projectile*> proj;
-	if (playerState != BLOCK && playerState != STUN) {
 
-		if (specialActivated && specialMeter >= 50) {
+	if (playerState == NORMAL && lightComboPosition == 0 && lightComboTimer <= 0)
+	{
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 4);
 
-			for (int i = 0; i < 3; i++) {
-				Projectile* p = ZeroLaser(0.05f * i, 100.0f, 2.0f);
-				proj.push_back(p);
-			}
-			specialActivated = false;
-			specialMeter -= 50;
-		}
-		else if (LightCD.checkOffCD()) {
+		lightComboTimer = 0.5f;
+		lightComboPosition++;
 
-			/*Projectile* f = Shocker(0, 1.0f, 400.0f, 0.0f, 0.5f, 50.0f);
-			proj.push_back(f);
+		Projectile* p = Shocker(0.0f, 0.0f, 0.0f, 15.0f, 0.7f, 10.0f);
+		p->SetDamage(4);
+		proj.push_back(p);
 
-			Projectile* o = Shocker(0.5f, 0.5f, 200.0f, 5.0f, 0.5f, 50.0f);
-			proj.push_back(o);
+		return proj;
+	}
 
-			Projectile* r = Shocker(-0.5f, 0, 0.0f, 20.0f, 0.5f, 50.0f);
-			proj.push_back(r);*/
+	if (playerState == ATTACK && lightComboPosition == 1 && lightComboTimer > 0)
+	{
+		lightComboPosition++;
+		lightComboTimer = 0.5f;
 
-			Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z)), targetAngle, dir);
-			p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 0.0f));
-			p->SetActingForce(glm::vec3(0.0f, 0.0f, 15.0f)); //no accel
-			p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 20.0f)); //static
-			p->SetStunTime(0.75f);
-			p->SetWorldScale(0.25f, 0.25f, 0.5f);
-			p->SetLifetime(3.0f);
+		Projectile* p = Shocker(0.5f, 0.0f, 0.0f, 5.0f, 0.8f, 10.0f);
+		p->SetDamage(3);
+		proj.push_back(p);
+		return proj;
+	}
 
+	if (playerState == ATTACK && lightComboPosition == 2 && lightComboTimer > 0)
+	{
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 4);
+		lightComboPosition++;
+		lightComboTimer = 0.5f;
 
-			proj.push_back(p);
-			LightCD.startCD();
-		}
-		else {
-			cout << "Ability on CD for " << std::to_string(HeavyCD.secondsLeft()) << endl;
-		}
+		Projectile* p = Shocker(-0.5f, 0.0f, 0.0f, 5.0f, 1.0f, 10.0f);
+		p->SetDamage(4);
+		proj.push_back(p);
+		return proj;
 	}
 
 	return proj;
 }
-std::vector<Projectile*> LightningPlayer::MediumAttack() //lightning strike. DOWN B!
+
+std::vector<Projectile*> LightningPlayer::MediumAttack()
 {
 	std::vector<Projectile*> proj;
-	if (playerState != BLOCK && playerState != STUN) {
-		if (specialActivated && specialMeter >= 50) {
-			Projectile* p = LightningCloud(10.0f, 1.0f);
-			proj.push_back(p);
 
-			Projectile* f = Shocker(0, 10.0f, -400.0f, 0.0f, 0.5f, -50.0f);
-			proj.push_back(f);
+	if (playerState == NORMAL && mediumComboPosition == 0 && mediumComboTimer <= 0)
+	{
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 2);
 
-			specialActivated = false;
-			specialMeter -= 50;
-		}
-		else if (MediumCD.checkOffCD()) {
-			cout << "Lightning Strike" << endl;
+		mediumComboPosition++;
+		mediumComboTimer = 1.0f;
 
+		Projectile* p = LightningCloud(10.0f, 1.0f);
+		proj.push_back(p);
 
-			Projectile* p = LightningCloud(5.0f, 6.0f);
-			proj.push_back(p);
+		Projectile* f = Shocker(0, 10.0f, -250.0f, 0.0f, 1.0f, -50.0f);
+		p->SetDamage(8);
+		proj.push_back(f);
 
-			Projectile* a = Strike(0, 0, 5.0f, 5.0f);
-			proj.push_back(a);
+		return proj;
+	}
 
-			MediumCD.startCD();
-			p->SetElement(PROJECTILE_ELEMENT::LIGHTNING);
-			p->SetStrength(PROJECTILE_STRENGTH::LIGHT);
-			p->SetClipping(PROJECTILE_CLIP::YES_WALL_PLAYER);
-		}
-		else {
-			cout << "Ability on CD for " << std::to_string(HeavyCD.secondsLeft()) << endl;
-		}
+	if (playerState == ATTACK && mediumComboPosition == 1 && mediumComboTimer > 0)
+	{
+		mediumComboPosition++;
+		mediumComboTimer = 1.0f;
+
+		Projectile* p = LightningCloud(6.0f, 5.0f);
+		proj.push_back(p);
+
+		Projectile* a = Strike(0, 0, 5.0f, 4.0f, 60.0f);
+		a->SetDamage(9);
+		proj.push_back(a);
+
+		p->SetElement(PROJECTILE_ELEMENT::LIGHTNING);
+		p->SetStrength(PROJECTILE_STRENGTH::LIGHT);
+		p->SetClipping(PROJECTILE_CLIP::YES_WALL_PLAYER);
+
+		return proj;
+	}
+	
+	if (playerState == ATTACK && mediumComboPosition == 2 && mediumComboTimer > 0)
+	{
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 5);
+
+		mediumComboPosition++;
+		mediumComboTimer = 1.0f;
+
+		Projectile* p = LightningCloud(10.0f, 1.0f);
+		proj.push_back(p);
+
+		Projectile* f = Shocker(0, 10.0f, -250.0f, 0.0f, 1.0f, -50.0f);
+		p->SetDamage(7);
+		proj.push_back(f);
+
+		return proj;
 	}
 
 	return proj;
 }
+
 std::vector<Projectile*> LightningPlayer::HeavyAttack()
 {
 	std::vector<Projectile*> proj;
-	if (HeavyCD.checkOffCD()) {
-		cout << "Forked Lightning" << endl;
-		if (playerState != BLOCK && playerState != STUN) {
 
-			Projectile* f = ForkedLightning(0);
-			proj.push_back(f);
+	if (playerState == NORMAL && heavyComboPosition == 0 && heavyComboTimer <= 0)
+	{
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 0);
 
-			Projectile* o = ForkedLightning(-80.0);
-			proj.push_back(o);
+		heavyComboPosition++;
+		heavyComboTimer = 1.5f;
 
-			Projectile* r = ForkedLightning(80.0);
-			proj.push_back(r);
+		Projectile* p = Shocker(0.0f, 0.0f, 200.0f, 0.0f, 0.7f, 10.0f);
+		p->SetWorldScale(0.3f, 0.3f, 0.3f);
+		p->SetDamage(10);
+		proj.push_back(p);
 
-			Projectile* k = ForkedLightning(-160.0);
-			proj.push_back(k);
-
-			Projectile* d = ForkedLightning(160.0);
-			proj.push_back(d);
-
-			HeavyCD.startCD();
-		}
+		return proj;
 	}
-	else {
-		cout << "Ability on CD for " << std::to_string(HeavyCD.secondsLeft()) << endl;
+
+	if (playerState == ATTACK && heavyComboPosition == 1 && heavyComboTimer > 0)
+	{
+		heavyComboPosition++;
+		heavyComboTimer = 1.5f;
+
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x + 1.0f + (0 * targetAngle * dir), GetWorldPosition().y + 1.0f, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), targetAngle, dir);
+		p->SetImpulseForce(glm::vec3(-15.0f, -15.0f, 200.0f));
+		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f)); //no accel
+		p->SetKnockbackForce(glm::vec3(0.0f, 10.0f, 30.0f)); //static
+		p->SetDamage(12);
+		p->SetStunTime(1.5f);
+		p->SetWorldScale(0.5f, 0.5f, 0.5f);
+		p->SetLifetime(3.0f);
+		p->SetElement(PROJECTILE_ELEMENT::LIGHTNING);
+		p->SetStrength(PROJECTILE_STRENGTH::LIGHT);
+		p->SetClipping(PROJECTILE_CLIP::YES);
+
+		proj.push_back(p);
+
+		return proj;
 	}
+	
+	if (playerState == ATTACK && heavyComboPosition == 2 && heavyComboTimer > 0)
+	{
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 1);
+		heavyComboPosition++;
+		heavyComboTimer = 1.5f;
+
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x - 1.0f + (0 * targetAngle * dir), GetWorldPosition().y + 1.0f, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z), targetAngle, dir);
+		p->SetImpulseForce(glm::vec3(15.0f, -15.0f, 200.0f));
+		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f)); //no accel
+		p->SetKnockbackForce(glm::vec3(0.0f, 10.0f, 30.0f)); //static
+		p->SetDamage(12);
+		p->SetStunTime(1.5f);
+		p->SetWorldScale(0.8f, 0.8f, 0.8f);
+		p->SetLifetime(3.0f);
+		p->SetElement(PROJECTILE_ELEMENT::LIGHTNING);
+		p->SetStrength(PROJECTILE_STRENGTH::LIGHT);
+		p->SetClipping(PROJECTILE_CLIP::YES);
+
+		proj.push_back(p);
+
+		return proj;
+	}
+
 	return proj;
 }
+
 std::vector<Projectile*> LightningPlayer::SpecialAttack() //Zero Laser!
 {
 	std::vector<Projectile*> proj;
-	if (!specialActivated && !charging) { //set up for one of your special attacks
-		specialActivated = true;
-		cout << "special primed! " << specialMeter << endl;
-	}
-	else if (playerState != BLOCK && playerState != STUN) {
-		if (specialActivated && specialMeter >= 100) {
-			specialActivated = false;
-			specialMeter -= 100;
-			SpecialDuration.startCD();
-			charging = true;
-			for (int i = 0; i < 50; i++) {
-				Projectile* p = ZeroLaser(1.0f + 0.05f * i, 400.0f, 1.0f);
-				proj.push_back(p);
-			}
+
+	if (playerState == NORMAL && specialComboPosition == 0 && specialComboTimer <= 0 && specialMeter >= 100)
+	{
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 4);
+
+		specialComboPosition++;
+		specialComboTimer = 2.5f;
+
+		specialMeter -= 100;
+		if (specialMeter < 0) {
+			specialMeter = 0;
 		}
 
+		for (int i = 0; i < 25; i++) {
+			Projectile* p = ZeroLaser(1.0f + 0.05f * i, 400.0f, 1.0f);
+			p->SetDamage(3);
+			proj.push_back(p);
+		}
+		return proj;
+	}
+
+	if (playerState == ATTACK && heavyComboPosition == 3 && specialMeter >= 25)
+	{
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 3);
+		heavyComboPosition++;
+		specialMeter -= 25;
+		if (specialMeter < 0) {
+			specialMeter = 0;
+		}
+
+		Projectile* f = ForkedLightning(0);
+		f->SetDamage(12);
+		proj.push_back(f);
+
+		Projectile* o = ForkedLightning(-80.0);
+		o->SetDamage(12);
+		proj.push_back(o);
+
+		Projectile* r = ForkedLightning(80.0);
+		r->SetDamage(12);
+		proj.push_back(r);
+
+		Projectile* k = ForkedLightning(-160.0);
+		k->SetDamage(12);
+		proj.push_back(k);
+
+		Projectile* d = ForkedLightning(160.0);
+		d->SetDamage(12);
+		proj.push_back(d);
+		
+		return proj;
+	}
+
+	if (playerState == ATTACK && mediumComboPosition == 2 && specialMeter >= 50)
+	{
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 2);
+
+		mediumComboPosition++;
+		specialMeter -= 50;
+		if (specialMeter < 0) {
+			specialMeter = 0;
+		}
+
+		Projectile* p = LightningCloud(7.0f, 5.0f);
+		proj.push_back(p);
+
+		Projectile* a = Strike(0.5f, 0, 6.0f, 4.0f, 30.0f);
+		p->SetDamage(7);
+		proj.push_back(a);
+
+		p->SetElement(PROJECTILE_ELEMENT::LIGHTNING);
+		p->SetStrength(PROJECTILE_STRENGTH::LIGHT);
+		p->SetClipping(PROJECTILE_CLIP::YES_WALL_PLAYER);
+
+		ComboReset();
+
+		return proj;
+	}
+
+	if (playerState == ATTACK && lightComboPosition == 3 && specialMeter >= 15) {
+
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 0);
+		lightComboPosition++;
+		specialMeter -= 15;
+		if (specialMeter < 0) {
+			specialMeter = 0;
+		}
+
+		for (int i = 0; i < 3; i++) {
+			Projectile* p = ZeroLaser(0.05f * i, 120.0f, 2.0f);
+			p->SetDamage(2);
+			proj.push_back(p);
+		}
 	}
 	return proj;
 }
 void LightningPlayer::InheritedUpdate(const float deltaTime)
 {
-	specialMeter++;
 	if (SpecialDuration.checkOffCD() && charging) {
 		charging = false;
 	}
@@ -168,10 +306,12 @@ void LightningPlayer::InheritedUpdate(const float deltaTime)
 		Stun();
 	}
 }
+
 void LightningPlayer::InheritedHandleEvents(SDL_Event events)
 {
 
 }
+
 void LightningPlayer::InheritedHandleStates(const Uint8 *state)
 {
 	if (state[SDL_SCANCODE_Y]) {
@@ -193,12 +333,12 @@ Projectile* LightningPlayer::LightningCloud(float offset, float height) {
 	return p;
 }
 
-Projectile* LightningPlayer::Strike(float offsetx, float offsety, float offsetz, float height) {
+Projectile* LightningPlayer::Strike(float offsetx, float offsety, float offsetz, float height, float kBack) {
 	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x + (offsetz * targetAngle * dir), GetWorldPosition().y + height, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir) - offsetz * dir), targetAngle, dir);
 	p->SetImpulseForce(glm::vec3(0.0f, -100.0f, 0.0f));
 	p->SetActingForce(glm::vec3(0.0f, -10.0f, 0.0f)); //no accel
-	p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 50.0f)); //knocks them back. finisher
-	p->SetStunTime(0.75f);
+	p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, kBack)); //knocks them back. finisher
+	p->SetStunTime(1.5f);
 	p->SetWorldScale(0.2f, 1.0f, 0.2f);
 	p->SetLifetime(0.5f);
 	p->SetElement(PROJECTILE_ELEMENT::LIGHTNING);
@@ -213,7 +353,7 @@ Projectile* LightningPlayer::ZeroLaser(float delay, float speed, float baseLifet
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f)); //no accel
 	p->SetFirstDelay(delay, glm::vec3(0), glm::vec3(1.0f, 0.1f, 0.5f), glm::vec3(1.0f, 0.1f, 0.5f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 	p->SetKnockbackForce(glm::vec3(0.0f, 00.0f, 40.0f)); //static
-	p->SetStunTime(0.2f);
+	p->SetStunTime(0.5f);
 	p->SetLifetime(delay + baseLifetime);
 	p->SetElement(PROJECTILE_ELEMENT::LIGHTNING);
 	p->SetStrength(PROJECTILE_STRENGTH::SPECIAL);

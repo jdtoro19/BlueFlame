@@ -1,10 +1,19 @@
-﻿  CharacterSelectScene.cpp
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(275): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(281): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(313): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(422): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(461): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(493): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(515): warning C4018: '<': signed/unsigned mismatch
+﻿  TvTGameScene.cpp
+  CharacterSelectScene.cpp
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(299): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(305): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(395): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(399): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(442): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(551): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(590): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(622): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(644): warning C4018: '<': signed/unsigned mismatch
+  Crosshair.cpp
+  Generating Code...
+  Skipping... (no relevant changes detected)
+  MenuSelectScene.cpp
+  MenuScene.cpp
+  Main.cpp
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.exe
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.pdb (Partial PDB)

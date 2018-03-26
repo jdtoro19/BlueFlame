@@ -83,7 +83,12 @@ bool BFEngine::Initialize()
 	Settings::getInstance()->loadSettings("settings.txt");
 
 	if (Settings::getInstance()->networkedGame) {
-		return setUpNetwork();
+		if (Settings::getInstance()->isServer) {
+			return setUpNetworkAsServer();
+		}
+		else {
+			return setUpNetworkAsClient();
+		}
 	}
 
 	return true;
@@ -227,7 +232,7 @@ void BFEngine::SetWindowDimensions(int width, int height)
 
 // Networking
 
-bool BFEngine::setUpNetwork() {
+bool BFEngine::setUpNetworkAsServer() {
 	///networking block
 	struct addrinfo *result = NULL;
 	struct addrinfo hints;
@@ -263,8 +268,10 @@ bool BFEngine::setUpNetwork() {
 	}
 
 	u_long iMode = 1; //supposedly sets nonblocking i think
-	ioctlsocket(ListenSocket, FIONBIO, &iMode);
-
+	if (ioctlsocket(ListenSocket, FIONBIO, &iMode) == SOCKET_ERROR) {
+		printf("ioctlsocket() failed with error %d\n", WSAGetLastError());
+		return 1;
+	}
 	iResult = bind(ListenSocket, result->ai_addr, (int)result->ai_addrlen);
 	if (iResult == SOCKET_ERROR) {
 		printf("bind failed with error: %d\n", WSAGetLastError());
@@ -310,12 +317,69 @@ bool BFEngine::setUpNetwork() {
 	return true;
 }
 
-bool BFEngine::acceptConnection() {
-	// Setup the UDP listening socket
-	return false; 
+bool BFEngine::setUpNetworkAsClient() {
+	struct addrinfo *result = NULL,
+		*ptr = NULL,
+		hints;
+
+	// Initialize Winsock
+	iResult = WSAStartup(MAKEWORD(2, 2), &wsaData);
+	if (iResult != 0) {
+		printf("WSAStartup failed with error: %d\n", iResult);
+		return false;
+	}
+
+	ZeroMemory(&hints, sizeof(hints));
+	hints.ai_family = AF_UNSPEC;
+	hints.ai_socktype = SOCK_STREAM;
+	hints.ai_protocol = IPPROTO_TCP;
+
+	// Resolve the server address and port
+	if (Settings::getInstance()->serverIPAddress == "") {
+		iResult = getaddrinfo(NULL, DEFAULT_PORT, &hints, &result);
+	}
+	else {
+		iResult = getaddrinfo(Settings::getInstance()->serverIPAddress.c_str(), DEFAULT_PORT, &hints, &result);
+	}
+
+	if (iResult != 0) {
+		printf("getaddrinfo failed with error: %d\n", iResult);
+		WSACleanup();
+		return false;
+	}
+	else {
+		printf("getaddrinfo succeeded: %d\n", iResult);
+	}
+
+	// Attempt to connect to an address until one succeeds
+	for (ptr = result; ptr != NULL; ptr = ptr->ai_next) {
+		// Create a SOCKET for connecting to server
+
+		//u_long iMode = 1; //supposedly sets nonblocking i think
+		//ioctlsocket(ClientSocket, FIONBIO, &iMode);
+
+
+		ClientSocket = socket(ptr->ai_family, ptr->ai_socktype,
+			ptr->ai_protocol);
+		if (ClientSocket == INVALID_SOCKET) {
+			printf("socket failed with error: %ld\n", WSAGetLastError());
+			WSACleanup();
+			return false;
+		}
+
+		// Connect to server.
+		iResult = connect(ClientSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
+		if (iResult == SOCKET_ERROR) {
+			closesocket(ClientSocket);
+			ClientSocket = INVALID_SOCKET;
+			continue;
+		}
+		break;
+	}
+	return true;
 }
 
-std::string BFEngine::performNetworking() {
+std::string BFEngine::receiveData() {
 
 	iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
 
@@ -323,38 +387,9 @@ std::string BFEngine::performNetworking() {
 	memcpy(connectedClientName, recvbuf, 256);
 
 	if (iResult > 0) {
-		//printf("Bytes received: %d\n", iResult);
-		//printf("\n");
-		//printf("%.*s", iResult[0]);
-		printf("\nNew client recognized at: ");
 		char ipstr[INET6_ADDRSTRLEN];
 		inet_ntop(AF_INET, &client_info.sin_addr, (PSTR)ipstr, sizeof(ipstr));
-		//printf("%s", ipstr);
-		printf("\nConnected client's gametag is: %s\n", connectedClientName);
-		std::string IP = std::string(ipstr);
-		std::string newItem = "==== " + IP + " ==== " + connectedClientName + " ====";
-
-		clientTable.push_back(newItem);
-		clientTable.push_back(spacer);
-
-		// Echo the buffer back to the sender
-		iSendResult = send(ClientSocket, recvbuf, iResult, 0);
-		if (iSendResult == SOCKET_ERROR) {
-			printf("send failed with error: %d\n", WSAGetLastError());
-			//closesocket(ClientSocket);
-			//WSACleanup();
-			return "";
-		}
-		else {
-			printf("sending buffer back to sender\n\n");
-		}
-		//printf("Bytes sent: %d\n", iSendResult);
-		//print the table
-		for each (std::string s in clientTable) {
-			printf("\n%s", s.c_str());
-		}
 		return connectedClientName;
-
 	}
 	else if (iResult == 0)
 		printf("Connection closing...\n");
@@ -363,6 +398,22 @@ std::string BFEngine::performNetworking() {
 		//closesocket(ClientSocket);
 		//WSACleanup();
 		return "";
+	}
+}
+
+void BFEngine::sendData(std::string data) {
+	const char* sendbuf = data.c_str();
+	//printf("\n\n", sendbuf);
+
+	// Send an initial buffer
+	iResult = send(ClientSocket, sendbuf, (int)strlen(sendbuf) + 1, 0);
+	if (iSendResult == SOCKET_ERROR) {
+		printf("send failed with error: %d\n", WSAGetLastError());
+		//closesocket(ClientSocket);
+		//WSACleanup();
+	}
+	else {
+		//printf("sending buffer back to sender\n\n");
 	}
 }
 

@@ -29,11 +29,22 @@ namespace GAME {
 		bool LeftTriggerPressed();
 		bool RightTriggerPressed();
 
+		std::string ReturnJoystickStateForNetworking();
+		std::vector<int> networkedJoystickInputs;
+		std::vector<int> lastNetworkKeyPressed;
+		void ParseNetworkInputs(std::string inputs);
+		void makeNetworked();
+		bool isNetworked();
+		inline void setPlayerNum(int num) { playerNum = num; };
+
 	private:
 
 		SDL_Joystick* joystick = nullptr;
 		Sint16 Tare[6];
 		glm::vec2 AnyJoystick(int indexA, int indexB);
+		int playerNum = 0;
+		bool networkedPlayer = false;
+		void ResetNetworkedInputs();
 	};
 }
 #endif

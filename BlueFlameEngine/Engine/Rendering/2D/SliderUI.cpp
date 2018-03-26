@@ -1,7 +1,7 @@
 #include "SliderUI.h"
 
 using namespace ENGINE;
-#define FRONTIMGPADDINGX 0.9f
+#define FRONTIMGPADDINGX 0.8f
 #define FRONTIMGPADDINGY 0.8f
 
 SliderUI::SliderUI(char* imageFilePathBACK, char* imageFilePathFRONT) : value(1)

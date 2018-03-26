@@ -52,7 +52,14 @@ void Crosshair::Update(const float deltaTime)
 	// If player can move update movement 
 	if (canMove) {
 		if (playerInput->CheckForController()) {//if they have a controller
-			glm::vec2 mods = playerInput->LeftJoystick();
+			glm::vec2 mods;
+
+			if (playerInput->isNetworked()) {
+				mods = glm::vec2(playerInput->networkedJoystickInputs.at(1), playerInput->networkedJoystickInputs.at(2));
+			}
+			else {
+				mods = playerInput->LeftJoystick();
+			}
 
 			if (mods.x > 0.01f) {
 				crosshair->SetPosition(crosshair->GetPosition().x + deltaTime * 800, crosshair->GetPosition().y);

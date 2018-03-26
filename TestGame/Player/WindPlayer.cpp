@@ -3,7 +3,7 @@
 using namespace GAME;
 
 WindPlayer::WindPlayer() {
-	base = new PlayerBase("Resources/Models/Robot_Base_Greybox/Robot_Var_002_Gurran.obj");
+	base = new PlayerBase("Resources/Models/Oki (Wind)/Model/Wind_0001.obj");
 	base->SetWorldPosition(0.0f, 0.0f, 0.0f);
 	base->SetWorldScale(0.012f);
 	base->renderComponent->SetColour(0.2f, 0.7f, 0.0f);

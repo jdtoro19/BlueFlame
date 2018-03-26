@@ -82,6 +82,10 @@ void Player::AddProjecitleManager(ProjectileManager* pM)
 
 void Player::Update(const float deltaTime)
 {
+	if (playerInput->isNetworked()) {
+		HandleNetworkedButtons();
+	}
+
 	if (specialMeter > 100) {
 		specialMeter = 100;
 	}
@@ -210,13 +214,27 @@ void Player::FixedUpdate(const float deltaTime) {
 
 	// Update player model
 	UpdateModel(deltaTime);
-
 	// If player can move update movement 
 	if (canMove) {
-		if (playerInput->CheckForController()) {//if they have a controller
-			glm::vec2 mods = playerInput->LeftJoystick();
+		if (playerInput->CheckForController() || playerInput->isNetworked()) {//if they have a controller
+			glm::vec2 mods;
+			if (playerInput->isNetworked()) {
+				mods = glm::vec2(playerInput->networkedJoystickInputs.at(1), playerInput->networkedJoystickInputs.at(2));
+			}
+			else {
+				mods = playerInput->LeftJoystick();
+			}
 
-			if (playerInput->LeftTriggerPressed()) {
+			bool ltp;
+			if (playerInput->isNetworked()) {
+				ltp = playerInput->networkedJoystickInputs.at(5);
+			}
+			else {
+				ltp = playerInput->LeftTriggerPressed();
+			}
+
+
+			if (ltp) {
 				if (!out && shieldHealth > 0) {
 					Block();
 				}
@@ -236,7 +254,16 @@ void Player::FixedUpdate(const float deltaTime) {
 					Movement(Player::PLAYERMOVEMENT::FORWARD, deltaTime);
 				}
 			}
-			if (playerInput->RightTriggerPressed()) {
+
+			bool rtp;
+			if (playerInput->isNetworked()) {
+				rtp = playerInput->networkedJoystickInputs.at(6);
+			}
+			else {
+				rtp = playerInput->RightTriggerPressed();
+			}
+
+			if (rtp) {
 				if (!out) {
 					Jump();
 				}
@@ -259,7 +286,7 @@ void Player::FixedUpdate(const float deltaTime) {
 void Player::HandleEvents(SDL_Event events)
 {
 	// Player can press buttons when not off the arena
-	if (!out) {
+	if (!out && !playerInput->isNetworked()) {
 		switch (events.type)
 		{
 		case SDL_JOYBUTTONDOWN:
@@ -687,6 +714,209 @@ void Player::Render(Shader* shader, const double _interpolation)
 
 	if (isTargeting) {
 		shader->setMat4("model", markerInterpolatedMatrix * marker->GetLocalModelMatrix());
-		marker->Render(shader, _interpolation);
+		//marker->Render(shader, _interpolation);
+	}
+}
+
+void Player::SetPlayerNumber(PLAYERNUMBER pN) {
+	playerNumber = pN;
+	int x = 0;
+	switch (pN)
+	{
+	case GAME::Player::PLAYER1:
+		x = 0;
+		break;
+	case GAME::Player::PLAYER2:
+		x = 1;
+		break;
+	case GAME::Player::PLAYER3:
+		x = 2;
+		break;
+	case GAME::Player::PLAYER4:
+		x = 3;
+		break;
+	case GAME::Player::NONE:
+		x = 0;
+		break;
+	default:
+		break;
+	}
+	playerInput->setPlayerNum(x);
+}
+
+
+void Player::HandleNetworkedButtons() {
+	//first character is player number, followed by 6 joystick inputs. starting with 8 to allow zero indexing and keep it clear which button is which
+
+	//helps keep things cleaner
+	int buttonPressed = 7 + 2; // x button
+
+							   //first we check if the player is already pressing this key, to prevent duplicate inputs
+	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
+		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
+																													   //x button
+		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
+		{
+			std::vector<Projectile*> p = LightAttack();
+			if (p.size() > 0) {
+				for each (Projectile* subP in p) {
+
+					if (playerTeam == PLAYERTEAM::TEAM1) {
+						subP->SetTeam(PROJECTILE_TEAM::TEAM1);
+					}
+					else if (playerTeam == PLAYERTEAM::TEAM2) {
+						subP->SetTeam(PROJECTILE_TEAM::TEAM2);
+					}
+
+					if (playerNumber == PLAYERNUMBER::PLAYER1) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER1);
+					}
+					else if (playerNumber == PLAYERNUMBER::PLAYER2) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER2);
+					}
+					else if (playerNumber == PLAYERNUMBER::PLAYER3) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
+					}
+					else if (playerNumber == PLAYERNUMBER::PLAYER4) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
+					}
+
+					projectileManager->AddProjectile(subP);
+				}
+			}
+		}
+	}
+
+	buttonPressed = 7 + 3; // y button
+
+						   //first we check if the player is already pressing this key, to prevent duplicate inputs
+	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
+		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
+																													   //x button
+		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
+		{
+			std::vector<Projectile*> p = MediumAttack();
+			if (p.size() > 0) {
+				for each (Projectile* subP in p) {
+
+					if (playerTeam == PLAYERTEAM::TEAM1) {
+						subP->SetTeam(PROJECTILE_TEAM::TEAM1);
+					}
+					else if (playerTeam == PLAYERTEAM::TEAM2) {
+						subP->SetTeam(PROJECTILE_TEAM::TEAM2);
+					}
+
+					if (playerNumber == PLAYERNUMBER::PLAYER1) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER1);
+					}
+					else if (playerNumber == PLAYERNUMBER::PLAYER2) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER2);
+					}
+					else if (playerNumber == PLAYERNUMBER::PLAYER3) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
+					}
+					else if (playerNumber == PLAYERNUMBER::PLAYER4) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
+					}
+
+					projectileManager->AddProjectile(subP);
+				}
+			}
+		}
+	}
+	buttonPressed = 7 + 1; // b button
+
+						   //first we check if the player is already pressing this key, to prevent duplicate inputs
+	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
+		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
+																													   //x button
+		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
+		{
+			std::vector<Projectile*> p = HeavyAttack();
+			if (p.size() > 0) {
+				for each (Projectile* subP in p) {
+
+					if (playerTeam == PLAYERTEAM::TEAM1) {
+						subP->SetTeam(PROJECTILE_TEAM::TEAM1);
+					}
+					else if (playerTeam == PLAYERTEAM::TEAM2) {
+						subP->SetTeam(PROJECTILE_TEAM::TEAM2);
+					}
+
+					if (playerNumber == PLAYERNUMBER::PLAYER1) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER1);
+					}
+					else if (playerNumber == PLAYERNUMBER::PLAYER2) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER2);
+					}
+					else if (playerNumber == PLAYERNUMBER::PLAYER3) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
+					}
+					else if (playerNumber == PLAYERNUMBER::PLAYER4) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
+					}
+
+					projectileManager->AddProjectile(subP);
+				}
+			}
+		}
+	}
+
+	buttonPressed = 7 + 0; // A button
+
+						   //first we check if the player is already pressing this key, to prevent duplicate inputs
+	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
+		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
+																													   //x button
+		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
+		{
+			std::vector<Projectile*> p = SpecialAttack();
+			if (p.size() > 0) {
+				for each (Projectile* subP in p) {
+
+					if (playerTeam == PLAYERTEAM::TEAM1) {
+						subP->SetTeam(PROJECTILE_TEAM::TEAM1);
+					}
+					else if (playerTeam == PLAYERTEAM::TEAM2) {
+						subP->SetTeam(PROJECTILE_TEAM::TEAM2);
+					}
+
+					if (playerNumber == PLAYERNUMBER::PLAYER1) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER1);
+					}
+					else if (playerNumber == PLAYERNUMBER::PLAYER2) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER2);
+					}
+					else if (playerNumber == PLAYERNUMBER::PLAYER3) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
+					}
+					else if (playerNumber == PLAYERNUMBER::PLAYER4) {
+						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
+					}
+
+					projectileManager->AddProjectile(subP);
+				}
+			}
+		}
+	}
+
+	buttonPressed = 7 + 4; // left bumper
+
+						   //first we check if the player is already pressing this key, to prevent duplicate inputs
+	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
+		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
+		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
+		{
+			EnableTarget();
+		}
+	}
+	buttonPressed = 7 + 5;
+	// Right Bumper
+	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
+		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
+		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
+		{
+			SwitchTarget();
+		}
 	}
 }

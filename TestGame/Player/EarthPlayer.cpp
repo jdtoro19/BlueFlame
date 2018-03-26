@@ -12,13 +12,14 @@ EarthPlayer::EarthPlayer() {
 	HeavyCD = Cooldown(5.0);
 	LightCD = Cooldown(0.4);
 	MediumCD = Cooldown(3.0);
-	specialMeter = 100;
+	specialMeter = 0;
 
-	shootEffect = new ParticleSystem(BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager(), glm::vec3(0.8f, 0.5f, 0.3f));
+	shootEffect = new ParticleSystem(BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager(), glm::vec3(0.8, 0.5f, 0.3f));
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(shootEffect);
 
 	dialogue = PlayerDialogue();
-	dialogue.LoadPlayerDialogue("Resources/Audio/OkiCaeliAudio.txt");
+	dialogue.LoadPlayerDialogue("Resources/Audio/FlintDamascusAudio.txt");
+	dialogue.playRandomFromOtherState(dialogue.MatchStart, true);
 }
 
 EarthPlayer::~EarthPlayer() {
@@ -43,6 +44,7 @@ std::vector<Projectile*> EarthPlayer::LightAttack()
 
 	if (playerState == ATTACK && lightComboPosition == 1 && lightComboTimer > 0)
 	{
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 1);
 		lightComboPosition++;
 		lightComboTimer = 0.5f;
 
@@ -54,10 +56,10 @@ std::vector<Projectile*> EarthPlayer::LightAttack()
 		p->SetImpulseForce(glm::vec3(0.0f, 100.0f, 200.0f));
 		p->SetActingForce(glm::vec3(0.0f, -5.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 15.0f));
-		p->SetStunTime(0.5f);
+		p->SetStunTime(1.0f);
 		p->SetWorldScale(0.8f);
 		p->SetDamage(5);
-		
+
 		proj.push_back(p);
 		return proj;
 	}
@@ -81,7 +83,7 @@ std::vector<Projectile*> EarthPlayer::MediumAttack()
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, -20.0f, 15.0f));
 		p->SetWorldScale(0.5f);
-		p->SetStunTime(0.6f);
+		p->SetStunTime(1.8f);
 		p->SetDamage(6);
 		proj.push_back(p);
 		return proj;
@@ -96,7 +98,7 @@ std::vector<Projectile*> EarthPlayer::MediumAttack()
 		p->SetImpulseForce(glm::vec3(0.0f, -200.0f, 300.0f));
 		p->SetActingForce(glm::vec3(0.0f, 10.0f, -7.5f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 150.0f, -10.0f));
-		p->SetStunTime(1.0f);
+		p->SetStunTime(2.0f);
 		p->SetWorldScale(0.5f);
 		p->SetDamage(10);
 		p->SetLifetime(0.8);
@@ -109,6 +111,8 @@ std::vector<Projectile*> EarthPlayer::MediumAttack()
 
 	if (playerState == ATTACK && mediumComboPosition == 2 && mediumComboTimer > 0)
 	{
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 0);
+
 		mediumComboPosition++;
 		mediumComboTimer = 0.8f;
 
@@ -120,7 +124,7 @@ std::vector<Projectile*> EarthPlayer::MediumAttack()
 		p->SetFirstDelay(0.4f, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, -200.0f, 15.0f));
-		p->SetStunTime(0.4f);
+		p->SetStunTime(1.0f);
 		p->SetDamage(10);
 		proj.push_back(p);
 		return proj;
@@ -138,13 +142,13 @@ std::vector<Projectile*> EarthPlayer::HeavyAttack()
 		heavyComboTimer = 0.5f;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x + 0.8, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		
+
 		p->SetElement(PROJECTILE_ELEMENT::EARTH);
 		p->SetStrength(PROJECTILE_STRENGTH::HEAVY);
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 200.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 20.0f));
-		p->SetStunTime(0.5f);
+		p->SetStunTime(2.0f);
 		p->SetWorldScale(glm::vec3(1.5f, 0.5f, 0.25f));
 		p->SetDamage(12);
 
@@ -154,11 +158,12 @@ std::vector<Projectile*> EarthPlayer::HeavyAttack()
 
 	if (playerState == ATTACK && heavyComboPosition == 1 && heavyComboTimer > 0)
 	{
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 2);
 		heavyComboPosition++;
-		heavyComboTimer = 1.5f;
+		heavyComboTimer = 0.5f;
 
 		Projectile* p = new Projectile(glm::vec3
-			(GetWorldPosition().x - 0.8, GetWorldPosition().y, GetWorldPosition().z - 
+			(GetWorldPosition().x - 0.8, GetWorldPosition().y, GetWorldPosition().z -
 				collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
 
 		p->SetElement(PROJECTILE_ELEMENT::EARTH);
@@ -166,7 +171,7 @@ std::vector<Projectile*> EarthPlayer::HeavyAttack()
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 200.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 20.0f));
-		p->SetStunTime(0.5f);
+		p->SetStunTime(2.0f);
 		p->SetWorldScale(glm::vec3(1.5f, 0.5f, 0.25f));
 		p->SetDamage(12);
 
@@ -181,23 +186,24 @@ std::vector<Projectile*> EarthPlayer::SpecialAttack()
 {
 	std::vector<Projectile*> proj;
 
-	if (heavyComboPosition == 2 && specialMeter >= 20) {
+	if (heavyComboPosition == 2 && specialMeter >= 30) {
 
-		specialMeter -= 20;
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 2);
+		specialMeter -= 30;
 		if (specialMeter < 0) {
 			specialMeter = 0;
 		}
 
 		//wall
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), 0.0f, dir);
-		p->SetActingForce(glm::vec3(0.0f, -1.5f, 3.0f));
+		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetStunTime(0.0f);
-		p->SetWorldScale(2.0f, 0.25f, 0.25f);
+		p->SetWorldScale(2.0f, 2.25f, 0.25f);
 		p->SetElement(PROJECTILE_ELEMENT::EARTH);
 		p->SetStrength(PROJECTILE_STRENGTH::HEAVY);
-		p->SetClipping(PROJECTILE_CLIP::YES_WALL_PROJECTILE);
-		p->SetLifetime(5.0f);
+		p->SetClipping(PROJECTILE_CLIP::YES_WALL);
+		p->SetLifetime(3.0f);
 
 		proj.push_back(p);
 		return proj;
@@ -205,6 +211,7 @@ std::vector<Projectile*> EarthPlayer::SpecialAttack()
 
 	if (playerState == NORMAL && specialComboPosition == 0 && specialComboTimer <= 0 && specialMeter >= 100)
 	{
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 0);
 		specialComboPosition++;
 		specialComboTimer = 2.0f;
 
@@ -251,8 +258,9 @@ std::vector<Projectile*> EarthPlayer::SpecialAttack()
 		ComboReset();
 	}
 
-	if (mediumComboPosition == 1 && specialMeter >= 60)
+	if (mediumComboPosition == 3 && specialMeter >= 60)
 	{
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 1);
 		specialMeter -= 60;
 		if (specialMeter < 0) {
 			specialMeter = 0;
@@ -278,9 +286,10 @@ std::vector<Projectile*> EarthPlayer::SpecialAttack()
 	}
 	return proj;
 }
+
 void EarthPlayer::InheritedUpdate(const float deltaTime)
 {
-	//specialMeter++;
+	specialMeter++;
 }
 void EarthPlayer::InheritedHandleEvents(SDL_Event events)
 {
@@ -298,7 +307,7 @@ Projectile* EarthPlayer::smallRock(float offset, float xxx) {
 	p->SetImpulseForce(glm::vec3(xxx, 100.0f, 180.0f));
 	p->SetActingForce(glm::vec3(0.0f, -5.0f, 0.0f));
 	p->SetKnockbackForce(glm::vec3(0.0f, 5.0f, 20.0f));
-	p->SetStunTime(0.4f);
+	p->SetStunTime(1.2f);
 	p->SetWorldScale(0.35f);
 	p->SetDamage(3);
 	p->SetElement(PROJECTILE_ELEMENT::EARTH);
@@ -312,7 +321,7 @@ Projectile* EarthPlayer::SpecialRock(float offset) {
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 	p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 30.0f));
 	p->SetFirstDelay(1.0f, glm::vec3(0.0f, 1.0f, 0.5f), glm::vec3(1.95f, 1.45f, 0.45f), glm::vec3(2.0f, 1.5f, 0.5f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-	p->SetStunTime(2.0f);
+	p->SetStunTime(3.5f);
 	p->SetElement(PROJECTILE_ELEMENT::EARTH);
 	p->SetStrength(PROJECTILE_STRENGTH::SPECIAL);
 	p->SetClipping(YES_PLAYER_PROJECTILE);
@@ -328,8 +337,8 @@ Projectile* EarthPlayer::stalagmite(float offset, float delay) {
 	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 0.0f));
 	p->SetActingForce(glm::vec3(0.0f, 5.0f, 0.0f));
 	p->SetFirstDelay(delay, glm::vec3(0), glm::vec3(0.35f), glm::vec3(0.35f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-	p->SetKnockbackForce(glm::vec3(15.0f, 30.0f, 25.0f));
-	p->SetStunTime(1.0f);
+	p->SetKnockbackForce(glm::vec3(0.0f, 30.0f, 25.0f));
+	p->SetStunTime(1.8f);
 	p->SetLifetime(delay + 0.5f);
 	p->SetElement(PROJECTILE_ELEMENT::EARTH);
 	p->SetStrength(PROJECTILE_STRENGTH::SPECIAL);

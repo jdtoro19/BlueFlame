@@ -14,6 +14,12 @@ GameManager::~GameManager()
 
 void GameManager::Initialize()
 {
+	sceneManager = BFEngine::GetInstance()->GetSceneManager();
+
+	announcer = Announcer();
+	announcer.LoadDialogue("Resources/Audio/MaleAnnouncer.txt");
+	announcer.SetVolume(60);
+
 	outTeam1 = 0;
 	outTeam2 = 0;
 
@@ -79,29 +85,65 @@ void GameManager::Initialize()
 	end->SetScale(1.0f);
 	end->SetVisible(false);
 
-	p1Meter = new SliderUI("Resources/Textures/Green.jpg", "Resources/Textures/blackFILL.png");
-	p1Meter->SetPosition(250, 1000);
+	p1Meter = new SliderUI("Resources/Textures/CharacterSelectScreen/porEmpty.png", "Resources/Textures/Green.jpg");
+	p1Meter->SetPosition(280, 1000);
+	p1Meter->GetImage("BACK")->SetAlpha(1.0f);
+	p1Meter->SetPadding(50, 15);
+	p1Meter->SetWidth(250);
 	p1Meter->SetHeight(100);
 	p1Meter->SetValue(0.0f);
 	p1Meter->SetVisible(false);
 
-	p2Meter = new SliderUI("Resources/Textures/Green.jpg", "Resources/Textures/blackFILL.png");
-	p2Meter->SetPosition(700, 1000);
+	p1Portrait = new ImageUI();
+	p1Portrait->SetImage(GetPlayerPortrait(0));
+	p1Portrait->SetPosition(110, 1000);
+	p1Portrait->SetScale(0.8f);
+	p1Portrait->SetVisible(false);
+
+	p2Meter = new SliderUI("Resources/Textures/CharacterSelectScreen/porEmpty.png", "Resources/Textures/Green.jpg");
+	p2Meter->SetPosition(730, 1000);
+	p2Meter->GetImage("BACK")->SetAlpha(1.0f);
+	p2Meter->SetPadding(50, 15);
+	p2Meter->SetWidth(250);
 	p2Meter->SetHeight(100);
 	p2Meter->SetValue(0.0f);
 	p2Meter->SetVisible(false);
 
-	p3Meter = new SliderUI("Resources/Textures/Green.jpg", "Resources/Textures/blackFILL.png");
-	p3Meter->SetPosition(1920 - 700, 1000);
+	p2Portrait = new ImageUI();
+	p2Portrait->SetImage(GetPlayerPortrait(1));
+	p2Portrait->SetPosition(560, 1000);
+	p2Portrait->SetScale(0.8f);
+	p2Portrait->SetVisible(false);
+
+	p3Meter = new SliderUI("Resources/Textures/CharacterSelectScreen/porEmpty.png", "Resources/Textures/Green.jpg");
+	p3Meter->SetPosition(1920 - 630, 1000);
+	p3Meter->GetImage("BACK")->SetAlpha(1.0f);
+	p3Meter->SetPadding(50, 15);
+	p3Meter->SetWidth(250);
 	p3Meter->SetHeight(100);
 	p3Meter->SetValue(0.0f);
 	p3Meter->SetVisible(false);
 
-	p4Meter = new SliderUI("Resources/Textures/Green.jpg", "Resources/Textures/blackFILL.png");
-	p4Meter->SetPosition(1920 - 250, 1000);
+	p3Portrait = new ImageUI();
+	p3Portrait->SetImage(GetPlayerPortrait(2));
+	p3Portrait->SetPosition(1920 - 800, 1000);
+	p3Portrait->SetScale(0.8f);
+	p3Portrait->SetVisible(false);
+
+	p4Meter = new SliderUI("Resources/Textures/CharacterSelectScreen/porEmpty.png", "Resources/Textures/Green.jpg");
+	p4Meter->SetPosition(1920 - 180, 1000);
+	p4Meter->GetImage("BACK")->SetAlpha(1.0f);
+	p4Meter->SetPadding(50, 15);
+	p4Meter->SetWidth(250);
 	p4Meter->SetHeight(100);
 	p4Meter->SetValue(0.0f);
 	p4Meter->SetVisible(false);
+
+	p4Portrait = new ImageUI();
+	p4Portrait->SetImage(GetPlayerPortrait(3));
+	p4Portrait->SetPosition(1920 - 350, 1000);
+	p4Portrait->SetScale(0.8f);
+	p4Portrait->SetVisible(false);
 
 	divider = new ImageUI;
 	divider->SetImage("Resources/Textures/divider.png");
@@ -109,17 +151,21 @@ void GameManager::Initialize()
 	divider->SetScale(1.0f);
 	divider->SetVisible(false);
 
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(divider);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(end);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(roundTimerText);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(team1Text);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(team2Text);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(gameoverBack);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(gameoverText);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(p1Meter);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(p2Meter);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(p3Meter);
-	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddUIObject(p4Meter);
+	sceneManager->GetCurrentScene()->AddUIObject(divider);
+	sceneManager->GetCurrentScene()->AddUIObject(end);
+	sceneManager->GetCurrentScene()->AddUIObject(roundTimerText);
+	sceneManager->GetCurrentScene()->AddUIObject(team1Text);
+	sceneManager->GetCurrentScene()->AddUIObject(team2Text);
+	sceneManager->GetCurrentScene()->AddUIObject(gameoverBack);
+	sceneManager->GetCurrentScene()->AddUIObject(gameoverText);
+	sceneManager->GetCurrentScene()->AddUIObject(p1Meter);
+	sceneManager->GetCurrentScene()->AddUIObject(p1Portrait);
+	sceneManager->GetCurrentScene()->AddUIObject(p2Meter);
+	sceneManager->GetCurrentScene()->AddUIObject(p2Portrait);
+	sceneManager->GetCurrentScene()->AddUIObject(p3Meter);
+	sceneManager->GetCurrentScene()->AddUIObject(p3Portrait);
+	sceneManager->GetCurrentScene()->AddUIObject(p4Meter);
+	sceneManager->GetCurrentScene()->AddUIObject(p4Portrait);
 }
 
 void GameManager::Update()
@@ -128,7 +174,6 @@ void GameManager::Update()
 	p2Meter->SetValue(playerList[1]->GetSpecialMeter());
 	p3Meter->SetValue(playerList[2]->GetSpecialMeter());
 	p4Meter->SetValue(playerList[3]->GetSpecialMeter());
-
 
 	time = std::to_string((int)roundTimer.secondsLeft() - 1);
 
@@ -168,11 +213,19 @@ void GameManager::Update()
 				timeUp = true;
 				teamOut = true;
 				roundTimer.refeshCD();
+				if (outTeam2 == 2) {
+					announcer.playRandomFromOtherState(announcer.BlueTeam, false);
+				}
+				else
+				{
+					announcer.playRandomFromOtherState(announcer.RedTeam, false);
+				}
 			}
 		}
 	}
 
 	if (!roundTimer.checkOffCD() && roundTimer.secondsLeft() <= 1 && !teamOut) {
+		announcer.playRandomFromOtherState(announcer.MatchEnded, false);
 		timeUp = true;
 	}
 
@@ -196,7 +249,7 @@ void GameManager::Update()
 		}
 		else {
 			gameoverText->SetColour(1.0f, 0.0f, 1.0f);
-			gameoverText->SetText("DRAW");
+			gameoverText->SetText("Time's Up");
 			gameoverText->SetPosition((BFEngine::GetInstance()->GetSceneManager()->GetScreenWidth() / 2) - gameoverText->GetLength() / 2, (BFEngine::GetInstance()->GetSceneManager()->GetScreenHeight() / 2));
 			gameoverText->SetVisible(true);
 		}
@@ -273,6 +326,11 @@ void GameManager::Update()
 			}
 		}
 	}
+
+	if (!roundTimer.checkOffCD() && roundTimer.secondsLeft() <= 32 && !announcer30) {
+		announcer.playRandomFromOtherState(announcer.MatchEnding, false);
+		announcer30 = true;
+	}
 }
 
 void GameManager::StartMatch()
@@ -286,6 +344,20 @@ void GameManager::StartMatch()
 	p4Meter->SetVisible(true);
 
 	divider->SetVisible(true);
+
+	//set portraits and status bars to true, return to original positions
+	p1Meter->SetVisible(true);
+	p2Meter->SetVisible(true);
+	p3Meter->SetVisible(true);
+	p4Meter->SetVisible(true);
+	p1Portrait->SetVisible(true);
+	p1Portrait->SetPosition(110, 1000);
+	p2Portrait->SetVisible(true);
+	p2Portrait->SetPosition(560, 1000);
+	p3Portrait->SetVisible(true);
+	p3Portrait->SetPosition(1920 - 800, 1000);
+	p4Portrait->SetVisible(true);
+	p4Portrait->SetPosition(1920 - 350, 1000);
 }
 
 void GameManager::StartTimer()
@@ -300,6 +372,12 @@ void GameManager::StartTimer()
 void GameManager::GameOver()
 {
 	BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->EnableKernel(false);
+
+	//move portraits to screen edges
+	p1Portrait->SetPosition(110, 1000);
+	p2Portrait->SetPosition(310, 1000);
+	p3Portrait->SetPosition(1920 - 310, 1000);
+	p4Portrait->SetPosition(1920 - 110, 1000);
 
 	gameoverText->SetVisible(false);
 	gameoverBack->SetVisible(false);
@@ -380,6 +458,11 @@ void GameManager::GameOver()
 
 void GameManager::Reset()
 {
+	p1Portrait->SetVisible(false);
+	p2Portrait->SetVisible(false);
+	p3Portrait->SetVisible(false);
+	p4Portrait->SetVisible(false);
+
 	p1Meter->SetVisible(false);
 	p2Meter->SetVisible(false);
 	p3Meter->SetVisible(false);
@@ -387,6 +470,8 @@ void GameManager::Reset()
 
 	divider->SetVisible(false);
 	end->SetVisible(false);
+
+	announcer30 = false;
 
 	team1Text->SetVisible(false);
 	team2Text->SetVisible(false);
@@ -443,5 +528,34 @@ void GameManager::Reset()
 		playerList[i]->SetTarget(0);
 
 		playerList[i]->SetStats();
+	}
+}
+
+std::string GameManager::GetPlayerPortrait(int playerIndex)
+{
+	if (sceneManager->saveData.size() != 0) {
+		if (sceneManager->saveData[playerIndex] == 0) {
+			return "Resources/Textures/CharacterSelectScreen/Alex_Trix.png";
+		}
+		else if (sceneManager->saveData[playerIndex] == 1) {
+			return "Resources/Textures/CharacterSelectScreen/Flint_Damascus.png";
+		}
+		else if (sceneManager->saveData[playerIndex] == 2) {
+			return "Resources/Textures/CharacterSelectScreen/Jack_Cole.png";
+		}
+		else if (sceneManager->saveData[playerIndex] == 3) {
+			return "Resources/Textures/CharacterSelectScreen/Kal_Orr.png";
+		}
+		else if (sceneManager->saveData[playerIndex] == 4) {
+			return "Resources/Textures/CharacterSelectScreen/Oki_Caeli.png";
+		}
+		else
+		{
+			return "Resources/Textures/CharacterSelectScreen/porEmpty.png";
+		}
+	}
+	else
+	{
+		return "Resources/Textures/CharacterSelectScreen/porEmpty.png";
 	}
 }

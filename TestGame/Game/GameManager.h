@@ -6,12 +6,15 @@
 #include <BlueFlameEngine\Engine\Rendering\2D\TextUI.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\SliderUI.h>
 #include <BlueFlameEngine\Engine\Timers\Cooldown.h>
+#include <BlueFlameEngine\Engine\Audio\Announcer.h>
+#include <BlueFlameEngine\Engine\Core\SceneManager.h>
 #include "../Player/Player.h"
 
 using namespace ENGINE;
 
 namespace GAME {
 
+	// This class manages the game rules, the players, and the hud
 	class GameManager {
 
 	public:
@@ -21,9 +24,9 @@ namespace GAME {
 		void Initialize();
 		void Update();
 
-		
+		// Enables match UI
 		void StartMatch();
-
+		// Starts match countdown
 		void StartTimer();
 
 		double GetMatchTimeRemaining() { return roundTimer.secondsLeft(); };
@@ -36,7 +39,11 @@ namespace GAME {
 
 		bool canContinue = false;
 
+		Announcer announcer;
+
 	private:
+		SceneManager* sceneManager;
+
 		int matchTime;
 
 		Cooldown roundTimer;
@@ -51,9 +58,13 @@ namespace GAME {
 		ImageUI* end;
 
 		SliderUI* p1Meter;
+		ImageUI* p1Portrait;
 		SliderUI* p2Meter;
+		ImageUI* p2Portrait;
 		SliderUI* p3Meter;
+		ImageUI* p3Portrait;
 		SliderUI* p4Meter;
+		ImageUI* p4Portrait;
 
 		ImageUI* divider;
 
@@ -81,6 +92,10 @@ namespace GAME {
 		bool endGame = false;
 
 		Cooldown voiceCD;
+
+		bool announcer30 = false;
+
+		std::string GetPlayerPortrait(int playerIndex);
 	};
 
 }

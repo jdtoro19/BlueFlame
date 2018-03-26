@@ -47,7 +47,9 @@ namespace GAME {
 		bool canMove;
 
 		bool enabled = false;
-
+		//handle events but for networked players
+		void HandleNetworkedButtons();
+		
 	};
 
 }

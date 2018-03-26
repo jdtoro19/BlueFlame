@@ -14,6 +14,7 @@ namespace ENGINE {
 	class SoundEffect : public AudioFile {
 	public:
 		SoundEffect();
+		SoundEffect(int volume);
 
 		/// Delete the possible constructors and operators 
 		SoundEffect(const SoundEffect&) = delete;
@@ -34,6 +35,7 @@ namespace ENGINE {
 		void TogglePause() const;*/
 		Mix_Chunk* mixChunk = nullptr;
 	protected:
+		int volume = 0;
 	private:
 		
 	};

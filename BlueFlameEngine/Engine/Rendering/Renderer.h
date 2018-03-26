@@ -89,7 +89,7 @@ namespace ENGINE {
 		bool screenBlur = false;
 
 		// blur amount
-		unsigned int blurAmount = 4;
+		unsigned int blurAmount = 2;
 		
 		// framebuffer
 		unsigned int framebuffer, colorBuffers[2], rboDepth, attachments[2];

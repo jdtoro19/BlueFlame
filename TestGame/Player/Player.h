@@ -109,7 +109,7 @@ namespace GAME {
 		void SetTargetColour(glm::vec3 colour);
 
 		// Player number and team setter
-		void SetPlayerNumber(PLAYERNUMBER pN) { playerNumber = pN; };
+		void SetPlayerNumber(PLAYERNUMBER pN);
 		void SetPlayerTeam(PLAYERTEAM pT);
 
 		// Set player gameplay status
@@ -169,7 +169,7 @@ namespace GAME {
 		int maxSpecialMeter = 100;
 		int staminaMeter = 0;
 		int maxStaminaMeter = 100;
-		float moveSpeed = 1.0f;
+		float moveSpeed = 1.5f;
 		PLAYERNUMBER playerNumber = NONE;
 		PLAYERTEAM playerTeam = TEAM0;
 
@@ -203,6 +203,9 @@ namespace GAME {
 		// Particles
 		ParticleSystem* stunEffect;
 		ParticleSystem* shootEffect;
+
+		//handle events but for networked players
+		void HandleNetworkedButtons();
 
 	public:
 		//Player Specific Audio

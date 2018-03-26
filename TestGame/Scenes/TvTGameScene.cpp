@@ -98,7 +98,7 @@ bool TvTGameScene::Initialize()
 	pointLight->renderComponent->SetColour(1.0f, 1.0f, 1.0f);
 	pointLight->renderComponent->CanRender(false);
 	pointLight->canRender = false;
-	pointLight->SetWorldPosition(-5.25f, -0.5f, 5.5f);
+	pointLight->SetWorldPosition(-6.25f, -0.5f, 6.5f);
 	pointLight->SetWorldScale(0.5f);
 	pointLight->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
 	pointLight->lightComponent->SetColour(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -111,7 +111,7 @@ bool TvTGameScene::Initialize()
 	pointLight2->renderComponent->SetColour(1.0f, 1.0f, 1.0f);
 	pointLight2->renderComponent->CanRender(false);
 	pointLight2->canRender = false;
-	pointLight2->SetWorldPosition(5.25f, -0.5f, 5.5f);
+	pointLight2->SetWorldPosition(6.25f, -0.5f, 6.5f);
 	pointLight2->SetWorldScale(0.5f);
 	pointLight2->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
 	pointLight2->lightComponent->SetColour(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -124,7 +124,7 @@ bool TvTGameScene::Initialize()
 	pointLight3->renderComponent->SetColour(1.0f, 1.0f, 1.0f);
 	pointLight3->renderComponent->CanRender(false);
 	pointLight3->canRender = false;
-	pointLight3->SetWorldPosition(5.25f, -0.5f, -5.5f);
+	pointLight3->SetWorldPosition(6.25f, -0.5f, -6.5f);
 	pointLight3->SetWorldScale(0.5f);
 	pointLight3->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
 	pointLight3->lightComponent->SetColour(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -137,7 +137,7 @@ bool TvTGameScene::Initialize()
 	pointLight4->renderComponent->SetColour(1.0f, 1.0f, 1.0f);
 	pointLight4->renderComponent->CanRender(false);
 	pointLight4->canRender = false;
-	pointLight4->SetWorldPosition(-5.25f, -0.5f, -5.5f);
+	pointLight4->SetWorldPosition(-6.25f, -0.5f, -6.5f);
 	pointLight4->SetWorldScale(0.5f);
 	pointLight4->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
 	pointLight4->lightComponent->SetColour(glm::vec3(1.0f, 1.0f, 1.0f));
@@ -179,7 +179,7 @@ bool TvTGameScene::Initialize()
 	// Make directional light
 	dirLight = new Light(LightComponent::Light_Type::DIRECTIONAL);
 	dirLight->lightComponent->SetDirection(glm::vec3(1.0f, -1.0f, 1.0f));
-	dirLight->lightComponent->SetColour(glm::vec3(0.2f, 0.2f, 0.2f));
+	dirLight->lightComponent->SetColour(glm::vec3(0.3f, 0.3f, 0.3f));
 	//
 
 	// fireworks
@@ -201,10 +201,10 @@ bool TvTGameScene::Initialize()
 	// Add scene objects
 	AddObject(projectileManager->GetProjectileRenderer());
 	AddLightObject(dirLight);
-	//AddLightObject(pointLight);
-	//AddLightObject(pointLight2);
-	//AddLightObject(pointLight3);
-	//AddLightObject(pointLight4);
+	AddLightObject(pointLight);
+	AddLightObject(pointLight2);
+	AddLightObject(pointLight3);
+	AddLightObject(pointLight4);
 	AddLightObject(blueLight);
 	AddLightObject(redLight);
 	AddLightObject(middleLight);
@@ -238,6 +238,72 @@ void TvTGameScene::Update(const float deltaTime)
 	}
 	if (!playingIntro && !startText) {
 		PlayRoundStart();
+	}
+
+	//check for networked inputs and pass them to the appropriate player
+	if (Settings::getInstance()->networkedGame) {
+		if (Settings::getInstance()->isServer) {
+			if (!Settings::getInstance()->spectatorMode) {
+				std::string dataChunk = player1->GetPlayerInput()->ReturnJoystickStateForNetworking() + player2->GetPlayerInput()->ReturnJoystickStateForNetworking();
+				//std::cout << dataChunk << std::endl;
+				BFEngine::GetInstance()->sendData(dataChunk);
+			}
+			else {
+				std::string dataChunk = player1->GetPlayerInput()->ReturnJoystickStateForNetworking() + player2->GetPlayerInput()->ReturnJoystickStateForNetworking() + player3->GetPlayerInput()->ReturnJoystickStateForNetworking() + player4->GetPlayerInput()->ReturnJoystickStateForNetworking();
+				//std::cout << dataChunk << std::endl;
+				BFEngine::GetInstance()->sendData(dataChunk);
+			}
+		}
+		else if (!Settings::getInstance()->spectatorMode) {
+			std::string dataChunk = player3->GetPlayerInput()->ReturnJoystickStateForNetworking() + player4->GetPlayerInput()->ReturnJoystickStateForNetworking();
+			//std::cout << dataChunk << std::endl;
+			BFEngine::GetInstance()->sendData(dataChunk);
+		}
+		//we don't send data as the spectator client
+
+		if (Settings::getInstance()->isServer && Settings::getInstance()->spectatorMode) {
+			//skip receiving since they're not sending data back
+		}
+		else {
+			//read input from the other game
+			std::string externalInput = BFEngine::GetInstance()->receiveData();
+			cout << "first set of data received: " << externalInput << endl;
+			if (externalInput != "") {
+				if (externalInput.length() >= 70) {
+					//break it into components
+					std::string input1 = externalInput.substr(0, 35);
+					std::string input2 = externalInput.substr(35, 35);
+					//check first string
+					std::string playerNum = input1.substr(0, 1);
+					if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
+						cout << "PlayerNum: " << playerNum << std::endl;
+						playerList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input1);
+					}
+					playerNum = input2.substr(0, 1);
+					if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
+						cout << "PlayerNum: " << playerNum << std::endl;
+						playerList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input2);
+					}
+				}
+				//if spectator mode is on we'll have more controllers to parse
+				if (Settings::getInstance()->spectatorMode && externalInput.length() >= 140) {
+					std::string input1 = externalInput.substr(70, 35);
+					std::string input2 = externalInput.substr(105, 35);
+					//check first string
+					std::string playerNum = input1.substr(0, 1);
+					if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
+						cout << "PlayerNum: " << playerNum << std::endl;
+						playerList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input1);
+					}
+					playerNum = input2.substr(0, 1);
+					if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
+						cout << "PlayerNum: " << playerNum << std::endl;
+						playerList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input2);
+					}
+				}
+			}
+		}
+
 	}
 }
 
@@ -549,6 +615,10 @@ void TvTGameScene::SkipIntro()
 void TvTGameScene::PlayRoundStart()
 {
 	if (!ready) {
+		if (!announcerVoice) {
+			gameManager->announcer.playRandomFromOtherState(gameManager->announcer.MatchStart, false);
+			announcerVoice = true;
+		}
 		roundText->SetText("Ready?");
 		roundText->SetSize(roundText->GetSize() + deltaTime * 5);
 		if (roundText->GetSize() >= 1.0f) {
@@ -677,6 +747,23 @@ void TvTGameScene::SetUpPlayers()
 		player3->GetPlayerInput()->SetJoystick(sceneManager->controllers[2]);
 		player4->GetPlayerInput()->SetJoystick(sceneManager->controllers[3]);
 	}
+
+	if (Settings::getInstance()->networkedGame && !Settings::getInstance()->isServer) {
+		player1->GetPlayerInput()->makeNetworked();
+	}
+
+	if (Settings::getInstance()->networkedGame && !Settings::getInstance()->isServer) {
+		player2->GetPlayerInput()->makeNetworked();
+	}
+	
+	if (Settings::getInstance()->networkedGame && ((Settings::getInstance()->isServer && !Settings::getInstance()->spectatorMode) || (!Settings::getInstance()->isServer && Settings::getInstance()->spectatorMode))) {
+		player3->GetPlayerInput()->makeNetworked();
+	}
+
+	if (Settings::getInstance()->networkedGame && ((Settings::getInstance()->isServer && !Settings::getInstance()->spectatorMode) || (!Settings::getInstance()->isServer && Settings::getInstance()->spectatorMode))) {
+		player4->GetPlayerInput()->makeNetworked();
+	}
+
 
 	// Set player audio channels
 	player1->dialogue.channel = 2;
@@ -844,8 +931,10 @@ void TvTGameScene::Restart()
 	roundStart = false;
 	playAudio = true;
 
-	bool player1voice = false;
-	bool player2voice = false;
-	bool player3voice = false;
-	bool player4voice = false;
+	player1voice = false;
+	player2voice = false;
+	player3voice = false;
+	player4voice = false;
+
+	announcerVoice = false;
 }

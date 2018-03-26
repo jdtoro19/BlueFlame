@@ -1,43 +1,58 @@
 #pragma once
 #ifndef ANNOUNCER_H
-#define ANNOUNCER_H
+#define ANNOUNCER_h
 
 #include <string>
 #include "Dialogue.h"
 #include "../Core/Parser.h"
+#include "../Timers/Cooldown.h"
 
 namespace ENGINE {
 
 	class Announcer : public Dialogue {
 	public:
 		Announcer();
-		Announcer(double averageSecondsBetweenLines);
+		Announcer(double seconds);
 		~Announcer();
 
-		//enum dialogueStates {}; //defined by the inheriting classes
 		enum DIALOGUESTATE {
-			TitleScreen,
-			CharSelect,
+			Title,
+			CharacterSelect,
+			CharacterSelectAlt,
 			MatchStart,
-			TimeRunningOut,
-			TimeEnds,
-			WinScreen
+			MatchStartAlt,
+			MatchEnding,
+			MatchEnded,
+			NoContest,
+			RedTeam,
+			RedTeamRoll,
+			BlueTeam,
+			BlueTeamRoll,
+			CharSelectAlex,
+			CharSelectFlint,
+			CharSelectJack,
+			CharSelectKal,
+			CharSelectOki
 		};
 
 		void setDialogueState(DIALOGUESTATE d);
 		void playRandomFromCurrentState(bool overrideCD);
 		void playRandomFromOtherState(DIALOGUESTATE d, bool overrideCD);
 		void sometimesPlayRandomFromCurrentState(int percentage, bool overrideCD);
+		void playSpecifiedFromState(DIALOGUESTATE d, int x);
+		void playIdle();
+		void stopPlaying() { Mix_HaltChannel(channel); };
 
-		//now we're getting serious
-		void LoadAnnouncerSet(std::string filename);
-		void LoadDefaultAnnouncer();
+		void LoadDialogue(std::string filename);
 
-	protected:
+		int channel = 1;
+
 	private:
-		DIALOGUESTATE currentState = TitleScreen;
+		DIALOGUESTATE currentState = MatchStart;
 		Parser p = Parser();
 		bool hasCooldown = false;
+		Cooldown idleTimer;
+
 	};
 }
 

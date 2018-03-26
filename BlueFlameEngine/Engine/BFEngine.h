@@ -51,7 +51,8 @@ namespace ENGINE {
 		static void TerminateGame();
 
 		// Networking
-		std::string performNetworking();
+		std::string receiveData();
+		void sendData(std::string data);
 		//net "working"
 		//UDPnet udpNet;
 		//Winsock winNet;
@@ -100,9 +101,9 @@ namespace ENGINE {
 		std::vector<std::string> clientTable;
 		std::string spacer = "============================================";
 
-		bool setUpNetwork();
+		bool setUpNetworkAsServer();
+		bool setUpNetworkAsClient();
 		int closeNetwork();
-		bool acceptConnection();
 	};
 }
 

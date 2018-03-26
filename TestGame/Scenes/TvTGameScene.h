@@ -132,6 +132,8 @@ namespace GAME {
 
 		void Restart();
 
+		bool announcerVoice = false;
+
 		// Audio
 		Music* bgm;
 	};

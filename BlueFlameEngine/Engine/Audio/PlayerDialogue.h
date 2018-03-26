@@ -27,12 +27,7 @@ namespace ENGINE {
 			Falling,
 			Interaction,
 			Rare,
-			SoundEffects,
-			CharSelectAlex,
-			CharSelectFlint,
-			CharSelectJack,
-			CharSelectKal,
-			CharSelectOki
+			SoundEffects
 		};
 
 		void setDialogueState(DIALOGUESTATE d);
