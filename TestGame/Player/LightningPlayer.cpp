@@ -38,7 +38,7 @@ std::vector<Projectile*> LightningPlayer::LightAttack()
 		lightComboTimer = 0.5f;
 		lightComboPosition++;
 
-		Projectile* p = Shocker(0.0f, 0.0f, 0.0f, 15.0f, 0.7f, 10.0f);
+		Projectile* p = Shocker(0.0f, 0.0f, 0.0f, 15.0f, 0.3f, 10.0f);
 		p->SetDamage(4);
 		proj.push_back(p);
 
@@ -50,7 +50,7 @@ std::vector<Projectile*> LightningPlayer::LightAttack()
 		lightComboPosition++;
 		lightComboTimer = 0.5f;
 
-		Projectile* p = Shocker(0.5f, 0.0f, 0.0f, 5.0f, 0.8f, 10.0f);
+		Projectile* p = Shocker(0.5f, 0.0f, 0.0f, 5.0f, 0.3f, 10.0f);
 		p->SetDamage(3);
 		proj.push_back(p);
 		return proj;
@@ -62,7 +62,7 @@ std::vector<Projectile*> LightningPlayer::LightAttack()
 		lightComboPosition++;
 		lightComboTimer = 0.5f;
 
-		Projectile* p = Shocker(-0.5f, 0.0f, 0.0f, 5.0f, 1.0f, 10.0f);
+		Projectile* p = Shocker(-0.5f, 0.0f, 0.0f, 5.0f, 0.5f, 10.0f);
 		p->SetDamage(4);
 		proj.push_back(p);
 		return proj;
@@ -82,10 +82,10 @@ std::vector<Projectile*> LightningPlayer::MediumAttack()
 		mediumComboPosition++;
 		mediumComboTimer = 1.0f;
 
-		Projectile* p = LightningCloud(10.0f, 1.0f);
+		Projectile* p = LightningCloud(-10.0f, 1.0f);
 		proj.push_back(p);
 
-		Projectile* f = Shocker(0, 10.0f, -250.0f, 0.0f, 1.0f, -50.0f);
+		Projectile* f = Shocker(0, -9.0f, -250.0f, 0.0f, 1.0f, -50.0f);
 		p->SetDamage(8);
 		proj.push_back(f);
 
@@ -97,10 +97,10 @@ std::vector<Projectile*> LightningPlayer::MediumAttack()
 		mediumComboPosition++;
 		mediumComboTimer = 1.0f;
 
-		Projectile* p = LightningCloud(6.0f, 5.0f);
+		Projectile* p = LightningCloud(-6.0f, 5.0f);
 		proj.push_back(p);
 
-		Projectile* a = Strike(0, 0, 5.0f, 4.0f, 60.0f);
+		Projectile* a = Strike(0, 0, -5.0f, 4.0f, 60.0f);
 		a->SetDamage(9);
 		proj.push_back(a);
 
@@ -110,7 +110,7 @@ std::vector<Projectile*> LightningPlayer::MediumAttack()
 
 		return proj;
 	}
-	
+
 	if (playerState == ATTACK && mediumComboPosition == 2 && mediumComboTimer > 0)
 	{
 		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 5);
@@ -118,10 +118,10 @@ std::vector<Projectile*> LightningPlayer::MediumAttack()
 		mediumComboPosition++;
 		mediumComboTimer = 1.0f;
 
-		Projectile* p = LightningCloud(10.0f, 1.0f);
+		Projectile* p = LightningCloud(-10.0f, 1.0f);
 		proj.push_back(p);
 
-		Projectile* f = Shocker(0, 10.0f, -250.0f, 0.0f, 1.0f, -50.0f);
+		Projectile* f = Shocker(0, -9.0f, -250.0f, 0.0f, 0.8f, -50.0f);
 		p->SetDamage(7);
 		proj.push_back(f);
 
@@ -160,7 +160,7 @@ std::vector<Projectile*> LightningPlayer::HeavyAttack()
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f)); //no accel
 		p->SetKnockbackForce(glm::vec3(0.0f, 10.0f, 30.0f)); //static
 		p->SetDamage(12);
-		p->SetStunTime(1.5f);
+		p->SetStunTime(1.3f);
 		p->SetWorldScale(0.5f, 0.5f, 0.5f);
 		p->SetLifetime(3.0f);
 		p->SetElement(PROJECTILE_ELEMENT::LIGHTNING);
@@ -171,7 +171,7 @@ std::vector<Projectile*> LightningPlayer::HeavyAttack()
 
 		return proj;
 	}
-	
+
 	if (playerState == ATTACK && heavyComboPosition == 2 && heavyComboTimer > 0)
 	{
 		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 1);
@@ -183,7 +183,7 @@ std::vector<Projectile*> LightningPlayer::HeavyAttack()
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f)); //no accel
 		p->SetKnockbackForce(glm::vec3(0.0f, 10.0f, 30.0f)); //static
 		p->SetDamage(12);
-		p->SetStunTime(1.5f);
+		p->SetStunTime(1.2f);
 		p->SetWorldScale(0.8f, 0.8f, 0.8f);
 		p->SetLifetime(3.0f);
 		p->SetElement(PROJECTILE_ELEMENT::LIGHTNING);
@@ -250,7 +250,7 @@ std::vector<Projectile*> LightningPlayer::SpecialAttack() //Zero Laser!
 		Projectile* d = ForkedLightning(160.0);
 		d->SetDamage(12);
 		proj.push_back(d);
-		
+
 		return proj;
 	}
 
@@ -264,10 +264,10 @@ std::vector<Projectile*> LightningPlayer::SpecialAttack() //Zero Laser!
 			specialMeter = 0;
 		}
 
-		Projectile* p = LightningCloud(7.0f, 5.0f);
+		Projectile* p = LightningCloud(-7.0f, 5.0f);
 		proj.push_back(p);
 
-		Projectile* a = Strike(0.5f, 0, 6.0f, 4.0f, 30.0f);
+		Projectile* a = Strike(-0.5f, 0, -6.0f, 4.0f, 30.0f);
 		p->SetDamage(7);
 		proj.push_back(a);
 
@@ -297,6 +297,7 @@ std::vector<Projectile*> LightningPlayer::SpecialAttack() //Zero Laser!
 	}
 	return proj;
 }
+
 void LightningPlayer::InheritedUpdate(const float deltaTime)
 {
 	if (SpecialDuration.checkOffCD() && charging) {
@@ -320,7 +321,7 @@ void LightningPlayer::InheritedHandleStates(const Uint8 *state)
 }
 
 Projectile* LightningPlayer::LightningCloud(float offset, float height) {
-	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x + (offset * targetAngle * dir), GetWorldPosition().y + height, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir) - offset * dir), targetAngle, dir);
+	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x - offset * targetAngle * dir, GetWorldPosition().y + height, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z + offset * dir), targetAngle, dir);
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f)); //static
 	p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 0.0f)); //static
 	p->SetStunTime(0.0f);
@@ -334,11 +335,11 @@ Projectile* LightningPlayer::LightningCloud(float offset, float height) {
 }
 
 Projectile* LightningPlayer::Strike(float offsetx, float offsety, float offsetz, float height, float kBack) {
-	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x + (offsetz * targetAngle * dir), GetWorldPosition().y + height, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir) - offsetz * dir), targetAngle, dir);
+	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x - offsetz * targetAngle * dir, GetWorldPosition().y + height, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z + offsetz * dir), targetAngle, dir);
 	p->SetImpulseForce(glm::vec3(0.0f, -100.0f, 0.0f));
 	p->SetActingForce(glm::vec3(0.0f, -10.0f, 0.0f)); //no accel
 	p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, kBack)); //knocks them back. finisher
-	p->SetStunTime(1.5f);
+	p->SetStunTime(0.8f);
 	p->SetWorldScale(0.2f, 1.0f, 0.2f);
 	p->SetLifetime(0.5f);
 	p->SetElement(PROJECTILE_ELEMENT::LIGHTNING);
@@ -348,7 +349,7 @@ Projectile* LightningPlayer::Strike(float offsetx, float offsety, float offsetz,
 }
 
 Projectile* LightningPlayer::ZeroLaser(float delay, float speed, float baseLifetime) {
-	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z)), targetAngle, dir);
+	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
 	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, speed));
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f)); //no accel
 	p->SetFirstDelay(delay, glm::vec3(0), glm::vec3(1.0f, 0.1f, 0.5f), glm::vec3(1.0f, 0.1f, 0.5f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
@@ -362,7 +363,7 @@ Projectile* LightningPlayer::ZeroLaser(float delay, float speed, float baseLifet
 }
 
 Projectile* LightningPlayer::ForkedLightning(float offset) {
-	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z)), targetAngle, dir);
+	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
 	p->SetImpulseForce(glm::vec3(offset, 0.0f, 400.0f));
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f)); //no accel
 	p->SetKnockbackForce(glm::vec3(0.0f, 10.0f, 30.0f)); //static
@@ -376,13 +377,14 @@ Projectile* LightningPlayer::ForkedLightning(float offset) {
 }
 
 Projectile* LightningPlayer::Shocker(float offsetx, float offsetz, float speed, float accel, float stun, float knockback) {
-	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x + offsetx + (offsetz * targetAngle * dir), GetWorldPosition().y, GetWorldPosition().z - (collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z) - offsetz), targetAngle, dir);
+	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x + offsetx - (offsetz * targetAngle * dir), GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z + offsetz * dir), targetAngle, dir);
 	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, speed));
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, accel)); //no accel
 	p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, knockback)); //static
 	p->SetStunTime(stun);
 	p->SetWorldScale(0.25f, 0.25f, 0.5f);
 	p->SetLifetime(3.0f);
+	p->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
 	p->SetElement(PROJECTILE_ELEMENT::LIGHTNING);
 	p->SetStrength(PROJECTILE_STRENGTH::LIGHT);
 	p->SetClipping(PROJECTILE_CLIP::YES);

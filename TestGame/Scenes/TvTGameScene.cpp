@@ -347,7 +347,7 @@ void TvTGameScene::Update(const float deltaTime)
 		}
 	}
 
-	if (spectator && !playingIntro)
+	if (Settings::getInstance()->networkedGame && Settings::getInstance()->spectatorMode && !Settings::getInstance()->isServer &&!playingIntro)
 	{
 		sceneManager->EnableSplitscreen(false);
 		gameManager->divider->SetVisible(false);

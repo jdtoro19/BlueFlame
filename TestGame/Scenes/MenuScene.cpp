@@ -22,8 +22,8 @@ bool MenuScene::Initialize()
 
 	// Set screen options
 	sceneManager->EnableFullscreen(false);
-	sceneManager->ShowFPS(true);
-	sceneManager->GetRenderer()->EnableBloom(true);
+	//sceneManager->ShowFPS(true);
+	//sceneManager->GetRenderer()->EnableBloom(true);
 
 	// Load shaders
 	skyboxShader = new Shader("Shaders/skybox.vs", "Shaders/skybox.fs");

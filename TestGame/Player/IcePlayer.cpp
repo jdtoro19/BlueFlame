@@ -304,60 +304,61 @@ std::vector<Projectile*> IcePlayer::SpecialAttack()
 			specialMeter = 0;
 		}
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + 1.0f, GetWorldPosition().z - 1.0f * -dir), targetAngle, dir);
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + 1.0f, GetWorldPosition().z + 1.0f * dir), targetAngle, dir);
 		p->SetImpulseForce(glm::vec3(0.0f, -2.0f, 0.0f));
 		p->SetActingForce(glm::vec3(0.0f, -4.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f));
-		p->SetFirstDelay(0.75f, glm::vec3(1.0f, 4.0f, 1.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p->SetSecondDelay(1.25f, glm::vec3(-1.0f, 0.0f, 9.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p->SetFirstDelay(0.75f, glm::vec3(0.0f, 4.0f, 0.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p->SetSecondDelay(1.25f, glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p->SetStunTime(3.0f);
 		p->SetClipping(YES_WALL_PLAYER);
 		p->SetElement(ICE);
 		p->SetDamage(20);
 		projectiles.push_back(p);
 
-		Projectile* p1 = new Projectile(glm::vec3(GetWorldPosition().x - 1.0f, GetWorldPosition().y + 1.0f, GetWorldPosition().z * dir), targetAngle, dir);
+		Projectile* p1 = new Projectile(glm::vec3(GetWorldPosition().x - 1.0f * dir, GetWorldPosition().y + 1.0f, GetWorldPosition().z), targetAngle, dir);
 		p1->SetImpulseForce(glm::vec3(0.0f, -2.0f, 0.0f));
 		p1->SetActingForce(glm::vec3(0.0f, -4.0f, 0.0f));
 		p1->SetKnockbackForce(glm::vec3(0.0f));
-		p1->SetFirstDelay(0.75f, glm::vec3(1.0f, 4.0f, -1.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p1->SetSecondDelay(1.25f, glm::vec3(1.0f, 0.0f, 9.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p1->SetFirstDelay(0.75f, glm::vec3(0.0f, 4.0f, 0.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p1->SetSecondDelay(1.25f, glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p1->SetStunTime(3.0f);
 		p1->SetClipping(YES_WALL_PLAYER);
 		p1->SetElement(ICE);
 		p1->SetDamage(20);
 		projectiles.push_back(p1);
 
-		Projectile* p2 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + 1.0f, GetWorldPosition().z + 1.0f * -dir), targetAngle, dir);
+		Projectile* p2 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + 1.0f, GetWorldPosition().z - 1.0f * dir), targetAngle, dir);
 		p2->SetImpulseForce(glm::vec3(0.0f, -2.0f, 0.0f));
 		p2->SetActingForce(glm::vec3(0.0f, -4.0f, 0.0f));
 		p2->SetKnockbackForce(glm::vec3(0.0f));
-		p2->SetFirstDelay(0.75f, glm::vec3(-1.0f, 4.0f, -1.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p2->SetSecondDelay(1.25f, glm::vec3(1.0f, 0.0f, 7.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p2->SetFirstDelay(0.75f, glm::vec3(0.0f, 4.0f, 0.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p2->SetSecondDelay(1.25f, glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p2->SetStunTime(3.0f);
 		p2->SetClipping(YES_WALL_PLAYER);
 		p2->SetElement(ICE);
 		p2->SetDamage(20);
 		projectiles.push_back(p2);
 
-		Projectile* p3 = new Projectile(glm::vec3(GetWorldPosition().x + 1.0f, GetWorldPosition().y + 1.0f, GetWorldPosition().z * dir), targetAngle, dir);
+		Projectile* p3 = new Projectile(glm::vec3(GetWorldPosition().x + 1.0f * dir, GetWorldPosition().y + 1.0f, GetWorldPosition().z), targetAngle, dir);
 		p3->SetImpulseForce(glm::vec3(0.0f, -2.0f, 0.0f));
 		p3->SetActingForce(glm::vec3(0.0f, -4.0f, 0.0f));
 		p3->SetKnockbackForce(glm::vec3(0.0f));
-		p3->SetFirstDelay(0.75f, glm::vec3(-1.0f, 4.0f, 1.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p3->SetSecondDelay(1.25f, glm::vec3(-1.0f, 0.0f, 7.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p3->SetFirstDelay(0.75f, glm::vec3(0.0f, 4.0f, 0.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p3->SetSecondDelay(1.25f, glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p3->SetStunTime(3.0f);
 		p3->SetClipping(YES_WALL_PLAYER);
 		p3->SetElement(ICE);
 		p3->SetDamage(20);
 		projectiles.push_back(p3);
 
-		Projectile* p4 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + 1.0f, GetWorldPosition().z * dir), targetAngle, dir);
+
+		Projectile* p4 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + 1.0f, GetWorldPosition().z), targetAngle, dir);
 		p4->SetImpulseForce(glm::vec3(0.0f, -2.0f, 0.0f));
 		p4->SetActingForce(glm::vec3(0.0f, -4.0f, 0.0f));
 		p4->SetKnockbackForce(glm::vec3(0.0f));
 		p4->SetFirstDelay(0.75f, glm::vec3(0.0f, 4.0f, 0.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p4->SetSecondDelay(1.25f, glm::vec3(0.0f, 0.0f, 8.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p4->SetSecondDelay(1.25f, glm::vec3(0.0f, 0.0f, 6.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p4->SetStunTime(3.0f);
 		p4->SetClipping(YES_WALL_PLAYER);
 		p4->SetElement(ICE);

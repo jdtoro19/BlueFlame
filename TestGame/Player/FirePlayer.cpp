@@ -46,7 +46,7 @@ std::vector<Projectile*> FirePlayer::LightAttack()
 		p->SetImpulseForce(glm::vec3(0.0f, 100.0f, 350.0f));
 		p->SetActingForce(glm::vec3(0.0f, -10.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(15.0f, 45.0f, 5.0f));
-		p->SetStunTime(0.8f);
+		p->SetStunTime(0.3f);
 		p->SetWorldScale(0.3f);
 		p->SetDamage(7);
 		projectiles.push_back(p);
@@ -70,7 +70,7 @@ std::vector<Projectile*> FirePlayer::LightAttack()
 		p->SetImpulseForce(glm::vec3(120.0f, 100.0f, 300.0f));
 		p->SetActingForce(glm::vec3(-10.0f, -5.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(-35.0f, 25.0f, 5.0f));
-		p->SetStunTime(0.8f);
+		p->SetStunTime(0.3f);
 		p->SetWorldScale(0.3f);
 		p->SetDamage(7);
 		projectiles.push_back(p);
@@ -93,7 +93,7 @@ std::vector<Projectile*> FirePlayer::LightAttack()
 		p->SetImpulseForce(glm::vec3(-150.0f, 100.0f, 300.0f));
 		p->SetActingForce(glm::vec3(10.0f, -5.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 25.0f, 5.0f));
-		p->SetStunTime(0.8f);
+		p->SetStunTime(0.3f);
 		p->SetWorldScale(0.3f);
 		p->SetDamage(7);
 		projectiles.push_back(p);
@@ -121,7 +121,7 @@ std::vector<Projectile*> FirePlayer::MediumAttack()
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 350.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 10.0f, 10.0f));
-		p->SetStunTime(1.3f);
+		p->SetStunTime(0.7f);
 		p->SetWorldScale(0.3f);
 		p->SetDamage(8);
 		projectiles.push_back(p);
@@ -134,7 +134,7 @@ std::vector<Projectile*> FirePlayer::MediumAttack()
 
 		//first projectile shoots one that curves right, but it starts a little to the left
 		mediumComboPosition++;
-		mediumComboTimer = 0.25f;
+		mediumComboTimer = 0.5f;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x - collisionComponent->GetBoundingBox().r.x / 1.5f * GetWorldScale().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
@@ -143,7 +143,7 @@ std::vector<Projectile*> FirePlayer::MediumAttack()
 		p->SetImpulseForce(glm::vec3(-10.0f, 0.0f, 150.0f));
 		p->SetActingForce(glm::vec3(1.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 5.0f));
-		p->SetStunTime(1.3f);
+		p->SetStunTime(0.4f);
 		p->SetWorldScale(0.3f);
 		p->SetDamage(7);
 		projectiles.push_back(p);
@@ -156,7 +156,7 @@ std::vector<Projectile*> FirePlayer::MediumAttack()
 		p->SetImpulseForce(glm::vec3(10.0f, 0.0f, 150.0f));
 		p->SetActingForce(glm::vec3(-1.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 5.0f));
-		p->SetStunTime(1.3f);
+		p->SetStunTime(0.4f);
 		p->SetWorldScale(0.3f);
 		p->SetDamage(7);
 		projectiles.push_back(p);
@@ -179,7 +179,7 @@ std::vector<Projectile*> FirePlayer::MediumAttack()
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 150.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 120.0f, 10.0f));
-		p->SetStunTime(1.3f);
+		p->SetStunTime(0.8f);
 		p->SetWorldScale(0.3f);
 		p->SetDamage(7);
 		projectiles.push_back(p);
@@ -193,7 +193,7 @@ std::vector<Projectile*> FirePlayer::MediumAttack()
 		p->SetFirstDelay(0.4f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.5f), glm::vec3(0.5f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p->SetActingForce(glm::vec3(0.0f, -15.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, -200.0f, 15.0f));
-		p->SetStunTime(1.3f);
+		p->SetStunTime(1.0f);
 		p->SetDamage(10);
 		projectiles.push_back(p);
 		return projectiles;
@@ -209,7 +209,7 @@ std::vector<Projectile*> FirePlayer::HeavyAttack()
 	if (playerState == NORMAL && heavyComboPosition == 0 && heavyComboTimer <= 0)
 	{
 		heavyComboPosition++;
-		heavyComboTimer = 0.5f;
+		heavyComboTimer = 1.0f;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + collisionComponent->GetBoundingBox().r.y / 1.5f * GetWorldScale().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
@@ -217,7 +217,7 @@ std::vector<Projectile*> FirePlayer::HeavyAttack()
 		p->SetElement(ENGINE::PROJECTILE_ELEMENT::FIRE);
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 450.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 150.0f, 0.0f));
-		p->SetStunTime(1.5f);
+		p->SetStunTime(1.0f);
 		p->SetWorldScale(0.8f);
 		p->SetDamage(14);
 
@@ -229,7 +229,7 @@ std::vector<Projectile*> FirePlayer::HeavyAttack()
 	{
 		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 0);
 		heavyComboPosition++;
-		heavyComboTimer = 0.5f;
+		heavyComboTimer = 1.0f;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + collisionComponent->GetBoundingBox().r.y / 1.5f * GetWorldScale().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
 			targetAngle, dir);
@@ -237,7 +237,7 @@ std::vector<Projectile*> FirePlayer::HeavyAttack()
 		p->SetElement(ENGINE::PROJECTILE_ELEMENT::FIRE);
 		p->SetImpulseForce(glm::vec3(0.0f, 100.0f, 450.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 0.0f));
-		p->SetStunTime(1.5f);
+		p->SetStunTime(1.0f);
 		p->SetWorldScale(0.8f);
 		p->SetDamage(14);
 
@@ -256,7 +256,7 @@ std::vector<Projectile*> FirePlayer::HeavyAttack()
 		p->SetElement(ENGINE::PROJECTILE_ELEMENT::FIRE);
 		p->SetImpulseForce(glm::vec3(0.0f, 150.0f, 450.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 0.0f));
-		p->SetStunTime(1.5f);
+		p->SetStunTime(1.0f);
 		p->SetWorldScale(0.8f);
 		p->SetDamage(14);
 
@@ -287,7 +287,7 @@ std::vector<Projectile*> FirePlayer::SpecialAttack()
 		p->SetImpulseForce(glm::vec3(0.0f, -60.0f, 200.0f));
 		p->SetFirstDelay(1.5f, glm::vec3(0.0f, 3.0f, 0.0f), glm::vec3(0.5f), glm::vec3(2.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 50.0f));
-		p->SetStunTime(4.5f);
+		p->SetStunTime(3.5f);
 		p->SetDamage(90);
 		p->SetMesh(PROJECTILE_MESH::METEOR);
 
@@ -396,7 +396,7 @@ std::vector<Projectile*> FirePlayer::SpecialAttack()
 		p->SetSecondDelay(10000.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.3f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p->SetActingForce(glm::vec3(0.0f, -2.5f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, -200.0f, 15.0f));
-		p->SetStunTime(1.3f);
+		p->SetStunTime(1.0f);
 		p->SetDamage(15);
 
 		tempSpecialProjs.push_back(p);

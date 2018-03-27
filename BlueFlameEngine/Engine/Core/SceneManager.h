@@ -4,6 +4,7 @@
 
 #include "../Rendering/Renderer.h"
 #include "../Rendering/UIRenderer.h"
+#include "../Debuging/Settings.h"
 #include "DefaultScene.h"
 
 namespace ENGINE {

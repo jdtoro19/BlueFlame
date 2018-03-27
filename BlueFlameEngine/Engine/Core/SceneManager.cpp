@@ -34,6 +34,13 @@ void SceneManager::Initialize(Window* w) {
 
 	cout << "Default scene added" << endl;
 	SwitchScene(new DefaultScene());
+
+	// Load settings for text file
+	resolutionScale = Settings::getInstance()->resolutionScale;
+	renderer->EnableBloom(Settings::getInstance()->useBloom);	
+	ShowFPS(Settings::getInstance()->showFPS);
+	EnableFullscreen(Settings::getInstance()->fullscreen);
+
 	loading = false;
 }
 

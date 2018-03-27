@@ -1,8 +1,10 @@
-﻿  Cube.cpp
-  Generating Code...
-  Compiling...
-  Projectile.cpp
-  Generating Code...
+﻿  SceneManager.cpp
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(39): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(81): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(88): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(88): warning C4244: 'argument': conversion from 'float' to 'GLint', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(97): warning C4244: 'argument': conversion from 'float' to 'GLsizei', possible loss of data
+c:\users\juan toro\documents\blueflame\blueflameengine\engine\core\scenemanager.cpp(428): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
 SDL2_image.lib(SDL2_image.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
 SDL2_image.lib(SDL2_image.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
 SDL2_mixer.lib(SDL2_mixer.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored

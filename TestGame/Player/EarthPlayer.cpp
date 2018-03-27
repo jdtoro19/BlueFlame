@@ -56,7 +56,7 @@ std::vector<Projectile*> EarthPlayer::LightAttack()
 		p->SetImpulseForce(glm::vec3(0.0f, 100.0f, 200.0f));
 		p->SetActingForce(glm::vec3(0.0f, -5.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 15.0f));
-		p->SetStunTime(1.0f);
+		p->SetStunTime(0.4f);
 		p->SetWorldScale(0.8f);
 		p->SetDamage(5);
 
@@ -83,7 +83,7 @@ std::vector<Projectile*> EarthPlayer::MediumAttack()
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, -20.0f, 15.0f));
 		p->SetWorldScale(0.5f);
-		p->SetStunTime(1.8f);
+		p->SetStunTime(0.8f);
 		p->SetDamage(6);
 		proj.push_back(p);
 		return proj;
@@ -98,7 +98,7 @@ std::vector<Projectile*> EarthPlayer::MediumAttack()
 		p->SetImpulseForce(glm::vec3(0.0f, -200.0f, 300.0f));
 		p->SetActingForce(glm::vec3(0.0f, 10.0f, -7.5f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 150.0f, -10.0f));
-		p->SetStunTime(2.0f);
+		p->SetStunTime(0.8f);
 		p->SetWorldScale(0.5f);
 		p->SetDamage(10);
 		p->SetLifetime(0.8);
@@ -124,7 +124,7 @@ std::vector<Projectile*> EarthPlayer::MediumAttack()
 		p->SetFirstDelay(0.4f, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(1.0f), glm::vec3(1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, -200.0f, 15.0f));
-		p->SetStunTime(1.0f);
+		p->SetStunTime(0.8f);
 		p->SetDamage(10);
 		proj.push_back(p);
 		return proj;
@@ -139,7 +139,7 @@ std::vector<Projectile*> EarthPlayer::HeavyAttack()
 	if (playerState == NORMAL && heavyComboPosition == 0 && heavyComboTimer <= 0)
 	{
 		heavyComboPosition++;
-		heavyComboTimer = 0.5f;
+		heavyComboTimer = 1.2f;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x + 0.8, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
 
@@ -148,7 +148,7 @@ std::vector<Projectile*> EarthPlayer::HeavyAttack()
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 200.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 20.0f));
-		p->SetStunTime(2.0f);
+		p->SetStunTime(1.0);
 		p->SetWorldScale(glm::vec3(1.5f, 0.5f, 0.25f));
 		p->SetDamage(12);
 
@@ -160,7 +160,7 @@ std::vector<Projectile*> EarthPlayer::HeavyAttack()
 	{
 		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 2);
 		heavyComboPosition++;
-		heavyComboTimer = 0.5f;
+		heavyComboTimer = 1.2f;
 
 		Projectile* p = new Projectile(glm::vec3
 			(GetWorldPosition().x - 0.8, GetWorldPosition().y, GetWorldPosition().z -
@@ -171,7 +171,7 @@ std::vector<Projectile*> EarthPlayer::HeavyAttack()
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 200.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 20.0f));
-		p->SetStunTime(2.0f);
+		p->SetStunTime(1.0f);
 		p->SetWorldScale(glm::vec3(1.5f, 0.5f, 0.25f));
 		p->SetDamage(12);
 
@@ -305,7 +305,7 @@ Projectile* EarthPlayer::smallRock(float offset, float xxx) {
 	p->SetImpulseForce(glm::vec3(xxx, 100.0f, 180.0f));
 	p->SetActingForce(glm::vec3(0.0f, -5.0f, 0.0f));
 	p->SetKnockbackForce(glm::vec3(0.0f, 5.0f, 20.0f));
-	p->SetStunTime(1.2f);
+	p->SetStunTime(0.3f);
 	p->SetWorldScale(0.35f);
 	p->SetDamage(3);
 	p->SetElement(PROJECTILE_ELEMENT::EARTH);
@@ -336,7 +336,7 @@ Projectile* EarthPlayer::stalagmite(float offset, float delay) {
 	p->SetActingForce(glm::vec3(0.0f, 5.0f, 0.0f));
 	p->SetFirstDelay(delay, glm::vec3(0), glm::vec3(0.35f), glm::vec3(0.35f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 	p->SetKnockbackForce(glm::vec3(0.0f, 30.0f, 25.0f));
-	p->SetStunTime(1.8f);
+	p->SetStunTime(1.0f);
 	p->SetLifetime(delay + 0.5f);
 	p->SetElement(PROJECTILE_ELEMENT::EARTH);
 	p->SetStrength(PROJECTILE_STRENGTH::SPECIAL);

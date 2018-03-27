@@ -19,9 +19,9 @@
 800
 640
 +Use Bloom effects? (1 for true, 0 for false)
-0
-+Show FPS counter in game? (1 for true, 0 for false)
 1
++Show FPS counter in game? (1 for true, 0 for false)
+0
 +Resolution Scale (goes from 0 to 1)
-1.000000
+1
 ++++++++++++++++++++++++++++++++++++
