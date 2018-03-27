@@ -1,14 +1,20 @@
-﻿  CharacterSelectScene.cpp
+﻿  TvTGameScene.cpp
 c:\users\juan toro\documents\blueflame\testgame\player\player.h(100): warning C4553: '==': operator has no effect; did you intend '='?
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(305): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(311): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(364): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\tvtgamescene.cpp(317): warning C4018: '<': signed/unsigned mismatch
+  CharacterSelectScene.cpp
+c:\users\juan toro\documents\blueflame\testgame\player\player.h(100): warning C4553: '==': operator has no effect; did you intend '='?
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(306): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(312): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(365): warning C4018: '<': signed/unsigned mismatch
 c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(435): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(450): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(564): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(604): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(704): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(779): warning C4018: '<': signed/unsigned mismatch
-c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(801): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(451): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(565): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(605): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(705): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(780): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\characterselectscene.cpp(802): warning C4018: '<': signed/unsigned mismatch
+  WindPlayer.cpp
+c:\users\juan toro\documents\blueflame\testgame\player\player.h(100): warning C4553: '==': operator has no effect; did you intend '='?
+  Generating Code...
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.exe
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.pdb (Partial PDB)

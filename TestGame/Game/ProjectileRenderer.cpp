@@ -7,6 +7,9 @@ ProjectileRenderer::ProjectileRenderer() {
 	cubeMesh = new RenderComponent();
 	cubeMesh->SetRenderType(RenderComponent::Render_Type::CUBE);
 
+	meteor = new Model("Resources/Models/Projectiles/Fire/Projectile_Meteor_0001.obj");
+	meteor->SetWorldScale(0.025f);
+
 	projectileShader = new Shader("Shaders/model.vs", "Shaders/model.fs");
 	shader = BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager()->put(std::string("projectile"), projectileShader);
 }
@@ -32,9 +35,18 @@ void ProjectileRenderer::Render(Shader* shader, const double _interpolation) {
 		if (projectiles.at(i)->firstRender == true) {
 			interpolatedMatrix = projectiles.at(i)->GetWorldModelMatrix();
 		}
-
-		shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix());
-		cubeMesh->Render(shader);
+		
+		if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::CUBE)
+		{
+			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix());
+			cubeMesh->Render(shader);
+		}
+		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::METEOR)
+		{
+			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() * 
+							meteor->GetWorldModelMatrix() * meteor->GetLocalModelMatrix());
+			meteor->model->Render(shader);
+		}
 	}
 	for (unsigned int i = 0; i < spawnedProjectiles.size(); ++i) {
 

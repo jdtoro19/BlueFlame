@@ -5,6 +5,7 @@
 #include <BlueFlameEngine\Engine\Core\RenderComponent.h>
 #include <BlueFlameEngine\Engine\Core\GameObject.h>
 #include <BlueFlameEngine\Engine\Rendering\3D\Projectile.h>
+#include <BlueFlameEngine\Engine\Rendering\3D\Model.h>
 #include <BlueFlameEngine\Engine\BFEngine.h>
 
 using namespace ENGINE;
@@ -32,6 +33,7 @@ namespace GAME {
 
 		// The mesh to be used for rendering 
 		RenderComponent* cubeMesh;
+		Model* meteor;
 		// List of projectiles in the scene
 		std::vector<Projectile*> projectiles;
 		std::vector<Projectile*> spawnedProjectiles;

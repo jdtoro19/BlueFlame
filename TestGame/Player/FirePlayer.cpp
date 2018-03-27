@@ -289,6 +289,7 @@ std::vector<Projectile*> FirePlayer::SpecialAttack()
 		p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 50.0f));
 		p->SetStunTime(4.5f);
 		p->SetDamage(90);
+		p->SetMesh(PROJECTILE_MESH::METEOR);
 
 		projectiles.push_back(p);
 		return projectiles;

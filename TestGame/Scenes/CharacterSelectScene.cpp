@@ -51,6 +51,7 @@ bool CharacterSelectScene::Initialize()
 		std::cout << "BGM could not load" << std::endl;
 	}
 	bgm->Play(-1);
+	bgm->SetVolume(100);
 
 	// UI
 	titleText = new TextUI();
@@ -430,12 +431,12 @@ void CharacterSelectScene::Update(const float deltaTime)
 				}
 			}
 		}
-	}
-	//handles a, b, start
-	for (int i = 0; i < crosshairList.size(); i++)
-	{
-		HandleNetworkEvents(i);
-	}
+		//handles a, b, start
+		for (int i = 0; i < crosshairList.size(); i++)
+		{
+			HandleNetworkEvents(i);
+		}
+	}	
 	//moved below to help
 	if (!loadingCD.checkOffCD() && loadingCD.secondsLeft() <= 1)
 	{

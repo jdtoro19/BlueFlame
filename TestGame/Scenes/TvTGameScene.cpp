@@ -312,6 +312,39 @@ void TvTGameScene::Update(const float deltaTime)
 				}
 			}
 		}
+
+		//handles a, b, start
+		for (int i = 0; i < playerList.size(); i++)
+		{
+			int buttonPressed = 8; //back button
+			if (playerList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) != playerList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed)) {
+				playerList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed) = playerList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed);
+
+				if (playerList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) == 1) {
+					if (gameManager->IsGameOver()) {
+						Mix_HaltChannel(playerList[0]->dialogue.channel);
+						Mix_HaltChannel(playerList[1]->dialogue.channel);
+						Mix_HaltChannel(playerList[2]->dialogue.channel);
+						Mix_HaltChannel(playerList[3]->dialogue.channel);
+						InputManager::GetInstance()->ClearControllers();
+						InputManager::GetInstance()->initalizeControllers();
+						sceneManager->controllers.clear();
+						sceneManager->saveData.clear();
+						sceneManager->SwitchScene(new CharacterSelectScene());
+					}
+				}
+			}
+			buttonPressed = 14; //start button
+			if (playerList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) != playerList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed)) {
+				playerList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed) = playerList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed);
+
+				if (playerList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) == 1) {
+					if (gameManager->IsGameOver() && gameManager->canContinue) {
+						Restart();
+					}
+				}
+			}
+		}
 	}
 
 	if (spectator && !playingIntro)
@@ -528,7 +561,7 @@ void TvTGameScene::CameraMove(ENGINE::Camera_Movement direction, float yaw, floa
 
 void TvTGameScene::PlayIntro()
 {
-	bgm->SetVolume(127);
+	bgm->SetVolume(100);
 	if (playAudio) {
 		bgm->Play(-1);
 		playAudio = false;

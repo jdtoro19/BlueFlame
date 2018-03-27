@@ -634,13 +634,15 @@ void Player::Stun(float stunTime) {
 }
 
 void Player::Block() {
-	if (shieldHealth > 0) {
-		playerState = BLOCK;
+	if (playerState == PLAYERSTATES::NORMAL) {
+		if (shieldHealth > 0) {
+			playerState = BLOCK;
+		}
+		else if (shieldHealth <= 0) {
+			playerState = NORMAL;
+		}
+		ResetModel();
 	}
-	else if (shieldHealth <= 0) {
-		playerState = NORMAL;
-	}
-	ResetModel();
 }
 
 void Player::StopBlock() {
