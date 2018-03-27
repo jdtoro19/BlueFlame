@@ -53,17 +53,17 @@ Resources\Audio\KAL\KAL_HOWHO-NGUEGH.wav
 Resources\Audio\KAL\KAL_HOWDIDTHISHAPPEN.wav
 Resources\Audio\KAL\KAL_THISCANTBE.wav
 Resources\Audio\KAL\KAL_MYFUELHASRUNOUT.wav
-=10.	Interaction
-Resources\Audio\KAL\KAL_FIGHTWITHMEFRIEND.wav
-Resources\Audio\KAL\KAL_LETSMAKETHISAWINFRIEND.wav
-=11.	Alex
+=10.	Alex
 Resources\Audio\KAL\KAL_IADMIREYOURENTHUSIASMREDO.wav
-=12.	Flint
+=11.	Flint
 Resources\Audio\KAL\KAL_ELNINOLETSMAKETHISAWIN.wav
 Resources\Audio\KAL\KAL_ILAVAYOUALOT2.wav
-=13.	Jack
+=12.	Jack
 Resources\Audio\KAL\KAL_KEEPYOURDISTANCEFRIEND.wav
 Resources\Audio\KAL\KAL_ANUNLIKELYDUO.wav
+=13.	Kal
+Resources\Audio\KAL\KAL_FIGHTWITHMEFRIEND.wav
+Resources\Audio\KAL\KAL_LETSMAKETHISAWINFRIEND.wav
 =14.	Oki
 Resources\Audio\KAL\KAL_FUELMEAIR.wav
 Resources\Audio\KAL\KAL_FIRESPREADREDO.wav

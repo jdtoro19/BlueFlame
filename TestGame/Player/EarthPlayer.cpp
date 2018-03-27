@@ -12,14 +12,14 @@ EarthPlayer::EarthPlayer() {
 	HeavyCD = Cooldown(5.0);
 	LightCD = Cooldown(0.4);
 	MediumCD = Cooldown(3.0);
-	specialMeter = 0;
 
 	shootEffect = new ParticleSystem(BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager(), glm::vec3(0.8, 0.5f, 0.3f));
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(shootEffect);
 
-	dialogue = PlayerDialogue();
+	dialogue = PlayerDialogue(2);
 	dialogue.LoadPlayerDialogue("Resources/Audio/FlintDamascusAudio.txt");
-	dialogue.playRandomFromOtherState(dialogue.MatchStart, true);
+
+	SetStats();
 }
 
 EarthPlayer::~EarthPlayer() {
@@ -289,11 +289,9 @@ std::vector<Projectile*> EarthPlayer::SpecialAttack()
 
 void EarthPlayer::InheritedUpdate(const float deltaTime)
 {
-	specialMeter++;
 }
 void EarthPlayer::InheritedHandleEvents(SDL_Event events)
 {
-
 }
 void EarthPlayer::InheritedHandleStates(const Uint8 *state)
 {

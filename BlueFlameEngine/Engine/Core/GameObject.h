@@ -97,6 +97,10 @@ namespace ENGINE {
 		// To be rendered
 		bool canRender = true;
 
+		// Checks if first render of the object
+		// Used for interpolation
+		bool firstRender = true;
+
 		// Loop functions
 		virtual void Update(const float deltaTime);
 		virtual void UpdateState();

@@ -90,7 +90,7 @@ void ParticleSystem::Update(const float deltaTime)
 
 void ParticleSystem::Render(Shader* shader, const double _interpolation)
 {
-	if (canRender) {
+	if (canRender && time != lifeTime) {
 		if (mesh != nullptr) {
 			glPointSize(size);
 			shader->Use();

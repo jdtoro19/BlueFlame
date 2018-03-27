@@ -13,29 +13,24 @@ IcePlayer::IcePlayer() {
 	LightCD = Cooldown(0.4);
 	MediumCD = Cooldown(1.5);
 	moveWhileShooting = true;
-	SetStats();
 
 	shootEffect = new ParticleSystem(BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager(), glm::vec3(0.4f, 0.7f, 1.0f));
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(shootEffect);
 
-	dialogue = PlayerDialogue();
-	dialogue.LoadPlayerDialogue("Resources/Audio/OkiCaeliAudio.txt");
+	dialogue = PlayerDialogue(7);
+	dialogue.LoadPlayerDialogue("Resources/Audio/JackColeAudio.txt");
+
+	SetStats();
 }
 
 IcePlayer::~IcePlayer() {
 
 }
 
-void IcePlayer::SetStats() {
-	shieldHealth = maxHealth;
-	moveSpeed = 1.0f;
-	specialMeter = 0;
-}
-
 std::vector<Projectile*> IcePlayer::LightAttack()
 {
 	std::vector<Projectile*> projectiles;
-	if (lightComboTimer <= 0.0f && lightComboPosition == 0 && playerState != BLOCK && playerState != STUN) {
+	if (playerState == NORMAL && lightComboTimer <= 0.0f && lightComboPosition == 0 && playerState != BLOCK && playerState != STUN) {
 
 		lightComboTimer = 0.5f;
 		lightComboPosition++;
@@ -73,27 +68,29 @@ std::vector<Projectile*> IcePlayer::LightAttack()
 		lightComboTimer = 1.3f;
 		lightComboPosition++;
 
-		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z - 0.5f * dir), targetAngle, dir);
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
 		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 70.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 20.0f));
 		p->SetFirstDelay(0.15f, glm::vec3(0.5f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.25f, 0.25f, 0.25f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p->SetSecondDelay(0.15f, glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.75f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p->SetDamage(2);
-		p->SetStunTime(0.3f);
+		p->SetStunTime(0.5f);
 		projectiles.push_back(p);
 
-		Projectile* p1 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z - 0.5f * dir), targetAngle, dir);
+		Projectile* p1 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
 		p1->SetImpulseForce(glm::vec3(0.0f, 0.0f, 70.0f));
 		p1->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p1->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 20.0f));
 		p1->SetFirstDelay(0.15f, glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.25f, 0.25f, 0.25f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p1->SetSecondDelay(0.15f, glm::vec3(0.5f, 0.0f, 0.0f), glm::vec3(0.0f, 0.0f, 0.75f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p1->SetDamage(2);
-		p1->SetStunTime(0.3f);
+		p1->SetStunTime(0.5f);
 		p1->SetClipping(YES);
 		p1->SetElement(ICE);
 		projectiles.push_back(p1);
+
+		dialogue.sometimesPlayRandomFromOtherState(PlayerDialogue::RegularProjectile, 2, false);
 	}
 
 	return projectiles;
@@ -102,7 +99,7 @@ std::vector<Projectile*> IcePlayer::MediumAttack()
 {
 	std::vector<Projectile*> projectiles;
 	if (MediumCD.checkOffCD()) {
-		if (mediumComboPosition == 0 && playerState != BLOCK && playerState != STUN) {
+		if (playerState == NORMAL && mediumComboPosition == 0 && playerState != BLOCK && playerState != STUN) {
 
 			Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
 			p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 100.0f));
@@ -111,6 +108,7 @@ std::vector<Projectile*> IcePlayer::MediumAttack()
 			p->SetFirstDelay(0.2f, glm::vec3(0.0f, -0.7f, 0.5f), glm::vec3(0.5f, 0.25f, 0.5f), glm::vec3(1.5f, 0.5f, 0.75f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 			p->SetClipping(YES_PLAYER);
 			p->SetDamage(10);
+			p->SetStunTime(1.0f);
 			p->SetElement(ICE);
 			projectiles.push_back(p);
 
@@ -120,6 +118,8 @@ std::vector<Projectile*> IcePlayer::MediumAttack()
 			movementCD.setNewDuration(1.5f);
 			movementCD.startCD();
 
+			dialogue.sometimesPlayRandomFromOtherState(PlayerDialogue::RegularProjectile, 2, false);
+
 		}
 		else if (mediumComboPosition == 1 && playerState != BLOCK && playerState != STUN) {
 			Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y - 0.5f, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
@@ -127,16 +127,18 @@ std::vector<Projectile*> IcePlayer::MediumAttack()
 			p->SetActingForce(glm::vec3(0.0f, -4.0f, 0.0f));
 			p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 20.0f));
 			p->SetFirstDelay(0.5f, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(0.3f, 0.3f, 0.3f), glm::vec3(0.9f, 0.9f, 0.9f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-			p->SetStunTime(0.5f);
+			p->SetStunTime(0.7f);
 			p->SetClipping(YES);
 			p->SetDamage(8);
 			p->SetElement(ICE);
 			projectiles.push_back(p);
 			mediumComboPosition++;
 
-			mediumComboTimer = 0.75f;
+			mediumComboTimer = 1.0f;
 
 			MediumCD.startCD();
+
+			dialogue.sometimesPlayRandomFromOtherState(PlayerDialogue::RegularProjectile, 2, false);
 		}
 	}
 
@@ -146,7 +148,7 @@ std::vector<Projectile*> IcePlayer::HeavyAttack()
 {
 	std::vector<Projectile*> projectiles;
 
-	if (heavyComboTimer <= 0  && heavyComboPosition == 0 && playerState != BLOCK && playerState != STUN) {
+	if (playerState == NORMAL && heavyComboTimer <= 0 && heavyComboPosition == 0 && playerState != BLOCK && playerState != STUN) {
 
 		heavyComboTimer = 2.0f;
 		heavyComboPosition++;
@@ -160,14 +162,17 @@ std::vector<Projectile*> IcePlayer::HeavyAttack()
 		p->SetDamage(14);
 		p->SetClipping(YES_PLAYER_PROJECTILE);
 		p->SetElement(ICE);
-		p->SetStunTime(1.0f);
+		p->SetStunTime(1.5f);
 		p->SetLifetime(4.0f);
 		projectiles.push_back(p);
 
 		movementCD.setNewDuration(0.7f);
 		movementCD.startCD();
 
-	} if (heavyComboTimer <= 0 && heavyComboPosition == 1 && playerState != BLOCK && playerState != STUN) {
+		dialogue.sometimesPlayRandomFromOtherState(PlayerDialogue::RegularProjectile, 2, false);
+	}
+
+	if (playerState == NORMAL && heavyComboTimer <= 0 && heavyComboPosition == 1 && playerState != BLOCK && playerState != STUN) {
 
 		heavyComboTimer = 2.0f;
 		heavyComboPosition = 0;
@@ -181,12 +186,14 @@ std::vector<Projectile*> IcePlayer::HeavyAttack()
 		p->SetDamage(14);
 		p->SetClipping(YES_PLAYER_PROJECTILE);
 		p->SetElement(ICE);
-		p->SetStunTime(1.0f);
+		p->SetStunTime(1.5f);
 		p->SetLifetime(4.0f);
 		projectiles.push_back(p);
 
 		movementCD.setNewDuration(0.7f);
 		movementCD.startCD();
+
+		dialogue.sometimesPlayRandomFromOtherState(PlayerDialogue::RegularProjectile, 2, false);
 	}
 
 	return projectiles;
@@ -194,7 +201,7 @@ std::vector<Projectile*> IcePlayer::HeavyAttack()
 std::vector<Projectile*> IcePlayer::SpecialAttack()
 {
 	std::vector<Projectile*> projectiles;
-	if (mediumComboPosition == 2 && specialMeter >= 35) {
+	if (specialComboTimer <= 0 && mediumComboPosition == 2 && specialMeter >= 35) {
 
 		specialMeter -= 35;
 		if (specialMeter < 0) {
@@ -207,25 +214,28 @@ std::vector<Projectile*> IcePlayer::SpecialAttack()
 		p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 45.0f));
 		p->SetFirstDelay(0.4f, glm::vec3(0.0f, -0.9f, 0.5f), glm::vec3(0.5f, 0.25f, 0.5f), glm::vec3(2.0f, 1.0f, 1.00f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p->SetClipping(PROJECTILE_CLIP::YES_PLAYER);
+		p->SetStunTime(1.25f);
 		p->SetElement(ICE);
 		p->SetDamage(30);
 		projectiles.push_back(p);
 
-		mediumComboTimer = 0.75f;
+		mediumComboTimer = 1.0f;
+		specialComboTimer = 1.1f;
 
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 0);
 	}
-	else if ((lightComboPosition == 3 || specialComboPosition == 1) && specialMeter >= 75) {
+	else if (lightComboPosition == 3 && specialMeter >= 75) {
 		specialMeter -= 75;
 		if (specialMeter < 0) {
 			specialMeter = 0;
 		}
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 100.0f));
+		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 80.0f));
 		p->SetActingForce(glm::vec3(0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 70.0f));
 		p->SetStunTime(2.0f);
-		p->SetFirstDelay(0.6f, glm::vec3(-2.5f, 0.0f, 0.0f), glm::vec3(0.35f, 0.35f, 0.25f), glm::vec3(0.35f, 0.35f, 1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p->SetFirstDelay(0.4f, glm::vec3(-2.5f, 0.0f, 0.0f), glm::vec3(0.35f, 0.35f, 0.25f), glm::vec3(0.35f, 0.35f, 1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p->SetSecondDelay(0.6f, glm::vec3(0.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p->SetClipping(PROJECTILE_CLIP::YES_PLAYER);
 		p->SetElement(ICE);
@@ -233,11 +243,11 @@ std::vector<Projectile*> IcePlayer::SpecialAttack()
 		projectiles.push_back(p);
 
 		Projectile* p1 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p1->SetImpulseForce(glm::vec3(0.0f, 0.0f, 100.0f));
+		p1->SetImpulseForce(glm::vec3(0.0f, 0.0f, 80.0f));
 		p1->SetActingForce(glm::vec3(0.0f));
 		p1->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 70.0f));
 		p1->SetStunTime(2.0f);
-		p1->SetFirstDelay(0.7f, glm::vec3(2.5f, 0.0f, 0.0f), glm::vec3(0.35f, 0.35f, 0.35f), glm::vec3(0.35f, 0.35f, 1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p1->SetFirstDelay(0.5f, glm::vec3(2.5f, 0.0f, 0.0f), glm::vec3(0.35f, 0.35f, 0.35f), glm::vec3(0.35f, 0.35f, 1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p1->SetSecondDelay(0.5f, glm::vec3(0.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p1->SetClipping(PROJECTILE_CLIP::YES_PLAYER);
 		p1->SetElement(ICE);
@@ -245,11 +255,11 @@ std::vector<Projectile*> IcePlayer::SpecialAttack()
 		projectiles.push_back(p1);
 
 		Projectile* p2 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p2->SetImpulseForce(glm::vec3(0.0f, 0.0f, 100.0f));
+		p2->SetImpulseForce(glm::vec3(0.0f, 0.0f, 80.0f));
 		p2->SetActingForce(glm::vec3(0.0f));
 		p2->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 70.0f));
 		p2->SetStunTime(2.0f);
-		p2->SetFirstDelay(0.8f, glm::vec3(-1.25f, 0.0f, 0.0f), glm::vec3(0.35f, 0.35f, 0.35f), glm::vec3(0.35f, 0.35f, 1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p2->SetFirstDelay(0.6f, glm::vec3(-1.25f, 0.0f, 0.0f), glm::vec3(0.35f, 0.35f, 0.35f), glm::vec3(0.35f, 0.35f, 1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p2->SetSecondDelay(0.4f, glm::vec3(0.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p2->SetClipping(PROJECTILE_CLIP::YES_PLAYER);
 		p2->SetElement(ICE);
@@ -257,11 +267,11 @@ std::vector<Projectile*> IcePlayer::SpecialAttack()
 		projectiles.push_back(p2);
 
 		Projectile* p3 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p3->SetImpulseForce(glm::vec3(0.0f, 0.0f, 100.0f));
+		p3->SetImpulseForce(glm::vec3(0.0f, 0.0f, 80.0f));
 		p3->SetActingForce(glm::vec3(0.0f));
 		p3->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 70.0f));
 		p3->SetStunTime(2.0f);
-		p3->SetFirstDelay(0.9f, glm::vec3(1.25f, 0.0f, 0.0f), glm::vec3(0.35f, 0.35f, 0.35f), glm::vec3(0.35f, 0.35f, 1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p3->SetFirstDelay(0.7f, glm::vec3(1.25f, 0.0f, 0.0f), glm::vec3(0.35f, 0.35f, 0.35f), glm::vec3(0.35f, 0.35f, 1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p3->SetSecondDelay(0.3f, glm::vec3(0.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p3->SetClipping(PROJECTILE_CLIP::YES_PLAYER);
 		p3->SetElement(ICE);
@@ -269,16 +279,18 @@ std::vector<Projectile*> IcePlayer::SpecialAttack()
 		projectiles.push_back(p3);
 
 		Projectile* p4 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p4->SetImpulseForce(glm::vec3(0.0f, 0.0f, 100.0f));
+		p4->SetImpulseForce(glm::vec3(0.0f, 0.0f, 80.0f));
 		p4->SetActingForce(glm::vec3(0.0f));
 		p4->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 70.0f));
 		p4->SetStunTime(2.0f);
-		p4->SetFirstDelay(1.0f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.35f, 0.35f, 0.35f), glm::vec3(0.35f, 0.35f, 1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p4->SetFirstDelay(0.8f, glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.35f, 0.35f, 0.35f), glm::vec3(0.35f, 0.35f, 1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p4->SetSecondDelay(0.2f, glm::vec3(0.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p4->SetClipping(PROJECTILE_CLIP::YES_PLAYER);
 		p4->SetElement(ICE);
 		p4->SetDamage(60);
 		projectiles.push_back(p4);
+
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 1);
 
 		specialComboTimer = 1.3;
 
@@ -286,8 +298,8 @@ std::vector<Projectile*> IcePlayer::SpecialAttack()
 		movementCD.startCD();
 	}
 
-	else if (specialComboTimer <= 0 && lightComboPosition != 3 && mediumComboPosition != 2 && specialMeter >= 20) {
-		specialMeter -= 20;
+	else if (playerState == NORMAL && specialComboTimer <= 0 && lightComboPosition != 3 && mediumComboPosition != 2 && specialMeter >= 25) {
+		specialMeter -= 25;
 		if (specialMeter < 0) {
 			specialMeter = 0;
 		}
@@ -296,10 +308,10 @@ std::vector<Projectile*> IcePlayer::SpecialAttack()
 		p->SetImpulseForce(glm::vec3(0.0f, -2.0f, 0.0f));
 		p->SetActingForce(glm::vec3(0.0f, -4.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f));
-		p->SetFirstDelay(0.5f, glm::vec3(1.0f, 4.0f, 1.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p->SetSecondDelay(0.75f, glm::vec3(-1.0f, 0.0f, 9.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p->SetStunTime(2.5f);
-		p->SetClipping(YES_PLAYER);
+		p->SetFirstDelay(0.75f, glm::vec3(1.0f, 4.0f, 1.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p->SetSecondDelay(1.25f, glm::vec3(-1.0f, 0.0f, 9.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p->SetStunTime(3.0f);
+		p->SetClipping(YES_WALL_PLAYER);
 		p->SetElement(ICE);
 		p->SetDamage(20);
 		projectiles.push_back(p);
@@ -308,10 +320,10 @@ std::vector<Projectile*> IcePlayer::SpecialAttack()
 		p1->SetImpulseForce(glm::vec3(0.0f, -2.0f, 0.0f));
 		p1->SetActingForce(glm::vec3(0.0f, -4.0f, 0.0f));
 		p1->SetKnockbackForce(glm::vec3(0.0f));
-		p1->SetFirstDelay(0.5f, glm::vec3(1.0f, 4.0f, -1.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p1->SetSecondDelay(0.75f, glm::vec3(1.0f, 0.0f, 9.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p1->SetStunTime(2.5f);
-		p1->SetClipping(YES_PLAYER);
+		p1->SetFirstDelay(0.75f, glm::vec3(1.0f, 4.0f, -1.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p1->SetSecondDelay(1.25f, glm::vec3(1.0f, 0.0f, 9.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p1->SetStunTime(3.0f);
+		p1->SetClipping(YES_WALL_PLAYER);
 		p1->SetElement(ICE);
 		p1->SetDamage(20);
 		projectiles.push_back(p1);
@@ -320,10 +332,10 @@ std::vector<Projectile*> IcePlayer::SpecialAttack()
 		p2->SetImpulseForce(glm::vec3(0.0f, -2.0f, 0.0f));
 		p2->SetActingForce(glm::vec3(0.0f, -4.0f, 0.0f));
 		p2->SetKnockbackForce(glm::vec3(0.0f));
-		p2->SetFirstDelay(0.5f, glm::vec3(-1.0f, 4.0f, -1.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p2->SetSecondDelay(0.75f, glm::vec3(1.0f, 0.0f, 7.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p2->SetStunTime(2.5f);
-		p2->SetClipping(YES_PLAYER);
+		p2->SetFirstDelay(0.75f, glm::vec3(-1.0f, 4.0f, -1.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p2->SetSecondDelay(1.25f, glm::vec3(1.0f, 0.0f, 7.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p2->SetStunTime(3.0f);
+		p2->SetClipping(YES_WALL_PLAYER);
 		p2->SetElement(ICE);
 		p2->SetDamage(20);
 		projectiles.push_back(p2);
@@ -332,29 +344,30 @@ std::vector<Projectile*> IcePlayer::SpecialAttack()
 		p3->SetImpulseForce(glm::vec3(0.0f, -2.0f, 0.0f));
 		p3->SetActingForce(glm::vec3(0.0f, -4.0f, 0.0f));
 		p3->SetKnockbackForce(glm::vec3(0.0f));
-		p3->SetFirstDelay(0.5f, glm::vec3(-1.0f, 4.0f, 1.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p3->SetSecondDelay(0.75f, glm::vec3(-1.0f, 0.0f, 7.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p3->SetStunTime(2.5f);
-		p3->SetClipping(YES_PLAYER);
+		p3->SetFirstDelay(0.75f, glm::vec3(-1.0f, 4.0f, 1.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p3->SetSecondDelay(1.25f, glm::vec3(-1.0f, 0.0f, 7.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p3->SetStunTime(3.0f);
+		p3->SetClipping(YES_WALL_PLAYER);
 		p3->SetElement(ICE);
 		p3->SetDamage(20);
 		projectiles.push_back(p3);
 
-		Projectile* p4 = new Projectile(glm::vec3(GetWorldPosition().x , GetWorldPosition().y + 1.0f, GetWorldPosition().z * dir), targetAngle, dir);
+		Projectile* p4 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + 1.0f, GetWorldPosition().z * dir), targetAngle, dir);
 		p4->SetImpulseForce(glm::vec3(0.0f, -2.0f, 0.0f));
 		p4->SetActingForce(glm::vec3(0.0f, -4.0f, 0.0f));
 		p4->SetKnockbackForce(glm::vec3(0.0f));
-		p4->SetFirstDelay(0.5f, glm::vec3(0.0f, 4.0f, 0.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p4->SetSecondDelay(0.75f, glm::vec3(0.0f, 0.0f, 8.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-		p4->SetStunTime(2.5f);
-		p4->SetClipping(YES_PLAYER);
+		p4->SetFirstDelay(0.75f, glm::vec3(0.0f, 4.0f, 0.0f), glm::vec3(0.45f, 1.5f, 0.45f), glm::vec3(0.45f, 1.5f, 0.45f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p4->SetSecondDelay(1.25f, glm::vec3(0.0f, 0.0f, 8.0f), glm::vec3(0.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p4->SetStunTime(3.0f);
+		p4->SetClipping(YES_WALL_PLAYER);
 		p4->SetElement(ICE);
 		p4->SetDamage(20);
 		projectiles.push_back(p4);
 
 		heavyComboPosition = 0;
-		specialComboTimer = 2.0f;
-		specialComboPosition++;
+		specialComboTimer = 1.0f;
+
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 2);
 
 		movementCD.setNewDuration(1.0);
 		movementCD.startCD();

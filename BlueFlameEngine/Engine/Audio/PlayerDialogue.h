@@ -25,15 +25,19 @@ namespace ENGINE {
 			RegularProjectile,
 			SpecialProjectile,
 			Falling,
-			Interaction,
-			Rare,
-			SoundEffects
+			Alex,
+			Flint,
+			Jack,
+			Kal,
+			Oki,
+			Rare
 		};
 
 		void setDialogueState(DIALOGUESTATE d);
 		void playRandomFromCurrentState(bool overrideCD);
 		void playRandomFromOtherState(DIALOGUESTATE d, bool overrideCD);
 		void sometimesPlayRandomFromCurrentState(int percentage, bool overrideCD);
+		void sometimesPlayRandomFromOtherState(DIALOGUESTATE d, int percentage, bool overrideCD);
 		void playSpecifiedFromState(DIALOGUESTATE d, int x);
 		void playIdle();
 		void stopPlaying() { Mix_HaltChannel(channel); };

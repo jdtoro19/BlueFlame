@@ -41,7 +41,7 @@ namespace GAME {
 
 		Announcer announcer;
 
-	private:
+	//private:
 		SceneManager* sceneManager;
 
 		int matchTime;

@@ -9,14 +9,14 @@ FirePlayer::FirePlayer()
 	base->SetWorldScale(0.012f);
 	base->renderComponent->SetColour(0.2f, 0.7f, 0.0f);
 	ring->renderComponent->SetColour(0.7f, 0.2f, 0.1f);
-	specialMeter = 0;
 
 	shootEffect = new ParticleSystem(BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager(), glm::vec3(0.7f, 0.2f, 0.1f));
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(shootEffect);
 
-	dialogue = PlayerDialogue();
+	dialogue = PlayerDialogue(2);
 	dialogue.LoadPlayerDialogue("Resources/Audio/KalOrrAudio.txt");
-	dialogue.playRandomFromOtherState(dialogue.MatchStart, true);
+
+	SetStats();
 }
 
 FirePlayer::~FirePlayer()
@@ -438,8 +438,6 @@ std::vector<Projectile*> FirePlayer::SpecialAttack()
 
 void FirePlayer::InheritedUpdate(const float deltaTime)
 {
-	specialMeter++;
-
 	//stop the player from moving when attacking
 	if (playerState == ATTACK)
 	{

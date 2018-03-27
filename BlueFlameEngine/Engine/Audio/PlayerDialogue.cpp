@@ -41,7 +41,7 @@ void PlayerDialogue::playRandomFromCurrentState(bool overrideCD) {
 
 void PlayerDialogue::playRandomFromOtherState(DIALOGUESTATE d, bool overrideCD) {
 	if (overrideCD) { //if there's a cooldown, makes sure that enough time has passed to talk again
-									  //dialogueOptions.at(d)->PlayRandom();
+					  //dialogueOptions.at(d)->PlayRandom();
 		idleTimer.startCD();
 		dialogueOptions.at(d)->SetChannel(channel);
 		dialogueOptions.at(d)->PlayRandom();
@@ -58,6 +58,13 @@ void PlayerDialogue::playRandomFromOtherState(DIALOGUESTATE d, bool overrideCD) 
 void PlayerDialogue::sometimesPlayRandomFromCurrentState(int percentage, bool overrideCD) {
 	if (Clock::GetInstance()->generateRandomNumber() > percentage) {
 		playRandomFromCurrentState(overrideCD);
+		idleTimer.startCD();
+	}
+}
+
+void PlayerDialogue::sometimesPlayRandomFromOtherState(DIALOGUESTATE d, int percentage, bool overrideCD) {
+	if (Clock::GetInstance()->generateRandomNumber() > percentage) {
+		playRandomFromOtherState(d, overrideCD);
 		idleTimer.startCD();
 	}
 }

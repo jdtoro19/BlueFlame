@@ -267,6 +267,12 @@ bool CharacterSelectScene::Initialize()
 	loadingCD = Cooldown(3.0f);
 	cameraTimer = 0.4f;
 
+	//Audio
+	announcer = new Announcer;
+	announcer->LoadDialogue("Resources/Audio/AnnouncerAudio.txt");
+	announcer->playSpecifiedFromState(Announcer::CharacterSelect, 3);
+	announcer->channel = -1;
+
 	//everything loaded fine
 	return true;
 }
@@ -309,10 +315,10 @@ void CharacterSelectScene::Update(const float deltaTime)
 
 	//check to see that all players have selected
 	if (loading == false &&
-		crosshair1->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE)// &&
-		//crosshair2->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
-		//crosshair3->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
-		//crosshair4->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE)
+		crosshair1->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
+		crosshair2->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
+		crosshair3->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
+		crosshair4->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE)
 	{
 		ready = true;
 		sceneManager->GetRenderer()->EnableInvertedColours(true);
@@ -324,13 +330,10 @@ void CharacterSelectScene::Update(const float deltaTime)
 		start->SetVisible(false);
 	}
 
-	if (!loadingCD.checkOffCD() && loadingCD.secondsLeft() <= 1)
-	{
-		sceneManager->SwitchScene(new TvTGameScene());
-	}
+
 
 	//check for networked inputs and pass them to the appropriate player
-	if (Settings::getInstance()->networkedGame) {
+	if (Settings::getInstance()->networkedGame && !loading) {
 		if (Settings::getInstance()->isServer) {
 			if (!Settings::getInstance()->spectatorMode) {
 				std::string dataChunk = crosshair1->GetPlayerInput()->ReturnJoystickStateForNetworking() + crosshair2->GetPlayerInput()->ReturnJoystickStateForNetworking();
@@ -339,7 +342,7 @@ void CharacterSelectScene::Update(const float deltaTime)
 			}
 			else {
 				std::string dataChunk = crosshair1->GetPlayerInput()->ReturnJoystickStateForNetworking() + crosshair2->GetPlayerInput()->ReturnJoystickStateForNetworking() + crosshair3->GetPlayerInput()->ReturnJoystickStateForNetworking() + crosshair4->GetPlayerInput()->ReturnJoystickStateForNetworking();
-				//std::cout << dataChunk << std::endl;
+				std::cout << dataChunk << std::endl;
 				BFEngine::GetInstance()->sendData(dataChunk);
 			}
 		}
@@ -358,6 +361,41 @@ void CharacterSelectScene::Update(const float deltaTime)
 			std::string externalInput = BFEngine::GetInstance()->receiveData();
 			cout << "first set of data received: " << externalInput << endl;
 			if (externalInput != "") {
+				for (int i = 0; i < crosshairList.size(); i++) {
+					sceneManager->controllers.push_back(crosshairList.at(i)->GetPlayerInput()->GetJoystick());
+					if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::ALEX)
+					{
+						sceneManager->saveData.push_back(0);
+					}
+					else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::FLINT)
+					{
+						sceneManager->saveData.push_back(1);
+					}
+					else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::JACK)
+					{
+						sceneManager->saveData.push_back(2);
+					}
+					else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::KAL)
+					{
+						sceneManager->saveData.push_back(3);
+					}
+					else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::OKI)
+					{
+						sceneManager->saveData.push_back(4);
+					}
+					else
+					{
+						sceneManager->saveData.push_back(0);
+					}
+				}
+				loadingCD.startCD();
+				loading = true;
+				loadingScreen->SetVisible(true);
+				sceneManager->GetRenderer()->EnableInvertedColours(false);
+				bgm->Stop();
+				//announcer->playSpecifiedFromState(Announcer::CharacterSelect, 5);
+			}
+			else {
 				if (externalInput.length() >= 70) {
 					//break it into components
 					std::string input1 = externalInput.substr(0, 35);
@@ -392,47 +430,17 @@ void CharacterSelectScene::Update(const float deltaTime)
 				}
 			}
 		}
-		for (int i = 0; i < crosshairList.size(); i++)
-		{
-			if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(14) == 1) {
-				if (ready) {
-					for (int i = 0; i < crosshairList.size(); i++) {
-						sceneManager->controllers.push_back(crosshairList.at(i)->GetPlayerInput()->GetJoystick());
-						if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::ALEX)
-						{
-							sceneManager->saveData.push_back(0);
-						}
-						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::FLINT)
-						{
-							sceneManager->saveData.push_back(1);
-						}
-						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::JACK)
-						{
-							sceneManager->saveData.push_back(2);
-						}
-						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::KAL)
-						{
-							sceneManager->saveData.push_back(3);
-						}
-						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::OKI)
-						{
-							sceneManager->saveData.push_back(4);
-						}
-						else
-						{
-							sceneManager->saveData.push_back(0);
-						}
-					}
-					loadingCD.startCD();
-					loading = true;
-					loadingScreen->SetVisible(true);
-					sceneManager->GetRenderer()->EnableInvertedColours(false);
-					bgm->Stop();
-				}
-			}
-		}
 	}
-
+	//handles a, b, start
+	for (int i = 0; i < crosshairList.size(); i++)
+	{
+		HandleNetworkEvents(i);
+	}
+	//moved below to help
+	if (!loadingCD.checkOffCD() && loadingCD.secondsLeft() <= 1)
+	{
+		sceneManager->SwitchScene(new TvTGameScene());
+	}
 }
 
 void CharacterSelectScene::HandleEvents(SDL_Event events)
@@ -458,6 +466,7 @@ void CharacterSelectScene::HandleEvents(SDL_Event events)
 							if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::ALEX)
 							{
 								//disable movement, disable visibility of crosshair, pass the chartype to crosshair
+								announcer->playRandomFromOtherState(Announcer::CharSelectAlex, true);
 								crosshairList.at(i)->SetCanMove(false);
 								crosshairList.at(i)->SetVisible(false);
 								crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
@@ -473,6 +482,7 @@ void CharacterSelectScene::HandleEvents(SDL_Event events)
 						{
 							if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::FLINT)
 							{
+								announcer->playRandomFromOtherState(Announcer::CharSelectFlint, true);
 								crosshairList.at(i)->SetCanMove(false);
 								crosshairList.at(i)->SetVisible(false);
 								crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
@@ -488,6 +498,7 @@ void CharacterSelectScene::HandleEvents(SDL_Event events)
 						{
 							if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::KAL)
 							{
+								announcer->playRandomFromOtherState(Announcer::CharSelectKal, true);
 								crosshairList.at(i)->SetCanMove(false);
 								crosshairList.at(i)->SetVisible(false);
 								crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
@@ -503,6 +514,7 @@ void CharacterSelectScene::HandleEvents(SDL_Event events)
 						{
 							if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::JACK)
 							{
+								announcer->playRandomFromOtherState(Announcer::CharSelectJack, true);
 								crosshairList.at(i)->SetCanMove(false);
 								crosshairList.at(i)->SetVisible(false);
 								crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
@@ -518,6 +530,7 @@ void CharacterSelectScene::HandleEvents(SDL_Event events)
 						{
 							if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::OKI)
 							{
+								announcer->playRandomFromOtherState(Announcer::CharSelectOki, true);
 								crosshairList.at(i)->SetCanMove(false);
 								crosshairList.at(i)->SetVisible(false);
 								crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
@@ -580,6 +593,7 @@ void CharacterSelectScene::HandleEvents(SDL_Event events)
 					loadingScreen->SetVisible(true);
 					sceneManager->GetRenderer()->EnableInvertedColours(false);
 					bgm->Stop();
+					announcer->playSpecifiedFromState(Announcer::CharacterSelect, 5);
 				}
 				else
 				{
@@ -605,14 +619,157 @@ void CharacterSelectScene::HandleEvents(SDL_Event events)
 	}
 }
 
+void CharacterSelectScene::HandleNetworkEvents(int i)
+{
+	if (!loading) {
+		//first we check where the player is
+		if (champAlexTrix->OnHover(crosshairList.at(i)->GetImage()))
+		{
+			//set player portrait to Alex Type (this sets the alpha portrait and text to visible)
+			portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::ALEX);
+		}
+		else if (champFlintDamascus->OnHover(crosshairList.at(i)->GetImage()))
+		{
+			portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::FLINT);
+		}
+		else if (champKalOrr->OnHover(crosshairList.at(i)->GetImage()))
+		{
+			portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::KAL);
+		}
+		else if (champJackCole->OnHover(crosshairList.at(i)->GetImage()))
+		{
+			portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::JACK);
+		}
+		else if (champOkiCaeli->OnHover(crosshairList.at(i)->GetImage()))
+		{
+			portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::OKI);
+		}
+		else
+		{
+			//if not hovering over any champions, update portrait and text to show nothing and update chartype
+			portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::NONE);
+		}
+		int buttonPressed = 7;
+		if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed)) {
+			crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed) = crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed);
+
+			if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) == 1 && portraitList.at(i)->GetCharType() != PlayerPortrait::CHARTYPE::NONE) { // a button
+
+
+				if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::ALEX)
+				{
+					announcer->playRandomFromOtherState(Announcer::CharSelectAlex, true);
+				}
+				else if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::FLINT)
+				{
+					announcer->playRandomFromOtherState(Announcer::CharSelectFlint, true);
+				}
+				else if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::KAL)
+				{
+					announcer->playRandomFromOtherState(Announcer::CharSelectKal, true);
+				}
+				else if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::JACK)
+				{
+					announcer->playRandomFromOtherState(Announcer::CharSelectJack, true);
+				}
+				else if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::OKI)
+				{
+					announcer->playRandomFromOtherState(Announcer::CharSelectOki, true);
+				}
+				crosshairList.at(i)->SetCanMove(false);
+				crosshairList.at(i)->SetVisible(false);
+				crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
+			}
+		}
+		buttonPressed = 8;
+		if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed)) {
+			crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed) = crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed);
+
+			if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) == 1 && portraitList.at(i)->GetCharType() != PlayerPortrait::CHARTYPE::NONE) { // b button
+
+																																												//if crosshair pressed B, allow movement, set visibility of crosshair to true, set chartype to nothing since its unselected
+				crosshairList.at(i)->SetCanMove(true);
+				crosshairList.at(i)->SetVisible(true);
+				crosshairList.at(i)->SetCharSelected(PlayerPortrait::CHARTYPE::NONE);
+			}
+		}
+
+		buttonPressed = 13; //back button i think
+							//shitty work around for spectator mode sucking
+		if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed)) {
+			crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed) = crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed);
+
+			if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) == 1) {
+				if (ready) {
+					for (int i = 0; i < crosshairList.size(); i++) {
+						sceneManager->controllers.push_back(crosshairList.at(i)->GetPlayerInput()->GetJoystick());
+						if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::ALEX)
+						{
+							sceneManager->saveData.push_back(0);
+						}
+						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::FLINT)
+						{
+							sceneManager->saveData.push_back(1);
+						}
+						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::JACK)
+						{
+							sceneManager->saveData.push_back(2);
+						}
+						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::KAL)
+						{
+							sceneManager->saveData.push_back(3);
+						}
+						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::OKI)
+						{
+							sceneManager->saveData.push_back(4);
+						}
+						else
+						{
+							sceneManager->saveData.push_back(0);
+						}
+					}
+					loadingCD.startCD();
+					loading = true;
+					loadingScreen->SetVisible(true);
+					sceneManager->GetRenderer()->EnableInvertedColours(false);
+					bgm->Stop();
+					announcer->playSpecifiedFromState(Announcer::CharacterSelect, 5);
+				}
+			}
+		}
+
+
+		buttonPressed = 14;
+		if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed)) {
+			crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed) = crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed);
+
+			if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) == 1) {
+				if (ready) {
+
+				}
+				else
+				{
+					crosshairList.at(i)->SetCanMove(true);
+					crosshairList.at(i)->SetEnabled(true);
+					AddUIObject(crosshairList.at(i)->GetImage());
+				}
+			}
+		}
+	}
+}
+
 void CharacterSelectScene::HandleStates(const Uint8 *state)
 {
 	if (state[SDL_SCANCODE_P]) {
 		sceneManager->SwitchScene(new TvTGameScene());
 	}
 
-	if (state[SDL_SCANCODE_X]) {
+	if (state[SDL_SCANCODE_Z]) {
+		InputManager::GetInstance()->ClearControllers();
 		InputManager::GetInstance()->initalizeControllers();
+		sceneManager->controllers.clear();
+		sceneManager->saveData.clear();
+		sceneManager->SwitchScene(new CharacterSelectScene());
 	}
 }
 

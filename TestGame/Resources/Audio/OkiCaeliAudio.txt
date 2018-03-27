@@ -41,13 +41,17 @@ Resources\Audio\OKI\OKI_NOTHINGSTOPSTHEWIND.wav
 Resources\Audio\OKI\OKI_NOTHINGSTOPSTHEWINDFX.wav
 =9.		Falling
 Resources\Audio\OKI\OKI_NOOOOOO.wav
-=10.	Interaction
-Resources\Audio\OKI\OKI_IMQUICKLIKETHEWIND.wav
-Resources\Audio\OKI\OKI_ARENTYOUTOOYOUNG.wav
-Resources\Audio\OKI\OKI_CAREFULIMIGHTPUTYOUOUT.wav
+=10.	Alex
 Resources\Audio\OKI\OKI_YOUREALLYNEEDTOCALMDOWN.wav
+=11.	Flint
+Resources\Audio\OKI\OKI_ARENTYOUYOUNG.wav
+=12.	Jack
 Resources\Audio\OKI\OKI_YOURENOTCOOL.wav
-=11.	Rare
+=13.	Kal
+Resources\Audio\OKI\OKI_CAREFULIMIGHTPUTYOUOUT.wav
+=14.	Oki
+Resources\Audio\OKI\OKI_IMQUICKLIKETHEWIND.wav
+=15.	Rare
 Resources\Audio\OKI\OKI_CHIKA.wav
 Resources\Audio\OKI\OKI_UGKH.wav
 Resources\Audio\OKI\OKI_CRAZYLAUGH.wav

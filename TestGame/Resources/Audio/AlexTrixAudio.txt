@@ -38,15 +38,15 @@ Resources\Audio\ALEX\ALEX_ELECTRICBEAM.wav
 =9.	Falling
 Resources\Audio\ALEX\ALEX_OUH.wav
 Resources\Audio\ALEX\ALEX_OHNO.wav
-=10.	Interaction
+=10.	Alex
 Resources\Audio\ALEX\ALEX_TODAYSANOTHERGOODDAY2.wav
 Resources\Audio\ALEX\ALEX_LETSSHOCKTHEM2.wav
-=11.	Kal
-Resources\Audio\ALEX\ALEX_WHATDIDYOUSAY.wav
-=12.	Flint
+=11.	Flint
 Resources\Audio\ALEX\ALEX_HOWDIDYOUMAKEYOURMECH.wav
 Resources\Audio\ALEX\ALEX_DIDYOURDADMAKETHATFORYOU.wav
-=13.	Jack
+=12.	Jack
 Resources\Audio\ALEX\ALEX_ILIKEYOURGOGGLES.wav
+=13.	Kal
+Resources\Audio\ALEX\ALEX_WHATDIDYOUSAY.wav
 =14.	Oki
 Resources\Audio\ALEX\ALEX_DONTGETMADIFYOULOSE.wav

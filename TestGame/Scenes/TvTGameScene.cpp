@@ -53,6 +53,14 @@ bool TvTGameScene::Initialize()
 	skybox->LoadTextures(faces);
 	skybox->SetShader(skyboxShaderHandle);
 
+	spectatorText = new TextUI();
+	spectatorText->SetFont("Resources/Fonts/ka1.ttf");
+	spectatorText->SetText("Spectator Mode");
+	spectatorText->SetColour(1.0, 1.0f, 1.0f);
+	spectatorText->SetSize(0.5f);
+	spectatorText->SetSpacing(9.0f);
+	spectatorText->SetPosition(50, 80);
+
 	// UI
 	fadeImage = new ImageUI();
 	fadeImage->SetImage("Resources/Textures/blackFILL.png");
@@ -211,20 +219,21 @@ bool TvTGameScene::Initialize()
 	AddUIObject(fadeImage);
 	AddUIObject(roundTextFade);
 	AddUIObject(roundText);
-	//AddObject(particle1);
-	//AddObject(particle2);
-	//AddObject(particle3);
-	//AddObject(particle4);
+	AddUIObject(spectatorText);
+	AddObject(particle1);
+	AddObject(particle2);
+	AddObject(particle3);
+	AddObject(particle4);
 
 	// update phyics list
 	PhysicsEngine::GetInstance()->AddObjectList(objectList);
 
-	cameraCD = Cooldown(4.5f);
+	cameraCD = Cooldown(6.0f);
 	cameraCD.startCD();
 
 	roundCD = Cooldown(0.5f);
 
-	voiceCD = Cooldown(4.5);
+	voiceCD = Cooldown(6.0);
 	voiceCD.startCD();
 
 	return true;
@@ -303,7 +312,22 @@ void TvTGameScene::Update(const float deltaTime)
 				}
 			}
 		}
+	}
 
+	if (spectator && !playingIntro)
+	{
+		sceneManager->EnableSplitscreen(false);
+		gameManager->divider->SetVisible(false);
+		gameManager->end->SetVisible(false);
+		bottomRing->canRender = false;
+		spectatorText->SetVisible(true);
+		cameraList[0]->Position = glm::vec3(7.0f, 5.5f, 0.0f);
+		cameraList[0]->SetRotationY(-180.0f);
+		cameraList[0]->SetRotationX(-50.0f);
+	}
+	else {
+		bottomRing->canRender = true;
+		spectatorText->SetVisible(false);
 	}
 }
 
@@ -485,6 +509,14 @@ void TvTGameScene::HandleStates(const Uint8 *state)
 	if (state[SDL_SCANCODE_SPACE]) {
 		SkipIntro();
 	}
+
+	if (state[SDL_SCANCODE_L]) {
+		spectator = true;
+	}
+
+	if (state[SDL_SCANCODE_K]) {
+		spectator = false;
+	}
 }
 
 void TvTGameScene::CameraMove(ENGINE::Camera_Movement direction, float yaw, float pitch, float speed, int camera)
@@ -502,10 +534,10 @@ void TvTGameScene::PlayIntro()
 		playAudio = false;
 	}
 	
-	if (cameraCD.secondsLeft() > 3) {
+	if (cameraCD.secondsLeft() > 4) {
 		CameraMove(RIGHT, -145.0f, 11.0f, 0.5f, 0);
 	}
-	else if (cameraCD.secondsLeft() > 1.5) {
+	else if (cameraCD.secondsLeft() > 2.0) {
 		if (!cameraSwitch1) {
 			cameraList[0]->Position = glm::vec3(-5.0f, 15.0f, 1.0f);
 			cameraSwitch1 = true;
@@ -557,23 +589,7 @@ void TvTGameScene::PlayIntro()
 		fadeAlpha = 0;
 	}
 
-	if (!player1voice) {
-		player1->dialogue.playRandomFromOtherState(player1->dialogue.Interaction, true);
-		player1voice = true;
-	}
-	if (!player2voice && voiceCD.secondsLeft() < 3.0) {
-		player2->dialogue.playRandomFromOtherState(player2->dialogue.Interaction, true);
-		player2voice = true;
-	}
-
-	if (!player3voice && voiceCD.secondsLeft() < 1.5) {
-		player3->dialogue.playRandomFromOtherState(player3->dialogue.Interaction, true);
-		player3voice = true;
-	}
-	if (!player4voice && voiceCD.secondsLeft() < 0) {
-		player4->dialogue.playRandomFromOtherState(player4->dialogue.Interaction, true);
-		player4voice = true;
-	}
+	PlayInteractions();
 }
 
 void TvTGameScene::SkipIntro()
@@ -913,10 +929,10 @@ void TvTGameScene::Restart()
 	roundTextFade->SetPosition((sceneManager->GetScreenWidth() / 2) - (roundText->GetLength() / 2), sceneManager->GetScreenHeight() / 2);
 	roundTextFade->SetVisible(false);
 
-	cameraCD = Cooldown(4.5);
+	cameraCD = Cooldown(6.0);
 	cameraCD.startCD();
 
-	voiceCD = Cooldown(4.5);
+	voiceCD = Cooldown(6.0);
 	voiceCD.startCD();
 
 	roundCD = Cooldown(0.5);
@@ -937,4 +953,89 @@ void TvTGameScene::Restart()
 	player4voice = false;
 
 	announcerVoice = false;
+}
+
+void TvTGameScene::PlayInteractions()
+{
+	if (!player1voice) {
+		if (sceneManager->saveData.size() != 0) {
+			if (sceneManager->saveData[1] == 0) {
+				player1->dialogue.playRandomFromOtherState(player1->dialogue.Alex, true);
+			}
+			else if (sceneManager->saveData[1] == 1) {
+				player1->dialogue.playRandomFromOtherState(player1->dialogue.Flint, true);
+			}
+			else if (sceneManager->saveData[1] == 2) {
+				player1->dialogue.playRandomFromOtherState(player1->dialogue.Jack, true);
+			}
+			else if (sceneManager->saveData[1] == 3) {
+				player1->dialogue.playRandomFromOtherState(player1->dialogue.Kal, true);
+			}
+			else if (sceneManager->saveData[1] == 4) {
+				player1->dialogue.playRandomFromOtherState(player1->dialogue.Oki, true);
+			}
+		}
+		player1voice = true;
+	}
+	if (!player2voice && voiceCD.secondsLeft() < 4.0) {
+		if (sceneManager->saveData.size() != 0) {
+			if (sceneManager->saveData[0] == 0) {
+				player2->dialogue.playRandomFromOtherState(player2->dialogue.Alex, true);
+			}
+			else if (sceneManager->saveData[0] == 1) {
+				player2->dialogue.playRandomFromOtherState(player2->dialogue.Flint, true);
+			}
+			else if (sceneManager->saveData[0] == 2) {
+				player2->dialogue.playRandomFromOtherState(player2->dialogue.Jack, true);
+			}
+			else if (sceneManager->saveData[0] == 3) {
+				player2->dialogue.playRandomFromOtherState(player2->dialogue.Kal, true);
+			}
+			else if (sceneManager->saveData[0] == 4) {
+				player2->dialogue.playRandomFromOtherState(player2->dialogue.Oki, true);
+			}
+		}
+		player2voice = true;
+	}
+
+	if (!player3voice && voiceCD.secondsLeft() < 2.0) {
+		if (sceneManager->saveData.size() != 0) {
+			if (sceneManager->saveData[3] == 0) {
+				player3->dialogue.playRandomFromOtherState(player3->dialogue.Alex, true);
+			}
+			else if (sceneManager->saveData[3] == 1) {
+				player3->dialogue.playRandomFromOtherState(player3->dialogue.Flint, true);
+			}
+			else if (sceneManager->saveData[3] == 2) {
+				player3->dialogue.playRandomFromOtherState(player3->dialogue.Jack, true);
+			}
+			else if (sceneManager->saveData[3] == 3) {
+				player3->dialogue.playRandomFromOtherState(player3->dialogue.Kal, true);
+			}
+			else if (sceneManager->saveData[3] == 4) {
+				player3->dialogue.playRandomFromOtherState(player3->dialogue.Oki, true);
+			}
+		}
+		player3voice = true;
+	}
+	if (!player4voice && voiceCD.secondsLeft() < 0) {
+		if (sceneManager->saveData.size() != 0) {
+			if (sceneManager->saveData[2] == 0) {
+				player4->dialogue.playRandomFromOtherState(player4->dialogue.Alex, true);
+			}
+			else if (sceneManager->saveData[2] == 1) {
+				player4->dialogue.playRandomFromOtherState(player4->dialogue.Flint, true);
+			}
+			else if (sceneManager->saveData[2] == 2) {
+				player4->dialogue.playRandomFromOtherState(player4->dialogue.Jack, true);
+			}
+			else if (sceneManager->saveData[2] == 3) {
+				player4->dialogue.playRandomFromOtherState(player4->dialogue.Kal, true);
+			}
+			else if (sceneManager->saveData[2] == 4) {
+				player4->dialogue.playRandomFromOtherState(player4->dialogue.Oki, true);
+			}
+		}
+		player4voice = true;
+	}
 }

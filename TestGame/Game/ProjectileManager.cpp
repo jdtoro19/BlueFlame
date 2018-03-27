@@ -5,7 +5,7 @@ namespace GAME {
 
 	ProjectileManager::ProjectileManager() {
 		projectileRenderer = new ProjectileRenderer();
-		
+
 		// Default to no friendly fire and no phase through
 		SetFriendlyFire(false);
 	}
@@ -182,24 +182,87 @@ namespace GAME {
 								if (projectileInteraction == 0) {
 									projectileList.at(j)->deleted = true;
 									if (!IsSameTeam(*playerList.at(i), *projectileList.at(j))) {
+										if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER1) {
+											if(playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+												playerList.at(0)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+										}
+										else if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER2) {
+											if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+												playerList.at(1)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+										}
+										else if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER3) {
+											if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+												playerList.at(2)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+										}
+										else if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER4) {
+											if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+												playerList.at(3)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+										}
 										playerList.at(i)->Hit(projectileList.at(j));
 									}
 								}
 								// If friendly fire is on, act like the hit player is an enemy
 								else if (projectileInteraction == 1) {
 									projectileList.at(j)->deleted = true;
+									if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER1) {
+										if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+											playerList.at(0)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+									}
+									else if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER2) {
+										if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+											playerList.at(1)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+									}
+									else if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER3) {
+										if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+											playerList.at(2)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+									}
+									else if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER4) {
+										if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+											playerList.at(3)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+									}
 									playerList.at(i)->Hit(projectileList.at(j));
 								}
 								// If the projectiles are set to phase through, projectiles only detect collision with enemy team
 								else if (projectileInteraction == 2 || projectileInteraction == 3) {
 									if (!IsSameTeam(*playerList.at(i), *projectileList.at(j))) {
-										projectileList.at(j)->deleted = true;
+										if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER1) {
+											if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+												playerList.at(0)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+										}
+										else if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER2) {
+											if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+												playerList.at(1)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+										}
+										else if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER3) {
+											if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+												playerList.at(2)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+										}
+										else if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER4) {
+											if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+												playerList.at(3)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+										}
 										playerList.at(i)->Hit(projectileList.at(j));
 									}
 								}
 								// If all fails, just act like every player is an enemy
 								else {
 									projectileList.at(j)->deleted = true;
+									if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER1) {
+										if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+											playerList.at(0)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+									}
+									else if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER2) {
+										if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+											playerList.at(1)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+									}
+									else if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER3) {
+										if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+											playerList.at(2)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+									}
+									else if (projectileList.at(j)->GetPlayer() == PROJECTILE_PLAYER::PLAYER4) {
+										if (playerList.at(i)->GetPlayerState() != Player::PLAYERSTATES::BLOCK)
+											playerList.at(3)->AddSpecialMeter(projectileList.at(j)->GetDamage() / 4);
+									}
 									playerList.at(i)->Hit(projectileList.at(j));
 								}
 							}
@@ -224,18 +287,17 @@ namespace GAME {
 						}
 
 						// Spawning flint's impenetrable wall
-						if (projectileList.at(j)->GetStrength() == PROJECTILE_STRENGTH::HEAVY && projectileList.at(j)->GetElement() == PROJECTILE_ELEMENT::EARTH) {
-							Projectile *p = new Projectile(projectileList.at(j)->GetWorldPosition(), 0.0f, 0.0f);
+						if (projectileList.at(j)->GetStrength() == PROJECTILE_STRENGTH::SPECIAL && projectileList.at(j)->GetElement() == PROJECTILE_ELEMENT::EARTH && projectileList.at(j)->GetClipping() == YES_WALL) {
+							Projectile *p = new Projectile(glm::vec3(projectileList.at(j)->GetWorldPosition().x, projectileList.at(j)->GetWorldPosition().y - 2.0f, projectileList.at(j)->GetWorldPosition().z), 0.0f, 0.0f);
 							p->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 							p->CreateCollision(projectileRenderer->GetCubeMesh(), p->GetWorldPosition());
 							p->collisionComponent->SetLayer(0);
 							p->SetClipping(PROJECTILE_CLIP::YES);
 							p->physicsComponent->destructible = false;
-							p->SetFirstDelay(1.0f, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(2.0f, 2.0f, 0.75f), glm::vec3(2.0f, 2.0f, 0.75f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+							p->SetFirstDelay(2.0f, glm::vec3(0.0f, 2.65f, 0.0f), glm::vec3(2.0f, 2.0f, 0.75f), glm::vec3(2.0f, 2.0f, 0.75f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 							p->SetLifetime(3.0);
-
-							p->canRender = false;
 							BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(p);
+							p->canRender = false;
 							AddSpawnedProjectile(p);
 						}
 					}
@@ -263,7 +325,8 @@ namespace GAME {
 		int spawnSize = spawnedProjectiles.size();
 		for (int i = 0; i < spawnSize; i++) {
 			for (int j = 0; j < proSize; j++) {
-				if (spawnedProjectiles.at(i)->collisionComponent != NULL && projectileList.at(j)->collisionComponent != NULL && projectileList.at(j)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f)) {
+				if (spawnedProjectiles.at(i)->collisionComponent != NULL && projectileList.at(j)->collisionComponent != NULL &&
+					spawnedProjectiles.at(i)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f) && projectileList.at(j)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f)) {
 					if (PhysicsEngine::isColliding(spawnedProjectiles.at(i)->collisionComponent, projectileList.at(j)->collisionComponent)) {
 						projectileList.at(j)->deleted = true;
 					}

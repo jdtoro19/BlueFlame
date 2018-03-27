@@ -40,7 +40,7 @@ void SoundEffect::Play(const int loopCount) const {
 }
 
 void SoundEffect::Play(int channel) {
-	Mix_HaltChannel(channel);
+	//Mix_HaltChannel(channel);
 	if (Mix_PlayChannel(channel, mixChunk, 0) == -1) {
 		//Debug::Log(EMessageType::ERROR, std::string(Mix_GetError()), __FILE__, __LINE__);
 		printf(Mix_GetError());

@@ -13,14 +13,14 @@ LightningPlayer::LightningPlayer() {
 	LightCD = Cooldown(0.4);
 	MediumCD = Cooldown(2.5);
 	SpecialDuration = Cooldown(3.0);
-	specialMeter = 0;
 
 	shootEffect = new ParticleSystem(BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager(), glm::vec3(1.0f, 1.0f, 0.0f));
 	BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(shootEffect);
 
-	dialogue = PlayerDialogue();
+	dialogue = PlayerDialogue(2);
 	dialogue.LoadPlayerDialogue("Resources/Audio/AlexTrixAudio.txt");
-	dialogue.playRandomFromOtherState(dialogue.MatchStart, true);
+
+	SetStats();
 }
 
 LightningPlayer::~LightningPlayer() {

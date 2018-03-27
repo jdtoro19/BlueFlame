@@ -555,7 +555,7 @@ void Player::ResetModel() {
 
 void Player::SetStats() {
 	shieldHealth = maxHealth;
-	moveSpeed = 1.0f;
+	moveSpeed = 1.5f;
 	specialMeter = 0;
 }
 
@@ -605,7 +605,7 @@ void Player::Hit(Projectile* projectile) {
 
 	if (playerState == BLOCK) {
 		shieldHealth -= projectile->GetDamage();
-		specialMeter += projectile->GetDamage() / 2;
+		//specialMeter += projectile->GetDamage() / 2;
 		if (shieldHealth > 0) {
 			shield->SetWorldScale(shieldHealth / 100.0f, shieldHealth / 100.0f, 0.05f);
 		}
@@ -615,7 +615,7 @@ void Player::Hit(Projectile* projectile) {
 		physicsComponent->AddForce(projectile->GetForce() / 2.0f);
 		Stun(2.0f);
 	}
-	dialogue.playRandomFromOtherState(dialogue.TakingDamage, true);
+	dialogue.playRandomFromOtherState(dialogue.TakingDamage, false);
 	stunEffect->Play();
 	stunEffect->SetWorldPosition(worldPosition.x, worldPosition.y + 0.5f, worldPosition.z);
 }
@@ -691,14 +691,25 @@ void Player::Render(Shader* shader, const double _interpolation)
 	glm::mat4 interpolatedMatrix;
 	interpolatedMatrix = worldModelMatrix * (float)_interpolation + previousWorldModelMatrix * (1.0f - (float)_interpolation);
 
+	// Account for interpolation
 	glm::mat4 ringInterpolatedMatrix;
 	ringInterpolatedMatrix = ring->GetWorldModelMatrix() * (float)_interpolation + ring->GetPreviousWorldMatrix() * (1.0f - (float)_interpolation);
 
+	// Account for interpolation
 	glm::mat4 shieldInterpolatedMatrix;
 	shieldInterpolatedMatrix = shield->GetWorldModelMatrix() * (float)_interpolation + shield->GetPreviousWorldMatrix() * (1.0f - (float)_interpolation);
 
+	// Account for interpolation
 	glm::mat4 markerInterpolatedMatrix;
 	markerInterpolatedMatrix = marker->GetWorldModelMatrix() * (float)_interpolation + marker->GetPreviousWorldMatrix() * (1.0f - (float)_interpolation);
+
+	// Don't interpolate on the first render 
+	if (firstRender == true) {
+		interpolatedMatrix = worldModelMatrix;
+		ringInterpolatedMatrix = ring->GetWorldModelMatrix();
+		shieldInterpolatedMatrix = shield->GetWorldModelMatrix();
+		markerInterpolatedMatrix = marker->GetWorldModelMatrix();
+	}
 
 	shader->setMat4("model", interpolatedMatrix * localModelMatrix * base->GetWorldModelMatrix() * base->GetLocalModelMatrix() * base->model->GetWorldModelMatrix() * base->model->GetLocalModelMatrix());
 	base->Render(shader, _interpolation);
@@ -707,15 +718,17 @@ void Player::Render(Shader* shader, const double _interpolation)
 		ring->SetWorldPosition(worldPosition.x, ring->GetWorldPosition().y, worldPosition.z);
 		shader->setMat4("model", ringInterpolatedMatrix * ring->GetLocalModelMatrix());
 		ring->Render(shader, _interpolation);
-	}	
+	}
 
 	shader->setMat4("model", interpolatedMatrix * localModelMatrix * shieldInterpolatedMatrix * shield->GetLocalModelMatrix());
 	shield->Render(shader, _interpolation);
 
+	/*
 	if (isTargeting) {
 		shader->setMat4("model", markerInterpolatedMatrix * marker->GetLocalModelMatrix());
-		//marker->Render(shader, _interpolation);
+		marker->Render(shader, _interpolation);
 	}
+	*/
 }
 
 void Player::SetPlayerNumber(PLAYERNUMBER pN) {
@@ -907,7 +920,7 @@ void Player::HandleNetworkedButtons() {
 		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
 		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
 		{
-			EnableTarget();
+			SwitchTarget();
 		}
 	}
 	buttonPressed = 7 + 5;
@@ -917,6 +930,16 @@ void Player::HandleNetworkedButtons() {
 		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
 		{
 			SwitchTarget();
+		}
+	}
+
+	buttonPressed = 7 + 11;
+	// The fucking hat
+	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
+		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
+		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
+		{
+			EnableTarget();
 		}
 	}
 }

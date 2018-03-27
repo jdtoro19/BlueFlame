@@ -4,7 +4,7 @@ using namespace ENGINE;
 
 Renderer::Renderer() : shaderManager(nullptr), blur(nullptr), bloom(nullptr), screen(nullptr) {}
 
-Renderer::~Renderer() 
+Renderer::~Renderer()
 {
 	OnDestroy();
 }
@@ -12,7 +12,7 @@ Renderer::~Renderer()
 // Initialize
 void Renderer::Initialize(Window* window) {
 	// Shader manager
-	shaderManager = new ResourceManager<Shader>;	
+	shaderManager = new ResourceManager<Shader>;
 
 	// framebuffer shaders
 	blur = new Shader("Shaders/blur.vs", "Shaders/blur.fs");
@@ -26,7 +26,7 @@ void Renderer::Initialize(Window* window) {
 	bloom->setInt("scene", 0);
 	bloom->setInt("bloomBlur", 1);
 	screen->Use();
-	screen->setInt("screenTexture", 0);	
+	screen->setInt("screenTexture", 0);
 
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_CULL_FACE);
@@ -42,14 +42,14 @@ void Renderer::Initialize(Window* window) {
 	// set up vertex data (and buffer(s)) and configure vertex attributes
 	// ------------------------------------------------------------------
 	float planeVertices[] = {
-		// positions            // normals         // texcoords
-		25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
-		-25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
-		-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
+	// positions            // normals         // texcoords
+	25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
+	-25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,   0.0f,  0.0f,
+	-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
 
-		25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
-		-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
-		25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,  25.0f, 25.0f
+	25.0f, -0.5f,  25.0f,  0.0f, 1.0f, 0.0f,  25.0f,  0.0f,
+	-25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,   0.0f, 25.0f,
+	25.0f, -0.5f, -25.0f,  0.0f, 1.0f, 0.0f,  25.0f, 25.0f
 	};
 	// plane VAO
 	unsigned int planeVBO;
@@ -69,11 +69,11 @@ void Renderer::Initialize(Window* window) {
 
 	// configure depth map FBO
 	// -----------------------
-	
-	
+
+
 	glGenFramebuffers(1, &depthMapFBO);
 	// create depth texture
-	
+
 	glGenTextures(1, &depthMap);
 	glBindTexture(GL_TEXTURE_2D, depthMap);
 	glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOW_WIDTH, SHADOW_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
@@ -113,13 +113,13 @@ void Renderer::PreRender(Window* window, Camera* camera, bool splitscreen) {
 	glEnable(GL_DEPTH_TEST);
 
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
 // Render sets up the shaders then renders objects
 void Renderer::Render(Window* window, Camera* camera, const double _interpolation, std::vector<GameObject*> objectList, std::vector<Light*> dirLightList,
-																						   std::vector<Light*> pointLightList,
-																						   std::vector<Light*> spotLightList) 
+	std::vector<Light*> pointLightList,
+	std::vector<Light*> spotLightList)
 {
 	// update the view matrix based on the camera
 	glm::mat4 view = camera->GetViewMatrix();
@@ -135,9 +135,9 @@ void Renderer::PostRender(Window* window, bool splitscreen)
 }
 
 // Renders objects from the object list
-void Renderer::RenderObjects(glm::mat4 viewMatrix, Camera* camera, const double _interpolation, std::vector<GameObject*> objectList,	std::vector<Light*> dirLightList,
-																										std::vector<Light*> pointLightList,
-																										std::vector<Light*> spotLightList)
+void Renderer::RenderObjects(glm::mat4 viewMatrix, Camera* camera, const double _interpolation, std::vector<GameObject*> objectList, std::vector<Light*> dirLightList,
+	std::vector<Light*> pointLightList,
+	std::vector<Light*> spotLightList)
 {
 	// check if the object list is empty
 	if (objectList.size() != NULL) {
@@ -194,6 +194,11 @@ void Renderer::RenderObjects(glm::mat4 viewMatrix, Camera* camera, const double 
 					glm::mat4 interpolatedMatrix;
 					interpolatedMatrix = object->GetWorldModelMatrix() * (float)_interpolation + object->GetPreviousWorldMatrix() * (1.0f - (float)_interpolation);
 
+					// Don't interpolate on the first render 
+					if (object->firstRender == true) {
+						interpolatedMatrix = object->GetWorldModelMatrix();
+					}
+
 					// Set shader options
 					shader->setMat4("model", interpolatedMatrix * object->GetLocalModelMatrix());
 					shader->setMat4("projection", projection);
@@ -202,6 +207,8 @@ void Renderer::RenderObjects(glm::mat4 viewMatrix, Camera* camera, const double 
 
 					// Render object
 					object->Render(shader, _interpolation);
+
+					object->firstRender = false;
 				}
 			}
 		}
@@ -284,7 +291,7 @@ void Renderer::RenderSkybox(Skybox* sceneSkybox, Camera* camera) {
 		glm::mat4 view = glm::mat4(glm::mat3(camera->GetViewMatrix()));
 
 		glDepthFunc(GL_LEQUAL);
-		
+
 		// get skybox shader
 		Shader* shader = shaderManager->get(sceneSkybox->GetShader());
 		shader->Use();
@@ -324,13 +331,13 @@ void Renderer::OnDestroy() {
 void Renderer::RenderQuad()
 {
 	// Renders a quad(square) to draw framebuffer onto
-	glBindVertexArray(quadVAO);	
+	glBindVertexArray(quadVAO);
 	glDrawArrays(GL_TRIANGLES, 0, 6);
 	glBindVertexArray(0);
 }
 
-void Renderer::SetUpFrameBuffers(Window* window, float resolutionScale) 
-{	
+void Renderer::SetUpFrameBuffers(Window* window, float resolutionScale)
+{
 	// set up frame buffers
 
 	// framebuffer
@@ -349,7 +356,7 @@ void Renderer::SetUpFrameBuffers(Window* window, float resolutionScale)
 		// attach texture to framebuffer
 		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0 + i, GL_TEXTURE_2D, colorBuffers[i], 0);
 	}
-	
+
 	// create and attach depth buffer
 	glGenRenderbuffers(1, &rboDepth);
 	glBindRenderbuffer(GL_RENDERBUFFER, rboDepth);
@@ -371,7 +378,7 @@ void Renderer::SetUpFrameBuffers(Window* window, float resolutionScale)
 	{
 		glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[i]);
 		glBindTexture(GL_TEXTURE_2D, pingpongColorbuffers[i]);
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, window->GetWidth() * (1/resolutionScale), window->GetHeight() * (1/resolutionScale), 0, GL_RGB, GL_FLOAT, NULL);
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB16F, window->GetWidth() * (1 / resolutionScale), window->GetHeight() * (1 / resolutionScale), 0, GL_RGB, GL_FLOAT, NULL);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -383,10 +390,10 @@ void Renderer::SetUpFrameBuffers(Window* window, float resolutionScale)
 	}
 }
 
-void Renderer::UseBloom() 
+void Renderer::UseBloom()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
-	
+
 	bool horizontal = true, first_iteration = true;
 	blur->Use();
 	for (unsigned int i = 0; i < blurAmount; i++)
@@ -394,7 +401,7 @@ void Renderer::UseBloom()
 		glBindFramebuffer(GL_FRAMEBUFFER, pingpongFBO[horizontal]);
 		blur->setInt("horizontal", horizontal);
 		// bind texture of other framebuffer (or scene if first iteration)
-		glBindTexture(GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongColorbuffers[!horizontal]);  
+		glBindTexture(GL_TEXTURE_2D, first_iteration ? colorBuffers[1] : pingpongColorbuffers[!horizontal]);
 		RenderQuad();
 		horizontal = !horizontal;
 		if (first_iteration)
@@ -413,7 +420,7 @@ void Renderer::UseBloom()
 	RenderQuad();
 }
 
-void Renderer::PostProcess() 
+void Renderer::PostProcess()
 {
 	glBindFramebuffer(GL_FRAMEBUFFER, 0);
 	// disable depth test so quad is shown
@@ -428,8 +435,8 @@ void Renderer::PostProcess()
 	screen->setInt("kernel", kernel);
 
 	// bind colour buffer onto quad
-	glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);	
-	
+	glBindTexture(GL_TEXTURE_2D, colorBuffers[0]);
+
 	// Bloom
 	if (useBloom && !inverted && !greyscale && !kernel) {
 		UseBloom();
@@ -441,7 +448,7 @@ void Renderer::PostProcess()
 
 void Renderer::SetUpQuad(float resolutionScale) {
 	// quad (square) to render on screen
-	float quadVertices[] = { 
+	float quadVertices[] = {
 		// positions   // texCoords
 		-1.0f,  1.0f,  0.0f, resolutionScale,
 		-1.0f, -1.0f,  0.0f, 0.0f,

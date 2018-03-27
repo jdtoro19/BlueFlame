@@ -51,7 +51,7 @@ void Crosshair::Update(const float deltaTime)
 {
 	// If player can move update movement 
 	if (canMove) {
-		if (playerInput->CheckForController()) {//if they have a controller
+		if (playerInput->CheckForController() || playerInput->isNetworked()) {//if they have a controller
 			glm::vec2 mods;
 
 			if (playerInput->isNetworked()) {

@@ -93,6 +93,7 @@ namespace GAME {
 		// Set up mathods
 		void SetUpPlayers();
 		void SetUpArena();
+		void PlayInteractions();
 
 		// Particles
 		ParticleSystem* particle1;
@@ -133,6 +134,9 @@ namespace GAME {
 		void Restart();
 
 		bool announcerVoice = false;
+
+		bool spectator = false;
+		TextUI* spectatorText;
 
 		// Audio
 		Music* bgm;

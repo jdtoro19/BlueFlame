@@ -3,16 +3,15 @@
 
 #include <BlueFlameEngine\Engine\BFEngine.h>
 #include <BlueFlameEngine\Engine\Core\Scene.h>
-//#include <BlueFlameEngine\Engine\Core\Light.h>
 #include <BlueFlameEngine\Engine\Core\ResourceManager.h>
 #include <BlueFlameEngine\Engine\Rendering\3D\Skybox.h> 
 #include <BlueFlameEngine\Engine\Graphics\Shader.h> 
 #include <BlueFlameEngine\Engine\Timers\Cooldown.h>
-//#include <BlueFlameEngine\Engine\InputHandling\InputHandler.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\TextUI.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\ImageUI.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\ButtonUI.h>
 #include <BlueFlameEngine\Engine\Rendering\2D\SliderUI.h>
+#include <BlueFlameEngine\Engine\Audio\Announcer.h>
 #include "DemoScene.h"
 #include "TvTGameScene.h"
 #include "..\Player\Crosshair.h"
@@ -41,11 +40,15 @@ namespace GAME {
 		void ControllerPressStart(SDL_JoystickID jID);
 		void SetUpPlayerPorts(PlayerPortrait* tempP);
 
+		//network
+		void HandleNetworkEvents(int i);
+
 		// shaders
 		Shader* skyboxShader;
 
 		//Audio
-
+		Announcer* announcer;
+		Music* bgm;
 
 		// shader handles / reference to shader in the renderers shader manager
 		ResourceHandle<Shader> skyboxShaderHandle;
@@ -96,8 +99,6 @@ namespace GAME {
 
 		float cameraTimer = 0;
 
-		// Audio
-		Music* bgm;
 	};
 }
 #endif

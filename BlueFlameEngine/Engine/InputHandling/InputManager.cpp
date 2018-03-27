@@ -30,6 +30,7 @@ void InputManager::initalizeControllers() {
 		std::cout << "Controllers detected: " << connectedControllers << std::endl;
 		for (int i = 0; i < connectedControllers; i++) {
 			SDL_Joystick* j = SDL_JoystickOpen(i);
+			std::cout << SDL_JoystickNumHats(j) << std::endl;
 			spareControllers.push_back(j);
 			Sint16 test = SDL_JoystickGetAxis(j, 0);
 			//std::cout << SDL_GetError() << std::endl;

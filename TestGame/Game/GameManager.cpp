@@ -17,7 +17,7 @@ void GameManager::Initialize()
 	sceneManager = BFEngine::GetInstance()->GetSceneManager();
 
 	announcer = Announcer();
-	announcer.LoadDialogue("Resources/Audio/MaleAnnouncer.txt");
+	announcer.LoadDialogue("Resources/Audio/AnnouncerAudio.txt");
 	announcer.SetVolume(60);
 
 	outTeam1 = 0;
@@ -191,6 +191,7 @@ void GameManager::Update()
 			if (playerList[i]->GetWorldPosition().y < -10) {
 				playerList[i]->SetIsOut(true);
 				playerList[i]->canRender = false;
+				playerList[i]->dialogue.playRandomFromOtherState(PlayerDialogue::Falling, true);
 				if (playerList[i]->GetIsTargeting()) {
 					playerList[i]->EnableTarget();
 				}

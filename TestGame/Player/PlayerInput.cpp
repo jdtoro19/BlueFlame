@@ -26,6 +26,10 @@ bool PlayerInput::CheckForController(SDL_JoystickID id) {
 	}
 	else {
 		AddJoystick(InputManager::GetInstance()->getController(id));
+		if (SDL_JoystickNumHats(joystick) < 0) {
+			printf(SDL_GetError());
+			int x = 0;
+		}
 	}
 	return false;
 }
@@ -46,7 +50,7 @@ SDL_Joystick* PlayerInput::GetJoystick() {
 	return joystick;
 }
 
-void PlayerInput::SetJoystick(SDL_Joystick* js) { 
+void PlayerInput::SetJoystick(SDL_Joystick* js) {
 	joystick = js;
 }
 
@@ -72,7 +76,7 @@ bool PlayerInput::LeftTriggerPressed() {
 	//x_move += Tare[2];
 
 	//cout << "tare: " << Tare[2] << endl;
-	if (x_move > -500) {
+	if (x_move > -500 && joystick != NULL) {
 		return true;
 	}
 	else {
@@ -83,7 +87,7 @@ bool PlayerInput::LeftTriggerPressed() {
 bool PlayerInput::RightTriggerPressed() {
 	Sint32 x_move = SDL_JoystickGetAxis(joystick, 5);
 
-	if (x_move > -500) {
+	if (x_move > -500 && joystick != NULL) {
 		return true;
 	}
 	else {
@@ -92,6 +96,12 @@ bool PlayerInput::RightTriggerPressed() {
 }
 
 glm::vec2 PlayerInput::AnyJoystick(int indexA, int indexB) {
+	if (joystick != NULL) {
+
+	}
+	else {
+		return glm::vec2(0, 0);
+	}
 	Sint32 x_move = SDL_JoystickGetAxis(joystick, indexA);
 	Sint32 y_move = SDL_JoystickGetAxis(joystick, indexB);
 
@@ -134,31 +144,42 @@ glm::vec2 PlayerInput::AnyJoystick(int indexA, int indexB) {
 }
 
 std::string PlayerInput::ReturnJoystickStateForNetworking() {
-	std::string networkChunk = std::to_string(playerNum) + "|";
+	std::string networkChunk = std::to_string(playerNum) + "|"; //0 is player num
 	std::string temp = "";
 
 	glm::vec2 primaryStick = LeftJoystick();
-	temp = std::to_string(primaryStick.x);
+	temp = std::to_string(primaryStick.x); //1 is primary stick x
 	networkChunk += temp.substr(0, 5);
 	temp = std::to_string(primaryStick.y);
-	networkChunk += temp.substr(0, 5);
+	networkChunk += temp.substr(0, 5); //2 is primary stick y
 
 	glm::vec2 secondaryStick = RightJoystick();
-	temp = std::to_string(secondaryStick.x);
+	temp = std::to_string(secondaryStick.x); //3 is secondary stick x
 	networkChunk += temp.substr(0, 5);
-	temp = std::to_string(secondaryStick.y);
+	temp = std::to_string(secondaryStick.y); //4 is secondary stick y
 	networkChunk += temp.substr(0, 5);
 
 	bool ltp = LeftTriggerPressed();
-	networkChunk += std::to_string(ltp);
+	networkChunk += std::to_string(ltp); //5 is left trigger state
 
 	bool rtp = RightTriggerPressed();
-	networkChunk += std::to_string(rtp);
+	networkChunk += std::to_string(rtp); //6 is right trigger state
 
-	for (int i = 0; i < 11; i++) {
+	for (int i = 0; i < 10; i++) { //7 is a, 8 is b, 9 is x, 10 is y, 11 is left bumper, 12 is right bumper, 13 is left joystick push, 14 is right joystick push, 15 is start, 16 is back, 17 is select
 		int bState = SDL_JoystickGetButton(joystick, i);
 		networkChunk += std::to_string(bState);
 	}
+
+	//send the position of the hat because fuuuuuuuuuuuuck me
+	int bState;
+	if (SDL_JoystickGetHat(joystick, 0) & SDL_HAT_UP) {
+		bState = 1;
+	}
+	else {
+		bState = 0;
+	}
+	networkChunk += std::to_string(bState);
+
 	return networkChunk;
 }
 
@@ -206,10 +227,10 @@ void PlayerInput::ParseNetworkInputs(std::string inputs) {
 
 			outputs = outputs.substr(1, 99);
 		}
-		/*for each (int x in networkedJoystickInputs) {
-		std::cout << std::to_string(x);
+		for each (int x in networkedJoystickInputs) {
+			std::cout << std::to_string(x);
 		}
-		std::cout << std::endl;*/
+		std::cout << std::endl;
 	}
 
 }
