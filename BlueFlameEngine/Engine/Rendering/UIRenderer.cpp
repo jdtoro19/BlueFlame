@@ -35,7 +35,7 @@ void UIRenderer::Draw(Window* window, std::vector<UIObject*> uiObjectList) {
 	// loop through UI objects if list isn't empty
 	if (uiObjectList.size() != NULL) {
 		int listSize = uiObjectList.size();
-		for (size_t i = 0; i < listSize; ++i) {
+		for (unsigned int i = 0; i < listSize; ++i) {
 			if (uiObjectList.at(i)->GetVisible()) {
 				uiObjectList.at(i)->Draw(projection);
 			}

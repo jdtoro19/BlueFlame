@@ -2,8 +2,6 @@
 Resources\Audio\KAL\KAL_MYBLOODISBOILING.wav
 Resources\Audio\KAL\KAL_HATHISWILLBEFUN.wav
 Resources\Audio\KAL\KAL_OURWINISCLEAR.wav
-Resources\Audio\KAL\KAL_LATINOHEAT.wav
-Resources\Audio\KAL\KAL_LATINOHEAT2.wav
 =2.        Win
 Resources\Audio\KAL\KAL_NOHARDFEELINGS.wav
 Resources\Audio\KAL\KAL_HAHAWELLFOUGHT.wav
@@ -67,3 +65,6 @@ Resources\Audio\KAL\KAL_LETSMAKETHISAWINFRIEND.wav
 =14.	Oki
 Resources\Audio\KAL\KAL_FUELMEAIR.wav
 Resources\Audio\KAL\KAL_FIRESPREADREDO.wav
+=15.	Rare
+Resources\Audio\KAL\KAL_LATINOHEAT.wav
+Resources\Audio\KAL\KAL_LATINOHEAT2.wav

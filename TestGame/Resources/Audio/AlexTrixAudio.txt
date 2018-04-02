@@ -50,3 +50,5 @@ Resources\Audio\ALEX\ALEX_ILIKEYOURGOGGLES.wav
 Resources\Audio\ALEX\ALEX_WHATDIDYOUSAY.wav
 =14.	Oki
 Resources\Audio\ALEX\ALEX_DONTGETMADIFYOULOSE.wav
+=15.	Rare
+Resources\Audio\ALEX\ALEX_QUICK.wav

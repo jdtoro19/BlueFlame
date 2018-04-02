@@ -55,7 +55,7 @@ void Crosshair::Update(const float deltaTime)
 			glm::vec2 mods;
 
 			if (playerInput->isNetworked()) {
-				mods = glm::vec2(playerInput->networkedJoystickInputs.at(1), playerInput->networkedJoystickInputs.at(2));
+				//mods = glm::vec2(playerInput->networkedJoystickInputs.at(1), playerInput->networkedJoystickInputs.at(2));
 			}
 			else {
 				mods = playerInput->LeftJoystick();

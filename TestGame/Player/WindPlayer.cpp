@@ -27,6 +27,23 @@ std::vector<Projectile*> WindPlayer::LightAttack()
 {
 	std::vector<Projectile*> projectiles;
 
+	if (playerState == NORMAL && lightComboTimer <= 0) {
+		lightComboTimer = 0.3f;
+
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
+		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 180.0f));
+		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
+		p->SetKnockbackForce(glm::vec3(0.0f, 25.0f, 25.0f));
+		p->SetStunTime(0.2f);
+		p->SetDamage(5);
+		p->SetElement(WIND);
+		p->SetMesh(PROJECTILE_MESH::NORM_WIND);
+		p->SetLifetime(0.5f);
+		projectiles.push_back(p);
+		return projectiles;
+	}
+
+	/*
 	if (playerState == NORMAL && lightComboPosition == 0 && playerState != BLOCK && playerState != STUN) {
 
 		if (worldPosition.y > 0.1) {
@@ -87,13 +104,57 @@ std::vector<Projectile*> WindPlayer::LightAttack()
 		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 0);
 		return projectiles;
 	}
-	
+	*/
 	return projectiles;
 }
 std::vector<Projectile*> WindPlayer::MediumAttack()
 {
 	std::vector<Projectile*> projectiles;
 
+	if (playerState == NORMAL && mediumComboTimer <= 0) {
+		mediumComboTimer = 1.5f;
+
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
+		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 200.0f));
+		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
+		p->SetKnockbackForce(glm::vec3(0.0f, 25.0f, 10.0f));
+		p->SetFirstDelay(0.0f, glm::vec3(0.0f, 0.0f, 1.0f * dir), glm::vec3(0.0f), glm::vec3(0.5f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p->SetStunTime(0.0f);
+		p->SetDamage(3);
+		p->SetElement(WIND);
+		p->SetMesh(PROJECTILE_MESH::NORM_WIND);
+		projectiles.push_back(p);
+
+		Projectile* p1 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
+		p1->SetImpulseForce(glm::vec3(125.0f, 0.0f, 200.0f));
+		p1->SetActingForce(glm::vec3(-10.0f, 0.0f, 0.0f));
+		p1->SetKnockbackForce(glm::vec3(0.0f, 100.0f, 10.0f));
+		p1->SetFirstDelay(0.2f, glm::vec3(0.0f, 0.0f, 1.0f * dir), glm::vec3(0.0f), glm::vec3(0.5f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p1->SetStunTime(0.0f);
+		p1->SetDamage(3);
+		p1->SetWorldScale(0.5f);
+		p1->SetElement(WIND);
+		p1->SetMesh(PROJECTILE_MESH::NORM_WIND);
+		projectiles.push_back(p1);
+
+		Projectile* p2 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
+		p2->SetImpulseForce(glm::vec3(-200.0f, 335.0f, 375.0f));
+		p2->SetActingForce(glm::vec3(20.0f, -35.0f, 0.0f));
+		p2->SetKnockbackForce(glm::vec3(0.0f, -100.0f, 0.0f));
+		p2->SetFirstDelay(0.4f, glm::vec3(0.0f, 0.0f, 1.0f * dir), glm::vec3(0.0f), glm::vec3(0.5f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p2->SetStunTime(0.0f);
+		p2->SetDamage(4);
+		p2->SetWorldScale(0.5f);
+		p2->SetElement(WIND);
+		p2->SetMesh(PROJECTILE_MESH::NORM_WIND);
+		projectiles.push_back(p2);
+
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 0);
+
+		return projectiles;
+	}
+
+	/*
 	if (playerState == NORMAL && mediumComboPosition == 0 && playerState != BLOCK && playerState != STUN) {
 
 		mediumComboTimer = 0.5f;
@@ -143,13 +204,31 @@ std::vector<Projectile*> WindPlayer::MediumAttack()
 		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 1);
 		return projectiles;
 	}
-	
+	*/
 	return projectiles;
 }
 std::vector<Projectile*> WindPlayer::HeavyAttack()
 {
 	std::vector<Projectile*> projectiles;
 
+	if (playerState == NORMAL && heavyComboTimer <= 0) {
+		heavyComboTimer = 3.0f;
+
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
+		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 80.0f));
+		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
+		p->SetKnockbackForce(glm::vec3(0.0f, 30.0f, 95.0f));
+		p->SetStunTime(1.0f);
+		p->SetDamage(30);
+		p->SetWorldScale(1.5f, 1.5f, 0.2f);
+		p->SetElement(WIND);
+		p->SetMesh(PROJECTILE_MESH::WIND_WALL);
+		projectiles.push_back(p);
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 1);
+		return projectiles;
+	}
+
+	/*
 	if (playerState == NORMAL && heavyComboPosition == 0 && playerState != BLOCK && playerState != STUN) {
 
 		heavyComboTimer = 0.7f;
@@ -200,13 +279,55 @@ std::vector<Projectile*> WindPlayer::HeavyAttack()
 		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 1);
 		return projectiles;
 	}
-	
+	*/
 	return projectiles;
 }
 std::vector<Projectile*> WindPlayer::SpecialAttack()
 {
 	std::vector<Projectile*> projectiles;
 
+	if (playerState == NORMAL && specialMeter >= 100) {
+
+		specialMeter = 0;
+		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 3);
+
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
+		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 150.0f));
+		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
+		p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 200.0f));
+		p->SetFirstDelay(0.5f, glm::vec3(0.0f, 0.0f, 1.0f * dir), glm::vec3(0.0f, 0.2f, 0.0f), glm::vec3(6.0f, 0.2f, 1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p->SetStunTime(2.0f);
+		p->SetDamage(0);
+		p->SetElement(WIND);
+		p->SetMesh(PROJECTILE_MESH::WIND_DISC);
+		projectiles.push_back(p);
+
+		Projectile* p1 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
+		p1->SetImpulseForce(glm::vec3(0.0f, 0.0f, 150.0f));
+		p1->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
+		p1->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 200.0f));
+		p1->SetFirstDelay(1.0f, glm::vec3(0.0f, 0.0f, 1.0f * dir), glm::vec3(0.0f, 0.2f, 0.0f), glm::vec3(3.0f, 0.2f, 1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p1->SetStunTime(2.0f);
+		p1->SetDamage(0);
+		p1->SetElement(WIND);
+		p1->SetMesh(PROJECTILE_MESH::WIND_DISC);
+		projectiles.push_back(p1);
+
+		Projectile* p2 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
+		p2->SetImpulseForce(glm::vec3(0.0f, 0.0f, 150.0f));
+		p2->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
+		p2->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 200.0f));
+		p2->SetFirstDelay(1.5f, glm::vec3(0.0f, 0.0f, 1.0f * dir), glm::vec3(0.0f, 0.2f, 0.0f), glm::vec3(1.5f, 0.2f, 1.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+		p2->SetStunTime(2.0f);
+		p2->SetDamage(0);
+		p2->SetElement(WIND);
+		p2->SetMesh(PROJECTILE_MESH::WIND_DISC);
+		projectiles.push_back(p2);
+		
+		return projectiles;
+
+	}
+	/*
 	if ((playerState == NORMAL && worldPosition.y < 0.1f && specialMeter >= 10) || mediumComboPosition == 3) {
 
 		if (mediumComboPosition != 3) {
@@ -290,11 +411,12 @@ std::vector<Projectile*> WindPlayer::SpecialAttack()
 		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 2);
 		return projectiles;
 	}
-
+	*/
 	return projectiles;
 }
 void WindPlayer::InheritedUpdate(const float deltaTime)
 {
+	/*
 	if (worldPosition.y < 0.1f) {
 		airAttack = false;
 	}
@@ -312,6 +434,7 @@ void WindPlayer::InheritedUpdate(const float deltaTime)
 		physicsComponent->SetVelocity(glm::vec3(-moveSpeed * 1.1f * deltaTime * 500 * dir, physicsComponent->GetVelocity().y, physicsComponent->GetVelocity().z));
 		base->SetLocalRotation(glm::vec3(0.0f, 0.0f, 1.0f), 0.2f);
 	}
+	*/
 }
 void WindPlayer::InheritedHandleEvents(SDL_Event events)
 {

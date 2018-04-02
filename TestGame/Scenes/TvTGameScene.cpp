@@ -187,7 +187,7 @@ bool TvTGameScene::Initialize()
 	// Make directional light
 	dirLight = new Light(LightComponent::Light_Type::DIRECTIONAL);
 	dirLight->lightComponent->SetDirection(glm::vec3(1.0f, -1.0f, 1.0f));
-	dirLight->lightComponent->SetColour(glm::vec3(0.3f, 0.3f, 0.3f));
+	dirLight->lightComponent->SetColour(glm::vec3(0.5f, 0.5f, 0.5f));
 	//
 
 	// fireworks
@@ -209,10 +209,10 @@ bool TvTGameScene::Initialize()
 	// Add scene objects
 	AddObject(projectileManager->GetProjectileRenderer());
 	AddLightObject(dirLight);
-	AddLightObject(pointLight);
-	AddLightObject(pointLight2);
-	AddLightObject(pointLight3);
-	AddLightObject(pointLight4);
+	//AddLightObject(pointLight);
+	//AddLightObject(pointLight2);
+	//AddLightObject(pointLight3);
+	//AddLightObject(pointLight4);
 	AddLightObject(blueLight);
 	AddLightObject(redLight);
 	AddLightObject(middleLight);

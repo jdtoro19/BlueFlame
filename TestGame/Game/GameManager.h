@@ -9,6 +9,7 @@
 #include <BlueFlameEngine\Engine\Audio\Announcer.h>
 #include <BlueFlameEngine\Engine\Core\SceneManager.h>
 #include "../Player/Player.h"
+#include "../Player/PlayerWidget.h"
 
 using namespace ENGINE;
 
@@ -29,75 +30,56 @@ namespace GAME {
 		// Starts match countdown
 		void StartTimer();
 
+		// Match status
+		void Reset();
+		void GameOver();
+		bool IsGameOver() { return gameOver; };
 		double GetMatchTimeRemaining() { return roundTimer.secondsLeft(); };
 
-		void GameOver();
-
-		bool IsGameOver() { return gameOver; };
-
-		void Reset();
-
-		bool canContinue = false;
-
-		Announcer announcer;
-
-	//private:
-		SceneManager* sceneManager;
-
-		int matchTime;
-
-		Cooldown roundTimer;
+		// UI
 		TextUI* roundTimerText;
-
 		TextUI* team1Text;
 		TextUI* team2Text;
-
 		TextUI* gameoverText;
 		ImageUI* gameoverBack;
-
-		ImageUI* end;
-
-		SliderUI* p1Meter;
-		ImageUI* p1Portrait;
-		SliderUI* p2Meter;
-		ImageUI* p2Portrait;
-		SliderUI* p3Meter;
-		ImageUI* p3Portrait;
-		SliderUI* p4Meter;
-		ImageUI* p4Portrait;
-
 		ImageUI* divider;
+		ImageUI* end;
+		PlayerWidget* p1Widget;
+		PlayerWidget* p2Widget;
+		PlayerWidget* p3Widget;
+		PlayerWidget* p4Widget;
 
+		// Timers
+		Cooldown roundTimer;
+		Cooldown endGameCD;
+		Cooldown voiceCD;
+
+		// Player lists
 		std::vector<Player*> playerList;
-
 		std::vector<Player*> team1List;
 		std::vector<Player*> team2List;
 
+		// Game status
+		int matchTime;
 		int outTeam1;
 		int outTeam2;
-
 		bool timeUp;
 		bool teamOut;
-		Cooldown endGameCD;
-
 		bool gameOver;
-
-		std::string time;
-
+		bool endGame = false;
+		bool canContinue = false;
+		bool announcer30 = false;
 		bool player1voice = false;
 		bool player2voice = false;
 		bool player3voice = false;
 		bool player4voice = false;
+		std::string time;
 
-		bool endGame = false;
+		// Announcer
+		Announcer announcer;
 
-		Cooldown voiceCD;
-
-		bool announcer30 = false;
-
-		std::string GetPlayerPortrait(int playerIndex);
+		// Scene Manager
+		SceneManager* sceneManager;
 	};
-
 }
-
 #endif

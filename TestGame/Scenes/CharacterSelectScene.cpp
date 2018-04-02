@@ -316,10 +316,10 @@ void CharacterSelectScene::Update(const float deltaTime)
 
 	//check to see that all players have selected
 	if (loading == false &&
-		crosshair1->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
-		crosshair2->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
-		crosshair3->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
-		crosshair4->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE)
+		crosshair1->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE) // &&
+		//crosshair2->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
+		//crosshair3->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
+		//crosshair4->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE)
 	{
 		ready = true;
 		sceneManager->GetRenderer()->EnableInvertedColours(true);

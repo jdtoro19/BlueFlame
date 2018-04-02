@@ -339,6 +339,8 @@ void SliderUI::Draw(glm::mat4 projection)
 		}
 	}
 	if (text != nullptr) {
-		text->Draw(projection);
+		if (text->GetVisible()) {
+			text->Draw(projection);
+		}
 	}
 }

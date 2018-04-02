@@ -28,12 +28,17 @@ namespace GAME {
 
 		void SetProjectileList(std::vector<Projectile*> projectileList) { projectiles = projectileList; };
 		void SetSpawnedProjectileList(std::vector<Projectile*> projectileList) { spawnedProjectiles = projectileList; };
-	
+
 	private:
 
 		// The mesh to be used for rendering 
 		RenderComponent* cubeMesh;
-		Model* meteor;
+		Model* normFire; Model* fireMeteor;
+		Model* normEarth; Model* earthStalagmites; Model* earthUlt;
+		Model* normIce; Model* iceWall; Model* iceRamp; Model* iceUlt;
+		Model* normElec; Model* elecDisc;
+		Model* normWind; Model* windDisc; Model* windWall;
+
 		// List of projectiles in the scene
 		std::vector<Projectile*> projectiles;
 		std::vector<Projectile*> spawnedProjectiles;

@@ -37,7 +37,7 @@ Player::Player()
 	physicsComponent->SetAcceleration(glm::vec3(0.0f, -25.0f, 0.0f));
 	physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::DYNAMIC);
 	physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::VERY_ELASTIC);
-	physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::SMOOTH);
+	physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
 	physicsComponent->SetMass(50.0f);
 
 	// Set up shader
@@ -48,7 +48,7 @@ Player::Player()
 	dir = -1;
 
 	// Set player to target another enemy by default
-	isTargeting = true;
+	isTargeting = false;
 
 	// Set cooldowns
 	movementCD = Cooldown(0.0);
@@ -128,39 +128,26 @@ void Player::Update(const float deltaTime)
 		}
 	}
 
-	if (!movementCD.checkOffCD()) {
-		playerState = ATTACK;
-	}
-
-	// Combo timers
-	if (lightComboTimer > 0 || mediumComboTimer > 0 || heavyComboTimer > 0 || specialComboTimer > 0) {
-		playerState = ATTACK;
-	}
-
-	if (lightComboTimer <= 0 && mediumComboTimer <= 0 && heavyComboTimer <= 0 && specialComboTimer <= 0 && playerState != STUN && playerState != BLOCK) {
-		playerState = NORMAL;
-	}
-
 	lightComboTimer -= deltaTime;
-	if (lightComboTimer <= 0 && playerState == ATTACK) {
+	if (lightComboTimer <= 0) {
 		lightComboTimer = 0;
 		lightComboPosition = 0;
 	}
 
 	mediumComboTimer -= deltaTime;
-	if (mediumComboTimer <= 0 && playerState == ATTACK) {
+	if (mediumComboTimer <= 0) {
 		mediumComboTimer = 0;
 		mediumComboPosition = 0;
 	}
 
 	heavyComboTimer -= deltaTime;
-	if (heavyComboTimer <= 0 && playerState == ATTACK) {
+	if (heavyComboTimer <= 0) {
 		heavyComboTimer = 0;
 		heavyComboPosition = 0;
 	}
 
 	specialComboTimer -= deltaTime;
-	if (specialComboTimer <= 0 && playerState == ATTACK) {
+	if (specialComboTimer <= 0) {
 		specialComboTimer = 0;
 		specialComboPosition = 0;
 	}
@@ -208,10 +195,6 @@ void Player::FixedUpdate(const float deltaTime) {
 	SetWorldPosition(physicsComponent->GetPosition());
 	collisionComponent->Update(GetWorldPosition());
 
-	if (playerState != STUN) {
-		physicsComponent->SetVelocity(glm::vec3(0.0f, physicsComponent->GetVelocity().y, 0.0f));
-	}
-
 	// Update player model
 	UpdateModel(deltaTime);
 	// If player can move update movement 
@@ -235,24 +218,52 @@ void Player::FixedUpdate(const float deltaTime) {
 
 
 			if (ltp) {
-				if (!out && shieldHealth > 0) {
-					Block();
+				if (!out) {
+					std::vector<Projectile*> p = SpecialAttack();
+					if (p.size() > 0) {
+						for each (Projectile* subP in p) {
+
+							if (playerTeam == PLAYERTEAM::TEAM1) {
+								subP->SetTeam(PROJECTILE_TEAM::TEAM1);
+							}
+							else if (playerTeam == PLAYERTEAM::TEAM2) {
+								subP->SetTeam(PROJECTILE_TEAM::TEAM2);
+							}
+
+							if (playerNumber == PLAYERNUMBER::PLAYER1) {
+								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER1);
+							}
+							else if (playerNumber == PLAYERNUMBER::PLAYER2) {
+								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER2);
+							}
+							else if (playerNumber == PLAYERNUMBER::PLAYER3) {
+								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
+							}
+							else if (playerNumber == PLAYERNUMBER::PLAYER4) {
+								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
+							}
+
+							subP->SetStrength(PROJECTILE_STRENGTH::SPECIAL);
+							projectileManager->AddProjectile(subP);
+
+							shootEffect->Play();
+							shootEffect->SetWorldPosition(subP->GetWorldPosition());
+						}
+					}
 				}
 			}
-			else {
-				StopBlock();
-				if (mods.x > 0.01f) {
-					Movement(Player::PLAYERMOVEMENT::RIGHT, deltaTime);
-				}
-				if (mods.x < -0.01f) {
-					Movement(Player::PLAYERMOVEMENT::LEFT, deltaTime);
-				}
-				if (mods.y > 0.01f) {
-					Movement(Player::PLAYERMOVEMENT::BACKWARD, deltaTime);
-				}
-				if (mods.y < -0.01f) {
-					Movement(Player::PLAYERMOVEMENT::FORWARD, deltaTime);
-				}
+
+			if (mods.x > 0.01f) {
+				Movement(Player::PLAYERMOVEMENT::RIGHT, deltaTime);
+			}
+			if (mods.x < -0.01f) {
+				Movement(Player::PLAYERMOVEMENT::LEFT, deltaTime);
+			}
+			if (mods.y > 0.01f) {
+				Movement(Player::PLAYERMOVEMENT::BACKWARD, deltaTime);
+			}
+			if (mods.y < -0.01f) {
+				Movement(Player::PLAYERMOVEMENT::FORWARD, deltaTime);
 			}
 
 			bool rtp;
@@ -265,7 +276,37 @@ void Player::FixedUpdate(const float deltaTime) {
 
 			if (rtp) {
 				if (!out) {
-					Jump();
+					std::vector<Projectile*> p = LightAttack();
+					if (p.size() > 0) {
+						for each (Projectile* subP in p) {
+
+							if (playerTeam == PLAYERTEAM::TEAM1) {
+								subP->SetTeam(PROJECTILE_TEAM::TEAM1);
+							}
+							else if (playerTeam == PLAYERTEAM::TEAM2) {
+								subP->SetTeam(PROJECTILE_TEAM::TEAM2);
+							}
+
+							if (playerNumber == PLAYERNUMBER::PLAYER1) {
+								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER1);
+							}
+							else if (playerNumber == PLAYERNUMBER::PLAYER2) {
+								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER2);
+							}
+							else if (playerNumber == PLAYERNUMBER::PLAYER3) {
+								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
+							}
+							else if (playerNumber == PLAYERNUMBER::PLAYER4) {
+								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
+							}
+
+							subP->SetStrength(PROJECTILE_STRENGTH::LIGHT);
+							projectileManager->AddProjectile(subP);
+
+							shootEffect->Play();
+							shootEffect->SetWorldPosition(subP->GetWorldPosition());
+						}
+					}
 				}
 			}
 		}
@@ -286,47 +327,44 @@ void Player::FixedUpdate(const float deltaTime) {
 void Player::HandleEvents(SDL_Event events)
 {
 	// Player can press buttons when not off the arena
-	if (!out && !playerInput->isNetworked()) {
+	if (!out && !playerInput->isNetworked() && canMove) {
 		switch (events.type)
 		{
+		case SDL_JOYBUTTONUP:
+			// X button
+			if (events.jbutton.button == 2 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
+			{
+				StopBlock();
+			}
+			// Y button
+			if (events.jbutton.button == 3 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
+			{
+				StopBlock();
+			}
+			break;
 		case SDL_JOYBUTTONDOWN:
 			// X button
 			if (events.jbutton.button == 2 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
 			{
-				std::vector<Projectile*> p = LightAttack();
-				if (p.size() > 0) {
-					for each (Projectile* subP in p) {
-
-						if (playerTeam == PLAYERTEAM::TEAM1) {
-							subP->SetTeam(PROJECTILE_TEAM::TEAM1);
-						}
-						else if (playerTeam == PLAYERTEAM::TEAM2) {
-							subP->SetTeam(PROJECTILE_TEAM::TEAM2);
-						}
-
-						if (playerNumber == PLAYERNUMBER::PLAYER1) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER1);
-						}
-						else if (playerNumber == PLAYERNUMBER::PLAYER2) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER2);
-						}
-						else if (playerNumber == PLAYERNUMBER::PLAYER3) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
-						}
-						else if (playerNumber == PLAYERNUMBER::PLAYER4) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
-						}
-
-						subP->SetStrength(PROJECTILE_STRENGTH::LIGHT);
-						projectileManager->AddProjectile(subP);
-
-						shootEffect->Play();
-						shootEffect->SetWorldPosition(subP->GetWorldPosition());
-					}
-				}
+				Block();
 			}
 			// Y button
 			if (events.jbutton.button == 3 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
+			{
+				Block();
+			}
+			// B button
+			if (events.jbutton.button == 1 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
+			{
+				Jump();
+			}
+			// A button
+			if (events.jbutton.button == 0 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
+			{
+				Jump();
+			}
+			// Left Bumper
+			if (events.jbutton.button == 4 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
 			{
 				std::vector<Projectile*> p = MediumAttack();
 				if (p.size() > 0) {
@@ -360,8 +398,8 @@ void Player::HandleEvents(SDL_Event events)
 					}
 				}
 			}
-			// B button
-			if (events.jbutton.button == 1 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
+			// Right Bumper
+			if (events.jbutton.button == 5 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
 			{
 				std::vector<Projectile*> p = HeavyAttack();
 				if (p.size() > 0) {
@@ -395,58 +433,13 @@ void Player::HandleEvents(SDL_Event events)
 					}
 				}
 			}
-			// A button
-			if (events.jbutton.button == 0 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
-			{
-				std::vector<Projectile*> p = SpecialAttack();
-				if (p.size() > 0) {
-					for each (Projectile* subP in p) {
-
-						if (playerTeam == PLAYERTEAM::TEAM1) {
-							subP->SetTeam(PROJECTILE_TEAM::TEAM1);
-						}
-						else if (playerTeam == PLAYERTEAM::TEAM2) {
-							subP->SetTeam(PROJECTILE_TEAM::TEAM2);
-						}
-
-						if (playerNumber == PLAYERNUMBER::PLAYER1) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER1);
-						}
-						else if (playerNumber == PLAYERNUMBER::PLAYER2) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER2);
-						}
-						else if (playerNumber == PLAYERNUMBER::PLAYER3) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
-						}
-						else if (playerNumber == PLAYERNUMBER::PLAYER4) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
-						}
-
-						subP->SetStrength(PROJECTILE_STRENGTH::SPECIAL);
-						projectileManager->AddProjectile(subP);
-
-						shootEffect->Play();
-						shootEffect->SetWorldPosition(subP->GetWorldPosition());
-					}
-				}
-			}
-			// Left Bumper
-			if (events.jbutton.button == 4 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
-			{
-				SwitchTarget();
-			}
-			// Right Bumper
-			if (events.jbutton.button == 5 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
-			{
-				SwitchTarget();
-			}
 			break;
 
 		case SDL_JOYHATMOTION:
 			// DPAD
 			if (events.jhat.value & SDL_HAT_UP && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
 			{
-				EnableTarget();
+				dialogue.playRandomFromOtherState(dialogue.Rare, true);
 			}
 			if (events.jhat.value & SDL_HAT_DOWN)
 			{
@@ -472,12 +465,12 @@ void Player::HandleStates(const Uint8 *state)
 
 void Player::Movement(PLAYERMOVEMENT movement, const float deltaTime)
 {
-	if (playerState == NORMAL || (movementCD.checkOffCD() && moveWhileShooting)) {
+	if (playerState == NORMAL) {
 
 		float moveMod = 1;
 
 		if (worldPosition.y > 0.1f) {
-			moveMod = 0.2f;
+			moveMod = 0.5f;
 		}
 		if (movement == FORWARD) {
 			if (!out) {
@@ -508,7 +501,7 @@ void Player::Movement(PLAYERMOVEMENT movement, const float deltaTime)
 
 void Player::UpdateModel(const float deltaTime)
 {
-	if (playerState == NORMAL) {
+	if (playerState != STUN) {
 		// Rotate Ring
 		ring->SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), ring->GetWorldRotationAngle() + 2.0f * deltaTime);
 
@@ -555,7 +548,7 @@ void Player::ResetModel() {
 
 void Player::SetStats() {
 	shieldHealth = maxHealth;
-	moveSpeed = 1.5f;
+	moveSpeed = 2.0f;
 	specialMeter = 0;
 }
 
@@ -588,34 +581,20 @@ void Player::SetPlayerTeam(PLAYERTEAM pT) {
 }
 
 void Player::Hit(Projectile* projectile) {
-	if (playerState != BLOCK) {
-		physicsComponent->AddForce(projectile->GetForce());
-		Stun(projectile->GetStunTime());
-		specialMeter += projectile->GetDamage() / 2;
-		if (specialMeter >= 100)
-		{
-			specialMeter = 100;
-		}
-	}
-	else if (shieldHealth <= 0) {
-		shieldCD.startCD();
-		physicsComponent->AddForce(projectile->GetForce() / 2.0f);
-		Stun(2.0f);
-	}
 
-	if (playerState == BLOCK) {
+	if (playerState == BLOCK && projectile->GetStrength() != PROJECTILE_STRENGTH::SPECIAL) {
 		shieldHealth -= projectile->GetDamage();
-		//specialMeter += projectile->GetDamage() / 2;
 		if (shieldHealth > 0) {
 			shield->SetWorldScale(shieldHealth / 100.0f, shieldHealth / 100.0f, 0.05f);
 		}
 	}
-	else if (shieldHealth <= 0) {
-		shieldCD.startCD();
-		physicsComponent->AddForce(projectile->GetForce() / 2.0f);
-		Stun(2.0f);
+
+	if (playerState != BLOCK) {
+		physicsComponent->AddForce(projectile->GetForce());
+		Stun(projectile->GetStunTime());
+		dialogue.playRandomFromOtherState(dialogue.TakingDamage, false);
 	}
-	dialogue.playRandomFromOtherState(dialogue.TakingDamage, false);
+
 	stunEffect->Play();
 	stunEffect->SetWorldPosition(worldPosition.x, worldPosition.y + 0.5f, worldPosition.z);
 }
@@ -637,6 +616,7 @@ void Player::Block() {
 	if (playerState == PLAYERSTATES::NORMAL) {
 		if (shieldHealth > 0) {
 			playerState = BLOCK;
+			physicsComponent->SetVelocity(glm::vec3(0.0f, 0.0f, 0.0f));
 		}
 		else if (shieldHealth <= 0) {
 			playerState = NORMAL;
@@ -727,8 +707,8 @@ void Player::Render(Shader* shader, const double _interpolation)
 
 	/*
 	if (isTargeting) {
-		shader->setMat4("model", markerInterpolatedMatrix * marker->GetLocalModelMatrix());
-		marker->Render(shader, _interpolation);
+	shader->setMat4("model", markerInterpolatedMatrix * marker->GetLocalModelMatrix());
+	marker->Render(shader, _interpolation);
 	}
 	*/
 }

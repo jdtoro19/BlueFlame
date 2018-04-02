@@ -136,6 +136,7 @@
     <ClCompile Include="Player\Player.cpp" />
     <ClCompile Include="Player\PlayerBase.cpp" />
     <ClCompile Include="Player\PlayerInput.cpp" />
+    <ClCompile Include="Player\PlayerWidget.cpp" />
     <ClCompile Include="Player\WindPlayer.cpp" />
     <ClCompile Include="Scenes\CharacterSelectScene.cpp" />
     <ClCompile Include="Scenes\ShowCaseScene.cpp" />
@@ -160,6 +161,7 @@
     <ClInclude Include="Player\Player.h" />
     <ClInclude Include="Player\PlayerBase.h" />
     <ClInclude Include="Player\PlayerInput.h" />
+    <ClInclude Include="Player\PlayerWidget.h" />
     <ClInclude Include="Player\WindPlayer.h" />
     <ClInclude Include="Scenes\CharacterSelectScene.h" />
     <ClInclude Include="Scenes\ShowCaseScene.h" />

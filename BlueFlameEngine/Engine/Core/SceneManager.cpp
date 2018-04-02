@@ -36,7 +36,7 @@ void SceneManager::Initialize(Window* w) {
 	SwitchScene(new DefaultScene());
 
 	// Load settings for text file
-	resolutionScale = Settings::getInstance()->resolutionScale;
+	resolutionScale = (float)Settings::getInstance()->resolutionScale;
 	renderer->EnableBloom(Settings::getInstance()->useBloom);	
 	ShowFPS(Settings::getInstance()->showFPS);
 	EnableFullscreen(Settings::getInstance()->fullscreen);

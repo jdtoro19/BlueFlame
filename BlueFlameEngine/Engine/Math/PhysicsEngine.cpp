@@ -108,8 +108,8 @@ bool PhysicsEngine::isColliding(ContactData *c) {
 
 		v1 = c->A->physicsComponent->velocity;
 		v2 = c->B->physicsComponent->velocity;
-		
-		
+
+
 	}
 	else if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE &&
 		c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX) {
@@ -152,11 +152,11 @@ bool PhysicsEngine::isColliding(ContactData *c) {
 		if (glm::abs(c->A->collisionComponent->GetBoundingBoxCentre().z - c->B->collisionComponent->GetBoundingBoxCentre().z) > (c->A->collisionComponent->GetBoundingBoxRadii().z + c->B->collisionComponent->GetBoundingBoxRadii().z)) return false;
 
 		/*if (c->A->physicsComponent->destructible == true) {
-			c->A->deleted = true;
+		c->A->deleted = true;
 		}
 
 		if (c->B->physicsComponent->destructible == true) {
-			c->B->deleted = true;
+		c->B->deleted = true;
 		}*/
 
 		// If intersecting along all axes, boxes are colliding 
@@ -240,7 +240,7 @@ bool PhysicsEngine::isColliding(CollisionComponent* a, CollisionComponent* b) {
 
 void PhysicsEngine::PenatrationCorrection(ContactData *c) {
 
-	if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE && 
+	if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE &&
 		c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE) {
 
 		// Creating normal to the vector between centre points of both objects
@@ -271,129 +271,129 @@ void PhysicsEngine::PenatrationCorrection(ContactData *c) {
 	// ============ WORK IN PROGRESS ============= 
 	/*
 	else if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE &&
-		c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX) {
-		glm::vec3 n = c->B->physicsComponent->GetPosition() - c->A->physicsComponent->GetPosition();
+	c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX) {
+	glm::vec3 n = c->B->physicsComponent->GetPosition() - c->A->physicsComponent->GetPosition();
 
-		glm::vec3 closest = n;
+	glm::vec3 closest = n;
 
-		float xExtent = (c->B->collisionComponent->GetBoundingBox().max.x - c->B->collisionComponent->GetBoundingBox().min.x) / 2.0f;
-		float yExtent = (c->B->collisionComponent->GetBoundingBox().max.y - c->B->collisionComponent->GetBoundingBox().min.y) / 2.0f;
-		float zExtent = (c->B->collisionComponent->GetBoundingBox().max.z - c->B->collisionComponent->GetBoundingBox().min.z) / 2.0f;
+	float xExtent = (c->B->collisionComponent->GetBoundingBox().max.x - c->B->collisionComponent->GetBoundingBox().min.x) / 2.0f;
+	float yExtent = (c->B->collisionComponent->GetBoundingBox().max.y - c->B->collisionComponent->GetBoundingBox().min.y) / 2.0f;
+	float zExtent = (c->B->collisionComponent->GetBoundingBox().max.z - c->B->collisionComponent->GetBoundingBox().min.z) / 2.0f;
 
-		closest.x = glm::clamp(-xExtent, xExtent, closest.x);
-		closest.y = glm::clamp(-yExtent, yExtent, closest.y);
-		closest.z = glm::clamp(-zExtent, zExtent, closest.z);
+	closest.x = glm::clamp(-xExtent, xExtent, closest.x);
+	closest.y = glm::clamp(-yExtent, yExtent, closest.y);
+	closest.z = glm::clamp(-zExtent, zExtent, closest.z);
 
-		bool inside = false;
+	bool inside = false;
 
-		if (n == closest) {
-			inside = true;
+	if (n == closest) {
+	inside = true;
 
-			if (glm::abs(n.x) < glm::abs(n.y) && glm::abs(n.x) < glm::abs(n.z)) {
-				if (closest.x > 0) {
-					closest.x = -xExtent;
-				}
-				else {
-					closest.x = xExtent;
-				}
-			}
-			else if (glm::abs(n.y) < glm::abs(n.x) && glm::abs(n.y) < glm::abs(n.z)) {
-				if (closest.y > 0) {
-					closest.y = -yExtent;
-				}
-				else {
-					closest.y = yExtent;
-				}
-			}
-			else if (glm::abs(n.z) < glm::abs(n.x) && glm::abs(n.z) < glm::abs(n.y)) {
-				if (closest.z > 0) {
-					closest.z = -zExtent;
-				}
-				else {
-					closest.z = zExtent;
-				}
-			}
+	if (glm::abs(n.x) < glm::abs(n.y) && glm::abs(n.x) < glm::abs(n.z)) {
+	if (closest.x > 0) {
+	closest.x = -xExtent;
+	}
+	else {
+	closest.x = xExtent;
+	}
+	}
+	else if (glm::abs(n.y) < glm::abs(n.x) && glm::abs(n.y) < glm::abs(n.z)) {
+	if (closest.y > 0) {
+	closest.y = -yExtent;
+	}
+	else {
+	closest.y = yExtent;
+	}
+	}
+	else if (glm::abs(n.z) < glm::abs(n.x) && glm::abs(n.z) < glm::abs(n.y)) {
+	if (closest.z > 0) {
+	closest.z = -zExtent;
+	}
+	else {
+	closest.z = zExtent;
+	}
+	}
 
-			glm::vec3 normal = n - closest;
-			float d = glm::length(normal);
-			float r = c->A->collisionComponent->GetBoundingSphereRadius()adius;
+	glm::vec3 normal = n - closest;
+	float d = glm::length(normal);
+	float r = c->A->collisionComponent->GetBoundingSphereRadius()adius;
 
-			d = glm::sqrt(d);
+	d = glm::sqrt(d);
 
-			if (inside) {
-				c->normal = -n;
-				c->penatration = r - d;
-			}
-			else {
-				c->normal = n;
-				c->penatration = r - d;
-			}
-		}
+	if (inside) {
+	c->normal = -n;
+	c->penatration = r - d;
+	}
+	else {
+	c->normal = n;
+	c->penatration = r - d;
+	}
+	}
 	}
 	// ======== SPHERE VS BOX COLLISION ==========
-	// ============ WORK IN PROGRESS ============= 
+	// ============ WORK IN PROGRESS =============
 	else if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX &&
-		c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE) {
-		glm::vec3 n = c->B->physicsComponent->GetPosition() - c->A->physicsComponent->GetPosition();
+	c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::SPHERE) {
+	glm::vec3 n = c->B->physicsComponent->GetPosition() - c->A->physicsComponent->GetPosition();
 
-		glm::vec3 closest = n;
+	glm::vec3 closest = n;
 
-		float xExtent = (c->A->collisionComponent->GetBoundingBox().max.x - c->A->collisionComponent->GetBoundingBox().min.x) / 2.0f;
-		float yExtent = (c->A->collisionComponent->GetBoundingBox().max.y - c->A->collisionComponent->GetBoundingBox().min.y) / 2.0f;
-		float zExtent = (c->A->collisionComponent->GetBoundingBox().max.z - c->A->collisionComponent->GetBoundingBox().min.z) / 2.0f;
+	float xExtent = (c->A->collisionComponent->GetBoundingBox().max.x - c->A->collisionComponent->GetBoundingBox().min.x) / 2.0f;
+	float yExtent = (c->A->collisionComponent->GetBoundingBox().max.y - c->A->collisionComponent->GetBoundingBox().min.y) / 2.0f;
+	float zExtent = (c->A->collisionComponent->GetBoundingBox().max.z - c->A->collisionComponent->GetBoundingBox().min.z) / 2.0f;
 
-		closest.x = glm::clamp(-xExtent, xExtent, closest.x);
-		closest.y = glm::clamp(-yExtent, yExtent, closest.y);
-		closest.z = glm::clamp(-zExtent, zExtent, closest.z);
+	closest.x = glm::clamp(-xExtent, xExtent, closest.x);
+	closest.y = glm::clamp(-yExtent, yExtent, closest.y);
+	closest.z = glm::clamp(-zExtent, zExtent, closest.z);
 
-		bool inside = false;
+	bool inside = false;
 
-		if (n == closest) {
-			inside = true;
+	if (n == closest) {
+	inside = true;
 
-			if (glm::abs(n.x) < glm::abs(n.y) && glm::abs(n.x) < glm::abs(n.z)) {
-				if (closest.x > 0) {
-					closest.x = xExtent;
-				}
-				else {
-					closest.x = -xExtent;
-				}
-			}
-			else if (glm::abs(n.y) < glm::abs(n.x) && glm::abs(n.y) < glm::abs(n.z)) {
-				if (closest.y > 0) {
-					closest.y = yExtent;
-				}
-				else {
-					closest.y = -yExtent;
-				}
-			}
-			else if (glm::abs(n.z) < glm::abs(n.x) && glm::abs(n.z) < glm::abs(n.y)) {
-				if (closest.z > 0) {
-					closest.z = zExtent;
-				}
-				else {
-					closest.z = -zExtent;
-				}
-			}
+	if (glm::abs(n.x) < glm::abs(n.y) && glm::abs(n.x) < glm::abs(n.z)) {
+	if (closest.x > 0) {
+	closest.x = xExtent;
+	}
+	else {
+	closest.x = -xExtent;
+	}
+	}
+	else if (glm::abs(n.y) < glm::abs(n.x) && glm::abs(n.y) < glm::abs(n.z)) {
+	if (closest.y > 0) {
+	closest.y = yExtent;
+	}
+	else {
+	closest.y = -yExtent;
+	}
+	}
+	else if (glm::abs(n.z) < glm::abs(n.x) && glm::abs(n.z) < glm::abs(n.y)) {
+	if (closest.z > 0) {
+	closest.z = zExtent;
+	}
+	else {
+	closest.z = -zExtent;
+	}
+	}
 
-			glm::vec3 normal = n - closest;
-			float d = glm::length(normal);
-			float r = c->B->collisionComponent->GetBoundingSphereRadius();
+	glm::vec3 normal = n - closest;
+	float d = glm::length(normal);
+	float r = c->B->collisionComponent->GetBoundingSphereRadius();
 
-			d = glm::sqrt(d);
+	d = glm::sqrt(d);
 
-			if (inside) {
-				c->normal = -n;
-				c->penatration = r - d;
-			}
-			else {
-				c->normal = n;
-				c->penatration = r - d;
-			}
-		}
+	if (inside) {
+	c->normal = -n;
+	c->penatration = r - d;
+	}
+	else {
+	c->normal = n;
+	c->penatration = r - d;
+	}
+	}
 	}*/
-	
-	else if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX && 
+
+	else if (c->A->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX &&
 		c->B->collisionComponent->GetCollisionType() == CollisionComponent::Collision_Type::BOX) {
 		// Setting the normal to a vector between centre points of both objects
 		c->normal = c->B->physicsComponent->GetPosition() - c->A->physicsComponent->GetPosition();
@@ -527,17 +527,19 @@ void PhysicsEngine::ApplyImpulse(ContactData *c) {
 	// FIX FOR CURRENT PHYISCS ENGINE BUILD
 	// LIMITS IMPULSE TO PROVIDE LESS REALISTIC PHYSICS
 	// MAKES FAST FLYING OBJECTS ON COLLISIONS IMPOSSIBLE
+	/*
 	if (impulse.x >= 150.0f || impulse.x <= -150.0f) {
-		impulse.x = 0.0f;
+	impulse.x = 0.0f;
 	}
 
 	if (impulse.y >= 150.0f || impulse.y <= -150.0f) {
-		impulse.y = 0.0f;
+	impulse.y = 0.0f;
 	}
 
 	if (impulse.z >= 150.0f || impulse.z <= -150.0f) {
-		impulse.z = 0.0f;
+	impulse.z = 0.0f;
 	}
+	*/
 
 	// Changes the velocity of  objects based on  impulse and inverse mass
 	c->A->physicsComponent->SetVelocity(c->A->physicsComponent->GetVelocity() - (invMassA * impulse));
@@ -583,15 +585,15 @@ void PhysicsEngine::ApplyImpulse(ContactData *c) {
 	// FIX FOR CURRENT PHYISCS ENGINE BUILD
 	// LIMITS IMPULSE TO PROVIDE LESS REALISTIC PHYSICS
 	// MAKES FAST FLYING OBJECTS ON COLLISIONS IMPOSSIBLE
-	if (frictionImpulse.x >= 300.0f || frictionImpulse.x <= -300.0f) {
+	if (frictionImpulse.x >= 600.0f || frictionImpulse.x <= -600.0f) {
 		frictionImpulse.x = 0.0f;
 	}
 
-	if (frictionImpulse.y >= 300.0f || frictionImpulse.y <= -300.0f) {
+	if (frictionImpulse.y >= 600.0f || frictionImpulse.y <= -600.0f) {
 		frictionImpulse.y = 0.0f;
 	}
 
-	if (frictionImpulse.z >= 300.0f || frictionImpulse.z <= -300.0f) {
+	if (frictionImpulse.z >= 600.0f || frictionImpulse.z <= -600.0f) {
 		frictionImpulse.z = 0.0f;
 	}
 
@@ -600,7 +602,7 @@ void PhysicsEngine::ApplyImpulse(ContactData *c) {
 	c->B->physicsComponent->SetVelocity(c->B->physicsComponent->GetVelocity() + invMassB * frictionImpulse);
 }
 
-void PhysicsEngine::ClosestPointOnAABB(glm::vec3 p, glm::vec3 c, glm::vec3 r, glm::vec3 & q){
+void PhysicsEngine::ClosestPointOnAABB(glm::vec3 p, glm::vec3 c, glm::vec3 r, glm::vec3 & q) {
 	// If the point is outside the box, clamp it to the box
 	// Else, keep it as is
 	for (int i = 0; i < 3; i++) {
