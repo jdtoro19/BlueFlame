@@ -42,8 +42,8 @@ std::vector<Projectile*> FirePlayer::LightAttack()
 			targetAngle, dir);
 
 		p->SetElement(ENGINE::PROJECTILE_ELEMENT::FIRE);
-		p->SetImpulseForce(glm::vec3(0.0f, 100.0f, 150.0f));
-		p->SetActingForce(glm::vec3(0.0f, -5.0f, 0.0f));
+		p->SetImpulseForce(glm::vec3(0.0f, 60.0f, 150.0f));
+		p->SetActingForce(glm::vec3(0.0f, -1.5f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 30.0f, 15.0f));
 		p->SetStunTime(0.2f);
 		p->SetWorldScale(0.3f);

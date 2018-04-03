@@ -333,7 +333,7 @@ Projectile* EarthPlayer::SpecialRock(float offset) {
 }
 
 Projectile* EarthPlayer::stalagmite(float offset, float delay) {
-	glm::vec3 startPos = glm::vec3(GetWorldPosition().x + (offset * targetAngle), -0.6f, GetWorldPosition().z - (offset * dir) - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir);
+	glm::vec3 startPos = glm::vec3(GetWorldPosition().x + (offset * targetAngle), 0.0f, GetWorldPosition().z - (offset * dir) - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir);
 	Projectile* p = new Projectile(startPos, targetAngle, dir);
 	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 0.0f));
 	p->SetActingForce(glm::vec3(0.0f, 5.0f, 0.0f));

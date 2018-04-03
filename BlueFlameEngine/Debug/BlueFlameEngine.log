@@ -1,6 +1,4 @@
-﻿  PhysicsEngine.cpp
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\math\physicsengine.cpp(100): warning C4101: 'vrn': unreferenced local variable
-c:\users\juan toro\documents\blueflame\blueflameengine\engine\math\physicsengine.cpp(169): warning C4715: 'ENGINE::PhysicsEngine::isColliding': not all control paths return a value
+﻿  ModelMesh.cpp
 SDL2_image.lib(SDL2_image.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored
 SDL2_image.lib(SDL2_image.dll) : warning LNK4221: This object file does not define any previously undefined public symbols, so it will not be used by any link operation that consumes this library
 SDL2_mixer.lib(SDL2_mixer.dll) : warning LNK4006: __NULL_IMPORT_DESCRIPTOR already defined in SDL2.lib(SDL2.dll); second definition ignored

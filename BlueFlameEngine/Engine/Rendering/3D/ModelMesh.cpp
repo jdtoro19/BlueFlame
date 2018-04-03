@@ -69,29 +69,37 @@ void ModelMesh::Render(Shader* shader)
 	unsigned int specularNr = 1;
 	unsigned int normalNr = 1;
 	unsigned int heightNr = 1;
-	for (unsigned int i = 0; i < textures.size(); i++)
-	{
-		glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
-										  // retrieve texture number (the N in diffuse_textureN)
-		stringstream ss;
-		string number;
-		string name = textures[i].type;
-		if (name == "texture_diffuse")
-			ss << diffuseNr++; // transfer unsigned int to stream
-		else if (name == "texture_specular")
-			ss << specularNr++; // transfer unsigned int to stream
-		else if (name == "texture_normal")
-			ss << normalNr++; // transfer unsigned int to stream
-		else if (name == "texture_height")
-			ss << heightNr++; // transfer unsigned int to stream
-		number = ss.str();
-		// now set the sampler to the correct texture unit
-		glUniform1i(glGetUniformLocation(shader->GetShaderProgram(), (name + number).c_str()), i);
-		// and finally bind the texture
-		glBindTexture(GL_TEXTURE_2D, textures[i].id);
+	if (textures.size() != 0) {
+		for (unsigned int i = 0; i < textures.size(); i++)
+		{
+			glActiveTexture(GL_TEXTURE0 + i); // active proper texture unit before binding
+											  // retrieve texture number (the N in diffuse_textureN)
+			stringstream ss;
+			string number;
+			string name = textures[i].type;
+			if (name == "texture_diffuse")
+				ss << diffuseNr++; // transfer unsigned int to stream
+			else if (name == "texture_specular")
+				ss << specularNr++; // transfer unsigned int to stream
+			else if (name == "texture_normal")
+				ss << normalNr++; // transfer unsigned int to stream
+			else if (name == "texture_height")
+				ss << heightNr++; // transfer unsigned int to stream
+			number = ss.str();
+			// now set the sampler to the correct texture unit
+			glUniform1i(glGetUniformLocation(shader->GetShaderProgram(), (name + number).c_str()), i);
+			// and finally bind the texture
+			glBindTexture(GL_TEXTURE_2D, textures[i].id);
+		}
+		if (textures.size() == 1) {
+			shader->setInt("texture_specular1", 0);
+			shader->setInt("texture_normal1", 0);
+		}
 	}
-	if (textures.size() == 1) {
+	else {
+		shader->setInt("texture_diffuse1", 0);
 		shader->setInt("texture_specular1", 0);
+		shader->setInt("texture_normal1", 0);
 	}
 	// draw mesh
 	glBindVertexArray(VAO);
@@ -100,4 +108,5 @@ void ModelMesh::Render(Shader* shader)
 
 	// always good practice to set everything back to defaults once configured.
 	glActiveTexture(GL_TEXTURE0);
+	glBindTexture(GL_TEXTURE_2D, 0);
 }

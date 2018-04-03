@@ -21,33 +21,40 @@ ProjectileRenderer::ProjectileRenderer() {
 
 	normFire = new Model("Resources/Models/Projectiles/Fire/Projectile_F_0001.obj");
 	normFire->SetWorldScale(0.2f);
+	normFire->SetLocalRotation(0.0f, 1.0f, 0.0f, -1.57f);
 	fireMeteor = new Model("Resources/Models/Projectiles/Fire/Projectile_Meteor_0001.obj");
 	fireMeteor->SetWorldScale(0.025f);
 
 	normEarth = new Model("Resources/Models/Projectiles/Earth/Projectile_S_0001.obj");
 	normEarth->SetWorldScale(0.2f);
+	normEarth->SetLocalRotation(0.0f, 1.0f, 0.0f, -1.57f);
 	earthStalagmites = new Model("Resources/Models/Projectiles/Earth/Projectile_EarthSpike_0001.obj");
-	earthStalagmites->SetWorldScale(0.005f);
+	earthStalagmites->SetWorldScale(0.010f);
+	earthStalagmites->SetLocalRotation(1.0f, 0.0f, 0.0f, 3.14f);
 	earthUlt = new Model("Resources/Models/Projectiles/Earth/Projectile_Wall_Ice.obj");
 	earthUlt->SetWorldScale(0.010f);
 
 	//STILL NEEDS TO BE TEXTURED
 	normIce = new Model("Resources/Models/Projectiles/Ice/Projectile_I_0001.obj");
 	normIce->SetWorldScale(0.2f);
+	normIce->SetLocalRotation(0.0f, 1.0f, 0.0f, -1.57f);
 	iceRamp = new Model("Resources/Models/Projectiles/Ice/Projectile_Ramp_Ice.obj");
 	iceRamp->SetWorldScale(0.010f);
 	iceWall = new Model("Resources/Models/Projectiles/Ice/Projectile_Wall_Ice.obj");
 	iceWall->SetWorldScale(0.010f);
 	iceUlt = new Model("Resources/Models/Projectiles/Ice/Projectile_Icicle.obj");
-	iceUlt->SetWorldScale(0.005f);
+	iceUlt->SetWorldScale(0.015f, 0.015f, 0.010f);
+	iceUlt->SetLocalRotation(1.0f, 0.0f, 0.0f, -1.57f);
 
 	normElec = new Model("Resources/Models/Projectiles/Elec/Projectile_E_0001.obj");
 	normElec->SetWorldScale(0.2f);
+	normElec->SetLocalRotation(0.0f, 1.0f, 0.0f, -1.57f);
 	elecDisc = new Model("Resources/Models/Projectiles/Elec/Projectile_Shurniken_0001.obj");
 	elecDisc->SetWorldScale(0.010f);
 
 	normWind = new Model("Resources/Models/Projectiles/Wind/Projectile_W_0001.obj");
 	normWind->SetWorldScale(0.2f);
+	normWind->SetLocalRotation(0.0f, 1.0f, 0.0f, -1.57f);
 	windDisc = new Model("Resources/Models/Projectiles/Wind/Projectile_Shurniken_0001.obj");
 	windDisc->SetWorldScale(0.010f);
 	windWall = new Model("Resources/Models/Projectiles/Wind/Projectile_Wall_Ice.obj");

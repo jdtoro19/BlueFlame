@@ -36,7 +36,7 @@ std::vector<Projectile*> IcePlayer::LightAttack()
 		lightComboTimer = 0.4f;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 70.0f));
+		p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 90.0f));
 		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 20.0f));
 		p->SetFirstDelay(0.15f, glm::vec3(0.5f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.25f, 0.25f, 0.25f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
@@ -47,7 +47,7 @@ std::vector<Projectile*> IcePlayer::LightAttack()
 		projectiles.push_back(p);
 
 		Projectile* p1 = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
-		p1->SetImpulseForce(glm::vec3(0.0f, 0.0f, 70.0f));
+		p1->SetImpulseForce(glm::vec3(0.0f, 0.0f, 90.0f));
 		p1->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p1->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 20.0f));
 		p1->SetFirstDelay(0.15f, glm::vec3(-0.5f, 0.0f, 0.0f), glm::vec3(0.25f, 0.25f, 0.25f), glm::vec3(0.25f, 0.25f, 0.25f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));

@@ -49,12 +49,12 @@ std::vector<Projectile*> LightningPlayer::LightAttack()
 		lightComboPosition++;
 		lightComboTimer = 0.4f;
 
-		Projectile* p = Shocker(0.5f, 0.0f, 100.0f, 0.0f, 0.2f, 10.0f);
+		Projectile* p = Shocker(0.5f, 0.0f, 100.0f, 0.0f, 0.2f, 3.5f);
 		p->SetDamage(2);
 		p->SetMesh(PROJECTILE_MESH::NORM_ELEC);
 		proj.push_back(p);
 
-		Projectile* a = Shocker(-0.5f, 0.0f, 100.0f, 0.0f, 0.2f, 10.0f);
+		Projectile* a = Shocker(-0.5f, 0.0f, 100.0f, 0.0f, 0.2f, 3.5f);
 		a->SetDamage(2);
 		a->SetMesh(PROJECTILE_MESH::NORM_ELEC);
 		proj.push_back(a);
@@ -75,17 +75,17 @@ std::vector<Projectile*> LightningPlayer::MediumAttack()
 		mediumComboTimer = 1.5f;
 
 		Projectile* f = ForkedLightning(0);
-		f->SetDamage(8);
+		f->SetDamage(4);
 		f->SetMesh(PROJECTILE_MESH::NORM_ELEC);
 		proj.push_back(f);
 
 		Projectile* o = ForkedLightning(-20.0);
-		o->SetDamage(8);
+		o->SetDamage(4);
 		o->SetMesh(PROJECTILE_MESH::NORM_ELEC);
 		proj.push_back(o);
 
 		Projectile* r = ForkedLightning(20.0);
-		r->SetDamage(8);
+		r->SetDamage(4);
 		r->SetMesh(PROJECTILE_MESH::NORM_ELEC);
 		proj.push_back(r);
 

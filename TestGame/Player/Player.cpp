@@ -102,7 +102,7 @@ void Player::Update(const float deltaTime)
 	}
 	// Target Direction
 	//
-	if (isTargeting) {
+	/*if (isTargeting) {
 		if (!enemyTeam.at(currentTarget)->out) {
 			targetedPlayer = enemyTeam.at(currentTarget)->worldPosition;
 			targetAngle = -glm::atan((targetedPlayer.x - worldPosition.x) / (targetedPlayer.z - worldPosition.z));
@@ -115,7 +115,7 @@ void Player::Update(const float deltaTime)
 		targetedPlayer = glm::vec3(worldPosition);
 		targetedPlayer.z += dir;
 		targetAngle = -glm::atan((targetedPlayer.x - worldPosition.x) / (targetedPlayer.z - worldPosition.z));
-	}
+	}*/
 
 	// UPDATE TIMERS
 	//
@@ -201,11 +201,19 @@ void Player::FixedUpdate(const float deltaTime) {
 	if (canMove) {
 		if (playerInput->CheckForController() || playerInput->isNetworked()) {//if they have a controller
 			glm::vec2 mods;
+			glm::vec2 rightStick;
 			if (playerInput->isNetworked()) {
 				mods = glm::vec2(playerInput->networkedJoystickInputs.at(1), playerInput->networkedJoystickInputs.at(2));
 			}
 			else {
 				mods = playerInput->LeftJoystick();
+			}
+
+			if (playerInput->isNetworked()) {
+				rightStick = glm::vec2(playerInput->networkedJoystickInputs.at(3), playerInput->networkedJoystickInputs.at(4));
+			}
+			else {
+				rightStick = playerInput->RightJoystick();
 			}
 
 			bool ltp;
@@ -264,6 +272,25 @@ void Player::FixedUpdate(const float deltaTime) {
 			}
 			if (mods.y < -0.01f) {
 				Movement(Player::PLAYERMOVEMENT::FORWARD, deltaTime);
+			}
+			
+			if (rightStick.x > 0.01f) {
+				targetAngle += 0.03f;
+			}
+
+			if (rightStick.x < -0.01f) {
+				targetAngle -= 0.03f;
+			}
+
+			if (rightStick.x < 0.01f && rightStick.x > -0.01f) {
+				targetAngle = 0.0f;
+			}
+
+			if (targetAngle > 0.5f) {
+				targetAngle = 0.5f;
+			}
+			else if (targetAngle < -0.5f) {
+				targetAngle = -0.5f;
 			}
 
 			bool rtp;
