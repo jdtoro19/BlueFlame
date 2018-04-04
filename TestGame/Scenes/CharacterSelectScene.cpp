@@ -60,9 +60,11 @@ bool CharacterSelectScene::Initialize()
 
 	crosshair1 = new Crosshair("Resources/Textures/CharacterSelectScreen/crosshair.png", 200, 300);
 	crosshair1->GetImage()->SetName("crosshair1");
+	crosshair1->GetPlayerInput()->setPlayerNum(0);
 
 	if (Settings::getInstance()->networkedGame && !Settings::getInstance()->isServer) {
 		crosshair1->GetPlayerInput()->makeNetworked();
+		
 	}
 	else {
 		//player1->GetPlayerInput()->AddAnyController();
@@ -71,9 +73,11 @@ bool CharacterSelectScene::Initialize()
 
 	crosshair2 = new Crosshair("Resources/Textures/CharacterSelectScreen/crosshairP2.png", 200, 900);
 	crosshair2->GetImage()->SetName("crosshair2");
+	crosshair2->GetPlayerInput()->setPlayerNum(1);
 	//crosshair2->GetPlayerInput()->AddAnyController();
 	if (Settings::getInstance()->networkedGame && !Settings::getInstance()->isServer) {
 		crosshair2->GetPlayerInput()->makeNetworked();
+		
 	}
 	else {
 		//player2->GetPlayerInput()->AddAnyController();
@@ -82,9 +86,11 @@ bool CharacterSelectScene::Initialize()
 
 	crosshair3 = new Crosshair("Resources/Textures/CharacterSelectScreen/crosshairP3.png", 1700, 300);
 	crosshair3->GetImage()->SetName("crosshair3");
+	crosshair3->GetPlayerInput()->setPlayerNum(2);
 	//crosshair3->GetPlayerInput()->AddAnyController();
 	if (Settings::getInstance()->networkedGame && ((Settings::getInstance()->isServer && !Settings::getInstance()->spectatorMode) || (!Settings::getInstance()->isServer && Settings::getInstance()->spectatorMode))) {
 		crosshair3->GetPlayerInput()->makeNetworked();
+		
 	}
 	else {
 		//player3->GetPlayerInput()->AddAnyController();
@@ -93,9 +99,11 @@ bool CharacterSelectScene::Initialize()
 
 	crosshair4 = new Crosshair("Resources/Textures/CharacterSelectScreen/crosshairP4.png", 1700, 900);
 	crosshair4->GetImage()->SetName("crosshair4");
+	crosshair4->GetPlayerInput()->setPlayerNum(3);
 	//crosshair4->GetPlayerInput()->AddAnyController();
 	if (Settings::getInstance()->networkedGame && ((Settings::getInstance()->isServer && !Settings::getInstance()->spectatorMode) || (!Settings::getInstance()->isServer && Settings::getInstance()->spectatorMode))) {
 		crosshair4->GetPlayerInput()->makeNetworked();
+		
 	}
 	else {
 		//player4->GetPlayerInput()->AddAnyController();
@@ -339,7 +347,7 @@ void CharacterSelectScene::Update(const float deltaTime)
 			}
 			else {
 				std::string dataChunk = crosshair1->GetPlayerInput()->UpdateJoystickState() + crosshair2->GetPlayerInput()->UpdateJoystickState() + crosshair3->GetPlayerInput()->UpdateJoystickState() + crosshair4->GetPlayerInput()->UpdateJoystickState();
-				std::cout << dataChunk << std::endl;
+				//std::cout << dataChunk << std::endl;
 				BFEngine::GetInstance()->sendData(dataChunk);
 			}
 		}
@@ -356,7 +364,7 @@ void CharacterSelectScene::Update(const float deltaTime)
 		else {
 			//read input from the other game
 			std::string externalInput = BFEngine::GetInstance()->receiveData();
-			cout << "first set of data received: " << externalInput << endl;
+			//cout << "first set of data received: " << externalInput << endl;
 			if (externalInput != "") {
 				if (externalInput == "move" && !loading) {
 					loadingCD.startCD();
@@ -366,38 +374,38 @@ void CharacterSelectScene::Update(const float deltaTime)
 					bgm->Stop();
 					//announcer->playSpecifiedFromState(Announcer::CharacterSelect, 5);
 				}
-			}
-			else {
-				if (externalInput.length() >= 70) {
-					//break it into components
-					std::string input1 = externalInput.substr(0, 35);
-					std::string input2 = externalInput.substr(35, 35);
-					//check first string
-					std::string playerNum = input1.substr(0, 1);
-					if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
-						cout << "PlayerNum: " << playerNum << std::endl;
-						crosshairList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input1);
+				else {
+					if (externalInput.length() >= 70) {
+						//break it into components
+						std::string input1 = externalInput.substr(0, 35);
+						std::string input2 = externalInput.substr(35, 35);
+						//check first string
+						std::string playerNum = input1.substr(0, 1);
+						if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
+							//cout << "PlayerNum: " << playerNum << std::endl;
+							crosshairList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input1);
+						}
+						playerNum = input2.substr(0, 1);
+						if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
+							//cout << "PlayerNum: " << playerNum << std::endl;
+							crosshairList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input2);
+						}
 					}
-					playerNum = input2.substr(0, 1);
-					if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
-						cout << "PlayerNum: " << playerNum << std::endl;
-						crosshairList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input2);
-					}
-				}
-				//if spectator mode is on we'll have more controllers to parse
-				if (Settings::getInstance()->spectatorMode && externalInput.length() >= 140) {
-					std::string input1 = externalInput.substr(70, 35);
-					std::string input2 = externalInput.substr(105, 35);
-					//check first string
-					std::string playerNum = input1.substr(0, 1);
-					if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
-						cout << "PlayerNum: " << playerNum << std::endl;
-						crosshairList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input1);
-					}
-					playerNum = input2.substr(0, 1);
-					if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
-						cout << "PlayerNum: " << playerNum << std::endl;
-						crosshairList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input2);
+					//if spectator mode is on we'll have more controllers to parse
+					if (Settings::getInstance()->spectatorMode && externalInput.length() >= 140) {
+						std::string input1 = externalInput.substr(70, 35);
+						std::string input2 = externalInput.substr(105, 35);
+						//check first string
+						std::string playerNum = input1.substr(0, 1);
+						if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
+							//cout << "PlayerNum: " << playerNum << std::endl;
+							crosshairList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input1);
+						}
+						playerNum = input2.substr(0, 1);
+						if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
+							//cout << "PlayerNum: " << playerNum << std::endl;
+							crosshairList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input2);
+						}
 					}
 				}
 			}
@@ -407,6 +415,7 @@ void CharacterSelectScene::Update(const float deltaTime)
 	//handles buttons
 	for (int i = 0; i < crosshairList.size(); i++)
 	{
+		crosshairList.at(i)->GetPlayerInput()->DebugState();
 		HandleNetworkEvents(i);
 	}
 
@@ -442,6 +451,40 @@ void CharacterSelectScene::HandleEvents(SDL_Event events)
 					ControllerPressStart(events.jbutton.which);
 				}
 			}
+		}
+	}
+
+	//starts cpu only mode
+	if (events.type == SDL_KEYDOWN && events.key.repeat == 0)
+	{
+		if (events.key.keysym.sym == SDLK_c) {
+			for (int i = 0; i < 4; i++) {
+				int randNum = Clock::GetInstance()->generateRandomNumber();
+				int randomPlayer = 0;
+				if (randNum < 2) {
+					randomPlayer = 0;
+				}
+				else if (randNum < 4) {
+					randomPlayer = 1;
+				}
+				else if (randNum < 6) {
+					randomPlayer = 2;
+				}
+				else if (randNum < 8) {
+					randomPlayer = 3;
+				}
+				else {
+					randomPlayer = 4;
+				}
+				sceneManager->saveData.push_back(randomPlayer);
+			}
+			sceneManager->justCPUS = true;
+			loadingCD.startCD();
+			loading = true;
+			loadingScreen->SetVisible(true);
+			sceneManager->GetRenderer()->EnableInvertedColours(false);
+			bgm->Stop();
+			announcer->playSpecifiedFromState(Announcer::CharacterSelect, 5);
 		}
 	}
 }
@@ -535,7 +578,13 @@ void CharacterSelectScene::HandleNetworkEvents(int i) //they're also local event
 				else
 				{
 					//this doesn't do anything anymore
-
+					if (!ready) {
+						if (Settings::getInstance()->networkedGame && crosshairList.at(i)->GetPlayerInput()->isNetworked() && !crosshairList.at(i)->GetEnabled()) {
+							crosshairList.at(i)->SetCanMove(true);
+							crosshairList.at(i)->SetEnabled(true);
+							AddUIObject(crosshairList.at(i)->GetImage());
+						}
+					}
 				}
 			}
 		}

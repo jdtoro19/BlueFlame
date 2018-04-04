@@ -31,7 +31,7 @@ std::vector<Projectile*> FirePlayer::LightAttack()
 
 	if (playerState == NORMAL && lightComboTimer <= 0)
 	{
-		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 1);
+		//dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 1);
 		if (worldPosition.y > 0.1) {
 			physicsComponent->SetVelocity(glm::vec3(0, 7, 0));
 		}
@@ -209,6 +209,7 @@ std::vector<Projectile*> FirePlayer::HeavyAttack()
 
 	if (playerState == NORMAL && heavyComboTimer <= 0)
 	{
+		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 1);
 		heavyComboTimer = 3.0f;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y + collisionComponent->GetBoundingBox().r.y / 1.5f * GetWorldScale().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),

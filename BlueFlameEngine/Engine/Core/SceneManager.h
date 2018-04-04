@@ -122,6 +122,8 @@ namespace ENGINE {
 
 		// Save data
 		vector<int> saveData;
+
+		bool justCPUS;
 		
 	private:
 		// SceneManager variables

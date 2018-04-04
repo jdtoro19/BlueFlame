@@ -49,7 +49,10 @@ ImageUI* Crosshair::GetImage()
 
 void Crosshair::Update(const float deltaTime)
 {
-	playerInput->ParseNetworkInputs(playerInput->UpdateJoystickState());
+	if (!Settings::getInstance()->networkedGame && !Settings::getInstance()->spectatorMode) {
+		playerInput->ParseNetworkInputs(playerInput->UpdateJoystickState());
+	}
+	
 	//playerInput->DebugState();
 
 	// If player can move update movement 

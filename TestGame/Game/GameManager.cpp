@@ -19,6 +19,7 @@ void GameManager::Initialize()
 	// Create announcer
 	announcer = Announcer();
 	announcer.LoadDialogue("Resources/Audio/AnnouncerAudio.txt");
+	announcer.channel = 1;
 	announcer.SetVolume(60);
 
 	// Set game status checks

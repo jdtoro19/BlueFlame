@@ -27,7 +27,7 @@ bool SoundEffect::Load(const std::string& fileName) {
 	}
 	else {
 		//Debug::Log(EMessageType::INFO, "Loaded the sound effect", __FILE__, __LINE__);
-		printf("Sound effect loaded successfully");
+		printf("Sound effect loaded successfully\n");
 	}
 
 	Mix_VolumeChunk(mixChunk, volume);

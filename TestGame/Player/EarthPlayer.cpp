@@ -44,7 +44,7 @@ std::vector<Projectile*> EarthPlayer::LightAttack()
 
 	if (playerState == NORMAL && lightComboTimer <= 0)
 	{
-		dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 1);
+		//dialogue.playSpecifiedFromState(dialogue.RegularProjectile, 1);
 		lightComboTimer = 0.4f;
 
 		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir),
@@ -333,7 +333,7 @@ Projectile* EarthPlayer::SpecialRock(float offset) {
 }
 
 Projectile* EarthPlayer::stalagmite(float offset, float delay) {
-	glm::vec3 startPos = glm::vec3(GetWorldPosition().x + (offset * targetAngle), 0.0f, GetWorldPosition().z - (offset * dir) - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir);
+	glm::vec3 startPos = glm::vec3(GetWorldPosition().x + (offset * targetAngle * dir), 0.0f, GetWorldPosition().z - (offset * dir) - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir);
 	Projectile* p = new Projectile(startPos, targetAngle, dir);
 	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 0.0f));
 	p->SetActingForce(glm::vec3(0.0f, 5.0f, 0.0f));

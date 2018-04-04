@@ -186,12 +186,14 @@ void Player::Update(const float deltaTime)
 	default:
 		break;
 	}
-	dialogue.playIdle(); //will play an idle sound if sound hasn't been played recently
+	if (!out) {
+		dialogue.playIdle(); //will play an idle sound if sound hasn't been played recently
+	}
 }
 
 void Player::FixedUpdate(const float deltaTime) {
 
-	if (!computerPlayer && (!Settings::getInstance()->replaySystemEnabled || !Settings::getInstance()->playingReplay)) {
+	if (!(Settings::getInstance()->networkedGame && Settings::getInstance()->spectatorMode && !Settings::getInstance()->isServer) && !computerPlayer && (!Settings::getInstance()->replaySystemEnabled || !Settings::getInstance()->playingReplay)) {
 		playerInput->ParseNetworkInputs(playerInput->UpdateJoystickState());
 	}
 	else if (computerPlayer) {
@@ -432,15 +434,15 @@ void Player::SetPlayerTeam(PLAYERTEAM pT) {
 }
 
 void Player::Hit(Projectile* projectile) {
-
-	if (playerState == BLOCK && projectile->GetStrength() != PROJECTILE_STRENGTH::SPECIAL) {
-		shieldHealth -= projectile->GetDamage();
+	if (shieldHealth > 0 && playerState == BLOCK && projectile->GetStrength() != PROJECTILE_STRENGTH::SPECIAL) 
+	{
+		shieldHealth -= projectile->GetDamage() * 2;
 		if (shieldHealth > 0) {
 			shield->SetWorldScale(shieldHealth / 100.0f, shieldHealth / 100.0f, 0.05f);
 		}
 	}
-
-	if (playerState != BLOCK) {
+	else
+	{
 		if (playerInput->CheckForController()) {
 			playerInput->PlayFeedback(projectile->GetStunTime());
 		}

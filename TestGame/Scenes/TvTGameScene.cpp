@@ -69,6 +69,19 @@ bool TvTGameScene::Initialize()
 	spectatorText->SetSpacing(9.0f);
 	spectatorText->SetPosition(50, 80);
 
+	CPUText = new TextUI();
+	CPUText->SetFont("Resources/Fonts/ka1.ttf");
+	CPUText->SetText("COMPUTER MATCH");
+	CPUText->SetColour(1.0, 1.0f, 1.0f);
+	CPUText->SetSize(0.5f);
+	CPUText->SetSpacing(9.0f);
+	CPUText->SetPosition(40, 100);
+
+	if (sceneManager->justCPUS) {
+		CPUText->SetVisible(true);
+		AddUIObject(CPUText);
+	}
+
 	// UI
 	fadeImage = new ImageUI();
 	fadeImage->SetImage("Resources/Textures/blackFILL.png");
@@ -285,7 +298,7 @@ void TvTGameScene::Update(const float deltaTime)
 			else {
 				//read input from the other game
 				std::string externalInput = BFEngine::GetInstance()->receiveData();
-				//cout << "first set of data received: " << externalInput << endl;
+				cout << "first set of data received: " << externalInput << endl;
 				if (externalInput != "") {
 					if (externalInput.length() >= 70) {
 						//break it into components
@@ -441,6 +454,10 @@ void TvTGameScene::FixedUpdate(const float deltaTime)
 				projectileManager->RemoveProjectile(projectileManager->GetProjectileList().at(i));
 			}
 		}
+	}
+
+	if (gameManager->IsGameOver() && sceneManager->justCPUS) {
+		Restart();
 	}
 }
 void TvTGameScene::HandleEvents(SDL_Event events)
@@ -703,8 +720,10 @@ void TvTGameScene::PlayRoundStart()
 {
 	if (!ready) {
 		if (!announcerVoice) {
-			gameManager->announcer.playRandomFromOtherState(gameManager->announcer.MatchStart, false);
-			announcerVoice = true;
+			if (!Mix_Playing(1)) {
+				gameManager->announcer.playRandomFromOtherState(gameManager->announcer.MatchStart, false);
+				announcerVoice = true;
+			}
 		}
 		roundText->SetText("Ready?");
 		roundText->SetSize(roundText->GetSize() + deltaTime * 5);
@@ -918,6 +937,12 @@ void TvTGameScene::SetUpPlayers()
 		player4->GetPlayerInput()->makeNetworked();
 	}
 
+	if (sceneManager->justCPUS) {
+		player1->SetAsCPU();
+		player2->SetAsCPU();
+		player3->SetAsCPU();
+		player4->SetAsCPU();
+	}
 
 	// Set player audio channels
 	player1->dialogue.channel = 2;
@@ -1027,7 +1052,7 @@ void TvTGameScene::SetUpArena()
 	divider->SetShader(defaultShaderHandle);
 	divider->renderComponent->SetColour(0.1f, 0.1f, 0.1f);
 	divider->physicsComponent->SetPosition(glm::vec3(0.0f, 0.0f, 0.0f));
-	divider->SetWorldScale(11.0f, 2.0f, 0.5f);
+	divider->SetWorldScale(100.0f, 100.0f, 0.5f);
 	divider->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	divider->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::PERFECT_NON_ELASTIC);
 	divider->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);

@@ -1,5 +1,11 @@
-﻿  ShowCaseScene.cpp
-c:\users\juan toro\documents\blueflame\testgame\scenes\showcasescene.cpp(79): warning C4305: 'argument': truncation from 'double' to 'const float'
-c:\users\juan toro\documents\blueflame\testgame\scenes\showcasescene.cpp(80): warning C4305: 'argument': truncation from 'double' to 'const float'
+﻿  TvTGameScene.cpp
+c:\users\juan toro\documents\blueflame\testgame\scenes\tvtgamescene.cpp(395): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\tvtgamescene.cpp(662): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\tvtgamescene.cpp(712): warning C4018: '<': signed/unsigned mismatch
+c:\users\juan toro\documents\blueflame\testgame\scenes\tvtgamescene.cpp(989): warning C4305: 'argument': truncation from 'double' to 'const float'
+c:\users\juan toro\documents\blueflame\testgame\scenes\tvtgamescene.cpp(990): warning C4305: 'argument': truncation from 'double' to 'const float'
+c:\users\juan toro\documents\blueflame\testgame\scenes\tvtgamescene.cpp(1075): warning C4018: '<': signed/unsigned mismatch
+  GameManager.cpp
+  Generating Code...
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.exe
   TestGame.vcxproj -> C:\Users\Juan Toro\Documents\BlueFlame\Debug\TestGame.pdb (Partial PDB)

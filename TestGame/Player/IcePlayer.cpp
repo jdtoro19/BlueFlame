@@ -59,7 +59,7 @@ std::vector<Projectile*> IcePlayer::LightAttack()
 		p1->SetMesh(PROJECTILE_MESH::NORM_ICE);
 		projectiles.push_back(p1);
 
-		dialogue.sometimesPlayRandomFromOtherState(PlayerDialogue::RegularProjectile, 2, false);
+		//dialogue.sometimesPlayRandomFromOtherState(PlayerDialogue::RegularProjectile, 2, false);
 	}
 	/*
 	if (playerState == NORMAL && lightComboTimer <= 0.0f && lightComboPosition == 0 && playerState != BLOCK && playerState != STUN) {

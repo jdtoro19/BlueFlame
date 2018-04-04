@@ -42,6 +42,8 @@ void SceneManager::Initialize(Window* w) {
 	EnableFullscreen(Settings::getInstance()->fullscreen);
 
 	loading = false;
+
+	justCPUS = false;
 }
 
 // Calls the current scene's update 

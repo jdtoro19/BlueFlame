@@ -26,8 +26,8 @@ Resources\Audio\FLINT\FLINT_AWWDAMN.wav
 Resources\Audio\FLINT\FLINT_EAHH.wav
 Resources\Audio\FLINT\FLINT_HWAHNO.wav
 Resources\Audio\FLINT\FLINT_OHHOH.wav
-Resources\Audio\FLINT\FLINT_OWH
-Resources\Audio\FLINT\FLINT_PWOH
+Resources\Audio\FLINT\FLINT_OWH.wav
+Resources\Audio\FLINT\FLINT_PWOH.wav
 Resources\Audio\FLINT\FLINT_TAKINGHEAVYFIRE.wav
 Resources\Audio\FLINT\FLINT_WOH.wav
 =7.	RegularProjectile
