@@ -303,7 +303,10 @@ bool BFEngine::setUpNetworkAsServer() {
 			x = 1;
 			printf("accept SUCCEEDED");
 
-			// No longer need server socket
+			//ufds[0].fd = ClientSocket;
+			//ufds[0].events = POLLIN; // check for just normal data
+
+									 // No longer need server socket
 			closesocket(ListenSocket);
 
 			clientTable.push_back(spacer);
@@ -366,6 +369,10 @@ bool BFEngine::setUpNetworkAsClient() {
 			WSACleanup();
 			return false;
 		}
+		else {
+			//ufds[0].fd = ClientSocket;
+			//ufds[0].events = POLLIN; // check for just normal data
+		}
 
 		// Connect to server.
 		iResult = connect(ClientSocket, ptr->ai_addr, (int)ptr->ai_addrlen);
@@ -380,25 +387,24 @@ bool BFEngine::setUpNetworkAsClient() {
 }
 
 std::string BFEngine::receiveData() {
+		iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
 
-	iResult = recv(ClientSocket, recvbuf, recvbuflen, 0);
+		//printf("%i", sizeof(recvbuf), "\n");
+		memcpy(connectedClientName, recvbuf, 256);
 
-	//printf("%i", sizeof(recvbuf), "\n");
-	memcpy(connectedClientName, recvbuf, 256);
-
-	if (iResult > 0) {
-		char ipstr[INET6_ADDRSTRLEN];
-		inet_ntop(AF_INET, &client_info.sin_addr, (PSTR)ipstr, sizeof(ipstr));
-		return connectedClientName;
-	}
-	else if (iResult == 0)
-		printf("Connection closing...\n");
-	else {
-		//printf("recv failed with error: %d\n", WSAGetLastError());
-		//closesocket(ClientSocket);
-		//WSACleanup();
-		return "";
-	}
+		if (iResult > 0) {
+			char ipstr[INET6_ADDRSTRLEN];
+			inet_ntop(AF_INET, &client_info.sin_addr, (PSTR)ipstr, sizeof(ipstr));
+			return connectedClientName;
+		}
+		else if (iResult == 0)
+			printf("Connection closing...\n");
+		else {
+			//printf("recv failed with error: %d\n", WSAGetLastError());
+			//closesocket(ClientSocket);
+			//WSACleanup();
+			return "";
+		}
 }
 
 void BFEngine::sendData(std::string data) {

@@ -49,17 +49,13 @@ ImageUI* Crosshair::GetImage()
 
 void Crosshair::Update(const float deltaTime)
 {
+	playerInput->ParseNetworkInputs(playerInput->UpdateJoystickState());
+	//playerInput->DebugState();
+
 	// If player can move update movement 
 	if (canMove) {
 		if (playerInput->CheckForController() || playerInput->isNetworked()) {//if they have a controller
-			glm::vec2 mods;
-
-			if (playerInput->isNetworked()) {
-				//mods = glm::vec2(playerInput->networkedJoystickInputs.at(1), playerInput->networkedJoystickInputs.at(2));
-			}
-			else {
-				mods = playerInput->LeftJoystick();
-			}
+			glm::vec2 mods = glm::vec2(playerInput->controllerState.at(1), playerInput->controllerState.at(2));
 
 			if (mods.x > 0.01f) {
 				crosshair->SetPosition(crosshair->GetPosition().x + deltaTime * 800, crosshair->GetPosition().y);

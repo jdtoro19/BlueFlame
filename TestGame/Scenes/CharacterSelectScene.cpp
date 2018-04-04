@@ -41,10 +41,6 @@ bool CharacterSelectScene::Initialize()
 	skybox->LoadTextures(faces);
 	skybox->SetShader(skyboxShaderHandle);
 
-	//if (BFEngine::GetInstance()->numPlayers > 0) {
-	//	BFEngine::GetInstance()->players[BFEngine::GetInstance()->indexOfPlayer[0]].  //.playerControls(player1);
-	//}
-
 	// Music
 	bgm = new Music();
 	if (!bgm->Load("Resources/Audio/20XX Theme Menu.mp3")) {
@@ -64,7 +60,7 @@ bool CharacterSelectScene::Initialize()
 
 	crosshair1 = new Crosshair("Resources/Textures/CharacterSelectScreen/crosshair.png", 200, 300);
 	crosshair1->GetImage()->SetName("crosshair1");
-	//crosshair1->GetPlayerInput()->AddAnyController();
+
 	if (Settings::getInstance()->networkedGame && !Settings::getInstance()->isServer) {
 		crosshair1->GetPlayerInput()->makeNetworked();
 	}
@@ -83,7 +79,7 @@ bool CharacterSelectScene::Initialize()
 		//player2->GetPlayerInput()->AddAnyController();
 	}
 	crosshairList.push_back(crosshair2);
-	
+
 	crosshair3 = new Crosshair("Resources/Textures/CharacterSelectScreen/crosshairP3.png", 1700, 300);
 	crosshair3->GetImage()->SetName("crosshair3");
 	//crosshair3->GetPlayerInput()->AddAnyController();
@@ -94,7 +90,7 @@ bool CharacterSelectScene::Initialize()
 		//player3->GetPlayerInput()->AddAnyController();
 	}
 	crosshairList.push_back(crosshair3);
-	
+
 	crosshair4 = new Crosshair("Resources/Textures/CharacterSelectScreen/crosshairP4.png", 1700, 900);
 	crosshair4->GetImage()->SetName("crosshair4");
 	//crosshair4->GetPlayerInput()->AddAnyController();
@@ -316,7 +312,7 @@ void CharacterSelectScene::Update(const float deltaTime)
 
 	//check to see that all players have selected
 	if (loading == false &&
-		crosshair1->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE) // &&
+		crosshair1->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE)// &&
 		//crosshair2->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
 		//crosshair3->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE &&
 		//crosshair4->GetCharSelected() != PlayerPortrait::CHARTYPE::NONE)
@@ -337,18 +333,18 @@ void CharacterSelectScene::Update(const float deltaTime)
 	if (Settings::getInstance()->networkedGame && !loading) {
 		if (Settings::getInstance()->isServer) {
 			if (!Settings::getInstance()->spectatorMode) {
-				std::string dataChunk = crosshair1->GetPlayerInput()->ReturnJoystickStateForNetworking() + crosshair2->GetPlayerInput()->ReturnJoystickStateForNetworking();
+				std::string dataChunk = crosshair1->GetPlayerInput()->UpdateJoystickState() + crosshair2->GetPlayerInput()->UpdateJoystickState();
 				//std::cout << dataChunk << std::endl;
 				BFEngine::GetInstance()->sendData(dataChunk);
 			}
 			else {
-				std::string dataChunk = crosshair1->GetPlayerInput()->ReturnJoystickStateForNetworking() + crosshair2->GetPlayerInput()->ReturnJoystickStateForNetworking() + crosshair3->GetPlayerInput()->ReturnJoystickStateForNetworking() + crosshair4->GetPlayerInput()->ReturnJoystickStateForNetworking();
+				std::string dataChunk = crosshair1->GetPlayerInput()->UpdateJoystickState() + crosshair2->GetPlayerInput()->UpdateJoystickState() + crosshair3->GetPlayerInput()->UpdateJoystickState() + crosshair4->GetPlayerInput()->UpdateJoystickState();
 				std::cout << dataChunk << std::endl;
 				BFEngine::GetInstance()->sendData(dataChunk);
 			}
 		}
 		else if (!Settings::getInstance()->spectatorMode) {
-			std::string dataChunk = crosshair3->GetPlayerInput()->ReturnJoystickStateForNetworking() + crosshair4->GetPlayerInput()->ReturnJoystickStateForNetworking();
+			std::string dataChunk = crosshair3->GetPlayerInput()->UpdateJoystickState() + crosshair4->GetPlayerInput()->UpdateJoystickState();
 			//std::cout << dataChunk << std::endl;
 			BFEngine::GetInstance()->sendData(dataChunk);
 		}
@@ -362,39 +358,14 @@ void CharacterSelectScene::Update(const float deltaTime)
 			std::string externalInput = BFEngine::GetInstance()->receiveData();
 			cout << "first set of data received: " << externalInput << endl;
 			if (externalInput != "") {
-				for (int i = 0; i < crosshairList.size(); i++) {
-					sceneManager->controllers.push_back(crosshairList.at(i)->GetPlayerInput()->GetJoystick());
-					if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::ALEX)
-					{
-						sceneManager->saveData.push_back(0);
-					}
-					else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::FLINT)
-					{
-						sceneManager->saveData.push_back(1);
-					}
-					else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::JACK)
-					{
-						sceneManager->saveData.push_back(2);
-					}
-					else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::KAL)
-					{
-						sceneManager->saveData.push_back(3);
-					}
-					else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::OKI)
-					{
-						sceneManager->saveData.push_back(4);
-					}
-					else
-					{
-						sceneManager->saveData.push_back(0);
-					}
+				if (externalInput == "move" && !loading) {
+					loadingCD.startCD();
+					loading = true;
+					loadingScreen->SetVisible(true);
+					sceneManager->GetRenderer()->EnableInvertedColours(false);
+					bgm->Stop();
+					//announcer->playSpecifiedFromState(Announcer::CharacterSelect, 5);
 				}
-				loadingCD.startCD();
-				loading = true;
-				loadingScreen->SetVisible(true);
-				sceneManager->GetRenderer()->EnableInvertedColours(false);
-				bgm->Stop();
-				//announcer->playSpecifiedFromState(Announcer::CharacterSelect, 5);
 			}
 			else {
 				if (externalInput.length() >= 70) {
@@ -431,12 +402,14 @@ void CharacterSelectScene::Update(const float deltaTime)
 				}
 			}
 		}
-		//handles a, b, start
-		for (int i = 0; i < crosshairList.size(); i++)
-		{
-			HandleNetworkEvents(i);
-		}
-	}	
+	}
+
+	//handles buttons
+	for (int i = 0; i < crosshairList.size(); i++)
+	{
+		HandleNetworkEvents(i);
+	}
+
 	//moved below to help
 	if (!loadingCD.checkOffCD() && loadingCD.secondsLeft() <= 1)
 	{
@@ -446,181 +419,34 @@ void CharacterSelectScene::Update(const float deltaTime)
 
 void CharacterSelectScene::HandleEvents(SDL_Event events)
 {
-	if (!loading) {
-		//check to see if any players already pressed start
-		for (int i = 0; i < crosshairList.size(); i++)
+	///BANNED FROM USE EXCEPT FOR LOCAL CONTROLLER THINGIES
+	if (events.type == SDL_JOYBUTTONDOWN) {
+
+		if (events.jbutton.button == 7) //Start button
 		{
-			//check to see if player allowed to move and if event matches crosshair controller
-			if (crosshairList.at(i)->CanMove() && events.jbutton.which == SDL_JoystickInstanceID(crosshairList.at(i)->GetPlayerInput()->GetJoystick()))
-			{
-				//do the same for all 5 champions
-				//is crosshair hovering over Alex Trix?
-				if (champAlexTrix->OnHover(crosshairList.at(i)->GetImage()))
-				{
-					//set player portrait to Alex Type (this sets the alpha portrait and text to visible)
-					portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::ALEX);
+			if (!ready) {
+				bool canSelect = true;
 
-					//if pressing A over the image, select that champion
-					if (events.type == SDL_JOYBUTTONDOWN || crosshairList.at(i)->GetPlayerInput()->isNetworked()) {
-						if (events.jbutton.button == 0 || (crosshairList.at(i)->GetPlayerInput()->isNetworked() && crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(7) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(7) && crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(7) == 1)) //A button
-						{
-							if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::ALEX)
-							{
-								//disable movement, disable visibility of crosshair, pass the chartype to crosshair
-								announcer->playRandomFromOtherState(Announcer::CharSelectAlex, true);
-								crosshairList.at(i)->SetCanMove(false);
-								crosshairList.at(i)->SetVisible(false);
-								crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
-							}
-						}
-					}
-				}
-				else if (champFlintDamascus->OnHover(crosshairList.at(i)->GetImage()))
+				if (usedCrosshairList.size() != 0)
 				{
-					portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::FLINT);
-					if (events.type == SDL_JOYBUTTONDOWN || crosshairList.at(i)->GetPlayerInput()->isNetworked()) {
-						if (events.jbutton.button == 0 || (crosshairList.at(i)->GetPlayerInput()->isNetworked() && crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(7) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(7) && crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(7) == 1)) //A button
-						{
-							if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::FLINT)
-							{
-								announcer->playRandomFromOtherState(Announcer::CharSelectFlint, true);
-								crosshairList.at(i)->SetCanMove(false);
-								crosshairList.at(i)->SetVisible(false);
-								crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
-							}
-						}
-					}
-				}
-				else if (champKalOrr->OnHover(crosshairList.at(i)->GetImage()))
-				{
-					portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::KAL);
-					if (events.type == SDL_JOYBUTTONDOWN || crosshairList.at(i)->GetPlayerInput()->isNetworked()) {
-						if (events.jbutton.button == 0 || (crosshairList.at(i)->GetPlayerInput()->isNetworked() && crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(7) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(7) && crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(7) == 1)) //A button
-						{
-							if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::KAL)
-							{
-								announcer->playRandomFromOtherState(Announcer::CharSelectKal, true);
-								crosshairList.at(i)->SetCanMove(false);
-								crosshairList.at(i)->SetVisible(false);
-								crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
-							}
-						}
-					}
-				}
-				else if (champJackCole->OnHover(crosshairList.at(i)->GetImage()))
-				{
-					portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::JACK);
-					if (events.type == SDL_JOYBUTTONDOWN || crosshairList.at(i)->GetPlayerInput()->isNetworked()) {
-						if (events.jbutton.button == 0 || (crosshairList.at(i)->GetPlayerInput()->isNetworked() && crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(7) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(7) && crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(7) == 1)) //A button
-						{
-							if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::JACK)
-							{
-								announcer->playRandomFromOtherState(Announcer::CharSelectJack, true);
-								crosshairList.at(i)->SetCanMove(false);
-								crosshairList.at(i)->SetVisible(false);
-								crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
-							}
-						}
-					}
-				}
-				else if (champOkiCaeli->OnHover(crosshairList.at(i)->GetImage()))
-				{
-					portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::OKI);
-					if (events.type == SDL_JOYBUTTONDOWN || crosshairList.at(i)->GetPlayerInput()->isNetworked()) {
-						if (events.jbutton.button == 0 || (crosshairList.at(i)->GetPlayerInput()->isNetworked() && crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(7) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(7) && crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(7) == 1)) //A button
-						{
-							if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::OKI)
-							{
-								announcer->playRandomFromOtherState(Announcer::CharSelectOki, true);
-								crosshairList.at(i)->SetCanMove(false);
-								crosshairList.at(i)->SetVisible(false);
-								crosshairList.at(i)->SetCharSelected(portraitList.at(i)->GetCharType());
-							}
-						}
-					}
-				}
-				else
-				{
-					//if not hovering over any champions, update portrait and text to show nothing and update chartype
-					portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::NONE);
-				}
-			}
-
-			if ((events.type == SDL_JOYBUTTONDOWN && events.jbutton.which == SDL_JoystickInstanceID(crosshairList.at(i)->GetPlayerInput()->GetJoystick())) || crosshairList.at(i)->GetPlayerInput()->isNetworked()) {
-				if (events.jbutton.button == 1 || (crosshairList.at(i)->GetPlayerInput()->isNetworked() && crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(8) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(8) && crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(8) == 1)) //B button
-				{
-					//if crosshair pressed B, allow movement, set visibility of crosshair to true, set chartype to nothing since its unselected
-					crosshairList.at(i)->SetCanMove(true);
-					crosshairList.at(i)->SetVisible(true);
-					crosshairList.at(i)->SetCharSelected(PlayerPortrait::CHARTYPE::NONE);
-				}
-			}
-		}
-
-		if (events.type == SDL_JOYBUTTONDOWN) {
-
-			if (events.jbutton.button == 7) //Start button
-			{
-				if (ready) {
-					for (int i = 0; i < crosshairList.size(); i++) {
-						sceneManager->controllers.push_back(crosshairList.at(i)->GetPlayerInput()->GetJoystick());
-						if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::ALEX)
-						{
-							sceneManager->saveData.push_back(0);
-						}
-						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::FLINT)
-						{
-							sceneManager->saveData.push_back(1);
-						}
-						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::JACK)
-						{
-							sceneManager->saveData.push_back(2);
-						}
-						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::KAL)
-						{
-							sceneManager->saveData.push_back(3);
-						}
-						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::OKI)
-						{
-							sceneManager->saveData.push_back(4);
-						}
-						else
-						{
-							sceneManager->saveData.push_back(0);
-						}
-					}
-					loadingCD.startCD();
-					loading = true;
-					loadingScreen->SetVisible(true);
-					sceneManager->GetRenderer()->EnableInvertedColours(false);
-					bgm->Stop();
-					announcer->playSpecifiedFromState(Announcer::CharacterSelect, 5);
-				}
-				else
-				{
-					bool canSelect = true;
-
-					if (usedCrosshairList.size() != 0)
+					for (int i = 0; i < usedCrosshairList.size(); i++)
 					{
-						for (int i = 0; i < usedCrosshairList.size(); i++)
-						{
-							if (events.jbutton.which == usedCrosshairList.at(i)) {
-								canSelect = false;
-							}
+						if (events.jbutton.which == usedCrosshairList.at(i)) {
+							canSelect = false;
 						}
 					}
+				}
 
-					if (canSelect) {
-						//create new controller
-						ControllerPressStart(events.jbutton.which);
-					}
+				if (canSelect) {
+					//create new controller
+					ControllerPressStart(events.jbutton.which);
 				}
 			}
 		}
 	}
 }
 
-void CharacterSelectScene::HandleNetworkEvents(int i)
+void CharacterSelectScene::HandleNetworkEvents(int i) //they're also local events now
 {
 	if (!loading) {
 		//first we check where the player is
@@ -651,10 +477,9 @@ void CharacterSelectScene::HandleNetworkEvents(int i)
 			portraitList.at(i)->SetCharType(PlayerPortrait::CHARTYPE::NONE);
 		}
 		int buttonPressed = 7;
-		if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed)) {
-			crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed) = crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed);
+		if (crosshairList.at(i)->GetPlayerInput()->NewButtonPress(buttonPressed)) {
 
-			if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) == 1 && portraitList.at(i)->GetCharType() != PlayerPortrait::CHARTYPE::NONE) { // a button
+			if (crosshairList.at(i)->GetPlayerInput()->controllerState.at(buttonPressed) == 1 && portraitList.at(i)->GetCharType() != PlayerPortrait::CHARTYPE::NONE) { // a button
 
 
 				if (portraitList.at(i)->GetCharType() == PlayerPortrait::CHARTYPE::ALEX)
@@ -683,78 +508,46 @@ void CharacterSelectScene::HandleNetworkEvents(int i)
 			}
 		}
 		buttonPressed = 8;
-		if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed)) {
-			crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed) = crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed);
+		if (crosshairList.at(i)->GetPlayerInput()->NewButtonPress(buttonPressed)) {
+			if (crosshairList.at(i)->GetPlayerInput()->controllerState.at(buttonPressed) == 1 && portraitList.at(i)->GetCharType() != PlayerPortrait::CHARTYPE::NONE) { // b button
 
-			if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) == 1 && portraitList.at(i)->GetCharType() != PlayerPortrait::CHARTYPE::NONE) { // b button
-
-																																												//if crosshair pressed B, allow movement, set visibility of crosshair to true, set chartype to nothing since its unselected
+																																										//if crosshair pressed B, allow movement, set visibility of crosshair to true, set chartype to nothing since its unselected
 				crosshairList.at(i)->SetCanMove(true);
 				crosshairList.at(i)->SetVisible(true);
 				crosshairList.at(i)->SetCharSelected(PlayerPortrait::CHARTYPE::NONE);
 			}
 		}
 
-		buttonPressed = 13; //back button i think
-							//shitty work around for spectator mode sucking
-		if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed)) {
-			crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed) = crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed);
 
-			if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) == 1) {
-				if (ready) {
-					for (int i = 0; i < crosshairList.size(); i++) {
-						sceneManager->controllers.push_back(crosshairList.at(i)->GetPlayerInput()->GetJoystick());
-						if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::ALEX)
-						{
-							sceneManager->saveData.push_back(0);
-						}
-						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::FLINT)
-						{
-							sceneManager->saveData.push_back(1);
-						}
-						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::JACK)
-						{
-							sceneManager->saveData.push_back(2);
-						}
-						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::KAL)
-						{
-							sceneManager->saveData.push_back(3);
-						}
-						else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::OKI)
-						{
-							sceneManager->saveData.push_back(4);
-						}
-						else
-						{
-							sceneManager->saveData.push_back(0);
-						}
-					}
-					loadingCD.startCD();
-					loading = true;
-					loadingScreen->SetVisible(true);
-					sceneManager->GetRenderer()->EnableInvertedColours(false);
-					bgm->Stop();
-					announcer->playSpecifiedFromState(Announcer::CharacterSelect, 5);
-				}
-			}
+		buttonPressed = 10; //y i think
+		if (crosshairList.at(i)->GetPlayerInput()->NewButtonPress(buttonPressed) && Settings::getInstance()->replaySystemEnabled) { //play replay
+																																	//force char select through with through with cpus
+			MoveToGameScene();
 		}
 
 
 		buttonPressed = 14;
-		if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) != crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed)) {
-			crosshairList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed) = crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed);
-
-			if (crosshairList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) == 1) {
+		if (crosshairList.at(i)->GetPlayerInput()->NewButtonPress(buttonPressed)) {
+			if (crosshairList.at(i)->GetPlayerInput()->controllerState.at(buttonPressed) == 1) {
 				if (ready) {
-
+					MoveToGameScene();
 				}
 				else
 				{
-					crosshairList.at(i)->SetCanMove(true);
-					crosshairList.at(i)->SetEnabled(true);
-					AddUIObject(crosshairList.at(i)->GetImage());
+					//this doesn't do anything anymore
+
 				}
 			}
+		}
+
+		buttonPressed = 9; //x i think
+		if (crosshairList.at(i)->GetPlayerInput()->NewButtonPress(buttonPressed) && Settings::getInstance()->replaySystemEnabled) { //play replay
+			loadingCD.startCD();
+			loading = true;
+			loadingScreen->SetVisible(true);
+			sceneManager->GetRenderer()->EnableInvertedColours(false);
+			bgm->Stop();
+			Settings::getInstance()->PlayReplay();
 		}
 	}
 }
@@ -803,4 +596,44 @@ void CharacterSelectScene::SetUpPlayerPorts(PlayerPortrait* tempP)
 	{
 		AddUIObject(imgList.at(i));
 	}
+}
+
+void CharacterSelectScene::MoveToGameScene() {
+	for (int i = 0; i < crosshairList.size(); i++) {
+		sceneManager->controllers.push_back(crosshairList.at(i)->GetPlayerInput()->GetJoystick());
+		if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::ALEX)
+		{
+			sceneManager->saveData.push_back(0);
+		}
+		else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::FLINT)
+		{
+			sceneManager->saveData.push_back(1);
+		}
+		else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::JACK)
+		{
+			sceneManager->saveData.push_back(2);
+		}
+		else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::KAL)
+		{
+			sceneManager->saveData.push_back(3);
+		}
+		else if (crosshairList.at(i)->GetCharSelected() == PlayerPortrait::CHARTYPE::OKI)
+		{
+			sceneManager->saveData.push_back(4);
+		}
+		else
+		{
+			sceneManager->saveData.push_back(0);
+		}
+	}
+	if (Settings::getInstance()->networkedGame && Settings::getInstance()->isServer) {
+		std::string dataChunk = "move";
+		BFEngine::GetInstance()->sendData(dataChunk);
+	}
+	loadingCD.startCD();
+	loading = true;
+	loadingScreen->SetVisible(true);
+	sceneManager->GetRenderer()->EnableInvertedColours(false);
+	bgm->Stop();
+	announcer->playSpecifiedFromState(Announcer::CharacterSelect, 5);
 }

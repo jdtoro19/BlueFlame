@@ -8,7 +8,8 @@ PlayerInput::PlayerInput() {
 }
 
 PlayerInput::~PlayerInput() {
-
+	SDL_JoystickClose(joystick);
+	SDL_HapticClose(haptic);
 }
 
 void PlayerInput::AddJoystick(SDL_Joystick* jstick) {
@@ -17,7 +18,17 @@ void PlayerInput::AddJoystick(SDL_Joystick* jstick) {
 	for (int i = 0; i < 6; i++) {
 		Tare[i] = SDL_JoystickGetAxis(joystick, i) * -1;
 	}
-	int y = 0;
+}
+
+void PlayerInput::PlayFeedback(float strength) {
+	if (haptic == NULL) {
+		haptic = SDL_HapticOpenFromJoystick(joystick);
+		SDL_HapticRumbleInit(haptic);
+	}
+	else {
+		SDL_HapticRumbleStop(haptic);
+		SDL_HapticRumblePlay(haptic, 0.6, 500);
+	}
 }
 
 bool PlayerInput::CheckForController(SDL_JoystickID id) {
@@ -100,6 +111,7 @@ glm::vec2 PlayerInput::AnyJoystick(int indexA, int indexB) {
 
 	}
 	else {
+		//std::cout << "no joystick!" << std::endl;
 		return glm::vec2(0, 0);
 	}
 	Sint32 x_move = SDL_JoystickGetAxis(joystick, indexA);
@@ -143,7 +155,7 @@ glm::vec2 PlayerInput::AnyJoystick(int indexA, int indexB) {
 	return returnDis;
 }
 
-std::string PlayerInput::ReturnJoystickStateForNetworking() {
+std::string PlayerInput::UpdateJoystickState() {
 	std::string networkChunk = std::to_string(playerNum) + "|"; //0 is player num
 	std::string temp = "";
 
@@ -165,7 +177,7 @@ std::string PlayerInput::ReturnJoystickStateForNetworking() {
 	bool rtp = RightTriggerPressed();
 	networkChunk += std::to_string(rtp); //6 is right trigger state
 
-	for (int i = 0; i < 10; i++) { //7 is a, 8 is b, 9 is x, 10 is y, 11 is left bumper, 12 is right bumper, 13 is left joystick push, 14 is right joystick push, 15 is start, 16 is back, 17 is select
+	for (int i = 0; i < 10; i++) {
 		int bState = SDL_JoystickGetButton(joystick, i);
 		networkChunk += std::to_string(bState);
 	}
@@ -186,17 +198,17 @@ std::string PlayerInput::ReturnJoystickStateForNetworking() {
 void PlayerInput::ParseNetworkInputs(std::string inputs) {
 
 	if (inputs.size() >= 35) {
-		networkedJoystickInputs.clear();
+		controllerState.clear();
 		std::string outputs = inputs;
 		std::string substringy = outputs.substr(0, 1);
 		try
 		{
 			int xxx = std::stoi(substringy);
-			networkedJoystickInputs.push_back(xxx);
+			controllerState.push_back(xxx);
 		}
 		catch (const std::exception&)
 		{
-			networkedJoystickInputs.push_back(0);
+			controllerState.push_back(0);
 		}
 		outputs = outputs.substr(2, 99);
 
@@ -205,11 +217,11 @@ void PlayerInput::ParseNetworkInputs(std::string inputs) {
 			try
 			{
 				int xxx = std::stoi(substringy);
-				networkedJoystickInputs.push_back(xxx);
+				controllerState.push_back(xxx);
 			}
 			catch (const std::exception&)
 			{
-				networkedJoystickInputs.push_back(0);
+				controllerState.push_back(0);
 			}
 			outputs = outputs.substr(5, 99);
 		}
@@ -218,19 +230,19 @@ void PlayerInput::ParseNetworkInputs(std::string inputs) {
 			try
 			{
 				int xxx = std::stoi(substringy);
-				networkedJoystickInputs.push_back(xxx);
+				controllerState.push_back(xxx);
 			}
 			catch (const std::exception&)
 			{
-				networkedJoystickInputs.push_back(0);
+				controllerState.push_back(0);
 			}
 
 			outputs = outputs.substr(1, 99);
 		}
-		for each (int x in networkedJoystickInputs) {
-			std::cout << std::to_string(x);
+		/*for each (int x in controllerState) {
+		std::cout << std::to_string(x);
 		}
-		std::cout << std::endl;
+		std::cout << std::endl;*/
 	}
 
 }
@@ -244,9 +256,65 @@ bool PlayerInput::isNetworked() {
 }
 
 void PlayerInput::ResetNetworkedInputs() {
-	networkedJoystickInputs.clear();
+	controllerState.clear();
+	lastKeyPressed.clear();
 	for (int i = 0; i < 20; i++) {
-		networkedJoystickInputs.push_back(0);
-		lastNetworkKeyPressed.push_back(0);
+		controllerState.push_back(0);
+		lastKeyPressed.push_back(0);
 	}
+}
+
+bool PlayerInput::NewButtonPress(int i) {
+	if (controllerState.at(i) == lastKeyPressed.at(i)) {
+		return false;
+	}
+	else {
+		lastKeyPressed.at(i) = controllerState.at(i);
+		UpdateLastButtonState();
+		return true;
+	}
+}
+
+void PlayerInput::UpdateLastButtonState() {
+	for (int i = 0; i < controllerState.size(); i++) {
+		lastKeyPressed.at(i) = controllerState.at(i);
+	}
+}
+
+void PlayerInput::DebugState() {
+	for each (int i in controllerState) {
+		printf(std::to_string(i).c_str());
+	}
+	printf("\n");
+}
+
+void GAME::PlayerInput::ResetMovementButtons()
+{
+	for (int i = 1; i < 4; i++) {
+		controllerState.at(i) = 0;
+		lastKeyPressed.at(i) = 0;
+	}
+}
+
+void GAME::PlayerInput::ResetShootingButtons()
+{
+	controllerState.at(5) = 0;
+	lastKeyPressed.at(5) = 0;
+	controllerState.at(6) = 0;
+	lastKeyPressed.at(6) = 0;
+	controllerState.at(11) = 0;
+	lastKeyPressed.at(11) = 0;
+	controllerState.at(12) = 0;
+	lastKeyPressed.at(12) = 0;
+
+}
+
+std::string PlayerInput::ReturnJoystickState() {
+	std::string joystickChunk = std::to_string(playerNum) + "|"; //0 is player num
+
+	for each (int i in controllerState) {
+		joystickChunk += std::to_string(i);
+	}
+
+	return joystickChunk;
 }

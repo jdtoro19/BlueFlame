@@ -13,10 +13,10 @@
 #include "Timers/MasterClock.h"
 #include "InputHandling/InputManager.h"
 #include "Debuging/Settings.h"
-//#include "Networking/UDPNet.h"
-//#include "Networking\Winsock.h"
+#include "Debuging/Replay.h"
 
 namespace ENGINE {
+
 
 	// SINGLETON CLASS
 	class BFEngine 
@@ -53,9 +53,7 @@ namespace ENGINE {
 		// Networking
 		std::string receiveData();
 		void sendData(std::string data);
-		//net "working"
-		//UDPnet udpNet;
-		//Winsock winNet;
+		
 
 	private:
 		// Private Constructor and Destructor so no other class can create it
@@ -104,6 +102,8 @@ namespace ENGINE {
 		bool setUpNetworkAsServer();
 		bool setUpNetworkAsClient();
 		int closeNetwork();
+
+		//struct pollfd ufds[1];
 	};
 }
 

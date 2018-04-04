@@ -126,14 +126,6 @@ namespace GAME {
 		}
 	}
 
-	void ProjectileManager::AddSpawnedProjectile(Projectile* _projectile) {
-		spawnedProjectiles.push_back(_projectile);
-	}
-
-	void ProjectileManager::RemoveSpawnedProjectile(Projectile* _projectile) {
-		spawnedProjectiles.erase(std::remove(spawnedProjectiles.begin(), spawnedProjectiles.end(), _projectile), spawnedProjectiles.end());
-	}
-
 	std::vector<Projectile*> ProjectileManager::GetProjectileList() {
 		return projectileList;
 	}
@@ -143,24 +135,15 @@ namespace GAME {
 		for (unsigned int i = 0; i < projectileList.size(); ++i) {
 			projectileList.at(i)->Update(deltaTime);
 		}
-		for (unsigned int i = 0; i < spawnedProjectiles.size(); ++i) {
-			spawnedProjectiles.at(i)->Update(deltaTime);
-		}
-
 	}
 
 	void ProjectileManager::FixedUpdate(const float deltaTime) {
 
 		projectileRenderer->SetProjectileList(projectileList);
-		projectileRenderer->SetSpawnedProjectileList(spawnedProjectiles);
 
 		for (unsigned int i = 0; i < projectileList.size(); ++i) {
 			projectileList.at(i)->UpdateState();
 			projectileList.at(i)->FixedUpdate(deltaTime);
-		}
-		for (unsigned int i = 0; i < spawnedProjectiles.size(); ++i) {
-			spawnedProjectiles.at(i)->UpdateState();
-			spawnedProjectiles.at(i)->FixedUpdate(deltaTime);
 		}
 
 		// Collisions with player
@@ -285,22 +268,6 @@ namespace GAME {
 							projectileList.at(j)->GetClipping() == PROJECTILE_CLIP::YES) {
 							projectileList.at(j)->deleted = true;
 						}
-
-						// Spawning flint's impenetrable wall
-						if (projectileList.at(j)->GetStrength() == PROJECTILE_STRENGTH::MEDIUM && projectileList.at(j)->GetElement() == PROJECTILE_ELEMENT::EARTH) {
-							Projectile *p = new Projectile(projectileList.at(j)->GetWorldPosition(), 0.0f, 0.0f);
-							p->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
-							p->CreateCollision(projectileRenderer->GetCubeMesh(), p->GetWorldPosition());
-							p->collisionComponent->SetLayer(0);
-							p->SetClipping(PROJECTILE_CLIP::YES);
-							p->physicsComponent->destructible = false;
-							p->SetFirstDelay(1.0f, glm::vec3(0.0f, 1.0f, 0.0f), glm::vec3(4.5f, 2.0f, 0.5f), glm::vec3(4.5f, 2.0f, 0.5f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-							p->SetLifetime(3.0);
-
-							p->canRender = false;
-							BFEngine::GetInstance()->GetSceneManager()->GetCurrentScene()->AddObject(p);
-							AddSpawnedProjectile(p);
-						}
 					}
 				}
 			}
@@ -310,7 +277,7 @@ namespace GAME {
 		// Collisions with other players' projectiles
 		proSize = projectileList.size();
 		for (int i = 1; i < proSize; ++i) {
-			if (projectileList.at(i - 1) != projectileList.at(i) && !IsSamePlayer(*projectileList.at(i - 1), *projectileList.at(i))) {
+			if (projectileList.at(i - 1) != projectileList.at(i) && !IsSameTeam(*projectileList.at(i - 1), *projectileList.at(i))) {
 				if (projectileList.at(i - 1)->collisionComponent != NULL && projectileList.at(i)->collisionComponent != NULL &&
 					projectileList.at(i - 1)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f) &&
 					projectileList.at(i)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f)) {
@@ -318,29 +285,6 @@ namespace GAME {
 						ProjectileCollision(*projectileList.at(i - 1), *projectileList.at(i));
 					}
 				}
-			}
-		}
-
-		// Collisions with spawned projectiles
-		proSize = projectileList.size();
-		int spawnSize = spawnedProjectiles.size();
-		for (int i = 0; i < spawnSize; i++) {
-			for (int j = 0; j < proSize; j++) {
-				if (spawnedProjectiles.at(i)->collisionComponent != NULL && projectileList.at(j)->collisionComponent != NULL &&
-					spawnedProjectiles.at(i)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f) && projectileList.at(j)->collisionComponent->GetBoundingBox().c != glm::vec3(0.0f)) {
-					if (PhysicsEngine::isColliding(spawnedProjectiles.at(i)->collisionComponent, projectileList.at(j)->collisionComponent)) {
-						projectileList.at(j)->deleted = true;
-					}
-				}
-			}
-		}
-
-
-		// Spawned projectile garbage collection
-		spawnSize = spawnedProjectiles.size();
-		for (int i = 0; i < spawnSize; i++) {
-			if (spawnedProjectiles.at(i)->deleted == true) {
-				RemoveSpawnedProjectile(spawnedProjectiles.at(i));
 			}
 		}
 	}

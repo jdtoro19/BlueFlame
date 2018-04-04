@@ -55,7 +55,7 @@ void Settings::loadSettings(std::string fileName)
 
 		infile.close();
 
-		if (settingsFile.size() >= 11) { //make sure we have the correct amount of settings
+		if (settingsFile.size() >= 12) { //make sure we have the correct amount of settings
 			setSettingsFromFile();
 		}
 		else {
@@ -104,6 +104,8 @@ void Settings::restoreDefaultSettings(std::string &fileName) {
 	defaultSettings.push_back(std::to_string(showFPS));
 	defaultSettings.push_back("+Resolution Scale (goes from 0 to 1)");
 	defaultSettings.push_back(std::to_string(resolutionScale));
+	defaultSettings.push_back("+Replay System Enabled? (1 for true, 0 for false)");
+	defaultSettings.push_back(std::to_string(replaySystemEnabled));
 	defaultSettings.push_back("++++++++++++++++++++++++++++++++++++");
 
 	close();
@@ -158,13 +160,13 @@ void Settings::setSettingsFromFile() {
 	}
 	catch (const std::exception&)
 	{
-		
+
 	}
 
 	if (x > 0) {
 		resolutionX = x;
 	}
-	
+
 
 	int y = resolutionY;
 	try
@@ -204,5 +206,12 @@ void Settings::setSettingsFromFile() {
 	}
 	if (z >= 0 && z <= 1) {
 		resolutionScale = z;
+	}
+
+	if (settingsFile.at(11) == "0") {
+		replaySystemEnabled = false;
+	}
+	else {
+		replaySystemEnabled = true;
 	}
 }

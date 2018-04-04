@@ -4,6 +4,14 @@ using namespace GAME;
 
 Player::Player()
 {
+	PlayingIntro = true;
+	///AI stuff
+	computerPlayer = false;
+	CPUMovementCD = Cooldown(0);
+	CPUShootingCD = Cooldown(0);
+	rand = Randomizer();
+	///AI stuff ends
+
 	// Make player parts
 	base = new PlayerBase("Resources/Models/Robot_Base_Greybox/Robot_Var_002_Gurran.obj");
 	base->SetWorldPosition(0.0f, 0.0f, 0.0f);
@@ -82,9 +90,6 @@ void Player::AddProjecitleManager(ProjectileManager* pM)
 
 void Player::Update(const float deltaTime)
 {
-	if (playerInput->isNetworked()) {
-		HandleNetworkedButtons();
-	}
 
 	if (specialMeter > 100) {
 		specialMeter = 100;
@@ -100,22 +105,24 @@ void Player::Update(const float deltaTime)
 	if (shieldHealth < 0) {
 		shieldHealth = 0;
 	}
-	// Target Direction
-	//
-	/*if (isTargeting) {
-		if (!enemyTeam.at(currentTarget)->out) {
-			targetedPlayer = enemyTeam.at(currentTarget)->worldPosition;
+	// Target Direction (only used for cpu players
+	if (computerPlayer) {
+		if (isTargeting) {
+			if (!enemyTeam.at(currentTarget)->out) {
+				targetedPlayer = enemyTeam.at(currentTarget)->worldPosition;
+				targetAngle = -glm::atan((targetedPlayer.x - worldPosition.x) / (targetedPlayer.z - worldPosition.z));
+			}
+			else if (enemyTeam.at(currentTarget)->out) {
+				SwitchTarget();
+			}
+		}
+		else if (!isTargeting) {
+			targetedPlayer = glm::vec3(worldPosition);
+			targetedPlayer.z += dir;
 			targetAngle = -glm::atan((targetedPlayer.x - worldPosition.x) / (targetedPlayer.z - worldPosition.z));
 		}
-		else if (enemyTeam.at(currentTarget)->out) {
-			SwitchTarget();
-		}
 	}
-	else if (!isTargeting) {
-		targetedPlayer = glm::vec3(worldPosition);
-		targetedPlayer.z += dir;
-		targetAngle = -glm::atan((targetedPlayer.x - worldPosition.x) / (targetedPlayer.z - worldPosition.z));
-	}*/
+	
 
 	// UPDATE TIMERS
 	//
@@ -161,7 +168,7 @@ void Player::Update(const float deltaTime)
 		dialogue.setDialogueState(dialogue.Idle);
 		break;
 	case GAME::Player::ATTACK:
-		dialogue.setDialogueState(dialogue.Moving);
+		dialogue.setDialogueState(dialogue.Idle);
 		break;
 	case GAME::Player::BLOCK:
 		dialogue.setDialogueState(dialogue.TakingDamage);
@@ -179,10 +186,35 @@ void Player::Update(const float deltaTime)
 	default:
 		break;
 	}
-	//dialogue.playIdle(); //will play an idle sound if sound hasn't been played recently
+	dialogue.playIdle(); //will play an idle sound if sound hasn't been played recently
 }
 
 void Player::FixedUpdate(const float deltaTime) {
+
+	if (!computerPlayer && (!Settings::getInstance()->replaySystemEnabled || !Settings::getInstance()->playingReplay)) {
+		playerInput->ParseNetworkInputs(playerInput->UpdateJoystickState());
+	}
+	else if (computerPlayer) {
+		AIMovement();
+		switch (playerTeam)
+		{
+		case GAME::Player::TEAM1:
+			BoundsCheckT1();
+			break;
+		case GAME::Player::TEAM2:
+			BoundsCheckT2();
+			break;
+		case GAME::Player::TEAM0:
+			break;
+		default:
+			break;
+		}
+
+		AIShooting();
+		//playerInput->DebugState();
+	}
+
+
 
 	ring->UpdateState();
 	shield->UpdateState();
@@ -195,147 +227,63 @@ void Player::FixedUpdate(const float deltaTime) {
 	SetWorldPosition(physicsComponent->GetPosition());
 	collisionComponent->Update(GetWorldPosition());
 
+	if (playerState != STUN) {
+		physicsComponent->SetVelocity(glm::vec3(0.0f, physicsComponent->GetVelocity().y, 0.0f));
+	}
+
 	// Update player model
 	UpdateModel(deltaTime);
 	// If player can move update movement 
-	if (canMove) {
-		if (playerInput->CheckForController() || playerInput->isNetworked()) {//if they have a controller
-			glm::vec2 mods;
-			glm::vec2 rightStick;
-			if (playerInput->isNetworked()) {
-				mods = glm::vec2(playerInput->networkedJoystickInputs.at(1), playerInput->networkedJoystickInputs.at(2));
-			}
-			else {
-				mods = playerInput->LeftJoystick();
-			}
+	if (canMove && !PlayingIntro) {
+		if (playerInput->CheckForController() || playerInput->isNetworked() || computerPlayer || (Settings::getInstance()->replaySystemEnabled || Settings::getInstance()->playingReplay)) {//if they have a controller
+			glm::vec2 mods = glm::vec2(playerInput->controllerState.at(1), playerInput->controllerState.at(2));
+			glm::vec2 targetMods = glm::vec2(playerInput->controllerState.at(3), playerInput->controllerState.at(4));
 
-			if (playerInput->isNetworked()) {
-				rightStick = glm::vec2(playerInput->networkedJoystickInputs.at(3), playerInput->networkedJoystickInputs.at(4));
-			}
-			else {
-				rightStick = playerInput->RightJoystick();
-			}
-
-			bool ltp;
-			if (playerInput->isNetworked()) {
-				ltp = playerInput->networkedJoystickInputs.at(5);
-			}
-			else {
-				ltp = playerInput->LeftTriggerPressed();
-			}
-
-
-			if (ltp) {
-				if (!out) {
-					std::vector<Projectile*> p = SpecialAttack();
-					if (p.size() > 0) {
-						for each (Projectile* subP in p) {
-
-							if (playerTeam == PLAYERTEAM::TEAM1) {
-								subP->SetTeam(PROJECTILE_TEAM::TEAM1);
-							}
-							else if (playerTeam == PLAYERTEAM::TEAM2) {
-								subP->SetTeam(PROJECTILE_TEAM::TEAM2);
-							}
-
-							if (playerNumber == PLAYERNUMBER::PLAYER1) {
-								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER1);
-							}
-							else if (playerNumber == PLAYERNUMBER::PLAYER2) {
-								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER2);
-							}
-							else if (playerNumber == PLAYERNUMBER::PLAYER3) {
-								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
-							}
-							else if (playerNumber == PLAYERNUMBER::PLAYER4) {
-								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
-							}
-
-							subP->SetStrength(PROJECTILE_STRENGTH::SPECIAL);
-							projectileManager->AddProjectile(subP);
-
-							shootEffect->Play();
-							shootEffect->SetWorldPosition(subP->GetWorldPosition());
-						}
-					}
+			if (playerInput->controllerState.at(9) == 1 || playerInput->controllerState.at(10) == 1) { //if X or Y is pressed (player is blocking)
+				if (!out && shieldHealth > 0) {
+					Block();
 				}
 			}
+			else {
+				StopBlock();
+				if (mods.x > 0.01f) {
+					Movement(Player::PLAYERMOVEMENT::RIGHT, deltaTime);
+				}
+				if (mods.x < -0.01f) {
+					Movement(Player::PLAYERMOVEMENT::LEFT, deltaTime);
+				}
+				if (mods.y > 0.01f) {
+					Movement(Player::PLAYERMOVEMENT::BACKWARD, deltaTime);
+				}
+				if (mods.y < -0.01f) {
+					Movement(Player::PLAYERMOVEMENT::FORWARD, deltaTime);
+				}
 
-			if (mods.x > 0.01f) {
-				Movement(Player::PLAYERMOVEMENT::RIGHT, deltaTime);
-			}
-			if (mods.x < -0.01f) {
-				Movement(Player::PLAYERMOVEMENT::LEFT, deltaTime);
-			}
-			if (mods.y > 0.01f) {
-				Movement(Player::PLAYERMOVEMENT::BACKWARD, deltaTime);
-			}
-			if (mods.y < -0.01f) {
-				Movement(Player::PLAYERMOVEMENT::FORWARD, deltaTime);
-			}
-			
-			if (rightStick.x > 0.01f) {
-				targetAngle += 0.03f;
-			}
-
-			if (rightStick.x < -0.01f) {
-				targetAngle -= 0.03f;
 			}
 
-			if (rightStick.x < 0.01f && rightStick.x > -0.01f) {
-				targetAngle = 0.0f;
+			if (playerInput->controllerState.at(7) == 1 || playerInput->controllerState.at(8) == 1) { //if the right trigger is pressed
+				if (!out) {
+					Jump();
+				}
 			}
-
-			if (targetAngle > 0.5f) {
+			if (targetMods.x > 0.05f) {
 				targetAngle = 0.5f;
 			}
-			else if (targetAngle < -0.5f) {
+
+			if (targetMods.x < -0.05f) {
 				targetAngle = -0.5f;
 			}
 
-			bool rtp;
-			if (playerInput->isNetworked()) {
-				rtp = playerInput->networkedJoystickInputs.at(6);
-			}
-			else {
-				rtp = playerInput->RightTriggerPressed();
+			if (targetMods.x <= 0.05f && targetMods.x >= -0.05f) {
+				targetAngle = 0.0f;
 			}
 
-			if (rtp) {
-				if (!out) {
-					std::vector<Projectile*> p = LightAttack();
-					if (p.size() > 0) {
-						for each (Projectile* subP in p) {
-
-							if (playerTeam == PLAYERTEAM::TEAM1) {
-								subP->SetTeam(PROJECTILE_TEAM::TEAM1);
-							}
-							else if (playerTeam == PLAYERTEAM::TEAM2) {
-								subP->SetTeam(PROJECTILE_TEAM::TEAM2);
-							}
-
-							if (playerNumber == PLAYERNUMBER::PLAYER1) {
-								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER1);
-							}
-							else if (playerNumber == PLAYERNUMBER::PLAYER2) {
-								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER2);
-							}
-							else if (playerNumber == PLAYERNUMBER::PLAYER3) {
-								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
-							}
-							else if (playerNumber == PLAYERNUMBER::PLAYER4) {
-								subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
-							}
-
-							subP->SetStrength(PROJECTILE_STRENGTH::LIGHT);
-							projectileManager->AddProjectile(subP);
-
-							shootEffect->Play();
-							shootEffect->SetWorldPosition(subP->GetWorldPosition());
-						}
-					}
-				}
+			/*if (targetAngle > 0.5f) {
+			targetAngle = 0.5f;
 			}
+			else if (targetAngle < -0.5f) {
+			targetAngle = -0.5f;
+			}*/
 		}
 	}
 
@@ -346,143 +294,19 @@ void Player::FixedUpdate(const float deltaTime) {
 	else if (playerTeam == PLAYERTEAM::TEAM2) {
 		SetWorldRotation(glm::vec3(0.0f, 1.0f, 0.0f), 3.14 - targetAngle);
 	}
+	if (!PlayingIntro) {
+		HandleControllerEvents();
+	}
+	
 
 	// Update function from child
 	InheritedUpdate(deltaTime);
 }
 
-void Player::HandleEvents(SDL_Event events)
+void Player::HandleEvents(SDL_Event events) ///THIS HAS BEEN BANNED IN ACCORDENCE WITH THE NEW CONTROLLER FUNCTIONALITY. USE HandleControllerEvents instead
 {
-	// Player can press buttons when not off the arena
-	if (!out && !playerInput->isNetworked() && canMove) {
-		switch (events.type)
-		{
-		case SDL_JOYBUTTONUP:
-			// X button
-			if (events.jbutton.button == 2 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
-			{
-				StopBlock();
-			}
-			// Y button
-			if (events.jbutton.button == 3 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
-			{
-				StopBlock();
-			}
-			break;
-		case SDL_JOYBUTTONDOWN:
-			// X button
-			if (events.jbutton.button == 2 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
-			{
-				Block();
-			}
-			// Y button
-			if (events.jbutton.button == 3 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
-			{
-				Block();
-			}
-			// B button
-			if (events.jbutton.button == 1 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
-			{
-				Jump();
-			}
-			// A button
-			if (events.jbutton.button == 0 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
-			{
-				Jump();
-			}
-			// Left Bumper
-			if (events.jbutton.button == 4 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
-			{
-				std::vector<Projectile*> p = MediumAttack();
-				if (p.size() > 0) {
-					for each (Projectile* subP in p) {
-
-						if (playerTeam == PLAYERTEAM::TEAM1) {
-							subP->SetTeam(PROJECTILE_TEAM::TEAM1);
-						}
-						else if (playerTeam == PLAYERTEAM::TEAM2) {
-							subP->SetTeam(PROJECTILE_TEAM::TEAM2);
-						}
-
-						if (playerNumber == PLAYERNUMBER::PLAYER1) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER1);
-						}
-						else if (playerNumber == PLAYERNUMBER::PLAYER2) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER2);
-						}
-						else if (playerNumber == PLAYERNUMBER::PLAYER3) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
-						}
-						else if (playerNumber == PLAYERNUMBER::PLAYER4) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
-						}
-
-						subP->SetStrength(PROJECTILE_STRENGTH::MEDIUM);
-						projectileManager->AddProjectile(subP);
-
-						shootEffect->Play();
-						shootEffect->SetWorldPosition(subP->GetWorldPosition());
-					}
-				}
-			}
-			// Right Bumper
-			if (events.jbutton.button == 5 && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
-			{
-				std::vector<Projectile*> p = HeavyAttack();
-				if (p.size() > 0) {
-					for each (Projectile* subP in p) {
-
-						if (playerTeam == PLAYERTEAM::TEAM1) {
-							subP->SetTeam(PROJECTILE_TEAM::TEAM1);
-						}
-						else if (playerTeam == PLAYERTEAM::TEAM2) {
-							subP->SetTeam(PROJECTILE_TEAM::TEAM2);
-						}
-
-						if (playerNumber == PLAYERNUMBER::PLAYER1) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER1);
-						}
-						else if (playerNumber == PLAYERNUMBER::PLAYER2) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER2);
-						}
-						else if (playerNumber == PLAYERNUMBER::PLAYER3) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
-						}
-						else if (playerNumber == PLAYERNUMBER::PLAYER4) {
-							subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
-						}
-
-						subP->SetStrength(PROJECTILE_STRENGTH::HEAVY);
-						projectileManager->AddProjectile(subP);
-
-						shootEffect->Play();
-						shootEffect->SetWorldPosition(subP->GetWorldPosition());
-					}
-				}
-			}
-			break;
-
-		case SDL_JOYHATMOTION:
-			// DPAD
-			if (events.jhat.value & SDL_HAT_UP && events.jbutton.which == SDL_JoystickInstanceID(playerInput->GetJoystick()))
-			{
-				dialogue.playRandomFromOtherState(dialogue.Rare, true);
-			}
-			if (events.jhat.value & SDL_HAT_DOWN)
-			{
-			}
-			if (events.jhat.value & SDL_HAT_LEFT)
-			{
-			}
-			if (events.jhat.value & SDL_HAT_RIGHT)
-			{
-			}
-			break;
-		}
-
-		// Child events
-		InheritedHandleEvents(events);
-	}
+	// Child events
+	InheritedHandleEvents(events); ///we will also need to ban this function, but no one uses it anyways
 }
 
 void Player::HandleStates(const Uint8 *state)
@@ -617,6 +441,9 @@ void Player::Hit(Projectile* projectile) {
 	}
 
 	if (playerState != BLOCK) {
+		if (playerInput->CheckForController()) {
+			playerInput->PlayFeedback(projectile->GetStunTime());
+		}
 		physicsComponent->AddForce(projectile->GetForce());
 		Stun(projectile->GetStunTime());
 		dialogue.playRandomFromOtherState(dialogue.TakingDamage, false);
@@ -767,18 +594,117 @@ void Player::SetPlayerNumber(PLAYERNUMBER pN) {
 }
 
 
-void Player::HandleNetworkedButtons() {
-	//first character is player number, followed by 6 joystick inputs. starting with 8 to allow zero indexing and keep it clear which button is which
+void GAME::Player::AIMovement()
+{
+	///learning block
+	/// negative numbers on the z axis are forwrds for both teams. positive numbers are backwards
+	/// in the x axis it is different for each team
+	/// negative numbers are left and positive numbers are right for team 1
+	/// positive numbers are left for team 2 and positive numbers are right
 
-	//helps keep things cleaner
-	int buttonPressed = 7 + 2; // x button
+	if (CPUMovementCD.checkOffCD()) {
+		playerInput->ResetMovementButtons();
+		double dir = rand.box_muller(5, 5);
+		double dir2 = rand.box_muller(5, 5);
 
-							   //first we check if the player is already pressing this key, to prevent duplicate inputs
-	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
-		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
-																													   //x button
-		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
+		if (dir < 3) { //forward
+			playerInput->controllerState.at(2) = -3;
+		}
+		else if (dir > 7) { //back
+			playerInput->controllerState.at(2) = 3;
+		}
+
+		if (dir2 < 4) { //left
+			playerInput->controllerState.at(1) = -3;
+		}
+		else if (dir2 > 6) { //right
+			playerInput->controllerState.at(1) = 3;
+		}
+
+		int random = Clock::GetInstance()->generateRandomNumber();
+		double newCD = 0.35 + (random * random / 100);
+		CPUMovementCD.setNewDuration(newCD);
+		CPUMovementCD.startCD();
+	}
+}
+
+void GAME::Player::AIShooting()
+{
+	if (CPUShootingCD.checkOffCD()) {
+		playerInput->ResetShootingButtons();
+		if (specialMeter == 100) {
+			playerInput->controllerState.at(5) = 1;
+		}
+		else {
+			int dir = rand.box_muller(5, 5);
+			if (dir <= 4) { //light
+				playerInput->controllerState.at(6) = 1;
+			}
+			else if (dir <= 7) { //medium
+				playerInput->controllerState.at(11) = 1;
+			}
+			else { //heavy
+				playerInput->controllerState.at(12) = 1;
+			}
+		}
+
+		int random = Clock::GetInstance()->generateRandomNumber();
+		double newCD = random * random / 100;
+		newCD = 0.6 + newCD;
+		CPUShootingCD.setNewDuration(newCD);
+		CPUShootingCD.startCD();
+	}
+}
+
+///learning block
+/// negative numbers on the z axis are forwrds for both teams. positive numbers are backwards
+/// in the x axis it is different for each team
+/// negative numbers are left and positive numbers are right for team 1
+/// positive numbers are left for team 2 and positive numbers are right
+
+void Player::BoundsCheckT2()
+{
+	//std::cout << worldPosition.x << " " << worldPosition.z << std::endl;
+	if (worldPosition.z > -1) { //too close to the front
+		playerInput->controllerState.at(2) = 3;
+	}
+	if (worldPosition.z < -4.2) { //too close to the back
+		playerInput->controllerState.at(2) = -3;
+	}
+	if (worldPosition.x < -4) { //too close to the front
+		playerInput->controllerState.at(1) = -3;
+	}
+	if (worldPosition.x > 4) { //too close to the front
+		playerInput->controllerState.at(1) = 3;
+	}
+}
+
+void GAME::Player::BoundsCheckT1()
+{
+	//std::cout << worldPosition.x << " " << worldPosition.z << std::endl;
+	if (worldPosition.z < 1) { //too close to the front
+		playerInput->controllerState.at(2) = 3;
+	}
+	if (worldPosition.z > 4.2) { //too close to the back
+		playerInput->controllerState.at(2) = -3;
+	}
+	if (worldPosition.x < -4) { //too close to the front
+		playerInput->controllerState.at(1) = 3;
+	}
+	if (worldPosition.x > 4) { //too close to the front
+		playerInput->controllerState.at(1) = -3;
+	}
+
+}
+
+void Player::HandleControllerEvents() {
+	// Player can press buttons when not off the arena
+	if (!out) {
+		if (playerInput->controllerState.at(6) == 1) //right trigger
 		{
+			if (computerPlayer) {
+				playerInput->controllerState.at(6) = 0;
+			}
 			std::vector<Projectile*> p = LightAttack();
 			if (p.size() > 0) {
 				for each (Projectile* subP in p) {
@@ -803,19 +729,16 @@ void Player::HandleNetworkedButtons() {
 						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
 					}
 
+					subP->SetStrength(PROJECTILE_STRENGTH::LIGHT);
 					projectileManager->AddProjectile(subP);
+
+					shootEffect->Play();
+					shootEffect->SetWorldPosition(subP->GetWorldPosition());
 				}
 			}
 		}
-	}
-
-	buttonPressed = 7 + 3; // y button
-
-						   //first we check if the player is already pressing this key, to prevent duplicate inputs
-	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
-		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
-																													   //x button
-		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
+		// Left Bumper
+		if (playerInput->NewButtonPress(11))
 		{
 			std::vector<Projectile*> p = MediumAttack();
 			if (p.size() > 0) {
@@ -841,18 +764,21 @@ void Player::HandleNetworkedButtons() {
 						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
 					}
 
+					if (subP->GetElement() == PROJECTILE_ELEMENT::EARTH) {
+						subP->SetStrength(PROJECTILE_STRENGTH::SPECIAL);
+					}
+					else {
+						subP->SetStrength(PROJECTILE_STRENGTH::MEDIUM);
+					}
 					projectileManager->AddProjectile(subP);
+
+					shootEffect->Play();
+					shootEffect->SetWorldPosition(subP->GetWorldPosition());
 				}
 			}
 		}
-	}
-	buttonPressed = 7 + 1; // b button
-
-						   //first we check if the player is already pressing this key, to prevent duplicate inputs
-	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
-		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
-																													   //x button
-		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
+		// Right Bumper
+		if (playerInput->NewButtonPress(12))
 		{
 			std::vector<Projectile*> p = HeavyAttack();
 			if (p.size() > 0) {
@@ -878,19 +804,16 @@ void Player::HandleNetworkedButtons() {
 						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
 					}
 
+					subP->SetStrength(PROJECTILE_STRENGTH::HEAVY);
 					projectileManager->AddProjectile(subP);
+
+					shootEffect->Play();
+					shootEffect->SetWorldPosition(subP->GetWorldPosition());
 				}
 			}
 		}
-	}
-
-	buttonPressed = 7 + 0; // A button
-
-						   //first we check if the player is already pressing this key, to prevent duplicate inputs
-	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
-		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
-																													   //x button
-		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
+		// left trigger
+		if (playerInput->NewButtonPress(5))
 		{
 			std::vector<Projectile*> p = SpecialAttack();
 			if (p.size() > 0) {
@@ -916,39 +839,19 @@ void Player::HandleNetworkedButtons() {
 						subP->SetPlayer(PROJECTILE_PLAYER::PLAYER4);
 					}
 
+					subP->SetStrength(PROJECTILE_STRENGTH::SPECIAL);
 					projectileManager->AddProjectile(subP);
+
+					shootEffect->Play();
+					shootEffect->SetWorldPosition(subP->GetWorldPosition());
 				}
 			}
 		}
-	}
-
-	buttonPressed = 7 + 4; // left bumper
-
-						   //first we check if the player is already pressing this key, to prevent duplicate inputs
-	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
-		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
-		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
+		// left trigger
+		if (playerInput->NewButtonPress(17))
 		{
-			SwitchTarget();
+			dialogue.playRandomFromOtherState(dialogue.Rare, true);
 		}
-	}
-	buttonPressed = 7 + 5;
-	// Right Bumper
-	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
-		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
-		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
-		{
-			SwitchTarget();
-		}
-	}
-
-	buttonPressed = 7 + 11;
-	// The fucking hat
-	if (playerInput->networkedJoystickInputs.at(buttonPressed) != playerInput->lastNetworkKeyPressed.at(buttonPressed)) {
-		playerInput->lastNetworkKeyPressed.at(buttonPressed) = playerInput->networkedJoystickInputs.at(buttonPressed); //if they are and weren't, we store it and call shoot. if they aren't and were, we just store it.
-		if (playerInput->networkedJoystickInputs.at(buttonPressed) == 1)
-		{
-			EnableTarget();
-		}
+		//switching functionality removed
 	}
 }

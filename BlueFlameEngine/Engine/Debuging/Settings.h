@@ -58,6 +58,8 @@ namespace ENGINE {
 		*/
 		void close();
 
+		void PlayReplay() { playingReplay = true; }
+
 		//settings
 
 		bool fullscreen = false;
@@ -71,6 +73,8 @@ namespace ENGINE {
 		bool useBloom = false;
 		bool showFPS = true;
 		double resolutionScale = 1.0;
+		bool replaySystemEnabled = false;
+		bool playingReplay = false;
 	};
 }
 

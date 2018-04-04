@@ -44,14 +44,22 @@ bool TvTGameScene::Initialize()
 	// Make skybox, load its textures, set properties, and give to the renderer
 	skybox = new Skybox();
 	std::vector<char*> faces;
-	faces.push_back("Resources/Textures/Skyboxes/grimmnight/right.png");
-	faces.push_back("Resources/Textures/Skyboxes/grimmnight/left.png");
-	faces.push_back("Resources/Textures/Skyboxes/grimmnight/top.png");
-	faces.push_back("Resources/Textures/Skyboxes/grimmnight/bottom.png");
-	faces.push_back("Resources/Textures/Skyboxes/grimmnight/back.png");
-	faces.push_back("Resources/Textures/Skyboxes/grimmnight/front.png");
+	faces.push_back("Resources/Textures/Skyboxes/BlueMist/right.png");
+	faces.push_back("Resources/Textures/Skyboxes/BlueMist/left.png");
+	faces.push_back("Resources/Textures/Skyboxes/BlueMist/top.png");
+	faces.push_back("Resources/Textures/Skyboxes/BlueMist/bottom.png");
+	faces.push_back("Resources/Textures/Skyboxes/BlueMist/back.png");
+	faces.push_back("Resources/Textures/Skyboxes/BlueMist/front.png");
 	skybox->LoadTextures(faces);
 	skybox->SetShader(skyboxShaderHandle);
+
+	replayText = new TextUI();
+	replayText->SetFont("Resources/Fonts/ka1.ttf");
+	replayText->SetText("PLAYING REPLAY");
+	replayText->SetColour(1.0, 1.0f, 1.0f);
+	replayText->SetSize(0.5f);
+	replayText->SetSpacing(9.0f);
+	replayText->SetPosition(50, 80);
 
 	spectatorText = new TextUI();
 	spectatorText->SetFont("Resources/Fonts/ka1.ttf");
@@ -156,8 +164,8 @@ bool TvTGameScene::Initialize()
 	blueLight->SetShader(lightShaderHandle);
 	blueLight->renderComponent->SetRenderType(RenderComponent::Render_Type::CUBE);
 	blueLight->renderComponent->SetColour(0.0f, 0.0f, 1.0f);
-	blueLight->SetWorldPosition(0.0f, -2.95f, 5.5f);
-	blueLight->SetWorldScale(11.0f, 5.0f, 0.5f);
+	blueLight->SetWorldPosition(0.0f, -2.95f, 6.0f);
+	blueLight->SetWorldScale(11.0f, 5.0f, 0.1f);
 	blueLight->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
 	blueLight->lightComponent->SetColour(glm::vec3(0.0f, 0.0f, 1.0f));
 	//
@@ -167,8 +175,8 @@ bool TvTGameScene::Initialize()
 	redLight->SetShader(lightShaderHandle);
 	redLight->renderComponent->SetRenderType(RenderComponent::Render_Type::CUBE);
 	redLight->renderComponent->SetColour(1.0f, 0.0f, 0.0f);
-	redLight->SetWorldPosition(0.0f, -2.95f, -5.5f);
-	redLight->SetWorldScale(11.0f, 5.0f, 0.5f);
+	redLight->SetWorldPosition(0.0f, -2.95f, -6.0f);
+	redLight->SetWorldScale(11.0f, 5.0f, 0.1f);
 	redLight->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
 	redLight->lightComponent->SetColour(glm::vec3(1.0f, 0.0f, 0.0f));
 	//
@@ -179,14 +187,14 @@ bool TvTGameScene::Initialize()
 	middleLight->renderComponent->SetRenderType(RenderComponent::Render_Type::CUBE);
 	middleLight->renderComponent->SetColour(0.0f, 0.0f, 0.0f);
 	middleLight->SetWorldPosition(0.0f, -2.95f, 0.0f);
-	middleLight->SetWorldScale(11.0f, 5.0f, 0.5f);
+	middleLight->SetWorldScale(11.0f, 5.0f, 0.1f);
 	middleLight->lightComponent->SetLightType(LightComponent::Light_Type::POINTLIGHT);
 	middleLight->lightComponent->SetColour(glm::vec3(0.0f, 0.0f, 0.0f));
 	//
 	
 	// Make directional light
 	dirLight = new Light(LightComponent::Light_Type::DIRECTIONAL);
-	dirLight->lightComponent->SetDirection(glm::vec3(1.0f, -1.0f, 1.0f));
+	dirLight->lightComponent->SetDirection(glm::vec3(1.0f, -1.0f, 0.0f));
 	dirLight->lightComponent->SetColour(glm::vec3(0.5f, 0.5f, 0.5f));
 	//
 
@@ -209,10 +217,10 @@ bool TvTGameScene::Initialize()
 	// Add scene objects
 	AddObject(projectileManager->GetProjectileRenderer());
 	AddLightObject(dirLight);
-	//AddLightObject(pointLight);
-	//AddLightObject(pointLight2);
-	//AddLightObject(pointLight3);
-	//AddLightObject(pointLight4);
+	AddLightObject(pointLight);
+	AddLightObject(pointLight2);
+	AddLightObject(pointLight3);
+	AddLightObject(pointLight4);
 	AddLightObject(blueLight);
 	AddLightObject(redLight);
 	AddLightObject(middleLight);
@@ -220,6 +228,7 @@ bool TvTGameScene::Initialize()
 	AddUIObject(roundTextFade);
 	AddUIObject(roundText);
 	AddUIObject(spectatorText);
+	AddUIObject(replayText);
 	AddObject(particle1);
 	AddObject(particle2);
 	AddObject(particle3);
@@ -249,34 +258,91 @@ void TvTGameScene::Update(const float deltaTime)
 		PlayRoundStart();
 	}
 
-	//check for networked inputs and pass them to the appropriate player
-	if (Settings::getInstance()->networkedGame) {
-		if (Settings::getInstance()->isServer) {
-			if (!Settings::getInstance()->spectatorMode) {
-				std::string dataChunk = player1->GetPlayerInput()->ReturnJoystickStateForNetworking() + player2->GetPlayerInput()->ReturnJoystickStateForNetworking();
+		//check for networked inputs and pass them to the appropriate player
+		if (Settings::getInstance()->networkedGame) {
+			if (Settings::getInstance()->isServer) {
+				if (!Settings::getInstance()->spectatorMode) {
+					std::string dataChunk = player1->GetPlayerInput()->UpdateJoystickState() + player2->GetPlayerInput()->UpdateJoystickState();
+					//std::cout << dataChunk << std::endl;
+					BFEngine::GetInstance()->sendData(dataChunk);
+				}
+				else {
+					std::string dataChunk = player1->GetPlayerInput()->UpdateJoystickState() + player2->GetPlayerInput()->UpdateJoystickState() + player3->GetPlayerInput()->UpdateJoystickState() + player4->GetPlayerInput()->UpdateJoystickState();
+					//std::cout << dataChunk << std::endl;
+					BFEngine::GetInstance()->sendData(dataChunk);
+				}
+			}
+			else if (!Settings::getInstance()->spectatorMode) {
+				std::string dataChunk = player3->GetPlayerInput()->UpdateJoystickState() + player4->GetPlayerInput()->UpdateJoystickState();
 				//std::cout << dataChunk << std::endl;
 				BFEngine::GetInstance()->sendData(dataChunk);
+			}
+			//we don't send data as the spectator client
+
+			if (Settings::getInstance()->isServer && Settings::getInstance()->spectatorMode) {
+				//skip receiving since they're not sending data back
 			}
 			else {
-				std::string dataChunk = player1->GetPlayerInput()->ReturnJoystickStateForNetworking() + player2->GetPlayerInput()->ReturnJoystickStateForNetworking() + player3->GetPlayerInput()->ReturnJoystickStateForNetworking() + player4->GetPlayerInput()->ReturnJoystickStateForNetworking();
-				//std::cout << dataChunk << std::endl;
-				BFEngine::GetInstance()->sendData(dataChunk);
+				//read input from the other game
+				std::string externalInput = BFEngine::GetInstance()->receiveData();
+				//cout << "first set of data received: " << externalInput << endl;
+				if (externalInput != "") {
+					if (externalInput.length() >= 70) {
+						//break it into components
+						std::string input1 = externalInput.substr(0, 35);
+						std::string input2 = externalInput.substr(35, 35);
+						//check first string
+						std::string playerNum = input1.substr(0, 1);
+						if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
+							//cout << "PlayerNum: " << playerNum << std::endl;
+							playerList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input1);
+						}
+						playerNum = input2.substr(0, 1);
+						if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
+							//cout << "PlayerNum: " << playerNum << std::endl;
+							playerList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input2);
+						}
+					}
+					//if spectator mode is on we'll have more controllers to parse
+					if (Settings::getInstance()->spectatorMode && externalInput.length() >= 140) {
+						std::string input1 = externalInput.substr(70, 35);
+						std::string input2 = externalInput.substr(105, 35);
+						//check first string
+						std::string playerNum = input1.substr(0, 1);
+						if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
+							//cout << "PlayerNum: " << playerNum << std::endl;
+							playerList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input1);
+						}
+						playerNum = input2.substr(0, 1);
+						if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
+							//cout << "PlayerNum: " << playerNum << std::endl;
+							playerList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input2);
+						}
+					}
+				}
 			}
 		}
-		else if (!Settings::getInstance()->spectatorMode) {
-			std::string dataChunk = player3->GetPlayerInput()->ReturnJoystickStateForNetworking() + player4->GetPlayerInput()->ReturnJoystickStateForNetworking();
-			//std::cout << dataChunk << std::endl;
-			BFEngine::GetInstance()->sendData(dataChunk);
-		}
-		//we don't send data as the spectator client
 
-		if (Settings::getInstance()->isServer && Settings::getInstance()->spectatorMode) {
-			//skip receiving since they're not sending data back
+		//sets up spectator scene
+		if (Settings::getInstance()->networkedGame && Settings::getInstance()->spectatorMode && !Settings::getInstance()->isServer && !playingIntro)
+		{
+			sceneManager->EnableSplitscreen(false);
+			gameManager->divider->SetVisible(false);
+			gameManager->end->SetVisible(false);
+			bottomRing->canRender = false;
+			spectatorText->SetVisible(true);
+			cameraList[0]->Position = glm::vec3(7.0f, 5.5f, 0.0f);
+			cameraList[0]->SetRotationY(-180.0f);
+			cameraList[0]->SetRotationX(-50.0f);
 		}
 		else {
-			//read input from the other game
-			std::string externalInput = BFEngine::GetInstance()->receiveData();
-			cout << "first set of data received: " << externalInput << endl;
+			bottomRing->canRender = true;
+			spectatorText->SetVisible(false);
+		}
+
+		///temporary home of replay. we're gonna move this all to file soon enough
+		if (Settings::getInstance()->replaySystemEnabled && Settings::getInstance()->playingReplay) {
+			std::string externalInput = Replay::GetInstance()->PullFromReplay();
 			if (externalInput != "") {
 				if (externalInput.length() >= 70) {
 					//break it into components
@@ -285,83 +351,77 @@ void TvTGameScene::Update(const float deltaTime)
 					//check first string
 					std::string playerNum = input1.substr(0, 1);
 					if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
-						cout << "PlayerNum: " << playerNum << std::endl;
+						//cout << "PlayerNum: " << playerNum << std::endl;
 						playerList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input1);
 					}
 					playerNum = input2.substr(0, 1);
 					if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
-						cout << "PlayerNum: " << playerNum << std::endl;
+						//cout << "PlayerNum: " << playerNum << std::endl;
 						playerList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input2);
 					}
 				}
-				//if spectator mode is on we'll have more controllers to parse
-				if (Settings::getInstance()->spectatorMode && externalInput.length() >= 140) {
+				if (externalInput.length() >= 140) {
 					std::string input1 = externalInput.substr(70, 35);
 					std::string input2 = externalInput.substr(105, 35);
 					//check first string
 					std::string playerNum = input1.substr(0, 1);
 					if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
-						cout << "PlayerNum: " << playerNum << std::endl;
+						//cout << "PlayerNum: " << playerNum << std::endl;
 						playerList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input1);
 					}
 					playerNum = input2.substr(0, 1);
 					if (playerNum == "0" || playerNum == "1" || playerNum == "2" || playerNum == "3") {
-						cout << "PlayerNum: " << playerNum << std::endl;
+						//cout << "PlayerNum: " << playerNum << std::endl;
 						playerList.at(std::stoi(playerNum))->GetPlayerInput()->ParseNetworkInputs(input2);
 					}
 				}
 			}
 		}
 
-		//handles a, b, start
+		//controller button presses (no longer in handle events)
 		for (int i = 0; i < playerList.size(); i++)
 		{
-			int buttonPressed = 8; //back button
-			if (playerList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) != playerList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed)) {
-				playerList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed) = playerList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed);
-
-				if (playerList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) == 1) {
-					if (gameManager->IsGameOver()) {
-						Mix_HaltChannel(playerList[0]->dialogue.channel);
-						Mix_HaltChannel(playerList[1]->dialogue.channel);
-						Mix_HaltChannel(playerList[2]->dialogue.channel);
-						Mix_HaltChannel(playerList[3]->dialogue.channel);
-						InputManager::GetInstance()->ClearControllers();
-						InputManager::GetInstance()->initalizeControllers();
-						sceneManager->controllers.clear();
-						sceneManager->saveData.clear();
-						sceneManager->SwitchScene(new CharacterSelectScene());
+				//playerList.at(i)->GetPlayerInput()->DebugState();
+				int buttonPressed = 8; //back button
+				if (playerList.at(i)->GetPlayerInput()->NewButtonPress(buttonPressed)) {
+					if (playerList.at(i)->GetPlayerInput()->controllerState.at(buttonPressed) == 1) {
+						if (gameManager->IsGameOver()) {
+							if (Settings::getInstance()->replaySystemEnabled && !Settings::getInstance()->playingReplay) {
+								std::string dataChunk = player1->GetPlayerInput()->UpdateJoystickState() + player2->GetPlayerInput()->UpdateJoystickState() + player3->GetPlayerInput()->UpdateJoystickState() + player4->GetPlayerInput()->UpdateJoystickState();
+								Replay::GetInstance()->PushForReplay(dataChunk);
+								Replay::GetInstance()->SaveReplay("DefaultReplay.txt");
+							}
+							Mix_HaltChannel(playerList[0]->dialogue.channel);
+							Mix_HaltChannel(playerList[1]->dialogue.channel);
+							Mix_HaltChannel(playerList[2]->dialogue.channel);
+							Mix_HaltChannel(playerList[3]->dialogue.channel);
+							InputManager::GetInstance()->ClearControllers();
+							InputManager::GetInstance()->initalizeControllers();
+							sceneManager->controllers.clear();
+							sceneManager->saveData.clear();
+							sceneManager->SwitchScene(new CharacterSelectScene());
+						}
 					}
 				}
-			}
+	
 			buttonPressed = 14; //start button
-			if (playerList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) != playerList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed)) {
-				playerList.at(i)->GetPlayerInput()->lastNetworkKeyPressed.at(buttonPressed) = playerList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed);
-
-				if (playerList.at(i)->GetPlayerInput()->networkedJoystickInputs.at(buttonPressed) == 1) {
+			if (playerList.at(i)->GetPlayerInput()->NewButtonPress(buttonPressed)) {
+				if (playerList.at(i)->GetPlayerInput()->controllerState.at(buttonPressed) == 1) {
+					if (playingIntro) {
+						SkipIntro();
+					}
 					if (gameManager->IsGameOver() && gameManager->canContinue) {
 						Restart();
 					}
 				}
 			}
 		}
-	}
 
-	if (Settings::getInstance()->networkedGame && Settings::getInstance()->spectatorMode && !Settings::getInstance()->isServer &&!playingIntro)
-	{
-		sceneManager->EnableSplitscreen(false);
-		gameManager->divider->SetVisible(false);
-		gameManager->end->SetVisible(false);
-		bottomRing->canRender = false;
-		spectatorText->SetVisible(true);
-		cameraList[0]->Position = glm::vec3(7.0f, 5.5f, 0.0f);
-		cameraList[0]->SetRotationY(-180.0f);
-		cameraList[0]->SetRotationX(-50.0f);
-	}
-	else {
-		bottomRing->canRender = true;
-		spectatorText->SetVisible(false);
-	}
+		if (Settings::getInstance()->replaySystemEnabled && !Settings::getInstance()->playingReplay) {
+			std::string dataChunk = player1->GetPlayerInput()->ReturnJoystickState() + player2->GetPlayerInput()->ReturnJoystickState() + player3->GetPlayerInput()->ReturnJoystickState() + player4->GetPlayerInput()->ReturnJoystickState();
+			Replay::GetInstance()->PushForReplay(dataChunk);
+		}
+	
 }
 
 void TvTGameScene::FixedUpdate(const float deltaTime)
@@ -385,15 +445,6 @@ void TvTGameScene::FixedUpdate(const float deltaTime)
 }
 void TvTGameScene::HandleEvents(SDL_Event events)
 {
-	if (playingIntro) {
-		if (events.type == SDL_JOYBUTTONDOWN) {
-			if (events.jbutton.button == 7) //start button
-			{
-				SkipIntro();
-			}
-		}
-	}
-
 	if (roundStart) {
 
 		// Camera look
@@ -459,28 +510,6 @@ void TvTGameScene::HandleEvents(SDL_Event events)
 		player3->HandleEvents(events);
 		player4->HandleEvents(events);
 
-	}
-
-	if (events.jbutton.button == 7 && events.type == SDL_JOYBUTTONDOWN) //start button
-	{
-		if (gameManager->IsGameOver() && gameManager->canContinue) {
-			Restart();
-		}
-	}
-
-	if (events.jbutton.button == 1 && events.type == SDL_JOYBUTTONDOWN) //b button
-	{
-		if (gameManager->IsGameOver()) {
-			Mix_HaltChannel(playerList[0]->dialogue.channel);
-			Mix_HaltChannel(playerList[1]->dialogue.channel);
-			Mix_HaltChannel(playerList[2]->dialogue.channel);
-			Mix_HaltChannel(playerList[3]->dialogue.channel);
-			InputManager::GetInstance()->ClearControllers();
-			InputManager::GetInstance()->initalizeControllers();
-			sceneManager->controllers.clear();
-			sceneManager->saveData.clear();
-			sceneManager->SwitchScene(new CharacterSelectScene());
-		}
 	}
 }
 
@@ -613,6 +642,10 @@ void TvTGameScene::PlayIntro()
 			roundCD.startCD();
 			fadeAlpha = 1.0f;
 			playingIntro = false;
+			for (int i = 0; i < playerList.size(); i++)
+			{
+				playerList.at(i)->PlayingIntro = false;
+			}
 		}
 	}
 
@@ -658,6 +691,11 @@ void TvTGameScene::SkipIntro()
 		Mix_HaltChannel(playerList[1]->dialogue.channel);
 		Mix_HaltChannel(playerList[2]->dialogue.channel);
 		Mix_HaltChannel(playerList[3]->dialogue.channel);
+
+		for (int i = 0; i < playerList.size(); i++)
+		{
+			playerList.at(i)->PlayingIntro = false;
+		}
 	}
 }
 
@@ -729,9 +767,26 @@ void TvTGameScene::SetUpPlayers()
 	playerList.push_back(player3);
 	playerList.push_back(player4);
 
+	std::string playersForReplay;
+	if (Settings::getInstance()->replaySystemEnabled && Settings::getInstance()->playingReplay == true) {
+		if (Replay::GetInstance()->TryLoadReplay("defaultReplay.txt")) {
+			
+			//std::cout << "Replay loaded successfully" << std::endl;
+		}
+		else {
+			//std::cout << "Replay failed to load" << std::endl;
+		}
+		playersForReplay = Replay::GetInstance()->PullFromReplay();
+		replayText->SetVisible(true);
+	}
+	else {
+		replayText->SetVisible(false);
+	}
+
 	// Loop through player list and create character based on save data from chararcter select
 	for (unsigned int i = 0; i < playerList.size(); i++)
 	{
+		//normal player behavior
 		if (sceneManager->saveData.size() != 0) {
 			if (sceneManager->saveData[i] == 0) {
 				playerList.at(i) = new LightningPlayer();
@@ -753,10 +808,39 @@ void TvTGameScene::SetUpPlayers()
 				playerList.at(i) = new WindPlayer();
 			}
 		}
-		else
-		{
-			playerList.at(i) = new WindPlayer();
+		//replay player stuff
+		if (Settings::getInstance()->replaySystemEnabled) {
+			if (Settings::getInstance()->playingReplay == false) {
+				playersForReplay += std::to_string(sceneManager->saveData[i]); //push in the player numbers for the replay
+			}
+			else { //pull the number out of the replay file
+				std::string replaySaveData = playersForReplay.substr(i, 1);
+				if (replaySaveData == "0") {
+					playerList.at(i) = new LightningPlayer();
+				}
+				else if (replaySaveData == "1") {
+					playerList.at(i) = new EarthPlayer();
+				}
+				else if (replaySaveData == "2") {
+					playerList.at(i) = new IcePlayer();
+				}
+				else if (replaySaveData == "3") {
+					playerList.at(i) = new FirePlayer();
+				}
+				else if (replaySaveData == "4") {
+					playerList.at(i) = new WindPlayer();
+				}
+				else
+				{
+					playerList.at(i) = new WindPlayer();
+				}
+			}
 		}
+	}
+
+	if (Settings::getInstance()->replaySystemEnabled && Settings::getInstance()->playingReplay == false) {
+		Replay::GetInstance()->PushForReplay(playersForReplay);
+		Replay::GetInstance()->PushForReplay(playersForReplay);
 	}
 
 	// Assign player reference
@@ -789,12 +873,33 @@ void TvTGameScene::SetUpPlayers()
 	player3->SetPlayerTeam(Player::PLAYERTEAM::TEAM2);
 	player4->SetPlayerTeam(Player::PLAYERTEAM::TEAM2);
 
-	// Assign controllers saved from character select if there are any
-	if (sceneManager->controllers.size() != 0) {
-		player1->GetPlayerInput()->SetJoystick(sceneManager->controllers[0]);
-		player2->GetPlayerInput()->SetJoystick(sceneManager->controllers[1]);
-		player3->GetPlayerInput()->SetJoystick(sceneManager->controllers[2]);
-		player4->GetPlayerInput()->SetJoystick(sceneManager->controllers[3]);
+	// Assign controllers saved from character select if there are any (and we're not playing a replay)
+	///cpu stuff is commented out for now
+	if (sceneManager->controllers.size() != 0 && !Settings::getInstance()->playingReplay) {
+		if (sceneManager->controllers[0] != NULL) {
+			player1->GetPlayerInput()->SetJoystick(sceneManager->controllers[0]);
+		}
+		else {
+			player1->SetAsCPU();
+		}
+		if (sceneManager->controllers[1] != NULL) {
+			player2->GetPlayerInput()->SetJoystick(sceneManager->controllers[1]);
+		}
+		else if (!Settings::getInstance()->networkedGame) {
+			player2->SetAsCPU();
+		}
+		if (sceneManager->controllers[2] != NULL) {
+			player3->GetPlayerInput()->SetJoystick(sceneManager->controllers[2]);
+		}
+		else if (!Settings::getInstance()->networkedGame) {
+			player3->SetAsCPU();
+		}
+		if (sceneManager->controllers[3] != NULL) {
+			player4->GetPlayerInput()->SetJoystick(sceneManager->controllers[3]);
+		}
+		else if (!Settings::getInstance()->networkedGame) {
+			player4->SetAsCPU();
+		}
 	}
 
 	if (Settings::getInstance()->networkedGame && !Settings::getInstance()->isServer) {
@@ -804,7 +909,7 @@ void TvTGameScene::SetUpPlayers()
 	if (Settings::getInstance()->networkedGame && !Settings::getInstance()->isServer) {
 		player2->GetPlayerInput()->makeNetworked();
 	}
-	
+
 	if (Settings::getInstance()->networkedGame && ((Settings::getInstance()->isServer && !Settings::getInstance()->spectatorMode) || (!Settings::getInstance()->isServer && Settings::getInstance()->spectatorMode))) {
 		player3->GetPlayerInput()->makeNetworked();
 	}
@@ -855,13 +960,15 @@ void TvTGameScene::SetUpArena()
 {
 	// Make models
 	//
-	platform = new Model("Resources/Models/platform/PP_steel_podium_platinum.obj");
+	platform = new Model("Resources/Models/Platform/platform.obj");
+	platform->SetWorldRotation(glm::vec3(1, 0, 0), -1.57);
+	platform->SetLocalRotation(glm::vec3(0, 0, 1), 1.57);
 	platform->SetShader(defaultShaderHandle);
-	platform->physicsComponent->SetPosition(glm::vec3(0.0f, -2.0f, 0.0f));
-	platform->SetWorldScale(0.13f, 0.1f, 0.06f);
+	platform->physicsComponent->SetPosition(glm::vec3(0.0f, -0.43f, 0.0f));
+	platform->SetWorldScale(0.0090f, 0.01f, 0.006f);
 	platform->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	platform->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
-	platform->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
+	platform->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
 	platform->physicsComponent->SetMass(0.0f);
 	platform->collisionComponent->SetLayer(20);
 	//
@@ -931,15 +1038,20 @@ void TvTGameScene::SetUpArena()
 	projectileManager->AddEnvironment(floor);
 
 	AddObject(platform);
-	AddObject(topRing);
-	AddObject(middleRing);
-	AddObject(bottomRing);
+	//AddObject(topRing);
+	//AddObject(middleRing);
+	//AddObject(bottomRing);
 	AddObject(floor);
 	AddObject(divider);
 }
 
 void TvTGameScene::Restart()
 {
+	for (int i = 0; i < playerList.size(); i++)
+	{
+		playerList.at(i)->PlayingIntro = true;
+	}
+
 	fadeImage->SetVisible(true);
 
 	gameManager->Reset();

@@ -137,7 +137,7 @@ namespace GAME {
 
 		bool spectator = false;
 		TextUI* spectatorText;
-
+		TextUI* replayText;
 		// Audio
 		Music* bgm;
 	};

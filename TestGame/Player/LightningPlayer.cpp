@@ -49,12 +49,12 @@ std::vector<Projectile*> LightningPlayer::LightAttack()
 		lightComboPosition++;
 		lightComboTimer = 0.4f;
 
-		Projectile* p = Shocker(0.5f, 0.0f, 100.0f, 0.0f, 0.2f, 3.5f);
+		Projectile* p = Shocker(0.5f, 0.0f, 100.0f, 0.0f, 0.2f, 3.5f, 0.0f);
 		p->SetDamage(2);
 		p->SetMesh(PROJECTILE_MESH::NORM_ELEC);
 		proj.push_back(p);
 
-		Projectile* a = Shocker(-0.5f, 0.0f, 100.0f, 0.0f, 0.2f, 3.5f);
+		Projectile* a = Shocker(-0.5f, 0.0f, 100.0f, 0.0f, 0.2f, 3.5f, 0.0f);
 		a->SetDamage(2);
 		a->SetMesh(PROJECTILE_MESH::NORM_ELEC);
 		proj.push_back(a);
@@ -168,7 +168,7 @@ std::vector<Projectile*> LightningPlayer::HeavyAttack()
 		Projectile* p = LightningCloud(-10.0f, 1.0f);
 		proj.push_back(p);
 
-		Projectile* f = Shocker(0, -9.0f, -150.0f, 0.0f, 0.0f, 130.0f);
+		Projectile* f = Shocker(0, -9.0f, -150.0f, 0.0f, 0.0f, 130.0f, 0.5f);
 		f->SetDamage(25);
 		f->SetMesh(PROJECTILE_MESH::NORM_ELEC);
 		proj.push_back(f);
@@ -410,13 +410,14 @@ Projectile* LightningPlayer::ForkedLightning(float offset) {
 	return p;
 }
 
-Projectile* LightningPlayer::Shocker(float offsetx, float offsetz, float speed, float accel, float stun, float knockback) {
+Projectile* LightningPlayer::Shocker(float offsetx, float offsetz, float speed, float accel, float stun, float knockback, float delay) {
 	Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x + offsetx - (offsetz * targetAngle * dir), GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z + offsetz * dir), targetAngle, dir);
 	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, speed));
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, accel)); //no accel
 	p->SetKnockbackForce(glm::vec3(0.0f, 20.0f, knockback)); //static
 	p->SetStunTime(stun);
-	p->SetWorldScale(0.25f, 0.25f, 0.5f);
+	p->SetFirstDelay(delay, glm::vec3(0), glm::vec3((0.25f, 0.25f, 0.5f)), glm::vec3(0.25f, 0.25f, 0.5f), glm::quat(0, 0, 0, 0));
+	//p->SetWorldScale(0.25f, 0.25f, 0.5f);
 	p->SetLifetime(3.0f);
 	p->SetPlayer(PROJECTILE_PLAYER::PLAYER3);
 	p->SetElement(PROJECTILE_ELEMENT::LIGHTNING);

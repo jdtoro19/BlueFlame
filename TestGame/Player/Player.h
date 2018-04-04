@@ -13,6 +13,7 @@
 #include "../Game/ProjectileManager.h"
 #include "PlayerBase.h"
 #include "PlayerInput.h"
+#include <BlueFlameEngine\Engine\Math\Randomizer.h>
 
 using namespace ENGINE;
 
@@ -97,7 +98,7 @@ namespace GAME {
 		virtual std::vector<Projectile*> MediumAttack() = 0;
 		virtual std::vector<Projectile*> HeavyAttack() = 0;
 		virtual std::vector<Projectile*> SpecialAttack() = 0;
-		void AddSpecialMeter(int value) { if(specialMeter < 100 ) {specialMeter += value; } if (specialMeter > 100) { specialMeter == 100; } };
+		void AddSpecialMeter(int value) { if(specialMeter < 100 ) {specialMeter += value; } if (specialMeter > 100) { specialMeter = 100; } };
 
 		// Sets the projectile manager for the player to use
 		void AddProjecitleManager(ProjectileManager* pM);
@@ -131,6 +132,16 @@ namespace GAME {
 		PlayerInput* GetPlayerInput() { return playerInput; };
 		bool IsOut() { return out; };
 		bool CanMove() { return canMove; };
+
+		//CPU Player
+		void SetAsCPU() { computerPlayer = true; }
+
+		//Player Specific Audio
+		//MUST HAVE A CONSTRUCTOR FOR THIS IN EXPANDED CLASS
+		PlayerDialogue dialogue; //USED TO STORE PLAYER DIALOGUE. LoadPlayerDialogue(
+		SoundEffectSelector pSoundEffects;
+
+		bool PlayingIntro;
 
 	protected:
 		// Player model parts
@@ -206,13 +217,23 @@ namespace GAME {
 		ParticleSystem* shootEffect;
 
 		//handle events but for networked players
-		void HandleNetworkedButtons();
+		void HandleControllerEvents();
 
-	public:
-		//Player Specific Audio
-		//MUST HAVE A CONSTRUCTOR FOR THIS IN EXPANDED CLASS
-		PlayerDialogue dialogue; //USED TO STORE PLAYER DIALOGUE. LoadPlayerDialogue(
-		SoundEffectSelector pSoundEffects;
+		//AI???
+		bool computerPlayer = false;
+
+		void AIMovement();
+		void AIShooting();
+
+		void BoundsCheckT2();
+		void BoundsCheckT1();
+
+		Cooldown CPUMovementCD;
+		Cooldown CPUShootingCD;
+
+		Randomizer rand;
+		//end AI
+		
 	};
 
 }

@@ -27,7 +27,6 @@ namespace GAME {
 		RenderComponent* GetCubeMesh() { return cubeMesh; };
 
 		void SetProjectileList(std::vector<Projectile*> projectileList) { projectiles = projectileList; };
-		void SetSpawnedProjectileList(std::vector<Projectile*> projectileList) { spawnedProjectiles = projectileList; };
 
 	private:
 
@@ -41,7 +40,6 @@ namespace GAME {
 
 		// List of projectiles in the scene
 		std::vector<Projectile*> projectiles;
-		std::vector<Projectile*> spawnedProjectiles;
 		// Projectiles shader
 		Shader* projectileShader;
 

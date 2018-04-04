@@ -31,6 +31,7 @@
     <ClCompile Include="Engine\Core\Parser.cpp" />
     <ClCompile Include="Engine\Core\Timer.cpp" />
     <ClCompile Include="Engine\Debuging\LogManager.cpp" />
+    <ClCompile Include="Engine\Debuging\Replay.cpp" />
     <ClCompile Include="Engine\Debuging\Settings.cpp" />
     <ClCompile Include="Engine\Graphics\Bone.cpp" />
     <ClCompile Include="Engine\Graphics\ParticleSystem.cpp" />
@@ -79,6 +80,7 @@
     <ClInclude Include="Engine\Core\ResourceManager.h" />
     <ClInclude Include="Engine\Core\Timer.h" />
     <ClInclude Include="Engine\Debuging\LogManager.h" />
+    <ClInclude Include="Engine\Debuging\Replay.h" />
     <ClInclude Include="Engine\Debuging\Settings.h" />
     <ClInclude Include="Engine\Graphics\Animation.h" />
     <ClInclude Include="Engine\Graphics\Bone.h" />

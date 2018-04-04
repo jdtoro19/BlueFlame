@@ -40,7 +40,7 @@ namespace GAME {
 		bool ZeroLasering = false;
 		bool charging = false;
 		Projectile* ForkedLightning(float offset); //used to create heavy attack
-		Projectile* Shocker(float offsetx, float offsetz, float speed, float accel, float stun, float knockback); //used for light attack
+		Projectile* Shocker(float offsetx, float offsetz, float speed, float accel, float stun, float knockback, float delay); //used for light attack
 	};
 
 }

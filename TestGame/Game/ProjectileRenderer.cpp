@@ -60,7 +60,7 @@ ProjectileRenderer::ProjectileRenderer() {
 	windWall = new Model("Resources/Models/Projectiles/Wind/Projectile_Wall_Ice.obj");
 	windWall->SetWorldScale(0.010f);
 
-	projectileShader = new Shader("Shaders/model.vs", "Shaders/model.fs");
+	projectileShader = new Shader("Shaders/projectile.vs", "Shaders/projectile.fs");
 	shader = BFEngine::GetInstance()->GetSceneManager()->GetRenderer()->GetShaderManager()->put(std::string("projectile"), projectileShader);
 }
 
@@ -89,104 +89,106 @@ void ProjectileRenderer::Render(Shader* shader, const double _interpolation) {
 		if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::CUBE)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(0.0f, 0.0f, 0.0f));
 			cubeMesh->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::NORM_FIRE)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				normFire->GetWorldModelMatrix() * normFire->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(-0.3f, -0.8f, -0.9f));
 			normFire->model->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::FIRE_METEOR)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				fireMeteor->GetWorldModelMatrix() * fireMeteor->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(0.2f, 0.0f, 0.0f));
 			fireMeteor->model->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::NORM_EARTH)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				normEarth->GetWorldModelMatrix() * normEarth->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(0.6, 0.3f, 0.1f));
 			normEarth->model->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::EARTH_STALAGMITES)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				earthStalagmites->GetWorldModelMatrix() * earthStalagmites->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(0.3f, 0.1f, 0.0f));
 			earthStalagmites->model->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::EARTH_ULT)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				earthUlt->GetWorldModelMatrix() * earthUlt->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(0.0f, 0.0f, 0.0f));
 			earthUlt->model->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::NORM_ICE)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				normIce->GetWorldModelMatrix() * normIce->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(-0.5f, -0.2f, 0.1f));
 			normIce->model->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::ICE_RAMP)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				iceRamp->GetWorldModelMatrix() * iceRamp->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(0.0f, 0.0f, 0.0f));
 			iceRamp->model->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::ICE_WALL)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				iceWall->GetWorldModelMatrix() * iceWall->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(0.0f, 0.0f, 0.0f));
 			iceWall->model->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::ICE_ULT)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				iceUlt->GetWorldModelMatrix() * iceUlt->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(0.0f, 0.0f, 0.0f));
 			iceUlt->model->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::NORM_ELEC)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				normElec->GetWorldModelMatrix() * normElec->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(0.0f, 0.0f, -1.0f));
 			normElec->model->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::ELEC_DISC)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				elecDisc->GetWorldModelMatrix() * elecDisc->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(5.0f, 5.0f, 0.0f));
 			elecDisc->model->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::NORM_WIND)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				normWind->GetWorldModelMatrix() * normWind->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(-0.8f, 0.0f, -0.8f));
 			normWind->model->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::WIND_DISC)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				windDisc->GetWorldModelMatrix() * windDisc->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(-0.5f, -0.3f, -0.5f));
 			windDisc->model->Render(shader);
 		}
 		else if (projectiles.at(i)->GetMesh() == PROJECTILE_MESH::WIND_WALL)
 		{
 			shader->setMat4("model", interpolatedMatrix * projectiles.at(i)->GetLocalModelMatrix() *
 				windWall->GetWorldModelMatrix() * windWall->GetLocalModelMatrix());
+			shader->setVec3("Colour", glm::vec3(0.0f, 0.2f, 0.0f));
 			windWall->model->Render(shader);
 		}
-	}
-
-	for (unsigned int i = 0; i < spawnedProjectiles.size(); ++i) {
-
-		// Account for interpolation
-		interpolatedMatrix = spawnedProjectiles.at(i)->GetWorldModelMatrix() * (float)_interpolation + spawnedProjectiles.at(i)->GetPreviousWorldMatrix() * (1.0f - (float)_interpolation);
-
-		// Don't interpolate on the first render 
-		if (spawnedProjectiles.at(i)->firstRender == true) {
-			interpolatedMatrix = spawnedProjectiles.at(i)->GetWorldModelMatrix();
-		}
-		shader->setMat4("model", interpolatedMatrix * spawnedProjectiles.at(i)->GetLocalModelMatrix());
-		cubeMesh->Render(shader);
 	}
 }

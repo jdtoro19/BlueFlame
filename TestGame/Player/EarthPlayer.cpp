@@ -54,7 +54,7 @@ std::vector<Projectile*> EarthPlayer::LightAttack()
 		p->SetStrength(PROJECTILE_STRENGTH::LIGHT);
 		p->SetImpulseForce(glm::vec3(0.0f, 100.0f, 150.0f));
 		p->SetActingForce(glm::vec3(0.0f, -5.0f, 0.0f));
-		p->SetKnockbackForce(glm::vec3(0.0f, 20.0f, 30.0f));
+		p->SetKnockbackForce(glm::vec3(0.0f, 20.0f, 20.0f));
 		p->SetStunTime(0.2f);
 		p->SetWorldScale(0.7f);
 		p->SetDamage(5);
@@ -111,22 +111,22 @@ std::vector<Projectile*> EarthPlayer::MediumAttack()
 
 	if (playerState == NORMAL && mediumComboTimer <= 0)
 	{
-		mediumComboTimer = 1.5f;
+		mediumComboTimer = 6.0f;
 
 		dialogue.playSpecifiedFromState(dialogue.SpecialProjectile, 2);
 		//wall
-		/*Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, GetWorldPosition().y, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), 0.0f, dir);
-		p->SetActingForce(glm::vec3(0.0f, -1.5f, 0.0f));
+		Projectile* p = new Projectile(glm::vec3(GetWorldPosition().x, -3.0f, GetWorldPosition().z - collisionComponent->GetBoundingBox().r.z * 2.0f * GetWorldScale().z * dir), targetAngle, dir);
+		p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetKnockbackForce(glm::vec3(0.0f, 0.0f, 0.0f));
 		p->SetStunTime(0.0f);
-		p->SetWorldScale(2.0f, 0.25f, 0.25f);
+		p->SetFirstDelay(0.2f, glm::vec3(0.0f, 2.0f, 0.0f), glm::vec3(2.0f, 2.0f, 2.0f), glm::vec3(2.0f, 2.0f, 2.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 		p->SetElement(PROJECTILE_ELEMENT::EARTH);
-		p->SetStrength(PROJECTILE_STRENGTH::HEAVY);
-		p->SetClipping(PROJECTILE_CLIP::YES_WALL_PROJECTILE);
+		p->SetStrength(PROJECTILE_STRENGTH::SPECIAL);
+		p->SetClipping(PROJECTILE_CLIP::YES_PROJECTILE);
 		p->SetMesh(PROJECTILE_MESH::EARTH_ULT);
-		p->SetLifetime(3.0f);
+		p->SetLifetime(2.7f);
 
-		proj.push_back(p);*/
+		proj.push_back(p);
 	}
 
 	//if (playerState == ATTACK && mediumComboPosition == 2 && mediumComboTimer > 0)
@@ -317,11 +317,11 @@ Projectile* EarthPlayer::smallRock(float offset, float xxx) {
 }
 
 Projectile* EarthPlayer::SpecialRock(float offset) {
-	Projectile* p = new Projectile(glm::vec3(offset, GetWorldPosition().y - 1.5f, -1.5f * -dir), 0.0f, dir);
-	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 120.0f));
+	Projectile* p = new Projectile(glm::vec3(offset, GetWorldPosition().y - 1.75f, -1.5f * -dir), 0.0f, dir);
+	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 70.0f));
 	p->SetActingForce(glm::vec3(0.0f, 0.0f, 0.0f));
 	p->SetKnockbackForce(glm::vec3(0.0f, 50.0f, 200.0f));
-	p->SetFirstDelay(1.0f, glm::vec3(0.0f, 1.0f, 0.5f), glm::vec3(1.95f, 1.45f, 0.45f), glm::vec3(2.0f, 1.5f, 0.5f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
+	p->SetFirstDelay(1.0f, glm::vec3(0.0f, 1.0f, 0.5f), glm::vec3(1.5f, 1.0f, 2.0f), glm::vec3(1.5f, 1.0f, 2.0f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
 	p->SetStunTime(3.5f);
 	p->SetElement(PROJECTILE_ELEMENT::EARTH);
 	p->SetStrength(PROJECTILE_STRENGTH::SPECIAL);
@@ -338,12 +338,12 @@ Projectile* EarthPlayer::stalagmite(float offset, float delay) {
 	p->SetImpulseForce(glm::vec3(0.0f, 0.0f, 0.0f));
 	p->SetActingForce(glm::vec3(0.0f, 5.0f, 0.0f));
 	p->SetFirstDelay(delay, glm::vec3(0), glm::vec3(0.5f, 0.8f, 0.5f), glm::vec3(0.5f, 0.8f, 0.5f), glm::quat(0.0f, 0.0f, 0.0f, 0.0f));
-	p->SetKnockbackForce(glm::vec3(0.0f, 20.0f, 90.0f));
+	p->SetKnockbackForce(glm::vec3(0.0f, 20.0f, 100.0f));
 	p->SetStunTime(1.0f);
 	p->SetLifetime(delay + 0.5f);
 	p->SetElement(PROJECTILE_ELEMENT::EARTH);
 	p->SetStrength(PROJECTILE_STRENGTH::SPECIAL);
 	p->SetClipping(PROJECTILE_CLIP::YES_PLAYER);
-	p->SetDamage(15);
+	p->SetDamage(20);
 	return p;
 }

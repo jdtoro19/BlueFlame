@@ -98,7 +98,7 @@ namespace GAME {
 		bool ready = false;
 
 		float cameraTimer = 0;
-
+		void MoveToGameScene();
 	};
 }
 #endif

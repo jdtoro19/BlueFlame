@@ -24,9 +24,6 @@ namespace GAME {
 		std::vector<Player*> playerList;
 		std::vector<GameObject*> environmentList;
 
-		// List of special projectiles that were spawned in the game scene from other projectiles
-		std::vector<Projectile*> spawnedProjectiles;
-
 		// Projectile Renderer 
 		ProjectileRenderer* projectileRenderer;
 
@@ -56,10 +53,6 @@ namespace GAME {
 		bool IsSameTeam(Projectile &_proj1, Projectile &_proj2);
 		bool IsSamePlayer(Player &_player, Projectile &_projectile);
 		bool IsSamePlayer(Projectile &_proj1, Projectile &_proj2);
-
-	private:
-		void AddSpawnedProjectile(Projectile* _projectile);
-		void RemoveSpawnedProjectile(Projectile* _projectile);
 
 	public:
 

@@ -74,15 +74,19 @@ bool ShowCaseScene::Initialize()
 	floor->physicsComponent->SetMass(0.0f);
 	floor->canRender = false;
 
-	platform = new Model("Resources/Models/platform/PP_steel_podium_platinum.obj");
-	platform->SetShader(lightShaderHandle);
-	platform->physicsComponent->SetPosition(glm::vec3(0.0f, -15.5f, 0.0f));
-	platform->SetWorldScale(0.01f, 1.0f, 0.004f);
+	//
+	platform = new Model("Resources/Models/Platform/platform.obj");
+	platform->SetWorldRotation(glm::vec3(1, 0, 0), -1.57);
+	platform->SetLocalRotation(glm::vec3(0, 0, 1), 1.57);
+	platform->SetShader(defaultShaderHandle);
+	platform->physicsComponent->SetPosition(glm::vec3(0.0f, -0.43f, 0.0f));
+	platform->SetWorldScale(0.0090f, 0.01f, 0.006f);
 	platform->physicsComponent->SetPhysicsType(PhysicsComponent::Physics_Type::STATIC);
 	platform->physicsComponent->SetElasticity(PhysicsComponent::Elastic_Type::NON_ELASTIC);
-	platform->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::ROUGH);
+	platform->physicsComponent->SetMaterialType(PhysicsComponent::Material_Type::PERFECT_SMOOTH);
 	platform->physicsComponent->SetMass(0.0f);
 	platform->collisionComponent->SetLayer(20);
+	//
 
 	//
 	bottomRing = new Model("Resources/Models/ring/ring.obj");
@@ -99,12 +103,12 @@ bool ShowCaseScene::Initialize()
 	// Make skybox, load its textures, set properties, and give to the renderer
 	skybox = new Skybox();
 	std::vector<char*> faces;
-	faces.push_back("Resources/Textures/Skyboxes/grimmnight/right.png");
-	faces.push_back("Resources/Textures/Skyboxes/grimmnight/left.png");
-	faces.push_back("Resources/Textures/Skyboxes/grimmnight/top.png");
-	faces.push_back("Resources/Textures/Skyboxes/grimmnight/bottom.png");
-	faces.push_back("Resources/Textures/Skyboxes/grimmnight/back.png");
-	faces.push_back("Resources/Textures/Skyboxes/grimmnight/front.png");
+	faces.push_back("Resources/Textures/Skyboxes/BlueMist/right.png");
+	faces.push_back("Resources/Textures/Skyboxes/BlueMist/left.png");
+	faces.push_back("Resources/Textures/Skyboxes/BlueMist/top.png");
+	faces.push_back("Resources/Textures/Skyboxes/BlueMist/bottom.png");
+	faces.push_back("Resources/Textures/Skyboxes/BlueMist/back.png");
+	faces.push_back("Resources/Textures/Skyboxes/BlueMist/front.png");
 	skybox->LoadTextures(faces);
 	skybox->SetShader(skyboxShaderHandle);
 
@@ -112,7 +116,7 @@ bool ShowCaseScene::Initialize()
 	AddObject(player);
 	AddObject(floor);
 	AddObject(platform);
-	AddObject(bottomRing);
+	//AddObject(bottomRing);
 	AddLightObject(pointLight);
 	AddLightObject(dirLight);
 	AddUIObject(fadeImage);

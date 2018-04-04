@@ -89,17 +89,61 @@ void GameManager::Initialize()
 	divider->SetScale(1.0f);
 	divider->SetVisible(false);
 
-	if (sceneManager->saveData.size() != 0) {
-		p1Widget = new PlayerWidget(sceneManager->saveData[0], 110, 1000);
+	std::string playersFromReplay;
+	if (Settings::getInstance()->replaySystemEnabled && Settings::getInstance()->playingReplay == true) {
+		if (Replay::GetInstance()->TryLoadReplay("defaultReplay.txt")) {
+			
+			//std::cout << "Replay loaded successfully" << std::endl;
+		}
+		else {
+			//std::cout << "Replay failed to load" << std::endl;
+		}
+		playersFromReplay = Replay::GetInstance()->PullFromReplay();
+	}
+
+	std::vector<int> PlayerImages;
+
+	if (Settings::getInstance()->replaySystemEnabled && Settings::getInstance()->playingReplay) {
+		for (int i = 0; i < 4; i++) {
+			std::string replaySaveData = playersFromReplay.substr(i, 1);
+			if (replaySaveData == "0") {
+				PlayerImages.push_back(0);
+			}
+			else if (replaySaveData == "1") {
+				PlayerImages.push_back(1);
+			}
+			else if (replaySaveData == "2") {
+				PlayerImages.push_back(2);
+			}
+			else if (replaySaveData == "3") {
+				PlayerImages.push_back(3);
+			}
+			else if (replaySaveData == "4") {
+				PlayerImages.push_back(4);
+			}
+			else
+			{
+				PlayerImages.push_back(0);
+			}
+		}
+	}
+	else {
+		for each (int x in sceneManager->saveData) {
+			PlayerImages.push_back(x);
+		}
+	}
+
+	if (PlayerImages.size() != 0) {
+		p1Widget = new PlayerWidget(PlayerImages[0], 110, 1000);
 		p1Widget->SetVisible(false);
 
-		p2Widget = new PlayerWidget(sceneManager->saveData[1], 560, 1000);
+		p2Widget = new PlayerWidget(PlayerImages[1], 560, 1000);
 		p2Widget->SetVisible(false);
 
-		p3Widget = new PlayerWidget(sceneManager->saveData[2], 1920 - 800, 1000);
+		p3Widget = new PlayerWidget(PlayerImages[2], 1920 - 800, 1000);
 		p3Widget->SetVisible(false);
 
-		p4Widget = new PlayerWidget(sceneManager->saveData[3], 1920 - 350, 1000);
+		p4Widget = new PlayerWidget(PlayerImages[3], 1920 - 350, 1000);
 		p4Widget->SetVisible(false);
 	}
 	else
